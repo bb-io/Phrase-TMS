@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Apps.Memsource.Models.Responses
+namespace Apps.Memsource.Models.Jobs.Responses
 {
-    public class ListAllProjectsResponse
+    public class GetSegmentsResponse
     {
-        public IEnumerable<ProjectDto> Projects { get; set; }
+        public IEnumerable<SegmentDto> Segments { get; set; }
     }
 }

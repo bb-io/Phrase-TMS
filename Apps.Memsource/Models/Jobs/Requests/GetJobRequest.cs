@@ -4,10 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Apps.Memsource.Models.Requests
+namespace Apps.Memsource.Models.Jobs.Requests
 {
-    public class GetProjectRequest
+    public class GetJobRequest
     {
         public string ProjectUId { get; set; }
+
+        public string JobUId { get; set; }
+
+       
     }
 }

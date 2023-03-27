@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Apps.Memsource.Models.Responses
+namespace Apps.Memsource.Dtos
 {
-    public class GetProjectResponse
+    public class SegmentDto
     {
-        public string Name { get; set; }
-
         public string Id { get; set; }
 
-        public string DateCreated { get; set; }
+        public string Source { get; set; }
+
+        public string Target { get; set; }
     }
 }

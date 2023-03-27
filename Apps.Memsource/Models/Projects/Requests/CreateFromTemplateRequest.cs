@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Apps.Memsource.Models.Requests
+namespace Apps.Memsource.Models.Projects.Requests
 {
     public class CreateFromTemplateRequest
     {

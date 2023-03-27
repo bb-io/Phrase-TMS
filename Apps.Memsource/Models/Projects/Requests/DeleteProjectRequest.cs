@@ -4,12 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Apps.Memsource.Models.Requests
+namespace Apps.Memsource.Models.Projects.Requests
 {
-    public class AddTargetLanguageRequest
+    public class DeleteProjectRequest
     {
         public string ProjectUId { get; set; }
-
-        public IEnumerable<string> TargetLanguages { get; set; }
     }
 }

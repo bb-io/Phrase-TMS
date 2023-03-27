@@ -1,6 +1,6 @@
 ﻿using Apps.Memsource.Dtos;
-using Apps.Memsource.Models.Requests;
-using Apps.Memsource.Models.Responses;
+using Apps.Memsource.Models.Projects.Requests;
+using Apps.Memsource.Models.Projects.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Newtonsoft.Json;
