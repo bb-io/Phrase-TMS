@@ -20,7 +20,8 @@ namespace Apps.Memsource.Actions
             [ActionParameter] GetJobRequest input)
         {
             var client = new MemsourceClient(url);
-            var request = new MemsourceRequest($"/projects/{input.ProjectUId}/jobs/{input.JobUId}", Method.Get, "ApiToken " + authenticationCredentialsProvider.Value);
+            var request = new MemsourceRequest($"/api2/v1/projects/{input.ProjectUId}/jobs/{input.JobUId}", 
+                Method.Get, "ApiToken " + authenticationCredentialsProvider.Value);
             var response = client.Get(request);
             JObject content = (JObject)JsonConvert.DeserializeObject(response.Content);
             var job = content.ToObject<JobDto>();
@@ -38,7 +39,8 @@ namespace Apps.Memsource.Actions
             [ActionParameter] CreateJobRequest input)
         {
             var client = new MemsourceClient(url);
-            var request = new MemsourceRequest($"/projects/{input.ProjectUId}/jobs", Method.Post, "ApiToken " + authenticationCredentialsProvider.Value);
+            var request = new MemsourceRequest($"/api2/v1/projects/{input.ProjectUId}/jobs", 
+                Method.Post, "ApiToken " + authenticationCredentialsProvider.Value);
 
             string output = JsonConvert.SerializeObject(new
             {
@@ -57,7 +59,8 @@ namespace Apps.Memsource.Actions
             [ActionParameter] DeleteJobRequest input)
         {
             var client = new MemsourceClient(url);
-            var request = new MemsourceRequest($"/projects/{input.ProjectUId}/jobs/batch", Method.Delete, "ApiToken " + authenticationCredentialsProvider.Value);
+            var request = new MemsourceRequest($"/api2/v1/projects/{input.ProjectUId}/jobs/batch", 
+                Method.Delete, "ApiToken " + authenticationCredentialsProvider.Value);
             request.AddJsonBody(new
             {
                 jobs = input.JobsUIds.Select(u => new { uid = u })
@@ -70,7 +73,7 @@ namespace Apps.Memsource.Actions
             [ActionParameter] GetSegmentsRequest input)
         {
             var client = new MemsourceClient(url);
-            var request = new MemsourceRequest($"/projects/{input.ProjectUId}/jobs/{input.JobUId}/segments?beginIndex={input.BeginIndex}&endIndex={input.EndIndex}", 
+            var request = new MemsourceRequest($"/api2/v1/projects/{input.ProjectUId}/jobs/{input.JobUId}/segments?beginIndex={input.BeginIndex}&endIndex={input.EndIndex}", 
                 Method.Get, "ApiToken " + authenticationCredentialsProvider.Value);
             var response = client.Get(request);
             dynamic content = (JObject)JsonConvert.DeserializeObject(response.Content);
@@ -81,5 +84,56 @@ namespace Apps.Memsource.Actions
                 Segments = segments
             };
         }
+
+        [Action("Edit job", Description = "Edit job")]
+        public void EditJob(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+            [ActionParameter] EditJobRequest input)
+        {
+            var client = new MemsourceClient(url);
+            var request = new MemsourceRequest($"/api2/v1/projects/{input.ProjectUId}/jobs/{input.JobUId}", 
+                Method.Patch, "ApiToken " + authenticationCredentialsProvider.Value);
+            request.AddJsonBody(new
+            {
+                dateDue = input.DateDue,
+                status = input.Status,
+            });
+            client.Execute(request);
+        }
+
+        [Action("Download target file", Description = "Download target file")]
+        public TargetFileResponse DownloadTargetFile(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+            [ActionParameter] TargetFileRequest input)
+        {
+            var client = new MemsourceClient(url);
+            var requestFile = new MemsourceRequest($"/api2/v2/projects/{input.ProjectUId}/jobs/{input.JobUId}/targetFile", 
+                Method.Put, "ApiToken " + authenticationCredentialsProvider.Value);
+            var responseFile = client.Execute(requestFile);
+            dynamic contentFile = JsonConvert.DeserializeObject(responseFile.Content);
+
+            Task.Delay(2000);
+
+            var requestDownload = new MemsourceRequest($"/api2/v2/projects/{input.ProjectUId}/jobs/{input.JobUId}/downloadTargetFile/{contentFile.asyncRequest.id}?format={"ORIGINAL"}",
+                Method.Get, "ApiToken " + authenticationCredentialsProvider.Value);
+            var responseDownload = client.Get(requestDownload);
+            byte[] fileData = responseDownload.RawBytes;
+            var filenameHeader = responseDownload.ContentHeaders.First(h => h.Name == "Content-Disposition");
+            var filename = filenameHeader.Value.ToString().Split(';')[1].Split("\'\'")[1];
+
+            Console.WriteLine(filename);
+            return new TargetFileResponse()
+            {
+                Filename = filename,
+                File = fileData
+            };
+        }
+
+        //var requestAsyncStatus = new MemsourceRequest($"/api2/v1/async?all=true",
+        //        Method.Get, "ApiToken " + authenticationCredentialsProvider.Value);
+        //var responseAsyncStatus = client.Get(requestAsyncStatus);
+        //dynamic contentAsyncStatus = JsonConvert.DeserializeObject(responseAsyncStatus.Content);
+        //JArray asyncReqArr = contentAsyncStatus.content;
+        //var asyncRequests = asyncReqArr.ToObject<List<AsyncRequestDto>>();
+        //var isPending = asyncRequests.Any(r => r.Id == (string)contentFile.asyncRequest.id);
+        //Console.WriteLine(isPending);
     }
 }

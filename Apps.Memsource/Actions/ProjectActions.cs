@@ -19,7 +19,7 @@ namespace Apps.Memsource.Actions
         public ListAllProjectsResponse ListAllProjects(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider)
         {
             var client = new MemsourceClient(url);
-            var request = new MemsourceRequest("/projects", Method.Get, "ApiToken " + authenticationCredentialsProvider.Value);
+            var request = new MemsourceRequest("/api2/v1/projects", Method.Get, "ApiToken " + authenticationCredentialsProvider.Value);
             var response = client.Get(request);
             dynamic content = JsonConvert.DeserializeObject(response.Content);
             JArray projectsArr = content.content;
@@ -35,7 +35,7 @@ namespace Apps.Memsource.Actions
             [ActionParameter] GetProjectRequest input)
         {
             var client = new MemsourceClient(url);
-            var request = new MemsourceRequest($"/projects/{input.ProjectUId}", Method.Get, "ApiToken " + authenticationCredentialsProvider.Value);
+            var request = new MemsourceRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Get, "ApiToken " + authenticationCredentialsProvider.Value);
             var response = client.Get(request);
             JObject content = (JObject)JsonConvert.DeserializeObject(response.Content);
             var project = content.ToObject<ProjectDto>();
@@ -52,7 +52,7 @@ namespace Apps.Memsource.Actions
             [ActionParameter] CreateProjectRequest input)
         {
             var client = new MemsourceClient(url);
-            var request = new MemsourceRequest("/projects", Method.Post, "ApiToken " + authenticationCredentialsProvider.Value);
+            var request = new MemsourceRequest("/api2/v1/projects", Method.Post, "ApiToken " + authenticationCredentialsProvider.Value);
             request.AddJsonBody(new
             {
                 name = input.Name,
@@ -67,7 +67,7 @@ namespace Apps.Memsource.Actions
             [ActionParameter] CreateFromTemplateRequest input)
         {
             var client = new MemsourceClient(url);
-            var request = new MemsourceRequest($"/projects/applyTemplate/{input.TemplateUId}", Method.Post, "ApiToken " + authenticationCredentialsProvider.Value);
+            var request = new MemsourceRequest($"/api2/v1/projects/applyTemplate/{input.TemplateUId}", Method.Post, "ApiToken " + authenticationCredentialsProvider.Value);
             request.AddJsonBody(new
             {
                 name = input.Name
@@ -80,7 +80,7 @@ namespace Apps.Memsource.Actions
             [ActionParameter] AddTargetLanguageRequest input)
         {
             var client = new MemsourceClient(url);
-            var request = new MemsourceRequest($"/projects/{input.ProjectUId}/targetLangs", Method.Post, "ApiToken " + authenticationCredentialsProvider.Value);
+            var request = new MemsourceRequest($"/api2/v1/projects/{input.ProjectUId}/targetLangs", Method.Post, "ApiToken " + authenticationCredentialsProvider.Value);
             request.AddJsonBody(new
             {
                 targetLangs = input.TargetLanguages.ToArray()
@@ -93,7 +93,7 @@ namespace Apps.Memsource.Actions
             [ActionParameter] EditProjectRequest input)
         {
             var client = new MemsourceClient(url);
-            var request = new MemsourceRequest($"/projects/{input.ProjectUId}", Method.Patch, "ApiToken " + authenticationCredentialsProvider.Value);
+            var request = new MemsourceRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Patch, "ApiToken " + authenticationCredentialsProvider.Value);
             request.AddJsonBody(new
             {
                 name = input.ProjectName,
@@ -107,7 +107,7 @@ namespace Apps.Memsource.Actions
             [ActionParameter] DeleteProjectRequest input)
         {
             var client = new MemsourceClient(url);
-            var request = new MemsourceRequest($"/projects/{input.ProjectUId}", Method.Delete, "ApiToken " + authenticationCredentialsProvider.Value);
+            var request = new MemsourceRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Delete, "ApiToken " + authenticationCredentialsProvider.Value);
             client.Execute(request);
         }
     }

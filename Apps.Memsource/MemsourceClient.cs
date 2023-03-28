@@ -9,6 +9,6 @@ namespace Apps.Memsource
 {
     public class MemsourceClient : RestClient
     {
-        public MemsourceClient(string url) : base(new RestClientOptions() { ThrowOnAnyError = true, BaseUrl = new Uri(url + "/web/api2/v1") }) { }
+        public MemsourceClient(string url) : base(new RestClientOptions() { ThrowOnAnyError = true, BaseUrl = new Uri(url + "/web") }) { }
     }
 }

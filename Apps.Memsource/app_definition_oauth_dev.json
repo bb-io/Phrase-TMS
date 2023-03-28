@@ -7,7 +7,7 @@
     "OAuth2RequestDefinitions": [
       {
         "Type": "authorize_url",
-        "Url": "https://us.cloud.memsource.com/web/oauth/authorize",
+        "Url": "https://us.cloud.memsource.com/oauth/authorize",
         "Method": "GET",
         "Body": {},
         "Headers": {},
@@ -21,7 +21,7 @@
       },
       {
         "Type": "request_token_url",
-        "Url": "https://us.cloud.memsource.com/web/oauth/token",
+        "Url": "https://us.cloud.memsource.com/oauth/token",
         "Method": "POST",
         "Body": {
           "grant_type": "authorization_code",
