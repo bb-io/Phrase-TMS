@@ -23,8 +23,9 @@ namespace Apps.Memsource.Actions
             var request = new MemsourceRequest($"/api2/v1/projects/{input.ProjectUId}/jobs/{input.JobUId}", 
                 Method.Get, "ApiToken " + authenticationCredentialsProvider.Value);
             var response = client.Get(request);
-            JObject content = (JObject)JsonConvert.DeserializeObject(response.Content);
-            var job = content.ToObject<JobDto>();
+
+            var job = JsonConvert.DeserializeObject<JobDto>(response.Content);
+
             return new GetJobResponse()
             {
                 Filename = job.Filename,
