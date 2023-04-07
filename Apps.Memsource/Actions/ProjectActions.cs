@@ -1,6 +1,6 @@
-﻿using Apps.Memsource.Dtos;
-using Apps.Memsource.Models.Projects.Requests;
-using Apps.Memsource.Models.Projects.Responses;
+﻿using Apps.PhraseTms.Dtos;
+using Apps.PhraseTms.Models.Projects.Requests;
+using Apps.PhraseTms.Models.Projects.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Newtonsoft.Json;
@@ -10,7 +10,7 @@ using System.Buffers.Text;
 using System.ComponentModel;
 using System.Text;
 
-namespace Apps.Memsource.Actions
+namespace Apps.PhraseTms.Actions
 {
     [ActionList]
     public class ProjectActions
@@ -18,8 +18,8 @@ namespace Apps.Memsource.Actions
         [Action("List all projects", Description = "List all projects")]
         public ListAllProjectsResponse ListAllProjects(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider)
         {
-            var client = new MemsourceClient(url);
-            var request = new MemsourceRequest("/api2/v1/projects", Method.Get, "ApiToken " + authenticationCredentialsProvider.Value);
+            var client = new PhraseTmsClient(url);
+            var request = new PhraseTmsRequest("/api2/v1/projects", Method.Get, authenticationCredentialsProvider.Value);
             var response = client.Get(request);
             dynamic content = JsonConvert.DeserializeObject(response.Content);
             JArray projectsArr = content.content;
@@ -34,8 +34,8 @@ namespace Apps.Memsource.Actions
         public GetProjectResponse GetProject(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
             [ActionParameter] GetProjectRequest input)
         {
-            var client = new MemsourceClient(url);
-            var request = new MemsourceRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Get, "ApiToken " + authenticationCredentialsProvider.Value);
+            var client = new PhraseTmsClient(url);
+            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Get, authenticationCredentialsProvider.Value);
             var response = client.Get(request);
             JObject content = (JObject)JsonConvert.DeserializeObject(response.Content);
             var project = content.ToObject<ProjectDto>();
@@ -51,8 +51,8 @@ namespace Apps.Memsource.Actions
         public void CreateProject(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
             [ActionParameter] CreateProjectRequest input)
         {
-            var client = new MemsourceClient(url);
-            var request = new MemsourceRequest("/api2/v1/projects", Method.Post, "ApiToken " + authenticationCredentialsProvider.Value);
+            var client = new PhraseTmsClient(url);
+            var request = new PhraseTmsRequest("/api2/v1/projects", Method.Post, authenticationCredentialsProvider.Value);
             request.AddJsonBody(new
             {
                 name = input.Name,
@@ -66,8 +66,8 @@ namespace Apps.Memsource.Actions
         public void CreateProjectFromTemplate(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
             [ActionParameter] CreateFromTemplateRequest input)
         {
-            var client = new MemsourceClient(url);
-            var request = new MemsourceRequest($"/api2/v1/projects/applyTemplate/{input.TemplateUId}", Method.Post, "ApiToken " + authenticationCredentialsProvider.Value);
+            var client = new PhraseTmsClient(url);
+            var request = new PhraseTmsRequest($"/api2/v1/projects/applyTemplate/{input.TemplateUId}", Method.Post, authenticationCredentialsProvider.Value);
             request.AddJsonBody(new
             {
                 name = input.Name
@@ -79,8 +79,8 @@ namespace Apps.Memsource.Actions
         public void AddTargetLanguage(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
             [ActionParameter] AddTargetLanguageRequest input)
         {
-            var client = new MemsourceClient(url);
-            var request = new MemsourceRequest($"/api2/v1/projects/{input.ProjectUId}/targetLangs", Method.Post, "ApiToken " + authenticationCredentialsProvider.Value);
+            var client = new PhraseTmsClient(url);
+            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/targetLangs", Method.Post, authenticationCredentialsProvider.Value);
             request.AddJsonBody(new
             {
                 targetLangs = input.TargetLanguages.ToArray()
@@ -92,8 +92,8 @@ namespace Apps.Memsource.Actions
         public void EditProject(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
             [ActionParameter] EditProjectRequest input)
         {
-            var client = new MemsourceClient(url);
-            var request = new MemsourceRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Patch, "ApiToken " + authenticationCredentialsProvider.Value);
+            var client = new PhraseTmsClient(url);
+            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Patch, authenticationCredentialsProvider.Value);
             request.AddJsonBody(new
             {
                 name = input.ProjectName,
@@ -106,8 +106,8 @@ namespace Apps.Memsource.Actions
         public void DeleteProject(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
             [ActionParameter] DeleteProjectRequest input)
         {
-            var client = new MemsourceClient(url);
-            var request = new MemsourceRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Delete, "ApiToken " + authenticationCredentialsProvider.Value);
+            var client = new PhraseTmsClient(url);
+            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Delete, authenticationCredentialsProvider.Value);
             client.Execute(request);
         }
     }

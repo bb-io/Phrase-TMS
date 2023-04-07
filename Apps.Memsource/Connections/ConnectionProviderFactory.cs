@@ -1,7 +1,7 @@
 ﻿using Blackbird.Applications.Sdk.Common;
 using System.Collections.Generic;
 
-namespace Apps.Memsource.Connections
+namespace Apps.PhraseTms.Connections
 {
     public class ConnectionProviderFactory : IConnectionProviderFactory
     {

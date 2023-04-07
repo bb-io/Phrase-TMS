@@ -1,16 +1,16 @@
-﻿using Apps.Memsource.Models.Jobs.Requests;
+﻿using Apps.PhraseTms.Models.Jobs.Requests;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using RestSharp;
-using Apps.Memsource.Dtos;
-using Apps.Memsource.Models.Jobs.Responses;
+using Apps.PhraseTms.Dtos;
+using Apps.PhraseTms.Models.Jobs.Responses;
 using System.Net.Http;
 using System.Net.Mime;
-using Apps.Memsource.Models.Projects.Requests;
+using Apps.PhraseTms.Models.Projects.Requests;
 
-namespace Apps.Memsource.Actions
+namespace Apps.PhraseTms.Actions
 {
     [ActionList]
     public class JobActions
@@ -19,9 +19,9 @@ namespace Apps.Memsource.Actions
         public GetJobResponse GetJob(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
             [ActionParameter] GetJobRequest input)
         {
-            var client = new MemsourceClient(url);
-            var request = new MemsourceRequest($"/api2/v1/projects/{input.ProjectUId}/jobs/{input.JobUId}", 
-                Method.Get, "ApiToken " + authenticationCredentialsProvider.Value);
+            var client = new PhraseTmsClient(url);
+            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/jobs/{input.JobUId}", 
+                Method.Get, authenticationCredentialsProvider.Value);
             var response = client.Get(request);
 
             var job = JsonConvert.DeserializeObject<JobDto>(response.Content);
@@ -39,9 +39,9 @@ namespace Apps.Memsource.Actions
         public void CreateJob(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
             [ActionParameter] CreateJobRequest input)
         {
-            var client = new MemsourceClient(url);
-            var request = new MemsourceRequest($"/api2/v1/projects/{input.ProjectUId}/jobs", 
-                Method.Post, "ApiToken " + authenticationCredentialsProvider.Value);
+            var client = new PhraseTmsClient(url);
+            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/jobs", 
+                Method.Post, authenticationCredentialsProvider.Value);
 
             string output = JsonConvert.SerializeObject(new
             {
@@ -59,9 +59,9 @@ namespace Apps.Memsource.Actions
         public void DeleteJob(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
             [ActionParameter] DeleteJobRequest input)
         {
-            var client = new MemsourceClient(url);
-            var request = new MemsourceRequest($"/api2/v1/projects/{input.ProjectUId}/jobs/batch", 
-                Method.Delete, "ApiToken " + authenticationCredentialsProvider.Value);
+            var client = new PhraseTmsClient(url);
+            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/jobs/batch", 
+                Method.Delete, authenticationCredentialsProvider.Value);
             request.AddJsonBody(new
             {
                 jobs = input.JobsUIds.Select(u => new { uid = u })
@@ -73,9 +73,9 @@ namespace Apps.Memsource.Actions
         public GetSegmentsResponse GetSegments(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
             [ActionParameter] GetSegmentsRequest input)
         {
-            var client = new MemsourceClient(url);
-            var request = new MemsourceRequest($"/api2/v1/projects/{input.ProjectUId}/jobs/{input.JobUId}/segments?beginIndex={input.BeginIndex}&endIndex={input.EndIndex}", 
-                Method.Get, "ApiToken " + authenticationCredentialsProvider.Value);
+            var client = new PhraseTmsClient(url);
+            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/jobs/{input.JobUId}/segments?beginIndex={input.BeginIndex}&endIndex={input.EndIndex}", 
+                Method.Get, authenticationCredentialsProvider.Value);
             var response = client.Get(request);
             dynamic content = (JObject)JsonConvert.DeserializeObject(response.Content);
             JArray segmentsArr = content.segments;
@@ -90,9 +90,9 @@ namespace Apps.Memsource.Actions
         public void EditJob(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
             [ActionParameter] EditJobRequest input)
         {
-            var client = new MemsourceClient(url);
-            var request = new MemsourceRequest($"/api2/v1/projects/{input.ProjectUId}/jobs/{input.JobUId}", 
-                Method.Patch, "ApiToken " + authenticationCredentialsProvider.Value);
+            var client = new PhraseTmsClient(url);
+            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/jobs/{input.JobUId}", 
+                Method.Patch, authenticationCredentialsProvider.Value);
             request.AddJsonBody(new
             {
                 dateDue = input.DateDue,
@@ -105,22 +105,23 @@ namespace Apps.Memsource.Actions
         public TargetFileResponse DownloadTargetFile(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
             [ActionParameter] TargetFileRequest input)
         {
-            var client = new MemsourceClient(url);
-            var requestFile = new MemsourceRequest($"/api2/v2/projects/{input.ProjectUId}/jobs/{input.JobUId}/targetFile", 
-                Method.Put, "ApiToken " + authenticationCredentialsProvider.Value);
-            var responseFile = client.Execute(requestFile);
-            dynamic contentFile = JsonConvert.DeserializeObject(responseFile.Content);
+            var client = new PhraseTmsClient(url);
+            var requestFile = new PhraseTmsRequest($"/api2/v2/projects/{input.ProjectUId}/jobs/{input.JobUId}/targetFile", 
+                Method.Put, authenticationCredentialsProvider.Value);
+            var asyncRequest = client.PerformAsyncRequest(requestFile, authenticationCredentialsProvider);
 
-            Task.Delay(2000);
+            if (asyncRequest is null) throw new Exception("Failed creating asynchronous target file request");
 
-            var requestDownload = new MemsourceRequest($"/api2/v2/projects/{input.ProjectUId}/jobs/{input.JobUId}/downloadTargetFile/{contentFile.asyncRequest.id}?format={"ORIGINAL"}",
-                Method.Get, "ApiToken " + authenticationCredentialsProvider.Value);
+            var requestDownload = new PhraseTmsRequest($"/api2/v2/projects/{input.ProjectUId}/jobs/{input.JobUId}/downloadTargetFile/{asyncRequest.Id}?format={"ORIGINAL"}",
+                Method.Get, authenticationCredentialsProvider.Value);
             var responseDownload = client.Get(requestDownload);
+
+            if (responseDownload == null) throw new Exception("Failed downloading target files");
+            
             byte[] fileData = responseDownload.RawBytes;
             var filenameHeader = responseDownload.ContentHeaders.First(h => h.Name == "Content-Disposition");
             var filename = filenameHeader.Value.ToString().Split(';')[1].Split("\'\'")[1];
 
-            Console.WriteLine(filename);
             return new TargetFileResponse()
             {
                 Filename = filename,
@@ -129,7 +130,7 @@ namespace Apps.Memsource.Actions
         }
 
         //var requestAsyncStatus = new MemsourceRequest($"/api2/v1/async?all=true",
-        //        Method.Get, "ApiToken " + authenticationCredentialsProvider.Value);
+        //        Method.Get, authenticationCredentialsProvider.Value);
         //var responseAsyncStatus = client.Get(requestAsyncStatus);
         //dynamic contentAsyncStatus = JsonConvert.DeserializeObject(responseAsyncStatus.Content);
         //JArray asyncReqArr = contentAsyncStatus.content;

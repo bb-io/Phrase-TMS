@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Apps.Memsource.Models.Projects.Responses
+namespace Apps.PhraseTms.Models.Projects.Responses
 {
     public class GetProjectResponse
     {

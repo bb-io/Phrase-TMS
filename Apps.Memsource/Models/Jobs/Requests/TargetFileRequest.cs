@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Apps.Memsource.Models.Jobs.Requests
+namespace Apps.PhraseTms.Models.Jobs.Requests
 {
     public class TargetFileRequest
     {

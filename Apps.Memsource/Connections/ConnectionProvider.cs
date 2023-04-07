@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Apps.Memsource.Connections
+namespace Apps.PhraseTms.Connections
 {
     public class ConnectionProvider : IConnectionProvider
     {

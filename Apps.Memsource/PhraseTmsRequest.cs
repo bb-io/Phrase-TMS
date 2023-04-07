@@ -6,13 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Apps.Memsource
+namespace Apps.PhraseTms
 {
-    public class MemsourceRequest : RestRequest
+    public class PhraseTmsRequest : RestRequest
     {
-        public MemsourceRequest(string endpoint, Method method, string token) : base(endpoint, method)
+        public PhraseTmsRequest(string endpoint, Method method, string token) : base(endpoint, method)
         {
-            this.AddHeader("Authorization", token);
+            this.AddHeader("Authorization", $"ApiToken {token}");
             this.AddHeader("accept", "*/*");
         }
     }
