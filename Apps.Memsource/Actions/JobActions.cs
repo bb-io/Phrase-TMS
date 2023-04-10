@@ -8,13 +8,30 @@ using Apps.PhraseTms.Dtos;
 using Apps.PhraseTms.Models.Jobs.Responses;
 using System.Net.Http;
 using System.Net.Mime;
-using Apps.PhraseTms.Models.Projects.Requests;
+using Apps.PhraseTms.Models.Projects.Responses;
+using Apps.PhraseTMS.Models.Jobs.Requests;
+using Apps.PhraseTMS.Models.Responses;
+using Apps.PhraseTMS.Models.Jobs.Responses;
 
 namespace Apps.PhraseTms.Actions
 {
     [ActionList]
     public class JobActions
     {
+        [Action("List all jobs", Description = "List all jobs in the project")]
+        public ListAllJobsResponse ListAllJobs(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+            [ActionParameter] ListAllJobsRequest input)
+        {
+            var client = new PhraseTmsClient(url);
+            var request = new PhraseTmsRequest($"/api2/v2/projects/{input.ProjectUId}/jobs", Method.Get, authenticationCredentialsProvider.Value);
+            var response = client.Get(request);
+            var content = JsonConvert.DeserializeObject<ResponseWrapper<List<JobDto>>>(response.Content);
+            return new ListAllJobsResponse()
+            {
+                Jobs = content.Content
+            };
+        }
+
         [Action("Get job", Description = "Get job by UId")]
         public GetJobResponse GetJob(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
             [ActionParameter] GetJobRequest input)
@@ -128,15 +145,5 @@ namespace Apps.PhraseTms.Actions
                 File = fileData
             };
         }
-
-
-        //var requestAsyncStatus = new MemsourceRequest($"/api2/v1/async?all=true",
-        //        Method.Get, authenticationCredentialsProvider.Value);
-        //var responseAsyncStatus = client.Get(requestAsyncStatus);
-        //dynamic contentAsyncStatus = JsonConvert.DeserializeObject(responseAsyncStatus.Content);
-        //JArray asyncReqArr = contentAsyncStatus.content;
-        //var asyncRequests = asyncReqArr.ToObject<List<AsyncRequestDto>>();
-        //var isPending = asyncRequests.Any(r => r.Id == (string)contentFile.asyncRequest.id);
-        //Console.WriteLine(isPending);
     }
 }
