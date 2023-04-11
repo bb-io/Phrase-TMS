@@ -24,11 +24,10 @@ namespace Apps.PhraseTms.Actions
         {
             var client = new PhraseTmsClient(url);
             var request = new PhraseTmsRequest($"/api2/v2/projects/{input.ProjectUId}/jobs", Method.Get, authenticationCredentialsProvider.Value);
-            var response = client.Get(request);
-            var content = JsonConvert.DeserializeObject<ResponseWrapper<List<JobDto>>>(response.Content);
+            var response = client.Get<ResponseWrapper<List<JobDto>>>(request);
             return new ListAllJobsResponse()
             {
-                Jobs = content.Content
+                Jobs = response.Content
             };
         }
 
@@ -39,16 +38,14 @@ namespace Apps.PhraseTms.Actions
             var client = new PhraseTmsClient(url);
             var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/jobs/{input.JobUId}", 
                 Method.Get, authenticationCredentialsProvider.Value);
-            var response = client.Get(request);
-
-            var job = JsonConvert.DeserializeObject<JobDto>(response.Content);
+            var response = client.Get<JobDto>(request);
 
             return new GetJobResponse()
             {
-                Filename = job.Filename,
-                TargetLanguage = job.TargetLang,
-                Status = job.Status,
-                DateDue = job.DateDue
+                Filename = response.Filename,
+                TargetLanguage = response.TargetLang,
+                Status = response.Status,
+                DateDue = response.DateDue
             };
         }
 

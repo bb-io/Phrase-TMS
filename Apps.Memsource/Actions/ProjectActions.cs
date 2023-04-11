@@ -1,6 +1,7 @@
 ﻿using Apps.PhraseTms.Dtos;
 using Apps.PhraseTms.Models.Projects.Requests;
 using Apps.PhraseTms.Models.Projects.Responses;
+using Apps.PhraseTMS.Models.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Newtonsoft.Json;
@@ -20,13 +21,10 @@ namespace Apps.PhraseTms.Actions
         {
             var client = new PhraseTmsClient(url);
             var request = new PhraseTmsRequest("/api2/v1/projects", Method.Get, authenticationCredentialsProvider.Value);
-            var response = client.Get(request);
-            dynamic content = JsonConvert.DeserializeObject(response.Content);
-            JArray projectsArr = content.content;
-            var projects = projectsArr.ToObject<List<ProjectDto>>();
+            var response = client.Get<ResponseWrapper<List<ProjectDto>>>(request);
             return new ListAllProjectsResponse()
             {
-                Projects = projects
+                Projects = response.Content
             };
         }
 
@@ -36,14 +34,12 @@ namespace Apps.PhraseTms.Actions
         {
             var client = new PhraseTmsClient(url);
             var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Get, authenticationCredentialsProvider.Value);
-            var response = client.Get(request);
-            JObject content = (JObject)JsonConvert.DeserializeObject(response.Content);
-            var project = content.ToObject<ProjectDto>();
+            var response = client.Get<ProjectDto>(request);
             return new GetProjectResponse()
             {
-                Name = project.Name,
-                Id = project.Id,
-                DateCreated = project.DateCreated,
+                Name = response.Name,
+                Id = response.Id,
+                DateCreated = response.DateCreated,
             };
         }
 

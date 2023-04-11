@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Apps.PhraseTMS.Models.Quotes.Request;
 using System.Collections;
 using Apps.PhraseTMS.Dtos;
+using Apps.PhraseTMS.Models.Quotes.Requests;
 
 namespace Apps.PhraseTMS.Actions
 {
@@ -25,9 +26,33 @@ namespace Apps.PhraseTMS.Actions
         {
             var client = new PhraseTmsClient(url);
             var request = new PhraseTmsRequest($"/api2/v1/quotes/{input.QuoteUId}", Method.Get, authenticationCredentialsProvider.Value);
-            var response = client.Get(request);
-            var content = JsonConvert.DeserializeObject<QuoteDto>(response.Content);
-            return content;
+            var response = client.Get<QuoteDto>(request);
+            return response;
+        }
+
+        [Action("Create quote", Description = "Create quote")]
+        public void CreateQuote(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+            [ActionParameter] CreateQuoteRequest input)
+        {
+            var client = new PhraseTmsClient(url);
+            var request = new PhraseTmsRequest($"/api2/v2/quotes", Method.Post, authenticationCredentialsProvider.Value);
+            request.AddJsonBody(new
+            {
+                analyse = new { id = input.AnalyseUId },
+                name = input.Name,
+                priceList = new { id = input.PriceListUId },
+                project = new { uid = input.ProjectUId }
+            });
+            client.Execute(request);
+        }
+
+        [Action("Delete quote", Description = "Delete quote")]
+        public void DeleteQuote(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+            [ActionParameter] GetQuoteRequest input)
+        {
+            var client = new PhraseTmsClient(url);
+            var request = new PhraseTmsRequest($"/api2/v1/quotes/{input.QuoteUId}", Method.Delete, authenticationCredentialsProvider.Value);
+            client.Execute(request);       
         }
     }
 }

@@ -26,11 +26,10 @@ namespace Apps.PhraseTMS.Actions
         {
             var client = new PhraseTmsClient(url);
             var request = new PhraseTmsRequest($"/api2/v1/files", Method.Get, authenticationCredentialsProvider.Value);
-            var response = client.Get(request);
-            var content = JsonConvert.DeserializeObject<ResponseWrapper<List<FileInfoDto>>>(response.Content);
+            var response = client.Get<ResponseWrapper<List<FileInfoDto>>>(request);
             return new ListAllFilesResponse()
             {
-                Files = content.Content
+                Files = response.Content
             };
         }
 
@@ -40,11 +39,10 @@ namespace Apps.PhraseTMS.Actions
         {
             var client = new PhraseTmsClient(url);
             var request = new PhraseTmsRequest($"/api2/v1/files/{input.FileUId}", Method.Get, authenticationCredentialsProvider.Value);
-            var response = client.Get(request);
-            var content = JsonConvert.DeserializeObject<string>(response.Content);
+            var response = client.Get<string>(request);
             return new GetFileResponse()
             {
-                FileContent = content
+                FileContent = response
             };
         }
 
@@ -57,9 +55,8 @@ namespace Apps.PhraseTMS.Actions
             request.AddHeader("Content-Disposition", $"filename*=UTF-8''{input.FileName}");
             request.AddHeader("Content-Type", "application/octet-stream");
             request.AddParameter("application/octet-stream", input.File, ParameterType.RequestBody);
-            var response = client.Execute(request);
-            var content = JsonConvert.DeserializeObject<FileInfoDto>(response.Content);
-            return content;
+            var response = client.Execute<FileInfoDto>(request).Data;
+            return response;
         }
     }
 }

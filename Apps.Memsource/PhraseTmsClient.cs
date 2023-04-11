@@ -30,5 +30,27 @@ namespace Apps.PhraseTms
             return asyncRequest;
 
         }
+
+        public List<AsyncRequest> PerformMultipleAsyncRequest(PhraseTmsRequest request, AuthenticationCredentialsProvider provider)
+        {
+            var result = new List<AsyncRequest>();
+            var asyncRequestResponse = this.Execute<AsyncRequestMultipleResponse>(request).Data;
+            if (asyncRequestResponse is null) return default;
+            var asyncRequests = asyncRequestResponse.AsyncRequests;
+
+            foreach(var asyncRequest in asyncRequests)
+            {
+                AsyncRequest asyncRequestSeparate = null;
+                while (asyncRequestSeparate?.AsyncResponse is null)
+                {
+                    Task.Delay(2000);
+                    var asyncStatusRequest = new PhraseTmsRequest($"/api2/v1/async/{asyncRequest.AsyncRequest.Id}", Method.Get, provider.Value);
+                    asyncRequestSeparate = this.Get<AsyncRequest>(asyncStatusRequest);
+                    if (asyncRequestSeparate is null) return default;                 
+                }
+                result.Add(asyncRequestSeparate);
+            }
+            return result;
+        }
     }
 }
