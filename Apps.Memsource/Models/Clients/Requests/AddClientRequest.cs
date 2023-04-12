@@ -4,14 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Apps.PhraseTMS.Dtos
+namespace Apps.PhraseTMS.Models.Clients.Requests
 {
-    public class VendorDto
+    public class AddClientRequest
     {
-        public string UId { get; set; }
-
         public string Name { get; set; }
 
-        public string VendorToken { get; set; }
+        public string ExternalId { get; set; }
     }
 }

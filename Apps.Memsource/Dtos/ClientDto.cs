@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Apps.PhraseTMS.Dtos
 {
-    public class VendorDto
+    public class ClientDto
     {
-        public string UId { get; set; }
-
         public string Name { get; set; }
 
-        public string VendorToken { get; set; }
+        public string UId { get; set; }
+
+        public string ExternalId { get; set; }
     }
 }

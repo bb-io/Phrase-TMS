@@ -42,5 +42,14 @@ namespace Apps.PhraseTMS.Actions
                 Vendors = client.Get<ResponseWrapper<List<VendorDto>>>(request).Content
             };
         }
+
+        [Action("Get vendor", Description = "Get vendor")]
+        public VendorDto GetVendor(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+            GetVendorRequest input)
+        {
+            var client = new PhraseTmsClient(url);
+            var request = new PhraseTmsRequest($"/api2/v1/vendors/{input.VendorId}", Method.Get, authenticationCredentialsProvider.Value);
+            return client.Get<VendorDto>(request);
+        }
     }
 }

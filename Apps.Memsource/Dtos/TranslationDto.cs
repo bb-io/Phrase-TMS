@@ -6,12 +6,8 @@ using System.Threading.Tasks;
 
 namespace Apps.PhraseTMS.Dtos
 {
-    public class VendorDto
+    public class TranslationDto
     {
-        public string UId { get; set; }
-
-        public string Name { get; set; }
-
-        public string VendorToken { get; set; }
+        public IEnumerable<string> Translations { get; set; }
     }
 }
