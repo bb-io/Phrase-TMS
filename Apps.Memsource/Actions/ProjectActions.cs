@@ -44,7 +44,7 @@ namespace Apps.PhraseTms.Actions
         }
 
         [Action("Create project", Description = "Create project")]
-        public void CreateProject(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+        public GetProjectResponse CreateProject(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
             [ActionParameter] CreateProjectRequest input)
         {
             var client = new PhraseTmsClient(url);
@@ -55,11 +55,17 @@ namespace Apps.PhraseTms.Actions
                 sourceLang = input.SourceLanguage,
                 targetLangs = input.TargetLanguages.ToArray()
             });
-            client.Execute(request);
+            var response = client.Post<ProjectDto>(request);
+            return new GetProjectResponse()
+            {
+                Name = response.Name,
+                Id = response.Id,
+                DateCreated = response.DateCreated,
+            };
         }
 
         [Action("Create project from template", Description = "Create project from template")]
-        public void CreateProjectFromTemplate(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+        public GetProjectResponse CreateProjectFromTemplate(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
             [ActionParameter] CreateFromTemplateRequest input)
         {
             var client = new PhraseTmsClient(url);
@@ -68,7 +74,13 @@ namespace Apps.PhraseTms.Actions
             {
                 name = input.Name
             });
-            client.Execute(request);
+            var response = client.Post<ProjectDto>(request);
+            return new GetProjectResponse()
+            {
+                Name = response.Name,
+                Id = response.Id,
+                DateCreated = response.DateCreated,
+            };
         }
 
         [Action("Add target language", Description = "Add target language")]
