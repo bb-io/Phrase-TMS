@@ -19,7 +19,7 @@ namespace Apps.PhraseTMS.Actions
     public class VendorActions
     {
         [Action("Add new vendor", Description = "Add new vendor")]
-        public void AddVendor(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+        public VendorDto AddVendor(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
             [ActionParameter] AddVendorRequest input)
         {
             var client = new PhraseTmsClient(url);
@@ -29,7 +29,7 @@ namespace Apps.PhraseTMS.Actions
                 vendorToken = input.VendorToken,
                 priceList = new { uid = input.PriceListUId }
             });
-            client.Execute(request);
+            return client.Execute<VendorDto>(request).Data;
         }
 
         [Action("List all vendors", Description = "List all vendors")]

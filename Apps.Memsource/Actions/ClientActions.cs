@@ -41,7 +41,7 @@ namespace Apps.PhraseTMS.Actions
         }
 
         [Action("Add new client", Description = "Add new client")]
-        public void AddClient(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+        public ClientDto AddClient(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
             [ActionParameter] AddClientRequest input)
         {
             var client = new PhraseTmsClient(url);
@@ -51,7 +51,7 @@ namespace Apps.PhraseTMS.Actions
                 name = input.Name,
                 externalId = input.ExternalId,
             });
-            client.Execute(request);
+            return client.Execute<ClientDto>(request).Data;
         }
 
         [Action("Delete client", Description = "Delete client")]

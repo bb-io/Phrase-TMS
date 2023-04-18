@@ -31,7 +31,7 @@ namespace Apps.PhraseTMS.Actions
         }
 
         [Action("Create quote", Description = "Create quote")]
-        public void CreateQuote(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+        public QuoteDto CreateQuote(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
             [ActionParameter] CreateQuoteRequest input)
         {
             var client = new PhraseTmsClient(url);
@@ -43,7 +43,7 @@ namespace Apps.PhraseTMS.Actions
                 priceList = new { id = input.PriceListUId },
                 project = new { uid = input.ProjectUId }
             });
-            client.Execute(request);
+            return client.Execute<QuoteDto>(request).Data;
         }
 
         [Action("Delete quote", Description = "Delete quote")]

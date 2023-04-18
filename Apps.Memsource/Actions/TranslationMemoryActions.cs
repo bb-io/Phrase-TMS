@@ -30,7 +30,7 @@ namespace Apps.PhraseTMS.Actions
         }
 
         [Action("Create translation memory", Description = "Create translation memory")]
-        public void CreateTranslationMemory(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+        public TranslationMemoryDto CreateTranslationMemory(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
             [ActionParameter] CreateTranslationMemoryRequest input)
         {
             var client = new PhraseTmsClient(url);
@@ -41,7 +41,7 @@ namespace Apps.PhraseTMS.Actions
                 sourceLang = input.SourceLang,
                 targetLangs = new[] { input.TargetLang }
             });
-            client.Execute(request);
+            return client.Execute<TranslationMemoryDto>(request).Data;
         }
 
         [Action("Get translation memory", Description = "Get translation memory")]
@@ -55,7 +55,7 @@ namespace Apps.PhraseTMS.Actions
         }
 
         [Action("Import TMX file", Description = "Import TMX file")]
-        public void ImportTmx(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+        public AsyncRequest ImportTmx(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
             [ActionParameter] ImportTmxRequest input)
         {
             var client = new PhraseTmsClient(url);
@@ -65,7 +65,7 @@ namespace Apps.PhraseTMS.Actions
             request.AddHeader("Content-Disposition", $"filename*=UTF-8''{input.Filename}");
             request.AddHeader("Content-Type", "application/octet-stream");
             request.AddParameter("application/octet-stream", input.File, ParameterType.RequestBody);
-            client.PerformAsyncRequest(request, authenticationCredentialsProvider);
+            return client.PerformAsyncRequest(request, authenticationCredentialsProvider);
         }
 
         [Action("Export translation memory", Description = "Export translation memory")]

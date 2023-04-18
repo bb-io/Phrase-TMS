@@ -50,7 +50,7 @@ namespace Apps.PhraseTms.Actions
         }
 
         [Action("Create job", Description = "Create job")]
-        public void CreateJob(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+        public JobDto CreateJob(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
             [ActionParameter] CreateJobRequest input)
         {
             var client = new PhraseTmsClient(url);
@@ -66,7 +66,7 @@ namespace Apps.PhraseTms.Actions
             request.AddHeader("Content-Disposition", $"filename*=UTF-8''{input.FileName}.{input.FileType}");
             request.AddHeader("Content-Type", "application/octet-stream");
             request.AddParameter("application/octet-stream", input.File, ParameterType.RequestBody);
-            client.Execute(request);
+            return client.Execute<JobResponseWrapper>(request).Data.Jobs.First();
         }
 
         [Action("Delete job", Description = "Delete job by id")]

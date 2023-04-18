@@ -29,22 +29,16 @@ namespace Apps.PhraseTms.Actions
         }
 
         [Action("Get project", Description = "Get project by UId")]
-        public GetProjectResponse GetProject(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+        public ProjectDto GetProject(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
             [ActionParameter] GetProjectRequest input)
         {
             var client = new PhraseTmsClient(url);
             var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Get, authenticationCredentialsProvider.Value);
-            var response = client.Get<ProjectDto>(request);
-            return new GetProjectResponse()
-            {
-                Name = response.Name,
-                Id = response.Id,
-                DateCreated = response.DateCreated,
-            };
+            return client.Get<ProjectDto>(request);
         }
 
         [Action("Create project", Description = "Create project")]
-        public GetProjectResponse CreateProject(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+        public ProjectDto CreateProject(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
             [ActionParameter] CreateProjectRequest input)
         {
             var client = new PhraseTmsClient(url);
@@ -55,17 +49,11 @@ namespace Apps.PhraseTms.Actions
                 sourceLang = input.SourceLanguage,
                 targetLangs = input.TargetLanguages.ToArray()
             });
-            var response = client.Post<ProjectDto>(request);
-            return new GetProjectResponse()
-            {
-                Name = response.Name,
-                Id = response.Id,
-                DateCreated = response.DateCreated,
-            };
+            return client.Post<ProjectDto>(request);
         }
 
         [Action("Create project from template", Description = "Create project from template")]
-        public GetProjectResponse CreateProjectFromTemplate(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+        public ProjectDto CreateProjectFromTemplate(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
             [ActionParameter] CreateFromTemplateRequest input)
         {
             var client = new PhraseTmsClient(url);
@@ -74,13 +62,7 @@ namespace Apps.PhraseTms.Actions
             {
                 name = input.Name
             });
-            var response = client.Post<ProjectDto>(request);
-            return new GetProjectResponse()
-            {
-                Name = response.Name,
-                Id = response.Id,
-                DateCreated = response.DateCreated,
-            };
+            return client.Post<ProjectDto>(request);
         }
 
         [Action("Add target language", Description = "Add target language")]

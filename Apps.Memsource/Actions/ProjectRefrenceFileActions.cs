@@ -28,7 +28,7 @@ namespace Apps.PhraseTMS.Actions
         }
 
         [Action("Create project reference file", Description = "Create project reference file")]
-        public void CreateReferenceFile(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+        public ReferenceFileInfoDto CreateReferenceFile(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
             [ActionParameter] CreateReferenceFileRequest input)
         {
             var client = new PhraseTmsClient(url);
@@ -38,7 +38,7 @@ namespace Apps.PhraseTMS.Actions
             request.AddHeader("Content-Disposition", $"filename*=UTF-8''{input.Filename}");
             request.AddHeader("Content-Type", "application/octet-stream");
             request.AddParameter("application/octet-stream", input.File, ParameterType.RequestBody);
-            client.Execute(request);
+            return client.Execute<ReferenceFileInfoDto>(request).Data;
         }
 
         [Action("Download reference files", Description = "Download project reference files")]
