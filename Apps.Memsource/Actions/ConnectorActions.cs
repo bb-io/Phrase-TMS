@@ -5,12 +5,8 @@ using Apps.PhraseTms;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common;
 using RestSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Apps.PhraseTMS.Models.Connectors.Requests;
+using Blackbird.Applications.Sdk.Common.Actions;
 
 namespace Apps.PhraseTMS.Actions
 {

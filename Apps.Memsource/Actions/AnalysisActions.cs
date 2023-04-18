@@ -5,7 +5,6 @@ using Apps.PhraseTMS.Models.Responses;
 using Apps.PhraseTms;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common;
-using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -15,6 +14,7 @@ using System.Threading.Tasks;
 using Apps.PhraseTMS.Models.Analysis.Requests;
 using Apps.PhraseTMS.Models.Analysis.Responses;
 using Apps.PhraseTMS.Models.Async;
+using Blackbird.Applications.Sdk.Common.Actions;
 
 namespace Apps.PhraseTMS.Actions
 {

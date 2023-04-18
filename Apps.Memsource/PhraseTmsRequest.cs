@@ -12,7 +12,7 @@ namespace Apps.PhraseTms
     {
         public PhraseTmsRequest(string endpoint, Method method, string token) : base(endpoint, method)
         {
-            this.AddHeader("Authorization", $"ApiToken {token}");
+            this.AddHeader("Authorization", token);
             this.AddHeader("accept", "*/*");
         }
     }

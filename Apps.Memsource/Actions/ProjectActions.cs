@@ -3,6 +3,7 @@ using Apps.PhraseTms.Models.Projects.Requests;
 using Apps.PhraseTms.Models.Projects.Responses;
 using Apps.PhraseTMS.Models.Responses;
 using Blackbird.Applications.Sdk.Common;
+using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -93,11 +94,11 @@ namespace Apps.PhraseTms.Actions
         }
 
         [Action("Delete project", Description = "Delete project")]
-        public void DeleteProject(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+        public void DeleteProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] DeleteProjectRequest input)
         {
-            var client = new PhraseTmsClient(url);
-            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Delete, authenticationCredentialsProvider.Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "url").Value);
+            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Delete, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
             client.Execute(request);
         }
     }
