@@ -97,7 +97,7 @@ namespace Apps.PhraseTms.Actions
         public void DeleteProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] DeleteProjectRequest input)
         {
-            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "url").Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
             var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Delete, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
             client.Execute(request);
         }

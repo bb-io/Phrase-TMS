@@ -42,11 +42,11 @@ namespace Apps.PhraseTMS.Actions
         }
 
         [Action("Add new client", Description = "Add new client")]
-        public ClientDto AddClient(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+        public ClientDto AddClient(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] AddClientRequest input)
         {
-            var client = new PhraseTmsClient(url);
-            var request = new PhraseTmsRequest($"/api2/v1/clients", Method.Post, authenticationCredentialsProvider.Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
+            var request = new PhraseTmsRequest($"/api2/v1/clients", Method.Post, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
             request.AddJsonBody(new
             {
                 name = input.Name,
