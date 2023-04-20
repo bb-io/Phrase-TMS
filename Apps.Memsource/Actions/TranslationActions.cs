@@ -21,10 +21,10 @@ namespace Apps.PhraseTMS.Actions
     public class TranslationActions
     {
         [Action("List translation settings", Description = "List translation settings")]
-        public ListTranslationSettingsResponse ListTranslationSettings(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider)
+        public ListTranslationSettingsResponse ListTranslationSettings(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
         {
-            var client = new PhraseTmsClient(url);
-            var request = new PhraseTmsRequest($"/api2/v1/machineTranslateSettings", Method.Get, authenticationCredentialsProvider.Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
+            var request = new PhraseTmsRequest($"/api2/v1/machineTranslateSettings", Method.Get, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
             var response = client.Get<ResponseWrapper<List<TranslationSettingDto>>>(request);
             return new ListTranslationSettingsResponse()
             {
@@ -33,11 +33,11 @@ namespace Apps.PhraseTMS.Actions
         }
 
         [Action("Translate with MT", Description = "Translate with MT with custom settings")]
-        public TranslationDto TranslateMT(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+        public TranslationDto TranslateMT(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] TranslateMTRequest input)
         {
-            var client = new PhraseTmsClient(url);
-            var request = new PhraseTmsRequest($"/api2/v1/machineTranslations/{input.MTSettingsUId}/translate", Method.Post, authenticationCredentialsProvider.Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
+            var request = new PhraseTmsRequest($"/api2/v1/machineTranslations/{input.MTSettingsUId}/translate", Method.Post, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
             request.AddJsonBody(new
             {
                 from = input.SourceLanguageCode,
@@ -48,12 +48,12 @@ namespace Apps.PhraseTMS.Actions
         }
 
         [Action("Translate with MT by project", Description = "Translate with MT with project settings")]
-        public TranslationDto TranslateMTProject(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+        public TranslationDto TranslateMTProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] TranslateMTProjectRequest input)
         {
-            var client = new PhraseTmsClient(url);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
             var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/jobs/{input.JobUId}/translations/translateWithMachineTranslation", 
-                Method.Post, authenticationCredentialsProvider.Value);
+                Method.Post, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
             request.AddJsonBody(new
             {
                 sourceTexts = input.SourceTexts.ToArray(),

@@ -19,10 +19,10 @@ namespace Apps.PhraseTMS.Actions
     public class UserActions
     {
         [Action("List all users", Description = "List all users")]
-        public ListAllUsersResponse ListAllUsers(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider)
+        public ListAllUsersResponse ListAllUsers(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
         {
-            var client = new PhraseTmsClient(url);
-            var request = new PhraseTmsRequest($"/api2/v1/users", Method.Get, authenticationCredentialsProvider.Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
+            var request = new PhraseTmsRequest($"/api2/v1/users", Method.Get, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
             var response = client.Get<ResponseWrapper<List<UserDto>>>(request);
             return new ListAllUsersResponse()
             {
@@ -31,23 +31,23 @@ namespace Apps.PhraseTMS.Actions
         }
 
         [Action("Get user", Description = "Get user by UId")]
-        public UserDto GetUser(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+        public UserDto GetUser(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] GetUserRequest input)
         {
-            var client = new PhraseTmsClient(url);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
             var request = new PhraseTmsRequest($"/api2/v3/users/{input.UserUId}",
-                Method.Get, authenticationCredentialsProvider.Value);
+                Method.Get, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
             var response = client.Get<UserDto>(request);
             return response;
         }
 
         [Action("Delete user", Description = "Delete user by UId")]
-        public void DeleteUser(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+        public void DeleteUser(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] GetUserRequest input)
         {
-            var client = new PhraseTmsClient(url);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
             var request = new PhraseTmsRequest($"/api2/v1/users/{input.UserUId}",
-                Method.Delete, authenticationCredentialsProvider.Value);
+                Method.Delete, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
             client.Execute(request);
         }
     }

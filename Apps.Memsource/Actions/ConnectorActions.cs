@@ -14,19 +14,19 @@ namespace Apps.PhraseTMS.Actions
     public class ConnectorActions
     {
         [Action("List all connectors", Description = "List all connectors")]
-        public ConnectorsResponseWrapper ListConnectors(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider)
+        public ConnectorsResponseWrapper ListConnectors(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
         {
-            var client = new PhraseTmsClient(url);
-            var request = new PhraseTmsRequest($"/api2/v1/connectors", Method.Get, authenticationCredentialsProvider.Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
+            var request = new PhraseTmsRequest($"/api2/v1/connectors", Method.Get, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
             return client.Get<ConnectorsResponseWrapper>(request);
         }
 
         [Action("Get connector", Description = "Get connector by Id")]
-        public ConnectorDto GetConnector(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+        public ConnectorDto GetConnector(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] GetConnectorRequest input)
         {
-            var client = new PhraseTmsClient(url);
-            var request = new PhraseTmsRequest($"/api2/v1/connectors/{input.ConnectorUId}", Method.Get, authenticationCredentialsProvider.Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
+            var request = new PhraseTmsRequest($"/api2/v1/connectors/{input.ConnectorUId}", Method.Get, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
             return client.Get<ConnectorDto>(request);
         }
     }

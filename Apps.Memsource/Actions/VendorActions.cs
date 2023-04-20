@@ -20,11 +20,11 @@ namespace Apps.PhraseTMS.Actions
     public class VendorActions
     {
         [Action("Add new vendor", Description = "Add new vendor")]
-        public VendorDto AddVendor(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+        public VendorDto AddVendor(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] AddVendorRequest input)
         {
-            var client = new PhraseTmsClient(url);
-            var request = new PhraseTmsRequest($"/api2/v1/vendors", Method.Post, authenticationCredentialsProvider.Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
+            var request = new PhraseTmsRequest($"/api2/v1/vendors", Method.Post, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
             request.AddJsonBody(new
             {
                 vendorToken = input.VendorToken,
@@ -34,10 +34,10 @@ namespace Apps.PhraseTMS.Actions
         }
 
         [Action("List all vendors", Description = "List all vendors")]
-        public ListVendorsResponse ListVendors(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider)
+        public ListVendorsResponse ListVendors(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
         {
-            var client = new PhraseTmsClient(url);
-            var request = new PhraseTmsRequest($"/api2/v1/vendors", Method.Get, authenticationCredentialsProvider.Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
+            var request = new PhraseTmsRequest($"/api2/v1/vendors", Method.Get, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
             return new ListVendorsResponse()
             {
                 Vendors = client.Get<ResponseWrapper<List<VendorDto>>>(request).Content
@@ -45,11 +45,11 @@ namespace Apps.PhraseTMS.Actions
         }
 
         [Action("Get vendor", Description = "Get vendor")]
-        public VendorDto GetVendor(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+        public VendorDto GetVendor(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             GetVendorRequest input)
         {
-            var client = new PhraseTmsClient(url);
-            var request = new PhraseTmsRequest($"/api2/v1/vendors/{input.VendorId}", Method.Get, authenticationCredentialsProvider.Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
+            var request = new PhraseTmsRequest($"/api2/v1/vendors/{input.VendorId}", Method.Get, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
             return client.Get<VendorDto>(request);
         }
     }

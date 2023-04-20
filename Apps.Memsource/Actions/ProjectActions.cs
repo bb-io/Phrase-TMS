@@ -18,10 +18,10 @@ namespace Apps.PhraseTms.Actions
     public class ProjectActions
     {
         [Action("List all projects", Description = "List all projects")]
-        public ListAllProjectsResponse ListAllProjects(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider)
+        public ListAllProjectsResponse ListAllProjects(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
         {
-            var client = new PhraseTmsClient(url);
-            var request = new PhraseTmsRequest("/api2/v1/projects", Method.Get, authenticationCredentialsProvider.Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
+            var request = new PhraseTmsRequest("/api2/v1/projects", Method.Get, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
             var response = client.Get<ResponseWrapper<List<ProjectDto>>>(request);
             return new ListAllProjectsResponse()
             {
@@ -30,20 +30,20 @@ namespace Apps.PhraseTms.Actions
         }
 
         [Action("Get project", Description = "Get project by UId")]
-        public ProjectDto GetProject(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+        public ProjectDto GetProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] GetProjectRequest input)
         {
-            var client = new PhraseTmsClient(url);
-            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Get, authenticationCredentialsProvider.Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
+            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Get, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
             return client.Get<ProjectDto>(request);
         }
 
         [Action("Create project", Description = "Create project")]
-        public ProjectDto CreateProject(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+        public ProjectDto CreateProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] CreateProjectRequest input)
         {
-            var client = new PhraseTmsClient(url);
-            var request = new PhraseTmsRequest("/api2/v1/projects", Method.Post, authenticationCredentialsProvider.Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
+            var request = new PhraseTmsRequest("/api2/v1/projects", Method.Post, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
             request.AddJsonBody(new
             {
                 name = input.Name,
@@ -54,11 +54,11 @@ namespace Apps.PhraseTms.Actions
         }
 
         [Action("Create project from template", Description = "Create project from template")]
-        public ProjectDto CreateProjectFromTemplate(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+        public ProjectDto CreateProjectFromTemplate(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] CreateFromTemplateRequest input)
         {
-            var client = new PhraseTmsClient(url);
-            var request = new PhraseTmsRequest($"/api2/v1/projects/applyTemplate/{input.TemplateUId}", Method.Post, authenticationCredentialsProvider.Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
+            var request = new PhraseTmsRequest($"/api2/v1/projects/applyTemplate/{input.TemplateUId}", Method.Post, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
             request.AddJsonBody(new
             {
                 name = input.Name
@@ -67,11 +67,11 @@ namespace Apps.PhraseTms.Actions
         }
 
         [Action("Add target language", Description = "Add target language")]
-        public void AddTargetLanguage(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+        public void AddTargetLanguage(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] AddTargetLanguageRequest input)
         {
-            var client = new PhraseTmsClient(url);
-            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/targetLangs", Method.Post, authenticationCredentialsProvider.Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
+            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/targetLangs", Method.Post, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
             request.AddJsonBody(new
             {
                 targetLangs = input.TargetLanguages.ToArray()
@@ -80,11 +80,11 @@ namespace Apps.PhraseTms.Actions
         }
 
         [Action("Edit project", Description = "Edit project")]
-        public void EditProject(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+        public void EditProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] EditProjectRequest input)
         {
-            var client = new PhraseTmsClient(url);
-            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Patch, authenticationCredentialsProvider.Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
+            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Patch, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
             request.AddJsonBody(new
             {
                 name = input.ProjectName,

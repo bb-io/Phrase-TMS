@@ -20,11 +20,11 @@ namespace Apps.PhraseTms.Actions
     public class JobActions
     {
         [Action("List all jobs", Description = "List all jobs in the project")]
-        public ListAllJobsResponse ListAllJobs(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+        public ListAllJobsResponse ListAllJobs(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] ListAllJobsRequest input)
         {
-            var client = new PhraseTmsClient(url);
-            var request = new PhraseTmsRequest($"/api2/v2/projects/{input.ProjectUId}/jobs", Method.Get, authenticationCredentialsProvider.Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
+            var request = new PhraseTmsRequest($"/api2/v2/projects/{input.ProjectUId}/jobs", Method.Get, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
             var response = client.Get<ResponseWrapper<List<JobDto>>>(request);
             return new ListAllJobsResponse()
             {
@@ -33,12 +33,12 @@ namespace Apps.PhraseTms.Actions
         }
 
         [Action("Get job", Description = "Get job by UId")]
-        public GetJobResponse GetJob(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+        public GetJobResponse GetJob(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] GetJobRequest input)
         {
-            var client = new PhraseTmsClient(url);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
             var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/jobs/{input.JobUId}", 
-                Method.Get, authenticationCredentialsProvider.Value);
+                Method.Get, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
             var response = client.Get<JobDto>(request);
 
             return new GetJobResponse()
@@ -51,12 +51,12 @@ namespace Apps.PhraseTms.Actions
         }
 
         [Action("Create job", Description = "Create job")]
-        public JobDto CreateJob(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+        public JobDto CreateJob(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] CreateJobRequest input)
         {
-            var client = new PhraseTmsClient(url);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
             var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/jobs", 
-                Method.Post, authenticationCredentialsProvider.Value);
+                Method.Post, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
 
             string output = JsonConvert.SerializeObject(new
             {
@@ -71,12 +71,12 @@ namespace Apps.PhraseTms.Actions
         }
 
         [Action("Delete job", Description = "Delete job by id")]
-        public void DeleteJob(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+        public void DeleteJob(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] DeleteJobRequest input)
         {
-            var client = new PhraseTmsClient(url);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
             var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/jobs/batch", 
-                Method.Delete, authenticationCredentialsProvider.Value);
+                Method.Delete, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
             request.AddJsonBody(new
             {
                 jobs = input.JobsUIds.Select(u => new { uid = u })
@@ -85,12 +85,12 @@ namespace Apps.PhraseTms.Actions
         }
 
         [Action("Get segments", Description = "Get segments in job")]
-        public GetSegmentsResponse GetSegments(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+        public GetSegmentsResponse GetSegments(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] GetSegmentsRequest input)
         {
-            var client = new PhraseTmsClient(url);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
             var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/jobs/{input.JobUId}/segments?beginIndex={input.BeginIndex}&endIndex={input.EndIndex}", 
-                Method.Get, authenticationCredentialsProvider.Value);
+                Method.Get, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
             var response = client.Get(request);
             dynamic content = (JObject)JsonConvert.DeserializeObject(response.Content);
             JArray segmentsArr = content.segments;
@@ -102,12 +102,12 @@ namespace Apps.PhraseTms.Actions
         }
 
         [Action("Edit job", Description = "Edit job")]
-        public void EditJob(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+        public void EditJob(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] EditJobRequest input)
         {
-            var client = new PhraseTmsClient(url);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
             var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/jobs/{input.JobUId}", 
-                Method.Patch, authenticationCredentialsProvider.Value);
+                Method.Patch, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
             request.AddJsonBody(new
             {
                 dateDue = input.DateDue,
@@ -117,18 +117,18 @@ namespace Apps.PhraseTms.Actions
         }
 
         [Action("Download target file", Description = "Download target file")]
-        public TargetFileResponse DownloadTargetFile(string url, AuthenticationCredentialsProvider authenticationCredentialsProvider,
+        public TargetFileResponse DownloadTargetFile(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] TargetFileRequest input)
         {
-            var client = new PhraseTmsClient(url);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
             var requestFile = new PhraseTmsRequest($"/api2/v2/projects/{input.ProjectUId}/jobs/{input.JobUId}/targetFile", 
-                Method.Put, authenticationCredentialsProvider.Value);
-            var asyncRequest = client.PerformAsyncRequest(requestFile, authenticationCredentialsProvider);
+                Method.Put, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
+            var asyncRequest = client.PerformAsyncRequest(requestFile, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization"));
 
             if (asyncRequest is null) throw new Exception("Failed creating asynchronous target file request");
 
             var requestDownload = new PhraseTmsRequest($"/api2/v2/projects/{input.ProjectUId}/jobs/{input.JobUId}/downloadTargetFile/{asyncRequest.Id}?format={"ORIGINAL"}",
-                Method.Get, authenticationCredentialsProvider.Value);
+                Method.Get, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
             var responseDownload = client.Get(requestDownload);
 
             if (responseDownload == null) throw new Exception("Failed downloading target files");
