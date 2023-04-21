@@ -14,20 +14,20 @@ namespace Apps.PhraseTMS.Webhooks
     public class WebhookList 
     {
         #region ProjectWebhooks
-        // Should be changed for SDK 2.0.2
+
         [Webhook(typeof(ProjectCreationHandler))]
-        public /*async Task<WebhookResponse<*/ProjectDto ProjectCreation(WebhookRequest webhookRequest)
+        public async Task<WebhookResponse<ProjectDto>> ProjectCreation(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<ProjectWrapper>(webhookRequest.Body.ToString());
             if(data is null)
             {
                 throw new InvalidCastException(nameof(webhookRequest.Body));
             }
-            return data.Project; //new WebhookResponse<ProjectDto>
-            //{
-            //    HttpResponseMessage = null,
-            //    Result = data.Project
-            //};
+            return new WebhookResponse<ProjectDto>
+            {
+                HttpResponseMessage = null,
+                Result = data.Project
+            };
         }
 
         [Webhook(typeof(ProjectDeletionHandler))]

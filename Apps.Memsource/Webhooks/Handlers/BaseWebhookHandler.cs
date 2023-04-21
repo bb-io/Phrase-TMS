@@ -30,7 +30,7 @@ namespace Apps.PhraseTMS.Webhooks.Handlers
             request.AddJsonBody(new
             {
                 events = new[] { SubscriptionEvent },
-                url = values["url"],
+                url = values["payloadUrl"],
                 name = SubscriptionEvent
             });
             await client.ExecuteAsync(request);
