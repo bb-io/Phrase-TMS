@@ -31,78 +31,78 @@ namespace Apps.PhraseTMS.Webhooks
         }
 
         [Webhook(typeof(ProjectDeletionHandler))]
-        public /*async Task<WebhookResponse<*/ProjectDto ProjectDeletion(WebhookRequest webhookRequest)
+        public async Task<WebhookResponse<ProjectDto>> ProjectDeletion(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<ProjectWrapper>(webhookRequest.Body.ToString());
             if (data is null)
             {
                 throw new InvalidCastException(nameof(webhookRequest.Body));
             }
-            return data.Project; //new WebhookResponse<ProjectDto>
-            //{
-            //    HttpResponseMessage = null,
-            //    Result = data.Project
-            //};
+            return new WebhookResponse<ProjectDto>
+            {
+                HttpResponseMessage = null,
+                Result = data.Project
+            };
         }
 
         [Webhook(typeof(ProjectDueDateChangedHandler))]
-        public /*async Task<WebhookResponse<*/ProjectDto ProjectDueDateChanged(WebhookRequest webhookRequest)
+        public async Task<WebhookResponse<ProjectDto>> ProjectDueDateChanged(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<ProjectWrapper>(webhookRequest.Body.ToString());
             if (data is null)
             {
                 throw new InvalidCastException(nameof(webhookRequest.Body));
             }
-            return data.Project; //new WebhookResponse<ProjectDto>
-            //{
-            //    HttpResponseMessage = null,
-            //    Result = data.Project
-            //};
+            return new WebhookResponse<ProjectDto>
+            {
+                HttpResponseMessage = null,
+                Result = data.Project
+            };
         }
 
         [Webhook(typeof(ProjectMetadataUpdatedHandler))]
-        public /*async Task<WebhookResponse<*/ProjectDto ProjectMetadataUpdated(WebhookRequest webhookRequest)
+        public async Task<WebhookResponse<ProjectDto>> ProjectMetadataUpdated(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<ProjectWrapper>(webhookRequest.Body.ToString());
             if (data is null)
             {
                 throw new InvalidCastException(nameof(webhookRequest.Body));
             }
-            return data.Project; //new WebhookResponse<ProjectDto>
-            //{
-            //    HttpResponseMessage = null,
-            //    Result = data.Project
-            //};
+            return new WebhookResponse<ProjectDto>
+            {
+                HttpResponseMessage = null,
+                Result = data.Project
+            };
         }
 
         [Webhook(typeof(ProjectSharedAssignedHandler))]
-        public /*async Task<WebhookResponse<*/ProjectDto ProjectSharedAssigned(WebhookRequest webhookRequest)
+        public async Task<WebhookResponse<ProjectDto>> ProjectSharedAssigned(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<ProjectWrapper>(webhookRequest.Body.ToString());
             if (data is null)
             {
                 throw new InvalidCastException(nameof(webhookRequest.Body));
             }
-            return data.Project; //new WebhookResponse<ProjectDto>
-            //{
-            //    HttpResponseMessage = null,
-            //    Result = data.Project
-            //};
+            return new WebhookResponse<ProjectDto>
+            {
+                HttpResponseMessage = null,
+                Result = data.Project
+            };
         }
 
         [Webhook(typeof(ProjectStatusChangedHandler))]
-        public /*async Task<WebhookResponse<*/ProjectDto ProjectStatusChanged(WebhookRequest webhookRequest)
+        public async Task<WebhookResponse<ProjectDto>> ProjectStatusChanged(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<ProjectWrapper>(webhookRequest.Body.ToString());
             if (data is null)
             {
                 throw new InvalidCastException(nameof(webhookRequest.Body));
             }
-            return data.Project; //new WebhookResponse<ProjectDto>
-            //{
-            //    HttpResponseMessage = null,
-            //    Result = data.Project
-            //};
+            return new WebhookResponse<ProjectDto>
+            {
+                HttpResponseMessage = null,
+                Result = data.Project
+            };
         }
 
         #endregion
@@ -110,113 +110,153 @@ namespace Apps.PhraseTMS.Webhooks
         #region JobWebhooks
 
         [Webhook(typeof(JobCreationHandler))]
-        public JobDto JobCreation(WebhookRequest webhookRequest)
+        public async Task<WebhookResponse<JobDto>> JobCreation(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
             if (data is null)
             {
                 throw new InvalidCastException(nameof(webhookRequest.Body));
             }
-            return data.JobParts.First();
+            return new WebhookResponse<JobDto>
+            {
+                HttpResponseMessage = null,
+                Result = data.JobParts.First()
+            };
         }
 
         [Webhook(typeof(JobDeletionHandler))]
-        public JobDto JobDeletion(WebhookRequest webhookRequest)
+        public async Task<WebhookResponse<JobDto>> JobDeletion(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
             if (data is null)
             {
                 throw new InvalidCastException(nameof(webhookRequest.Body));
             }
-            return data.JobParts.First();
+            return new WebhookResponse<JobDto>
+            {
+                HttpResponseMessage = null,
+                Result = data.JobParts.First()
+            };
         }
 
         [Webhook(typeof(JobContinuousUpdatedHandler))]
-        public JobDto JobContinuousUpdated(WebhookRequest webhookRequest)
+        public async Task<WebhookResponse<JobDto>> JobContinuousUpdated(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
             if (data is null)
             {
                 throw new InvalidCastException(nameof(webhookRequest.Body));
             }
-            return data.JobParts.First();
+            return new WebhookResponse<JobDto>
+            {
+                HttpResponseMessage = null,
+                Result = data.JobParts.First()
+            };
         }
 
         [Webhook(typeof(JobAssignedHandler))]
-        public JobDto JobAssigned(WebhookRequest webhookRequest)
+        public async Task<WebhookResponse<JobDto>> JobAssigned(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
             if (data is null)
             {
                 throw new InvalidCastException(nameof(webhookRequest.Body));
             }
-            return data.JobParts.First();
+            return new WebhookResponse<JobDto>
+            {
+                HttpResponseMessage = null,
+                Result = data.JobParts.First()
+            };
         }
 
         [Webhook(typeof(JobDueDateChangedHandler))]
-        public JobDto JobDueDateChanged(WebhookRequest webhookRequest)
+        public async Task<WebhookResponse<JobDto>> JobDueDateChanged(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
             if (data is null)
             {
                 throw new InvalidCastException(nameof(webhookRequest.Body));
             }
-            return data.JobParts.First();
+            return new WebhookResponse<JobDto>
+            {
+                HttpResponseMessage = null,
+                Result = data.JobParts.First()
+            };
         }
 
         [Webhook(typeof(JobExportedHandler))]
-        public JobDto JobExported(WebhookRequest webhookRequest)
+        public async Task<WebhookResponse<JobDto>> JobExported(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
             if (data is null)
             {
                 throw new InvalidCastException(nameof(webhookRequest.Body));
             }
-            return data.JobParts.First();
+            return new WebhookResponse<JobDto>
+            {
+                HttpResponseMessage = null,
+                Result = data.JobParts.First()
+            };
         }
 
         [Webhook(typeof(JobSourceUpdatedHandler))]
-        public JobDto JobSourceUpdated(WebhookRequest webhookRequest)
+        public async Task<WebhookResponse<JobDto>> JobSourceUpdated(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
             if (data is null)
             {
                 throw new InvalidCastException(nameof(webhookRequest.Body));
             }
-            return data.JobParts.First();
+            return new WebhookResponse<JobDto>
+            {
+                HttpResponseMessage = null,
+                Result = data.JobParts.First()
+            };
         }
 
         [Webhook(typeof(JobStatusChangedHandler))]
-        public JobDto JobStatusChanged(WebhookRequest webhookRequest)
+        public async Task<WebhookResponse<JobDto>> JobStatusChanged(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
             if (data is null)
             {
                 throw new InvalidCastException(nameof(webhookRequest.Body));
             }
-            return data.JobParts.First();
+            return new WebhookResponse<JobDto>
+            {
+                HttpResponseMessage = null,
+                Result = data.JobParts.First()
+            };
         }
 
         [Webhook(typeof(JobTargetUpdatedHandler))]
-        public JobDto JobTargetUpdated(WebhookRequest webhookRequest)
+        public async Task<WebhookResponse<JobDto>> JobTargetUpdated(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
             if (data is null)
             {
                 throw new InvalidCastException(nameof(webhookRequest.Body));
             }
-            return data.JobParts.First();
+            return new WebhookResponse<JobDto>
+            {
+                HttpResponseMessage = null,
+                Result = data.JobParts.First()
+            };
         }
 
         [Webhook(typeof(JobUnexportedHandler))]
-        public JobDto JobUnexported(WebhookRequest webhookRequest)
+        public async Task<WebhookResponse<JobDto>> JobUnexported(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
             if (data is null)
             {
                 throw new InvalidCastException(nameof(webhookRequest.Body));
             }
-            return data.JobParts.First();
+            return new WebhookResponse<JobDto>
+            {
+                HttpResponseMessage = null,
+                Result = data.JobParts.First()
+            };
         }
 
         #endregion
@@ -224,37 +264,48 @@ namespace Apps.PhraseTMS.Webhooks
         #region ProjectTemplates
 
         [Webhook(typeof(TemplateCreationHandler))]
-        public ProjectTemplateDto ProjectTemplateCreation(WebhookRequest webhookRequest)
+        public async Task<WebhookResponse<ProjectTemplateDto>> ProjectTemplateCreation(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<ProjectTemplateWrapper>(webhookRequest.Body.ToString());
             if (data is null)
             {
                 throw new InvalidCastException(nameof(webhookRequest.Body));
             }
-            return data.ProjectTemplate;
-           
+            return new WebhookResponse<ProjectTemplateDto>
+            {
+                HttpResponseMessage = null,
+                Result = data.ProjectTemplate
+            };
         }
 
         [Webhook(typeof(TemplateDeletionHandler))]
-        public ProjectTemplateDto ProjectTemplateDeletion(WebhookRequest webhookRequest)
+        public async Task<WebhookResponse<ProjectTemplateDto>> ProjectTemplateDeletion(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<ProjectTemplateWrapper>(webhookRequest.Body.ToString());
             if (data is null)
             {
                 throw new InvalidCastException(nameof(webhookRequest.Body));
             }
-            return data.ProjectTemplate;
+            return new WebhookResponse<ProjectTemplateDto>
+            {
+                HttpResponseMessage = null,
+                Result = data.ProjectTemplate
+            };
         }
 
         [Webhook(typeof(TemplateUpdatedHandler))]
-        public ProjectTemplateDto ProjectTemplateUpdated(WebhookRequest webhookRequest)
+        public async Task<WebhookResponse<ProjectTemplateDto>> ProjectTemplateUpdated(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<ProjectTemplateWrapper>(webhookRequest.Body.ToString());
             if (data is null)
             {
                 throw new InvalidCastException(nameof(webhookRequest.Body));
             }
-            return data.ProjectTemplate;
+            return new WebhookResponse<ProjectTemplateDto>
+            {
+                HttpResponseMessage = null,
+                Result = data.ProjectTemplate
+            };
         }
 
         #endregion
@@ -262,15 +313,18 @@ namespace Apps.PhraseTMS.Webhooks
         #region OtherWebhooks
 
         [Webhook(typeof(AnalysisCreationHandler))]
-        public AnalysisDto AnalysisCreation(WebhookRequest webhookRequest)
+        public async Task<WebhookResponse<AnalysisDto>> AnalysisCreation(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<AnalyseWrapper>(webhookRequest.Body.ToString());
             if (data is null)
             {
                 throw new InvalidCastException(nameof(webhookRequest.Body));
             }
-            return data.Analyse;
-
+            return new WebhookResponse<AnalysisDto>
+            {
+                HttpResponseMessage = null,
+                Result = data.Analyse
+            };
         }
 
         #endregion
