@@ -11,9 +11,10 @@ namespace Apps.PhraseTms
 {
     public class PhraseTmsClient : RestClient
     {
-        public PhraseTmsClient(string url) : base(new RestClientOptions() { ThrowOnAnyError = true, BaseUrl = new Uri(url + "/web") }) { }
+        public PhraseTmsClient(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders) : 
+            base(new RestClientOptions() { ThrowOnAnyError = true, BaseUrl = GetUri(authenticationCredentialsProviders) }) { }
 
-        public AsyncRequest? PerformAsyncRequest(PhraseTmsRequest request, AuthenticationCredentialsProvider provider)
+        public AsyncRequest? PerformAsyncRequest(PhraseTmsRequest request, IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
         {
             var asyncRequestResponse = this.Execute<AsyncRequestResponse>(request).Data;
             if (asyncRequestResponse is null) return default;
@@ -22,7 +23,7 @@ namespace Apps.PhraseTms
             while (asyncRequest.AsyncResponse is null)
             {
                 Task.Delay(2000);
-                var asyncStatusRequest = new PhraseTmsRequest($"/api2/v1/async/{asyncRequest.Id}", Method.Get, provider.Value);
+                var asyncStatusRequest = new PhraseTmsRequest($"/api2/v1/async/{asyncRequest.Id}", Method.Get, authenticationCredentialsProviders);
                 asyncRequest = this.Get<AsyncRequest>(asyncStatusRequest);
                 if (asyncRequest is null) return default;
             }
@@ -31,7 +32,7 @@ namespace Apps.PhraseTms
 
         }
 
-        public List<AsyncRequest> PerformMultipleAsyncRequest(PhraseTmsRequest request, AuthenticationCredentialsProvider provider)
+        public List<AsyncRequest> PerformMultipleAsyncRequest(PhraseTmsRequest request, IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
         {
             var result = new List<AsyncRequest>();
             var asyncRequestResponse = this.Execute<AsyncRequestMultipleResponse>(request).Data;
@@ -44,13 +45,19 @@ namespace Apps.PhraseTms
                 while (asyncRequestSeparate?.AsyncResponse is null)
                 {
                     Task.Delay(2000);
-                    var asyncStatusRequest = new PhraseTmsRequest($"/api2/v1/async/{asyncRequest.AsyncRequest.Id}", Method.Get, provider.Value);
+                    var asyncStatusRequest = new PhraseTmsRequest($"/api2/v1/async/{asyncRequest.AsyncRequest.Id}", Method.Get, authenticationCredentialsProviders);
                     asyncRequestSeparate = this.Get<AsyncRequest>(asyncStatusRequest);
                     if (asyncRequestSeparate is null) return default;                 
                 }
                 result.Add(asyncRequestSeparate);
             }
             return result;
+        }
+
+        private static Uri GetUri(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+        {
+            var url = authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value;
+            return new Uri(url + "/web");
         }
     }
 }

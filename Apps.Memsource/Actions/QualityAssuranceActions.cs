@@ -25,9 +25,9 @@ namespace Apps.PhraseTMS.Actions
         public void AddIgnoredWarning(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] AddIgnoredWarningRequest input)
         {
-            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/jobs/{input.JobUId}/qualityAssurances/ignoredWarnings", 
-                Method.Post, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
+                Method.Post, authenticationCredentialsProviders);
             request.AddJsonBody(new
             {
                 segments = new[]
@@ -45,8 +45,8 @@ namespace Apps.PhraseTMS.Actions
         [Action("Get list LQA profiles", Description = "Get list LQA profiles")]
         public ListLQAProfilesResponse ListLQAProfiles(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
         {
-            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
-            var request = new PhraseTmsRequest($"/api2/v1/lqa/profiles", Method.Get, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders);
+            var request = new PhraseTmsRequest($"/api2/v1/lqa/profiles", Method.Get, authenticationCredentialsProviders);
             var response = client.Get<ResponseWrapper<List<LQAProfileDto>>>(request);
             return new ListLQAProfilesResponse()
             {
@@ -58,8 +58,8 @@ namespace Apps.PhraseTMS.Actions
         public void DeleteLQAProfile(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] DeleteLQAProfileRequest input)
         {
-            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
-            var request = new PhraseTmsRequest($"/api2/v1/lqa/profiles{input.LQAProfileUId}", Method.Delete, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders);
+            var request = new PhraseTmsRequest($"/api2/v1/lqa/profiles{input.LQAProfileUId}", Method.Delete, authenticationCredentialsProviders);
             client.Execute(request);
         }
     }

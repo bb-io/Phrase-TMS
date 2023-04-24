@@ -25,8 +25,8 @@ namespace Apps.PhraseTMS.Actions
         public ListAnalysesResponse ListAnalyses(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] ListAnalysesRequest input)
         {
-            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
-            var request = new PhraseTmsRequest($"/api2/v3/projects/{input.ProjectUId}/jobs/{input.JobUId}/analyses", Method.Get, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders);
+            var request = new PhraseTmsRequest($"/api2/v3/projects/{input.ProjectUId}/jobs/{input.JobUId}/analyses", Method.Get, authenticationCredentialsProviders);
             var response = client.Get<ResponseWrapper<List<AnalysisDto>>>(request);
             return new ListAnalysesResponse()
             {
@@ -38,8 +38,8 @@ namespace Apps.PhraseTMS.Actions
         public AnalysisDto GetAnalysis(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] GetAnalysisRequest input)
         {
-            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
-            var request = new PhraseTmsRequest($"/api2/v3/analyses/{input.AnalysisUId}", Method.Get, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders);
+            var request = new PhraseTmsRequest($"/api2/v3/analyses/{input.AnalysisUId}", Method.Get, authenticationCredentialsProviders);
             var response = client.Get<AnalysisDto>(request);
             return response;
         }
@@ -48,8 +48,8 @@ namespace Apps.PhraseTMS.Actions
         public AsyncRequest CreateAnalysis(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] CreateAnalysisRequest input)
         {
-            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
-            var request = new PhraseTmsRequest($"/api2/v2/analyses", Method.Post, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders);
+            var request = new PhraseTmsRequest($"/api2/v2/analyses", Method.Post, authenticationCredentialsProviders);
             request.AddJsonBody(
                 new
                 {
@@ -59,7 +59,7 @@ namespace Apps.PhraseTMS.Actions
                     }).ToArray()
                 }
             );
-            var asyncRequest = client.PerformMultipleAsyncRequest(request, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization"));
+            var asyncRequest = client.PerformMultipleAsyncRequest(request, authenticationCredentialsProviders);
             return asyncRequest.First();
         }
     }

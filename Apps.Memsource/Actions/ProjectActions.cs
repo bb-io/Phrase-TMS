@@ -20,8 +20,8 @@ namespace Apps.PhraseTms.Actions
         [Action("List all projects", Description = "List all projects")]
         public ListAllProjectsResponse ListAllProjects(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
         {
-            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
-            var request = new PhraseTmsRequest("/api2/v1/projects", Method.Get, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders);
+            var request = new PhraseTmsRequest("/api2/v1/projects", Method.Get, authenticationCredentialsProviders);
             var response = client.Get<ResponseWrapper<List<ProjectDto>>>(request);
             return new ListAllProjectsResponse()
             {
@@ -33,8 +33,8 @@ namespace Apps.PhraseTms.Actions
         public ProjectDto GetProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] GetProjectRequest input)
         {
-            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
-            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Get, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders);
+            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Get, authenticationCredentialsProviders);
             return client.Get<ProjectDto>(request);
         }
 
@@ -42,8 +42,8 @@ namespace Apps.PhraseTms.Actions
         public ProjectDto CreateProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] CreateProjectRequest input)
         {
-            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
-            var request = new PhraseTmsRequest("/api2/v1/projects", Method.Post, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders);
+            var request = new PhraseTmsRequest("/api2/v1/projects", Method.Post, authenticationCredentialsProviders);
             request.AddJsonBody(new
             {
                 name = input.Name,
@@ -57,8 +57,8 @@ namespace Apps.PhraseTms.Actions
         public ProjectDto CreateProjectFromTemplate(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] CreateFromTemplateRequest input)
         {
-            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
-            var request = new PhraseTmsRequest($"/api2/v1/projects/applyTemplate/{input.TemplateUId}", Method.Post, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders);
+            var request = new PhraseTmsRequest($"/api2/v1/projects/applyTemplate/{input.TemplateUId}", Method.Post, authenticationCredentialsProviders);
             request.AddJsonBody(new
             {
                 name = input.Name
@@ -70,8 +70,8 @@ namespace Apps.PhraseTms.Actions
         public void AddTargetLanguage(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] AddTargetLanguageRequest input)
         {
-            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
-            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/targetLangs", Method.Post, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders);
+            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/targetLangs", Method.Post, authenticationCredentialsProviders);
             request.AddJsonBody(new
             {
                 targetLangs = input.TargetLanguages.ToArray()
@@ -83,8 +83,8 @@ namespace Apps.PhraseTms.Actions
         public void EditProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] EditProjectRequest input)
         {
-            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
-            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Patch, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders);
+            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Patch, authenticationCredentialsProviders);
             request.AddJsonBody(new
             {
                 name = input.ProjectName,
@@ -97,8 +97,8 @@ namespace Apps.PhraseTms.Actions
         public void DeleteProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] DeleteProjectRequest input)
         {
-            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
-            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Delete, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders);
+            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Delete, authenticationCredentialsProviders);
             client.Execute(request);
         }
     }

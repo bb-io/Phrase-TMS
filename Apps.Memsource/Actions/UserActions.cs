@@ -21,8 +21,8 @@ namespace Apps.PhraseTMS.Actions
         [Action("List all users", Description = "List all users")]
         public ListAllUsersResponse ListAllUsers(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
         {
-            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
-            var request = new PhraseTmsRequest($"/api2/v1/users", Method.Get, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders);
+            var request = new PhraseTmsRequest($"/api2/v1/users", Method.Get, authenticationCredentialsProviders);
             var response = client.Get<ResponseWrapper<List<UserDto>>>(request);
             return new ListAllUsersResponse()
             {
@@ -34,9 +34,9 @@ namespace Apps.PhraseTMS.Actions
         public UserDto GetUser(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] GetUserRequest input)
         {
-            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v3/users/{input.UserUId}",
-                Method.Get, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
+                Method.Get, authenticationCredentialsProviders);
             var response = client.Get<UserDto>(request);
             return response;
         }
@@ -45,9 +45,9 @@ namespace Apps.PhraseTMS.Actions
         public void DeleteUser(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] GetUserRequest input)
         {
-            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/users/{input.UserUId}",
-                Method.Delete, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
+                Method.Delete, authenticationCredentialsProviders);
             client.Execute(request);
         }
     }

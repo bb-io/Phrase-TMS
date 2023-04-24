@@ -20,8 +20,8 @@ namespace Apps.PhraseTMS.Actions
         public ListReferenceFilesResponse ListReferenceFiles(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             ListReferenceFilesRequest input)
         {
-            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
-            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/references", Method.Get, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders);
+            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/references", Method.Get, authenticationCredentialsProviders);
             return new ListReferenceFilesResponse()
             {
                 ReferenceFileInfo = client.Get<ResponseWrapper<List<ReferenceFileInfoDto>>>(request).Content
@@ -32,9 +32,9 @@ namespace Apps.PhraseTMS.Actions
         public ReferenceFileInfoDto CreateReferenceFile(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] CreateReferenceFileRequest input)
         {
-            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/references",
-                Method.Post, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
+                Method.Post, authenticationCredentialsProviders);
 
             request.AddHeader("Content-Disposition", $"filename*=UTF-8''{input.Filename}");
             request.AddHeader("Content-Type", "application/octet-stream");
@@ -46,9 +46,9 @@ namespace Apps.PhraseTMS.Actions
         public DownloadReferenceFilesResponse DownloadReferenceFiles(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] DownloadReferenceFilesRequest input)
         {
-            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/references/{input.ReferenceFileUId}", 
-                Method.Get, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
+                Method.Get, authenticationCredentialsProviders);
             var response = client.Execute(request);
 
             byte[] fileData = response.RawBytes;
@@ -65,9 +65,9 @@ namespace Apps.PhraseTMS.Actions
         public void DeleteReferenceFile(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] DeleteReferenceFileRequest input)
         {
-            var client = new PhraseTmsClient(authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value);
+            var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/references",
-                Method.Delete, authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
+                Method.Delete, authenticationCredentialsProviders);
             request.AddJsonBody(new
             {
                 referenceFiles = new[] { new { id = input.ReferenceFileUId } }
