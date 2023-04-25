@@ -9,59 +9,59 @@ namespace Apps.PhraseTMS.Connections
 
         public IEnumerable<ConnectionPropertyGroup> ConnectionPropertyGroups => new List<ConnectionPropertyGroup>()
         {
-            //new ConnectionPropertyGroup
-            //{
-            //    Name = "OAuth2",
-            //    AuthenticationType = ConnectionAuthenticationType.OAuth2,
-            //    ConnectionUsage = ConnectionUsage.Actions,
-            //    ConnectionProperties = new List<ConnectionProperty>()
-            //    {
-            //        new ConnectionProperty("client_id"),
-            //        new ConnectionProperty("redirect_uri"),
-            //        new ConnectionProperty("api_endpoint"),
-            //    }
-            //}, 
-            // Api token
             new ConnectionPropertyGroup
             {
-                Name = "API Token",
-                AuthenticationType = ConnectionAuthenticationType.Undefined,
+                Name = "OAuth2",
+                AuthenticationType = ConnectionAuthenticationType.OAuth2,
                 ConnectionUsage = ConnectionUsage.Actions,
                 ConnectionProperties = new List<ConnectionProperty>()
                 {
+                    new ConnectionProperty("client_id"),
+                    new ConnectionProperty("redirect_uri"),
                     new ConnectionProperty("api_endpoint"),
-                    new ConnectionProperty(ApiKeyName)
                 }
-            }
+            }, 
+            // Api token
+            //new ConnectionPropertyGroup
+            //{
+            //    Name = "API Token",
+            //    AuthenticationType = ConnectionAuthenticationType.Undefined,
+            //    ConnectionUsage = ConnectionUsage.Actions,
+            //    ConnectionProperties = new List<ConnectionProperty>()
+            //    {
+            //        new ConnectionProperty("api_endpoint"),
+            //        new ConnectionProperty(ApiKeyName)
+            //    }
+            //}
         };
 
         public IEnumerable<AuthenticationCredentialsProvider> CreateAuthorizationCredentialsProviders(Dictionary<string, string> values)
         {
-            //var token = values.First(v => v.Key == "access_token");
-            //yield return new AuthenticationCredentialsProvider(
-            //    AuthenticationCredentialsRequestLocation.Header,
-            //    "Authorization",
-            //    $"Bearer {token.Value}"
-            //);
-            //var url = values.First(v => v.Key == "api_endpoint");
-            //yield return new AuthenticationCredentialsProvider(
-            //    AuthenticationCredentialsRequestLocation.None,
-            //    "api_endpoint",
-            //    url.Value
-            //);
-            // Api token
-            var token = values.First(v => v.Key == ApiKeyName);
+            var token = values.First(v => v.Key == "access_token");
             yield return new AuthenticationCredentialsProvider(
                 AuthenticationCredentialsRequestLocation.Header,
                 "Authorization",
-                $"ApiToken {token.Value}"
+                $"Bearer {token.Value}"
             );
             var url = values.First(v => v.Key == "api_endpoint");
             yield return new AuthenticationCredentialsProvider(
                 AuthenticationCredentialsRequestLocation.None,
-                url.Key,
+                "api_endpoint",
                 url.Value
             );
+            // Api token
+            //var token = values.First(v => v.Key == ApiKeyName);
+            //yield return new AuthenticationCredentialsProvider(
+            //    AuthenticationCredentialsRequestLocation.Header,
+            //    "Authorization",
+            //    $"ApiToken {token.Value}"
+            //);
+            //var url = values.First(v => v.Key == "api_endpoint");
+            //yield return new AuthenticationCredentialsProvider(
+            //    AuthenticationCredentialsRequestLocation.None,
+            //    url.Key,
+            //    url.Value
+            //);
         }
     }
 }

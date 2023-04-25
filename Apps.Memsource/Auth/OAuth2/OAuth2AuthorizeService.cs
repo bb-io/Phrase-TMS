@@ -11,7 +11,9 @@ namespace Apps.PhraseTMS.Authorization.OAuth2
             var parameters = new Dictionary<string, string>
             {
                 { "client_id", values["client_id"] },
-                { "redirect_uri", values["redirect_uri"] }
+                { "redirect_uri", values["redirect_uri"] },
+                { "response_type", "code" },
+                { "state", values["state"] }
             };
             return QueryHelpers.AddQueryString(oauthUrl, parameters);
         }
