@@ -29,5 +29,5 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: plugin
-        path: Apps.Memsource/plugin/**
+        path: Apps.Memsource/bin/Release/net7.0/publish/**
         if-no-files-found: error
