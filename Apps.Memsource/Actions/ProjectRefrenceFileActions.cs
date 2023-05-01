@@ -18,7 +18,7 @@ namespace Apps.PhraseTMS.Actions
     {
         [Action("List all reference files", Description = "List all project reference files")]
         public ListReferenceFilesResponse ListReferenceFiles(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-            ListReferenceFilesRequest input)
+            [ActionParameter] ListReferenceFilesRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/references", Method.Get, authenticationCredentialsProviders);
