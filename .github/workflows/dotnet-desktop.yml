@@ -29,5 +29,5 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: plugin
-        path: Apps.Memsource/bin
+        path: plugin
         if-no-files-found: error
