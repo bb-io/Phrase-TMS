@@ -11,8 +11,8 @@ namespace Apps.PhraseTMS.Dtos
         public bool IncludeTags { get; set; }
         public bool PayForMtPossible { get; set; }
         public string Type { get; set; }
-        public string Uid { get; set; }
-        public string Id { get; set; }
+        public string UId { get; set; }
+        //public string Id { get; set; }
         public bool PayForMtActive { get; set; }
         public object Langs { get; set; }
         public bool MtQualityEstimation { get; set; }

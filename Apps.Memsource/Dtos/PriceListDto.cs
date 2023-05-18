@@ -8,8 +8,8 @@ namespace Apps.PhraseTMS.Dtos
 {
     public class PriceListDto
     {
-        public string Uid { get; set; }
-        public string Id { get; set; }
+        public string UId { get; set; }
+        //public string Id { get; set; }
         public string Name { get; set; }
     }
 }
