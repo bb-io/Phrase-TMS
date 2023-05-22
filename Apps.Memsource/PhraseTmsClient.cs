@@ -56,7 +56,7 @@ namespace Apps.PhraseTms
 
         private static Uri GetUri(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
         {
-            var url = authenticationCredentialsProviders.First(p => p.KeyName == "api_endpoint").Value;
+            var url = authenticationCredentialsProviders.First(p => p.KeyName == "url").Value;
             return new Uri(url + "/web");
         }
     }

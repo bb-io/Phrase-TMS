@@ -17,8 +17,7 @@ namespace Apps.PhraseTMS.Connections
                 ConnectionProperties = new List<ConnectionProperty>()
                 {
                     new ConnectionProperty("client_id"),
-                    new ConnectionProperty("redirect_uri"),
-                    new ConnectionProperty("api_endpoint"),
+                    new ConnectionProperty("url"),
                 }
             }, 
             // Api token
@@ -29,7 +28,7 @@ namespace Apps.PhraseTMS.Connections
             //    ConnectionUsage = ConnectionUsage.Actions,
             //    ConnectionProperties = new List<ConnectionProperty>()
             //    {
-            //        new ConnectionProperty("api_endpoint"),
+            //        new ConnectionProperty("url"),
             //        new ConnectionProperty(ApiKeyName)
             //    }
             //}
@@ -43,10 +42,10 @@ namespace Apps.PhraseTMS.Connections
                 "Authorization",
                 $"Bearer {token.Value}"
             );
-            var url = values.First(v => v.Key == "api_endpoint");
+            var url = values.First(v => v.Key == "url");
             yield return new AuthenticationCredentialsProvider(
                 AuthenticationCredentialsRequestLocation.None,
-                "api_endpoint",
+                "url",
                 url.Value
             );
             // Api token
@@ -56,7 +55,7 @@ namespace Apps.PhraseTMS.Connections
             //    "Authorization",
             //    $"ApiToken {token.Value}"
             //);
-            //var url = values.First(v => v.Key == "api_endpoint");
+            //var url = values.First(v => v.Key == "url");
             //yield return new AuthenticationCredentialsProvider(
             //    AuthenticationCredentialsRequestLocation.None,
             //    url.Key,

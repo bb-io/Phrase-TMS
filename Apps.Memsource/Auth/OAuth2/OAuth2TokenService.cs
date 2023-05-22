@@ -30,7 +30,7 @@ namespace Apps.PhraseTMS.Authorization.OAuth2
             {
                 { "grant_type", grant_type },
                 { "client_id", values["client_id"] },
-                { "redirect_uri", values["redirect_uri"] },
+                { "redirect_uri", ApplicationConstants.RedirectUri },
                 { "code", code }
             };
             return await RequestToken(bodyParameters, cancellationToken);

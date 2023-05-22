@@ -11,7 +11,7 @@ namespace Apps.PhraseTMS.Authorization.OAuth2
             var parameters = new Dictionary<string, string>
             {
                 { "client_id", values["client_id"] },
-                { "redirect_uri", values["redirect_uri"] },
+                { "redirect_uri", ApplicationConstants.RedirectUri },
                 { "response_type", "code" },
                 { "state", values["state"] }
             };
