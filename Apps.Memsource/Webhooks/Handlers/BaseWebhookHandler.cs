@@ -40,9 +40,12 @@ namespace Apps.PhraseTMS.Webhooks.Handlers
         {
             var authHeader = authenticationCredentialsProvider.First(p => p.KeyName == "Authorization").Value;
             var client = new PhraseTmsClient(authenticationCredentialsProvider);
-            var getRequest = new PhraseTmsRequest($"/api2/v2/webhooks?name={SubscriptionEvent}", Method.Get, authenticationCredentialsProvider);
+            var getRequest = new PhraseTmsRequest($"/api2/v2/webhooks?name={SubscriptionEvent}&url={values["payloadUrl"]}", Method.Get, authenticationCredentialsProvider);
             var webhooks = await client.GetAsync<ResponseWrapper<List<WebhookDto>>>(getRequest);
-            var webhookUId = webhooks.Content.First().UId;
+            var webhookUId = webhooks?.Content.FirstOrDefault()?.UId;
+
+            if (webhookUId == null)
+                return;
 
             var deleteRequest = new PhraseTmsRequest($"/api2/v2/webhooks/{webhookUId}", Method.Delete, authenticationCredentialsProvider);
             await client.ExecuteAsync(deleteRequest);

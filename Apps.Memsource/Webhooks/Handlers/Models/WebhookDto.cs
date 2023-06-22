@@ -11,5 +11,6 @@ namespace Apps.PhraseTMS.Webhooks.Handlers.Models
         public string UId { get; set; }
 
         public string Name { get; set; }
+        public string Url { get; set; }
     }
 }
