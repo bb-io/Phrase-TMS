@@ -55,12 +55,13 @@ namespace Apps.PhraseTMS.Actions
         }
 
         [Action("Delete LQA profile", Description = "Delete LQA profile")]
-        public void DeleteLQAProfile(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public Task DeleteLQAProfile(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] DeleteLQAProfileRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
-            var request = new PhraseTmsRequest($"/api2/v1/lqa/profiles{input.LQAProfileUId}", Method.Delete, authenticationCredentialsProviders);
-            client.Execute(request);
+            var request = new PhraseTmsRequest($"/api2/v1/lqa/profiles/{input.LQAProfileUId}", Method.Delete, authenticationCredentialsProviders);
+
+            return client.ExecuteWithHandling(() => client.ExecuteAsync(request));
         }
     }
 }

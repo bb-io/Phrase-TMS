@@ -73,5 +73,17 @@ namespace Apps.PhraseTms
             
             throw new(!string.IsNullOrEmpty(error.ErrorDescription) ? error.ErrorDescription : error.ErrorCode);
         }
+        
+        public async Task<RestResponse> ExecuteWithHandling(Func<Task<RestResponse>> request)
+        {
+            var response = await request();
+            
+            if (response.IsSuccessful)
+                return response;
+
+            var error = JsonConvert.DeserializeObject<Error>(Encoding.UTF8.GetString(response.RawBytes));
+            
+            throw new(!string.IsNullOrEmpty(error.ErrorDescription) ? error.ErrorDescription : error.ErrorCode);
+        }
     }
 }
