@@ -14,7 +14,7 @@ namespace Apps.PhraseTms
     public class PhraseTmsClient : RestClient
     {
         public PhraseTmsClient(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders) : 
-            base(new RestClientOptions() { ThrowOnAnyError = true, BaseUrl = GetUri(authenticationCredentialsProviders) }) { }
+            base(new RestClientOptions() { ThrowOnAnyError = false, BaseUrl = GetUri(authenticationCredentialsProviders) }) { }
 
         public AsyncRequest? PerformAsyncRequest(PhraseTmsRequest request, IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
         {
@@ -70,7 +70,8 @@ namespace Apps.PhraseTms
                 return response.Data;
 
             var error = JsonConvert.DeserializeObject<Error>(Encoding.UTF8.GetString(response.RawBytes));
-            throw new(error.ErrorDescription);
+            
+            throw new(!string.IsNullOrEmpty(error.ErrorDescription) ? error.ErrorDescription : error.ErrorCode);
         }
     }
 }

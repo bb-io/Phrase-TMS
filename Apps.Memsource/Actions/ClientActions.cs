@@ -42,7 +42,7 @@ namespace Apps.PhraseTMS.Actions
         }
 
         [Action("Add new client", Description = "Add new client")]
-        public ClientDto AddClient(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public Task<ClientDto> AddClient(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] AddClientRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
@@ -52,7 +52,7 @@ namespace Apps.PhraseTMS.Actions
                 name = input.Name,
                 externalId = input.ExternalId,
             });
-            return client.Execute<ClientDto>(request).Data;
+            return client.ExecuteWithHandling(() => client.ExecutePostAsync<ClientDto>(request));
         }
 
         [Action("Delete client", Description = "Delete client")]
