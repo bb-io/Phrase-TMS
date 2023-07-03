@@ -11,6 +11,7 @@ using RestSharp;
 using System.Buffers.Text;
 using System.ComponentModel;
 using System.Text;
+using Apps.PhraseTMS.Models;
 
 namespace Apps.PhraseTms.Actions
 {
@@ -54,7 +55,7 @@ namespace Apps.PhraseTms.Actions
         }
 
         [Action("Create project from template", Description = "Create project from template")]
-        public ProjectDto CreateProjectFromTemplate(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public Task<ProjectDto> CreateProjectFromTemplate(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] CreateFromTemplateRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
@@ -63,7 +64,8 @@ namespace Apps.PhraseTms.Actions
             {
                 name = input.Name
             });
-            return client.Post<ProjectDto>(request);
+            
+            return client.ExecuteWithHandling(() => client.ExecutePostAsync<ProjectDto>(request));
         }
 
         [Action("Add target language", Description = "Add target language")]

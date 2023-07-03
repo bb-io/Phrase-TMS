@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Apps.PhraseTMS.Models;
+using Newtonsoft.Json;
 
 namespace Apps.PhraseTms
 {
@@ -58,6 +60,17 @@ namespace Apps.PhraseTms
         {
             var url = authenticationCredentialsProviders.First(p => p.KeyName == "url").Value;
             return new Uri(url + "/web");
+        }
+
+        public async Task<T> ExecuteWithHandling<T>(Func<Task<RestResponse<T>>> request)
+        {
+            var response = await request();
+            
+            if (response.IsSuccessful)
+                return response.Data;
+
+            var error = JsonConvert.DeserializeObject<Error>(Encoding.UTF8.GetString(response.RawBytes));
+            throw new(error.ErrorDescription);
         }
     }
 }
