@@ -19,13 +19,13 @@ namespace Apps.PhraseTMS.Actions
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/quotes/{input.QuoteUId}", Method.Get, authenticationCredentialsProviders);
-            var response = await client.ExecuteWithHandling(() => client.GetAsync(request));
+            var response = await client.ExecuteWithHandling(() => client.ExecuteGetAsync(request));
             
             return JsonConvert.DeserializeObject<QuoteDto>(response.Content);
         }
 
         [Action("Create quote", Description = "Create quote")]
-        public QuoteDto CreateQuote(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public Task<QuoteDto> CreateQuote(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] CreateQuoteRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
@@ -37,16 +37,17 @@ namespace Apps.PhraseTMS.Actions
                 priceList = new { id = input.PriceListUId },
                 project = new { uid = input.ProjectUId }
             });
-            return client.Execute<QuoteDto>(request).Data;
+            return client.ExecuteWithHandling(() => client.ExecuteAsync<QuoteDto>(request));
         }
 
         [Action("Delete quote", Description = "Delete quote")]
-        public void DeleteQuote(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public Task DeleteQuote(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] GetQuoteRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/quotes/{input.QuoteUId}", Method.Delete, authenticationCredentialsProviders);
-            client.Execute(request);       
+            
+            return client.ExecuteWithHandling(() => client.ExecuteAsync(request));       
         }
     }
 }

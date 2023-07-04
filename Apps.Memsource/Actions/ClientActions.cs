@@ -14,24 +14,27 @@ namespace Apps.PhraseTMS.Actions
     public class ClientActions
     {
         [Action("List all clients", Description = "List all clients")]
-        public ListClientsResponse ListClients(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+        public async Task<ListClientsResponse> ListClients(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/clients", Method.Get, authenticationCredentialsProviders);
-            return new ListClientsResponse()
+
+            var response = await client.ExecuteWithHandling(() => client.ExecuteGetAsync<ResponseWrapper<List<ClientDto>>>(request));
+            
+            return new ListClientsResponse
             {
-                Clients = client.Get<ResponseWrapper<List<ClientDto>>>(request).Content
+                Clients = response.Content
             };
         }
 
         [Action("Get client", Description = "Get client")]
-        public ClientDto GetClient(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public Task<ClientDto> GetClient(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] GetClientRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/clients/{input.ClientUId}", Method.Get, authenticationCredentialsProviders);
-            var response = client.Get<ClientDto>(request);
-            return response;
+
+            return client.ExecuteWithHandling(() => client.ExecuteGetAsync<ClientDto>(request));
         }
 
         [Action("Add new client", Description = "Add new client")]
@@ -49,12 +52,13 @@ namespace Apps.PhraseTMS.Actions
         }
 
         [Action("Delete client", Description = "Delete client")]
-        public void DeleteClient(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public Task DeleteClient(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] GetClientRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/clients/{input.ClientUId}", Method.Delete, authenticationCredentialsProviders);
-            client.Execute(request);
+
+            return client.ExecuteWithHandling(() => client.ExecuteAsync(request));
         }
     }
 }

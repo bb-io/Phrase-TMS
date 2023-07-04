@@ -14,32 +14,41 @@ namespace Apps.PhraseTMS.Actions
     public class FileActions
     {
         [Action("List all files", Description = "List all files")]
-        public ListAllFilesResponse ListAllFiles(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+        public async Task<ListAllFilesResponse> ListAllFiles(
+            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/files", Method.Get, authenticationCredentialsProviders);
-            var response = client.Get<ResponseWrapper<List<FileInfoDto>>>(request);
-            return new ListAllFilesResponse()
+
+            var response = await client.ExecuteWithHandling(()
+                => client.ExecuteGetAsync<ResponseWrapper<List<FileInfoDto>>>(request));
+
+            return new ListAllFilesResponse
             {
                 Files = response.Content
             };
         }
 
         [Action("Get file", Description = "Get file")]
-        public GetFileResponse GetFile(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public async Task<GetFileResponse> GetFile(
+            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] GetFileRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
-            var request = new PhraseTmsRequest($"/api2/v1/files/{input.FileUId}", Method.Get, authenticationCredentialsProviders);
-            var response = client.Get<string>(request);
-            return new GetFileResponse()
+            var request = new PhraseTmsRequest($"/api2/v1/files/{input.FileUId}", Method.Get,
+                authenticationCredentialsProviders);
+
+            var response = await client.ExecuteWithHandling(() => client.ExecuteGetAsync<string>(request));
+
+            return new GetFileResponse
             {
                 FileContent = response
             };
         }
 
         [Action("Upload file", Description = "Upload file")]
-        public FileInfoDto UploadFile(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public Task<FileInfoDto> UploadFile(
+            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] UploadFileRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
@@ -47,8 +56,8 @@ namespace Apps.PhraseTMS.Actions
             request.AddHeader("Content-Disposition", $"filename*=UTF-8''{input.FileName}");
             request.AddHeader("Content-Type", "application/octet-stream");
             request.AddParameter("application/octet-stream", input.File, ParameterType.RequestBody);
-            var response = client.Execute<FileInfoDto>(request).Data;
-            return response;
+            
+            return client.ExecuteWithHandling(() => client.ExecuteAsync<FileInfoDto>(request));
         }
     }
 }

@@ -13,28 +13,32 @@ namespace Apps.PhraseTms.Actions
     public class ProjectActions
     {
         [Action("List all projects", Description = "List all projects")]
-        public ListAllProjectsResponse ListAllProjects(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+        public async Task<ListAllProjectsResponse> ListAllProjects(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest("/api2/v1/projects", Method.Get, authenticationCredentialsProviders);
-            var response = client.Get<ResponseWrapper<List<ProjectDto>>>(request);
-            return new ListAllProjectsResponse()
+            
+            var response = await client.ExecuteWithHandling(()
+                => client.ExecuteGetAsync<ResponseWrapper<List<ProjectDto>>>(request));
+            
+            return new ListAllProjectsResponse
             {
                 Projects = response.Content
             };
         }
 
         [Action("Get project", Description = "Get project by UId")]
-        public ProjectDto GetProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public Task<ProjectDto> GetProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] GetProjectRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Get, authenticationCredentialsProviders);
-            return client.Get<ProjectDto>(request);
+            
+            return client.ExecuteWithHandling(() => client.ExecuteGetAsync<ProjectDto>(request));
         }
 
         [Action("Create project", Description = "Create project")]
-        public ProjectDto CreateProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public Task<ProjectDto> CreateProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] CreateProjectRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
@@ -45,7 +49,8 @@ namespace Apps.PhraseTms.Actions
                 sourceLang = input.SourceLanguage,
                 targetLangs = input.TargetLanguages.ToArray()
             });
-            return client.Post<ProjectDto>(request);
+            
+            return client.ExecuteWithHandling(() => client.ExecutePostAsync<ProjectDto>(request));
         }
 
         [Action("Create project from template", Description = "Create project from template")]
@@ -63,7 +68,7 @@ namespace Apps.PhraseTms.Actions
         }
 
         [Action("Add target language", Description = "Add target language")]
-        public void AddTargetLanguage(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public Task AddTargetLanguage(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] AddTargetLanguageRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
@@ -72,11 +77,12 @@ namespace Apps.PhraseTms.Actions
             {
                 targetLangs = input.TargetLanguages.ToArray()
             });
-            client.Execute(request);
+            
+            return client.ExecuteWithHandling(() => client.ExecuteAsync(request));
         }
 
         [Action("Edit project", Description = "Edit project")]
-        public void EditProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public Task EditProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] EditProjectRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
@@ -86,16 +92,18 @@ namespace Apps.PhraseTms.Actions
                 name = input.ProjectName,
                 status = input.Status,
             });
-            client.Execute(request);
+
+            return client.ExecuteWithHandling(() => client.ExecuteAsync(request));
         }
 
         [Action("Delete project", Description = "Delete project")]
-        public void DeleteProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public Task DeleteProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] DeleteProjectRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Delete, authenticationCredentialsProviders);
-            client.Execute(request);
+            
+            return client.ExecuteWithHandling(() => client.ExecuteAsync(request));
         }
     }
 }

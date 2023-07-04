@@ -14,19 +14,22 @@ namespace Apps.PhraseTMS.Actions
     public class TranslationActions
     {
         [Action("List translation settings", Description = "List translation settings")]
-        public ListTranslationSettingsResponse ListTranslationSettings(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+        public async Task<ListTranslationSettingsResponse> ListTranslationSettings(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/machineTranslateSettings", Method.Get, authenticationCredentialsProviders);
-            var response = client.Get<ResponseWrapper<List<TranslationSettingDto>>>(request);
-            return new ListTranslationSettingsResponse()
+            
+            var response = await client.ExecuteWithHandling(()
+                => client.ExecuteGetAsync<ResponseWrapper<List<TranslationSettingDto>>>(request));
+            
+            return new ListTranslationSettingsResponse
             {
                 TranslationSettings = response.Content
             };
         }
 
         [Action("Translate with MT", Description = "Translate with MT with custom settings")]
-        public TranslationDto TranslateMT(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public Task<TranslationDto> TranslateMT(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] TranslateMTRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
@@ -37,11 +40,12 @@ namespace Apps.PhraseTMS.Actions
                 to = input.TargetLanguageCode,
                 sourceTexts = input.SourceTexts.ToArray(),
             });
-            return client.Execute<TranslationDto>(request).Data;
+            
+            return client.ExecuteWithHandling(() => client.ExecuteAsync<TranslationDto>(request));
         }
 
         [Action("Translate with MT by project", Description = "Translate with MT with project settings")]
-        public TranslationDto TranslateMTProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public Task<TranslationDto> TranslateMTProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] TranslateMTProjectRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
@@ -51,7 +55,7 @@ namespace Apps.PhraseTMS.Actions
             {
                 sourceTexts = input.SourceTexts.ToArray(),
             });
-            return client.Execute<TranslationDto>(request).Data;
+            return client.ExecuteWithHandling(() => client.ExecuteAsync<TranslationDto>(request));
         }
     }
 }

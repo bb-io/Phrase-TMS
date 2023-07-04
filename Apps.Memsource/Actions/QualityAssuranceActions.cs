@@ -14,7 +14,7 @@ namespace Apps.PhraseTMS.Actions
     public class QualityAssuranceActions
     {
         [Action("Add ignored warning", Description = "Add ignored warning")]
-        public void AddIgnoredWarning(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public Task AddIgnoredWarning(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] AddIgnoredWarningRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
@@ -31,16 +31,19 @@ namespace Apps.PhraseTMS.Actions
                     }
                 }
             });
-            client.Execute(request);
+            return client.ExecuteWithHandling(() => client.ExecuteAsync(request));
         }
 
         [Action("Get list LQA profiles", Description = "Get list LQA profiles")]
-        public ListLQAProfilesResponse ListLQAProfiles(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+        public async Task<ListLQAProfilesResponse> ListLQAProfiles(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/lqa/profiles", Method.Get, authenticationCredentialsProviders);
-            var response = client.Get<ResponseWrapper<List<LQAProfileDto>>>(request);
-            return new ListLQAProfilesResponse()
+            
+            var response = await client.ExecuteWithHandling(()
+                => client.ExecuteGetAsync<ResponseWrapper<List<LQAProfileDto>>>(request));
+            
+            return new ListLQAProfilesResponse
             {
                 Profiles = response.Content
             };

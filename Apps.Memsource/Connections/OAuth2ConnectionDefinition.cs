@@ -7,14 +7,14 @@ namespace Apps.PhraseTMS.Connections
     {
         private const string ApiKeyName = "apiToken";
 
-        public IEnumerable<ConnectionPropertyGroup> ConnectionPropertyGroups => new List<ConnectionPropertyGroup>()
+        public IEnumerable<ConnectionPropertyGroup> ConnectionPropertyGroups => new List<ConnectionPropertyGroup>
         {
             new ConnectionPropertyGroup
             {
                 Name = "OAuth2",
                 AuthenticationType = ConnectionAuthenticationType.OAuth2,
                 ConnectionUsage = ConnectionUsage.Actions,
-                ConnectionProperties = new List<ConnectionProperty>()
+                ConnectionProperties = new List<ConnectionProperty>
                 {
                     new ConnectionProperty("client_id"),
                     new ConnectionProperty("url"),

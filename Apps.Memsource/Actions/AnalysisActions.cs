@@ -15,26 +15,26 @@ namespace Apps.PhraseTMS.Actions
     public class AnalysisActions
     {
         [Action("List analyses", Description = "List analyses")]
-        public ListAnalysesResponse ListAnalyses(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public async Task<ListAnalysesResponse> ListAnalyses(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] ListAnalysesRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v3/projects/{input.ProjectUId}/jobs/{input.JobUId}/analyses", Method.Get, authenticationCredentialsProviders);
-            var response = client.Get<ResponseWrapper<List<AnalysisDto>>>(request);
-            return new ListAnalysesResponse()
-            {
+            var response = await client.ExecuteWithHandling(() => client.ExecuteGetAsync<ResponseWrapper<List<AnalysisDto>>>(request));
+            
+             return new ListAnalysesResponse
+             {
                 Analyses = response.Content
             };
         }
 
         [Action("Get analysis", Description = "Get analysis")]
-        public AnalysisDto GetAnalysis(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public Task<AnalysisDto> GetAnalysis(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] GetAnalysisRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v3/analyses/{input.AnalysisUId}", Method.Get, authenticationCredentialsProviders);
-            var response = client.Get<AnalysisDto>(request);
-            return response;
+            return client.ExecuteWithHandling(() => client.ExecuteGetAsync<AnalysisDto>(request));
         }
 
         [Action("Create analysis", Description = "Create analysis")]

@@ -15,40 +15,50 @@ namespace Apps.PhraseTMS.Actions
     public class TranslationMemoryActions
     {
         [Action("List translation memories", Description = "List translation memories")]
-        public ListTranslationMemoriesResponse ListTranslationMemories(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+        public async Task<ListTranslationMemoriesResponse> ListTranslationMemories(
+            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
-            var request = new PhraseTmsRequest($"/api2/v1/transMemories", Method.Get, authenticationCredentialsProviders);
-            var response = client.Get<ResponseWrapper<List<TranslationMemoryDto>>>(request);
-            return new ListTranslationMemoriesResponse()
+            var request =
+                new PhraseTmsRequest($"/api2/v1/transMemories", Method.Get, authenticationCredentialsProviders);
+
+            var response = await client.ExecuteWithHandling(()
+                => client.ExecuteGetAsync<ResponseWrapper<List<TranslationMemoryDto>>>(request));
+
+            return new ListTranslationMemoriesResponse
             {
                 Memories = response.Content
             };
         }
 
         [Action("Create translation memory", Description = "Create translation memory")]
-        public TranslationMemoryDto CreateTranslationMemory(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public Task<TranslationMemoryDto> CreateTranslationMemory(
+            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] CreateTranslationMemoryRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
-            var request = new PhraseTmsRequest($"/api2/v1/transMemories", Method.Post, authenticationCredentialsProviders);
+            var request = new PhraseTmsRequest($"/api2/v1/transMemories", Method.Post,
+                authenticationCredentialsProviders);
             request.AddJsonBody(new
             {
                 name = input.Name,
                 sourceLang = input.SourceLang,
                 targetLangs = input.TargetLang
             });
-            return client.Execute<TranslationMemoryDto>(request).Data;
+            
+            return client.ExecuteWithHandling(() => client.ExecuteAsync<TranslationMemoryDto>(request));
         }
 
         [Action("Get translation memory", Description = "Get translation memory")]
-        public TranslationMemoryDto GetTranslationMemory(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public Task<TranslationMemoryDto> GetTranslationMemory(
+            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] GetTranslationMemoryRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
-            var request = new PhraseTmsRequest($"/api2/v1/transMemories/{input.TranslationMemoryUId}", Method.Get, authenticationCredentialsProviders);
-            var response = client.Get<TranslationMemoryDto>(request);
-            return response;
+            var request = new PhraseTmsRequest($"/api2/v1/transMemories/{input.TranslationMemoryUId}", Method.Get,
+                authenticationCredentialsProviders);
+            
+            return client.ExecuteWithHandling(() => client.ExecuteGetAsync<TranslationMemoryDto>(request));
         }
 
         [Action("Import TMX file", Description = "Import TMX file")]
@@ -66,7 +76,8 @@ namespace Apps.PhraseTMS.Actions
         }
 
         [Action("Export translation memory", Description = "Export translation memory")]
-        public ExportTranslationMemoryResponse ExportTranslationMemory(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public async Task<ExportTranslationMemoryResponse> ExportTranslationMemory(
+            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] ExportTransMemoryRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
@@ -76,21 +87,22 @@ namespace Apps.PhraseTMS.Actions
 
             var asyncRequest = client.PerformAsyncRequest(request, authenticationCredentialsProviders);
 
-            var requestDownload = new PhraseTmsRequest($"/api2/v1/transMemories/downloadExport/{asyncRequest.Id}?format={input.FileFormat}",
+            var requestDownload = new PhraseTmsRequest(
+                $"/api2/v1/transMemories/downloadExport/{asyncRequest.Id}?format={input.FileFormat}",
                 Method.Get, authenticationCredentialsProviders);
-            var responseDownload = client.Get(requestDownload);
+            var responseDownload = await client.ExecuteWithHandling(() => client.ExecuteGetAsync(requestDownload));
 
             if (responseDownload == null) throw new Exception("Failed downloading target files");
 
-            byte[] fileData = responseDownload.RawBytes;
-            return new ExportTranslationMemoryResponse()
+            var fileData = responseDownload.RawBytes;
+            return new ExportTranslationMemoryResponse
             {
                 File = fileData
             };
         }
 
         [Action("Insert segment into memory", Description = "Insert segment into memory")]
-        public void InsertSegment(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public Task InsertSegment(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] InsertSegmentRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
@@ -103,17 +115,17 @@ namespace Apps.PhraseTMS.Actions
                 targetSegment = input.TargetSegment,
                 targetLang = input.TargetLanguage
             });
-            client.Execute(request);
+            return client.ExecuteWithHandling(() => client.ExecuteAsync(request));
         }
 
         [Action("Delete translation memory", Description = "Delete translation memory by UId")]
-        public void DeleteTransMemory(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public Task DeleteTransMemory(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] DeleteTransMemoryRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/transMemories/{input.TranslationMemoryUId}",
                 Method.Delete, authenticationCredentialsProviders);
-            client.Execute(request);
+            return client.ExecuteWithHandling(() => client.ExecuteAsync(request));
         }
     }
 }

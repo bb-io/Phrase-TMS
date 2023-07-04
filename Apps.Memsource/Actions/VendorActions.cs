@@ -14,7 +14,7 @@ namespace Apps.PhraseTMS.Actions
     public class VendorActions
     {
         [Action("Add new vendor", Description = "Add new vendor")]
-        public VendorDto AddVendor(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public Task<VendorDto> AddVendor(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] AddVendorRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
@@ -24,27 +24,33 @@ namespace Apps.PhraseTMS.Actions
                 vendorToken = input.VendorToken,
                 priceList = new { uid = input.PriceListUId }
             });
-            return client.Execute<VendorDto>(request).Data;
+            
+            return client.ExecuteWithHandling(() => client.ExecuteAsync<VendorDto>(request));
         }
 
         [Action("List all vendors", Description = "List all vendors")]
-        public ListVendorsResponse ListVendors(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+        public async Task<ListVendorsResponse> ListVendors(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/vendors", Method.Get, authenticationCredentialsProviders);
-            return new ListVendorsResponse()
+
+            var response = await client.ExecuteWithHandling(() 
+                => client.ExecuteGetAsync<ResponseWrapper<List<VendorDto>>>(request));
+            
+            return new ListVendorsResponse
             {
-                Vendors = client.Get<ResponseWrapper<List<VendorDto>>>(request).Content
+                Vendors = response.Content
             };
         }
 
         [Action("Get vendor", Description = "Get vendor")]
-        public VendorDto GetVendor(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public Task<VendorDto> GetVendor(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             GetVendorRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/vendors/{input.VendorId}", Method.Get, authenticationCredentialsProviders);
-            return client.Get<VendorDto>(request);
+            
+            return client.ExecuteWithHandling(() => client.ExecuteGetAsync<VendorDto>(request));
         }
     }
 }

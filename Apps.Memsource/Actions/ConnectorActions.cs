@@ -13,20 +13,22 @@ namespace Apps.PhraseTMS.Actions
     public class ConnectorActions
     {
         [Action("List all connectors", Description = "List all connectors")]
-        public ConnectorsResponseWrapper ListConnectors(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+        public Task<ConnectorsResponseWrapper> ListConnectors(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/connectors", Method.Get, authenticationCredentialsProviders);
-            return client.Get<ConnectorsResponseWrapper>(request);
+            
+            return client.ExecuteWithHandling(() => client.ExecuteGetAsync<ConnectorsResponseWrapper>(request));
         }
 
         [Action("Get connector", Description = "Get connector by Id")]
-        public ConnectorDto GetConnector(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public Task<ConnectorDto> GetConnector(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] GetConnectorRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/connectors/{input.ConnectorUId}", Method.Get, authenticationCredentialsProviders);
-            return client.Get<ConnectorDto>(request);
+
+            return client.ExecuteWithHandling(() => client.ExecuteGetAsync<ConnectorDto>(request));
         }
     }
 }

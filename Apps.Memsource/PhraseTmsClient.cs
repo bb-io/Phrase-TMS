@@ -10,7 +10,7 @@ namespace Apps.PhraseTms
     public class PhraseTmsClient : RestClient
     {
         public PhraseTmsClient(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders) : 
-            base(new RestClientOptions() { ThrowOnAnyError = false, BaseUrl = GetUri(authenticationCredentialsProviders) }) { }
+            base(new RestClientOptions { ThrowOnAnyError = false, BaseUrl = GetUri(authenticationCredentialsProviders) }) { }
 
         public AsyncRequest? PerformAsyncRequest(PhraseTmsRequest request, IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
         {
