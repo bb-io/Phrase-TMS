@@ -1,5 +1,4 @@
 ﻿using Apps.PhraseTMS.Dtos;
-using Apps.PhraseTMS.Models.Clients.Response;
 using Apps.PhraseTMS.Models.Responses;
 using Apps.PhraseTms;
 using Blackbird.Applications.Sdk.Common.Authentication;

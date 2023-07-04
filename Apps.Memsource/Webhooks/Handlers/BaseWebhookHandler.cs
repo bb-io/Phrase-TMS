@@ -4,11 +4,6 @@ using Apps.PhraseTMS.Webhooks.Handlers.Models;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Webhooks;
 using RestSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Apps.PhraseTMS.Webhooks.Handlers
 {

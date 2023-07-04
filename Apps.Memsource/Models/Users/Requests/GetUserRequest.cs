@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Apps.PhraseTMS.Models.Users.Requests
+﻿namespace Apps.PhraseTMS.Models.Users.Requests
 {
     public class GetUserRequest
     {

@@ -1,15 +1,10 @@
-﻿using Apps.PhraseTms.Dtos;
-using Apps.PhraseTMS.Models.Jobs.Requests;
-using Apps.PhraseTMS.Models.Jobs.Responses;
-using Apps.PhraseTMS.Models.Responses;
+﻿using Apps.PhraseTMS.Models.Responses;
 using Apps.PhraseTms;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using RestSharp;
 using Apps.PhraseTMS.Models.Users.Response;
 using Apps.PhraseTMS.Dtos;
-using Apps.PhraseTms.Models.Jobs.Requests;
-using Apps.PhraseTms.Models.Jobs.Responses;
 using Apps.PhraseTMS.Models.Users.Requests;
 using Blackbird.Applications.Sdk.Common.Actions;
 

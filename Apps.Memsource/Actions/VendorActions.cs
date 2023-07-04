@@ -1,5 +1,4 @@
-﻿using Apps.PhraseTMS.Models.Quotes.Requests;
-using Apps.PhraseTms;
+﻿using Apps.PhraseTms;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using RestSharp;

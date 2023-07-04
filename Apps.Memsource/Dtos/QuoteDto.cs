@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Apps.PhraseTMS.Dtos
+﻿namespace Apps.PhraseTMS.Dtos
 {
     public class QuoteDto
     {
@@ -22,6 +16,4 @@ namespace Apps.PhraseTMS.Dtos
         public string Status { get; set; }
         public string QuoteType { get; set; }
     }
-
-    
 }

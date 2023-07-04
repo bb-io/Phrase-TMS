@@ -1,14 +1,11 @@
 ﻿using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Models.Responses;
-using Apps.PhraseTMS.Models.Vendors.Response;
 using Apps.PhraseTms;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using RestSharp;
 using Apps.PhraseTMS.Models.ProjectReferenceFiles.Requests;
 using Apps.PhraseTMS.Models.ProjectReferenceFiles.Responses;
-using Apps.PhraseTms.Models.Jobs.Requests;
-using Newtonsoft.Json;
 using Blackbird.Applications.Sdk.Common.Actions;
 
 namespace Apps.PhraseTMS.Actions

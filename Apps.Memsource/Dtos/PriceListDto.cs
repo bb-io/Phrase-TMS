@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+using Blackbird.Applications.Sdk.Common;
 
 namespace Apps.PhraseTMS.Dtos
 {
     public class PriceListDto
     {
-        public string UId { get; set; }
+        [Display("Price list Uid")] public string UId { get; set; }
         //public string Id { get; set; }
-        public string Name { get; set; }
+        [Display("Price list name")] public string Name { get; set; }
     }
 }

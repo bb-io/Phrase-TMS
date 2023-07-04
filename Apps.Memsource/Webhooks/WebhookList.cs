@@ -6,7 +6,6 @@ using Apps.PhraseTMS.Webhooks.Handlers.ProjectHandlers;
 using Apps.PhraseTMS.Webhooks.Handlers.ProjectTemplateHandlers;
 using Blackbird.Applications.Sdk.Common.Webhooks;
 using Newtonsoft.Json;
-using System.Text.Json;
 
 namespace Apps.PhraseTMS.Webhooks
 {
