@@ -6,6 +6,6 @@
 
         public string SourceLang { get; set; }
 
-        public string TargetLang { get; set; }
+        public string[] TargetLang { get; set; }
     }
 }

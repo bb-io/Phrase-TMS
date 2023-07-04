@@ -36,7 +36,7 @@ namespace Apps.PhraseTMS.Actions
             {
                 name = input.Name,
                 sourceLang = input.SourceLang,
-                targetLangs = new[] { input.TargetLang }
+                targetLangs = input.TargetLang
             });
             return client.Execute<TranslationMemoryDto>(request).Data;
         }
