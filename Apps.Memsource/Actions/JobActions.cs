@@ -10,6 +10,7 @@ using Apps.PhraseTMS.Models.Jobs.Requests;
 using Apps.PhraseTMS.Models.Responses;
 using Apps.PhraseTMS.Models.Jobs.Responses;
 using Blackbird.Applications.Sdk.Common.Actions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Apps.PhraseTms.Actions
 {
@@ -35,7 +36,7 @@ namespace Apps.PhraseTms.Actions
         }
 
         [Action("Get job", Description = "Get job by UId")]
-        public async Task<GetJobResponse> GetJob(
+        public async Task<JobResponse> GetJob(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] GetJobRequest input)
         {
@@ -45,12 +46,14 @@ namespace Apps.PhraseTms.Actions
 
             var response = await client.ExecuteWithHandling(() => client.ExecuteGetAsync<JobDto>(request));
 
-            return new GetJobResponse
+            return new JobResponse
             {
+                Uid = response.UId,
                 Filename = response.Filename,
                 TargetLanguage = response.TargetLang,
                 Status = response.Status,
-                DateDue = response.DateDue
+                ProjectUid = response.Project.UId,
+                //DateDue = response.DateDue
             };
         }
 
