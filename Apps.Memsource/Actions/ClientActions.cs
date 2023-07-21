@@ -1,6 +1,6 @@
 ﻿using Apps.PhraseTMS.Dtos;
+using Apps.PhraseTMS.Extension;
 using Apps.PhraseTMS.Models.Responses;
-using Apps.PhraseTms;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using RestSharp;
@@ -14,13 +14,17 @@ namespace Apps.PhraseTMS.Actions
     public class ClientActions
     {
         [Action("List all clients", Description = "List all clients")]
-        public async Task<ListClientsResponse> ListClients(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+        public async Task<ListClientsResponse> ListClients(
+            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+            [ActionParameter] ListClientsQuery query)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
-            var request = new PhraseTmsRequest($"/api2/v1/clients", Method.Get, authenticationCredentialsProviders);
 
-            var response = await client.ExecuteWithHandling(() => client.ExecuteGetAsync<ResponseWrapper<List<ClientDto>>>(request));
-            
+            var endpoint = "/api2/v1/clients";
+            var request = new PhraseTmsRequest(endpoint.WithQuery(query), Method.Get, authenticationCredentialsProviders);
+
+            var response = await client.ExecuteWithHandling<ResponseWrapper<List<ClientDto>>>(request);
+
             return new ListClientsResponse
             {
                 Clients = response.Content
@@ -28,27 +32,27 @@ namespace Apps.PhraseTMS.Actions
         }
 
         [Action("Get client", Description = "Get client")]
-        public Task<ClientDto> GetClient(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public Task<ClientDto> GetClient(
+            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] GetClientRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
-            var request = new PhraseTmsRequest($"/api2/v1/clients/{input.ClientUId}", Method.Get, authenticationCredentialsProviders);
+            var request = new PhraseTmsRequest($"/api2/v1/clients/{input.ClientUId}", Method.Get,
+                authenticationCredentialsProviders);
 
-            return client.ExecuteWithHandling(() => client.ExecuteGetAsync<ClientDto>(request));
+            return client.ExecuteWithHandling<ClientDto>(request);
         }
 
         [Action("Add new client", Description = "Add new client")]
-        public Task<ClientDto> AddClient(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public Task<ClientDto> AddClient(
+            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] AddClientRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/clients", Method.Post, authenticationCredentialsProviders);
-            request.AddJsonBody(new
-            {
-                name = input.Name,
-                externalId = input.ExternalId,
-            });
-            return client.ExecuteWithHandling(() => client.ExecutePostAsync<ClientDto>(request));
+            request.WithJsonBody(input);
+            
+            return client.ExecuteWithHandling<ClientDto>(request);
         }
 
         [Action("Delete client", Description = "Delete client")]
@@ -56,9 +60,10 @@ namespace Apps.PhraseTMS.Actions
             [ActionParameter] GetClientRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
-            var request = new PhraseTmsRequest($"/api2/v1/clients/{input.ClientUId}", Method.Delete, authenticationCredentialsProviders);
+            var request = new PhraseTmsRequest($"/api2/v1/clients/{input.ClientUId}", Method.Delete,
+                authenticationCredentialsProviders);
 
-            return client.ExecuteWithHandling(() => client.ExecuteAsync(request));
+            return client.ExecuteWithHandling(request);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Apps.Memsource.Dtos
+﻿namespace Apps.PhraseTMS.Dtos
 {
     public class LanguageDto
     {

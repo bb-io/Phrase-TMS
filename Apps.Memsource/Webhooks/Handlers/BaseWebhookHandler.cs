@@ -1,5 +1,4 @@
-﻿using Apps.PhraseTms;
-using Apps.PhraseTMS.Models.Responses;
+﻿using Apps.PhraseTMS.Models.Responses;
 using Apps.PhraseTMS.Webhooks.Handlers.Models;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Webhooks;
@@ -28,22 +27,21 @@ namespace Apps.PhraseTMS.Webhooks.Handlers
                 name = SubscriptionEvent
             });
             
-            return client.ExecuteWithHandling(() => client.ExecuteAsync(request));
+            return client.ExecuteWithHandling(request);
         }
 
         public async Task UnsubscribeAsync(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProvider, Dictionary<string, string> values)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProvider);
             var getRequest = new PhraseTmsRequest($"/api2/v2/webhooks?name={SubscriptionEvent}&url={values["payloadUrl"]}", Method.Get, authenticationCredentialsProvider);
-            var webhooks = await client.ExecuteWithHandling(()
-                => client.ExecuteGetAsync<ResponseWrapper<List<WebhookDto>>>(getRequest));
+            var webhooks = await client.ExecuteWithHandling<ResponseWrapper<List<WebhookDto>>>(getRequest);
             var webhookUId = webhooks?.Content.FirstOrDefault()?.UId;
 
             if (webhookUId == null)
                 return;
 
             var deleteRequest = new PhraseTmsRequest($"/api2/v2/webhooks/{webhookUId}", Method.Delete, authenticationCredentialsProvider);
-            await client.ExecuteWithHandling(() => client.ExecuteAsync(deleteRequest));
+            await client.ExecuteWithHandling(deleteRequest);
         }
     }
 }

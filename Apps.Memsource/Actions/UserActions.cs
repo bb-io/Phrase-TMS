@@ -1,10 +1,10 @@
 ﻿using Apps.PhraseTMS.Models.Responses;
-using Apps.PhraseTms;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using RestSharp;
 using Apps.PhraseTMS.Models.Users.Response;
 using Apps.PhraseTMS.Dtos;
+using Apps.PhraseTMS.Extension;
 using Apps.PhraseTMS.Models.Users.Requests;
 using Blackbird.Applications.Sdk.Common.Actions;
 
@@ -14,14 +14,17 @@ namespace Apps.PhraseTMS.Actions
     public class UserActions
     {
         [Action("List all users", Description = "List all users")]
-        public async Task<ListAllUsersResponse> ListAllUsers(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+        public async Task<ListAllUsersResponse> ListAllUsers(
+            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+            [ActionParameter] ListAllUsersQuery query)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
-            var request = new PhraseTmsRequest($"/api2/v1/users", Method.Get, authenticationCredentialsProviders);
-            
-            var response = await client.ExecuteWithHandling(()
-                => client.ExecuteGetAsync<ResponseWrapper<List<UserDto>>>(request));
-            
+
+            var endpoint = "/api2/v1/users";
+            var request = new PhraseTmsRequest(endpoint.WithQuery(query), Method.Get, authenticationCredentialsProviders);
+
+            var response = await client.ExecuteWithHandling<ResponseWrapper<List<UserDto>>>(request);
+
             return new ListAllUsersResponse
             {
                 Users = response.Content
@@ -35,8 +38,8 @@ namespace Apps.PhraseTMS.Actions
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v3/users/{input.UserUId}",
                 Method.Get, authenticationCredentialsProviders);
-            
-            return client.ExecuteWithHandling(() => client.ExecuteGetAsync<UserDto>(request));
+
+            return client.ExecuteWithHandling<UserDto>(request);
         }
 
         [Action("Delete user", Description = "Delete user by UId")]
@@ -46,8 +49,8 @@ namespace Apps.PhraseTMS.Actions
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/users/{input.UserUId}",
                 Method.Delete, authenticationCredentialsProviders);
-            
-            return client.ExecuteWithHandling(() => client.ExecuteAsync(request));
+
+            return client.ExecuteWithHandling(request);
         }
     }
 }

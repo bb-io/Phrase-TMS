@@ -1,4 +1,4 @@
-﻿using Apps.PhraseTMS.Authorization.OAuth2;
+﻿using Apps.PhraseTMS.Auth.OAuth2;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication.OAuth2;
 

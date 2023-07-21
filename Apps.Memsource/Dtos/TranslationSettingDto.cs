@@ -1,18 +1,23 @@
-﻿namespace Apps.PhraseTMS.Dtos
+﻿using Blackbird.Applications.Sdk.Common;
+
+namespace Apps.PhraseTMS.Dtos
 {
     public class TranslationSettingDto
     {
-        public bool IncludeTags { get; set; }
-        public bool PayForMtPossible { get; set; }
+        [Display("Include tags")] public bool IncludeTags { get; set; }
+
+        [Display("Is pay for MT possible")] public bool PayForMtPossible { get; set; }
         public string Type { get; set; }
-        public string UId { get; set; }
+
+        [Display("UID")] public string UId { get; set; }
+
         //public string Id { get; set; }
-        public bool PayForMtActive { get; set; }
-        public object Langs { get; set; }
-        public bool MtQualityEstimation { get; set; }
-        public string BaseName { get; set; }
-        public int SharingSettings { get; set; }
-        public object CharCount { get; set; }
+        [Display("Is pay for MT active")] public bool PayForMtActive { get; set; }
+        [Display("Languages")] public object Langs { get; set; }
+        [Display("MT quality estimation")] public bool MtQualityEstimation { get; set; }
+        [Display("Base name")] public string BaseName { get; set; }
+        [Display("Sharing settings")] public int SharingSettings { get; set; }
+        [Display("Char count")] public object CharCount { get; set; }
         public string Name { get; set; }
     }
 }

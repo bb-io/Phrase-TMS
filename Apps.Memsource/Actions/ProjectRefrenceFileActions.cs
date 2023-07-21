@@ -1,6 +1,6 @@
 ﻿using Apps.PhraseTMS.Dtos;
+using Apps.PhraseTMS.Extension;
 using Apps.PhraseTMS.Models.Responses;
-using Apps.PhraseTms;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using RestSharp;
@@ -14,15 +14,19 @@ namespace Apps.PhraseTMS.Actions
     public class ProjectRefrenceFileActions
     {
         [Action("List all reference files", Description = "List all project reference files")]
-        public async Task<ListReferenceFilesResponse> ListReferenceFiles(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-            [ActionParameter] ListReferenceFilesRequest input)
+        public async Task<ListReferenceFilesResponse> ListReferenceFiles(
+            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+            [ActionParameter] ListReferenceFilesRequest input,
+            [ActionParameter] ListReferenceFilesQuery query)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
-            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/references", Method.Get, authenticationCredentialsProviders);
 
-            var response = await client.ExecuteWithHandling(() 
-                => client.ExecuteGetAsync<ResponseWrapper<List<ReferenceFileInfoDto>>>(request));
-            
+            var endpoint = $"/api2/v1/projects/{input.ProjectUId}/references";
+            var request = new PhraseTmsRequest(endpoint.WithQuery(query), Method.Get,
+                authenticationCredentialsProviders);
+
+            var response = await client.ExecuteWithHandling<ResponseWrapper<List<ReferenceFileInfoDto>>>(request);
+
             return new ListReferenceFilesResponse
             {
                 ReferenceFileInfo = response.Content
@@ -30,28 +34,31 @@ namespace Apps.PhraseTMS.Actions
         }
 
         [Action("Create project reference file", Description = "Create project reference file")]
-        public Task<ReferenceFileInfoDto> CreateReferenceFile(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public Task<ReferenceFileInfoDto> CreateReferenceFile(
+            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] CreateReferenceFileRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/references",
                 Method.Post, authenticationCredentialsProviders);
 
-            request.AddHeader("Content-Disposition", $"filename*=UTF-8''{input.Filename}");
+            request.AddHeader("Content-Disposition", $"filename*=UTF-8''{input.FileName}");
             request.AddHeader("Content-Type", "application/octet-stream");
             request.AddParameter("application/octet-stream", input.File, ParameterType.RequestBody);
-            
-            return client.ExecuteWithHandling(() => client.ExecuteAsync<ReferenceFileInfoDto>(request));
+
+            return client.ExecuteWithHandling<ReferenceFileInfoDto>(request);
         }
 
         [Action("Download reference files", Description = "Download project reference files")]
-        public async Task<DownloadReferenceFilesResponse> DownloadReferenceFiles(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public async Task<DownloadReferenceFilesResponse> DownloadReferenceFiles(
+            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] DownloadReferenceFilesRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
-            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/references/{input.ReferenceFileUId}", 
+            var request = new PhraseTmsRequest(
+                $"/api2/v1/projects/{input.ProjectUId}/references/{input.ReferenceFileUId}",
                 Method.Get, authenticationCredentialsProviders);
-            var response = await client.ExecuteWithHandling(() => client.ExecuteAsync(request));
+            var response = await client.ExecuteWithHandling(request);
 
             byte[] fileData = response.RawBytes;
             var filenameHeader = response.ContentHeaders.First(h => h.Name == "Content-Disposition");
@@ -64,7 +71,8 @@ namespace Apps.PhraseTMS.Actions
         }
 
         [Action("Delete reference file", Description = "Delete reference file")]
-        public Task DeleteReferenceFile(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public Task DeleteReferenceFile(
+            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] DeleteReferenceFileRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
@@ -74,8 +82,8 @@ namespace Apps.PhraseTMS.Actions
             {
                 referenceFiles = new[] { new { id = input.ReferenceFileUId } }
             });
-            
-            return client.ExecuteWithHandling(() => client.ExecuteAsync(request));
+
+            return client.ExecuteWithHandling(request);
         }
     }
 }

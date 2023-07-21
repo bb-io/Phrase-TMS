@@ -1,4 +1,4 @@
-﻿namespace Apps.Memsource.Models.Responses
+﻿namespace Apps.PhraseTMS.Models.Responses
 {
     public class TeamProjectsResponse
     {

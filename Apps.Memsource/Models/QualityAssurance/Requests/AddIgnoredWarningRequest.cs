@@ -1,13 +1,12 @@
-﻿namespace Apps.PhraseTMS.Models.QualityAssurance.Requests
+﻿using Blackbird.Applications.Sdk.Common;
+
+namespace Apps.PhraseTMS.Models.QualityAssurance.Requests
 {
     public class AddIgnoredWarningRequest
     {
-        public string ProjectUId { get; set; }
-
-        public string JobUId { get; set; }
-
-        public string SegmentUId { get; set; }
-
-        public string WarningId { get; set; }
+        [Display("Project UID")] public string ProjectUId { get; set; }
+        [Display("Job UID")] public string JobUId { get; set; }
+        [Display("Segment UID")] public string SegmentUId { get; set; }
+        [Display("Warning ID")] public string WarningId { get; set; }
     }
 }

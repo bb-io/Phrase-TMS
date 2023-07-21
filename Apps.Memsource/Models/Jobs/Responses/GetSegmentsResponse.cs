@@ -1,6 +1,6 @@
-﻿using Apps.PhraseTms.Dtos;
+﻿using Apps.PhraseTMS.Dtos;
 
-namespace Apps.PhraseTms.Models.Jobs.Responses
+namespace Apps.PhraseTMS.Models.Jobs.Responses
 {
     public class GetSegmentsResponse
     {

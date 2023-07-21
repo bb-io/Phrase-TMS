@@ -1,4 +1,4 @@
-﻿using Apps.PhraseTms.Dtos;
+﻿using Apps.PhraseTMS.Dtos;
 
 namespace Apps.PhraseTMS.Models.Jobs.Responses
 {

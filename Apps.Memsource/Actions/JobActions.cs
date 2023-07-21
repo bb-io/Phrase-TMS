@@ -1,17 +1,16 @@
-﻿using Apps.PhraseTms.Models.Jobs.Requests;
-using Blackbird.Applications.Sdk.Common;
-using Blackbird.Applications.Sdk.Common.Authentication;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
-using RestSharp;
-using Apps.PhraseTms.Dtos;
-using Apps.PhraseTms.Models.Jobs.Responses;
+﻿using Apps.PhraseTMS.Dtos;
+using Apps.PhraseTMS.Extension;
 using Apps.PhraseTMS.Models.Jobs.Requests;
-using Apps.PhraseTMS.Models.Responses;
 using Apps.PhraseTMS.Models.Jobs.Responses;
+using Apps.PhraseTMS.Models.Responses;
+using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
+using Blackbird.Applications.Sdk.Common.Authentication;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using RestSharp;
 
-namespace Apps.PhraseTms.Actions
+namespace Apps.PhraseTMS.Actions
 {
     [ActionList]
     public class JobActions
@@ -19,14 +18,16 @@ namespace Apps.PhraseTms.Actions
         [Action("List all jobs", Description = "List all jobs in the project")]
         public async Task<ListAllJobsResponse> ListAllJobs(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-            [ActionParameter] ListAllJobsRequest input)
+            [ActionParameter] ListAllJobsPathRequest input,
+            [ActionParameter] ListAllJobsQuery query)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
-            var request = new PhraseTmsRequest($"/api2/v2/projects/{input.ProjectUId}/jobs", Method.Get,
+
+            var endpoint = $"/api2/v2/projects/{input.ProjectUId}/jobs";
+            var request = new PhraseTmsRequest(endpoint.WithQuery(query), Method.Get,
                 authenticationCredentialsProviders);
 
-            var response = await client.ExecuteWithHandling(()
-                => client.ExecuteGetAsync<ResponseWrapper<List<JobDto>>>(request));
+            var response = await client.ExecuteWithHandling<ResponseWrapper<List<JobDto>>>(request);
 
             return new ListAllJobsResponse
             {
@@ -43,7 +44,7 @@ namespace Apps.PhraseTms.Actions
             var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/jobs/{input.JobUId}",
                 Method.Get, authenticationCredentialsProviders);
 
-            var response = await client.ExecuteWithHandling(() => client.ExecuteGetAsync<JobDto>(request));
+            var response = await client.ExecuteWithHandling<JobDto>(request);
 
             return new GetJobResponse
             {
@@ -63,7 +64,7 @@ namespace Apps.PhraseTms.Actions
             var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/jobs",
                 Method.Post, authenticationCredentialsProviders);
 
-            string output = JsonConvert.SerializeObject(new
+            var output = JsonConvert.SerializeObject(new
             {
                 targetLangs = input.TargetLanguages
             });
@@ -73,7 +74,7 @@ namespace Apps.PhraseTms.Actions
             request.AddHeader("Content-Type", "application/octet-stream");
             request.AddParameter("application/octet-stream", input.File, ParameterType.RequestBody);
 
-            var response = await client.ExecuteWithHandling(() => client.ExecuteAsync<JobResponseWrapper>(request));
+            var response = await client.ExecuteWithHandling<JobResponseWrapper>(request);
 
             return response.Jobs.First();
         }
@@ -89,22 +90,24 @@ namespace Apps.PhraseTms.Actions
             {
                 jobs = input.JobsUIds.Select(u => new { uid = u })
             });
-            
-            return client.ExecuteWithHandling(() => client.ExecuteAsync(request));
+
+            return client.ExecuteWithHandling(request);
         }
 
         [Action("Get segments", Description = "Get segments in job")]
         public async Task<GetSegmentsResponse> GetSegments(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-            [ActionParameter] GetSegmentsRequest input)
+            [ActionParameter] GetSegmentsRequest input,
+            [ActionParameter] GetSegmentsQuery query)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
-            var request = new PhraseTmsRequest(
-                $"/api2/v1/projects/{input.ProjectUId}/jobs/{input.JobUId}/segments?beginIndex={input.BeginIndex}&endIndex={input.EndIndex}",
+
+            var endpoint = $"/api2/v1/projects/{input.ProjectUId}/jobs/{input.JobUId}/segments";
+            var request = new PhraseTmsRequest(endpoint.WithQuery(query),
                 Method.Get, authenticationCredentialsProviders);
-            
-            var response = await client.ExecuteWithHandling(() => client.ExecuteGetAsync(request));
-            
+
+            var response = await client.ExecuteWithHandling(request);
+
             dynamic content = (JObject)JsonConvert.DeserializeObject(response.Content);
             JArray segmentsArr = content.segments;
             var segments = segmentsArr.ToObject<List<SegmentDto>>();
@@ -116,18 +119,15 @@ namespace Apps.PhraseTms.Actions
 
         [Action("Edit job", Description = "Edit job")]
         public Task EditJob(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-            [ActionParameter] EditJobRequest input)
+            [ActionParameter] EditJobPath input,
+            [ActionParameter] EditJobBody body)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/jobs/{input.JobUId}",
                 Method.Patch, authenticationCredentialsProviders);
-            request.AddJsonBody(new
-            {
-                dateDue = input.DateDue,
-                status = input.Status,
-            });
-            
-            return client.ExecuteWithHandling(() => client.ExecuteAsync(request));
+            request.WithJsonBody(body);
+
+            return client.ExecuteWithHandling(request);
         }
 
         [Action("Download target file", Description = "Download target file")]
@@ -146,7 +146,7 @@ namespace Apps.PhraseTms.Actions
             var requestDownload = new PhraseTmsRequest(
                 $"/api2/v2/projects/{input.ProjectUId}/jobs/{input.JobUId}/downloadTargetFile/{asyncRequest.Id}?format={"ORIGINAL"}",
                 Method.Get, authenticationCredentialsProviders);
-            var responseDownload = await client.ExecuteWithHandling(() => client.ExecuteGetAsync(requestDownload));
+            var responseDownload = await client.ExecuteWithHandling(requestDownload);
 
             if (responseDownload == null) throw new Exception("Failed downloading target files");
 

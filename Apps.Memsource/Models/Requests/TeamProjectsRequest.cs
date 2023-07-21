@@ -1,4 +1,4 @@
-﻿namespace Apps.Memsource.Models.Requests
+﻿namespace Apps.PhraseTMS.Models.Requests
 {
     public class TeamProjectsRequest
     {

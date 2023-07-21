@@ -1,4 +1,4 @@
-﻿namespace Apps.PhraseTms.Dtos
+﻿namespace Apps.PhraseTMS.Dtos
 {
     public class AsyncRequestDto
     {

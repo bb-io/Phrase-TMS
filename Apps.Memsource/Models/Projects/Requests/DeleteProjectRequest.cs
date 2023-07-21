@@ -1,7 +1,10 @@
-﻿namespace Apps.PhraseTms.Models.Projects.Requests
+﻿using Blackbird.Applications.Sdk.Common;
+
+namespace Apps.PhraseTMS.Models.Projects.Requests
 {
     public class DeleteProjectRequest
     {
-        public string ProjectUId { get; set; }
+        [Display("Project UID")] public string ProjectUId { get; set; }
+        public bool? Purge { get; set; }
     }
 }

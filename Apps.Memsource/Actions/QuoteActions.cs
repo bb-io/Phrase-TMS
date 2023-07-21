@@ -1,9 +1,7 @@
-﻿using Apps.PhraseTms;
-using Blackbird.Applications.Sdk.Common;
+﻿using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Newtonsoft.Json;
 using RestSharp;
-using Apps.PhraseTMS.Models.Quotes.Request;
 using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Models.Quotes.Requests;
 using Blackbird.Applications.Sdk.Common.Actions;
@@ -19,7 +17,7 @@ namespace Apps.PhraseTMS.Actions
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/quotes/{input.QuoteUId}", Method.Get, authenticationCredentialsProviders);
-            var response = await client.ExecuteWithHandling(() => client.ExecuteGetAsync(request));
+            var response = await client.ExecuteWithHandling(request);
             
             return JsonConvert.DeserializeObject<QuoteDto>(response.Content);
         }
@@ -37,7 +35,7 @@ namespace Apps.PhraseTMS.Actions
                 priceList = new { id = input.PriceListUId },
                 project = new { uid = input.ProjectUId }
             });
-            return client.ExecuteWithHandling(() => client.ExecuteAsync<QuoteDto>(request));
+            return client.ExecuteWithHandling<QuoteDto>(request);
         }
 
         [Action("Delete quote", Description = "Delete quote")]
@@ -47,7 +45,7 @@ namespace Apps.PhraseTMS.Actions
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/quotes/{input.QuoteUId}", Method.Delete, authenticationCredentialsProviders);
             
-            return client.ExecuteWithHandling(() => client.ExecuteAsync(request));       
+            return client.ExecuteWithHandling(request);       
         }
     }
 }

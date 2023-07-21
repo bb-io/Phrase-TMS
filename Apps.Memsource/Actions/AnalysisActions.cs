@@ -1,6 +1,6 @@
 ﻿using Apps.PhraseTMS.Dtos;
+using Apps.PhraseTMS.Extension;
 using Apps.PhraseTMS.Models.Responses;
-using Apps.PhraseTms;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common;
 using RestSharp;
@@ -15,43 +15,46 @@ namespace Apps.PhraseTMS.Actions
     public class AnalysisActions
     {
         [Action("List analyses", Description = "List analyses")]
-        public async Task<ListAnalysesResponse> ListAnalyses(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-            [ActionParameter] ListAnalysesRequest input)
+        public async Task<ListAnalysesResponse> ListAnalyses(
+            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+            [ActionParameter] ListAnalysesPathRequest path,
+            [ActionParameter] ListAnalysesQueryRequest query)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
-            var request = new PhraseTmsRequest($"/api2/v3/projects/{input.ProjectUId}/jobs/{input.JobUId}/analyses", Method.Get, authenticationCredentialsProviders);
-            var response = await client.ExecuteWithHandling(() => client.ExecuteGetAsync<ResponseWrapper<List<AnalysisDto>>>(request));
+
+            var endpoint = $"/api2/v3/projects/{path.ProjectUId}/jobs/{path.JobUId}/analyses"
+                .WithQuery(query);
             
-             return new ListAnalysesResponse
-             {
+            var request = new PhraseTmsRequest(endpoint,
+                Method.Get, authenticationCredentialsProviders);
+            var response = await client.ExecuteWithHandling<ResponseWrapper<List<AnalysisDto>>>(request);
+
+            return new ListAnalysesResponse
+            {
                 Analyses = response.Content
             };
         }
 
         [Action("Get analysis", Description = "Get analysis")]
-        public Task<AnalysisDto> GetAnalysis(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public Task<AnalysisDto> GetAnalysis(
+            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] GetAnalysisRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
-            var request = new PhraseTmsRequest($"/api2/v3/analyses/{input.AnalysisUId}", Method.Get, authenticationCredentialsProviders);
-            return client.ExecuteWithHandling(() => client.ExecuteGetAsync<AnalysisDto>(request));
+            var request = new PhraseTmsRequest($"/api2/v3/analyses/{input.AnalysisUId}", Method.Get,
+                authenticationCredentialsProviders);
+            return client.ExecuteWithHandling<AnalysisDto>(request);
         }
 
         [Action("Create analysis", Description = "Create analysis")]
-        public AsyncRequest CreateAnalysis(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-            [ActionParameter] CreateAnalysisRequest input)
+        public AsyncRequest CreateAnalysis(
+            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+            [ActionParameter] CreateAnalysisInput input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v2/analyses", Method.Post, authenticationCredentialsProviders);
-            request.AddJsonBody(
-                new
-                {
-                    jobs = input.JobsUIds.Select(j => new
-                    {
-                        uid = j
-                    }).ToArray()
-                }
-            );
+            request.WithJsonBody(new CreateAnalysisRequest(input));
+            
             var asyncRequest = client.PerformMultipleAsyncRequest(request, authenticationCredentialsProviders);
             return asyncRequest.First();
         }

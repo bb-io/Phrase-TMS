@@ -1,10 +1,10 @@
 ﻿using Apps.PhraseTMS.Models.Responses;
-using Apps.PhraseTms;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using RestSharp;
 using Apps.PhraseTMS.Models.Files.Responses;
 using Apps.PhraseTMS.Dtos;
+using Apps.PhraseTMS.Extension;
 using Apps.PhraseTMS.Models.Files.Requests;
 using Blackbird.Applications.Sdk.Common.Actions;
 
@@ -15,13 +15,15 @@ namespace Apps.PhraseTMS.Actions
     {
         [Action("List all files", Description = "List all files")]
         public async Task<ListAllFilesResponse> ListAllFiles(
-            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+            [ActionParameter] ListFilesQuery query)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
-            var request = new PhraseTmsRequest($"/api2/v1/files", Method.Get, authenticationCredentialsProviders);
 
-            var response = await client.ExecuteWithHandling(()
-                => client.ExecuteGetAsync<ResponseWrapper<List<FileInfoDto>>>(request));
+            var endpoint = "/api2/v1/files";
+            var request = new PhraseTmsRequest(endpoint.WithQuery(query), Method.Get, authenticationCredentialsProviders);
+
+            var response = await client.ExecuteWithHandling<ResponseWrapper<List<FileInfoDto>>>(request);
 
             return new ListAllFilesResponse
             {
@@ -38,7 +40,7 @@ namespace Apps.PhraseTMS.Actions
             var request = new PhraseTmsRequest($"/api2/v1/files/{input.FileUId}", Method.Get,
                 authenticationCredentialsProviders);
 
-            var response = await client.ExecuteWithHandling(() => client.ExecuteGetAsync<string>(request));
+            var response = await client.ExecuteWithHandling<string>(request);
 
             return new GetFileResponse
             {
@@ -52,12 +54,13 @@ namespace Apps.PhraseTMS.Actions
             [ActionParameter] UploadFileRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
-            var request = new PhraseTmsRequest($"/api2/v1/files", Method.Post, authenticationCredentialsProviders);
+            var request = new PhraseTmsRequest("/api2/v1/files", Method.Post, authenticationCredentialsProviders);
             request.AddHeader("Content-Disposition", $"filename*=UTF-8''{input.FileName}");
             request.AddHeader("Content-Type", "application/octet-stream");
             request.AddParameter("application/octet-stream", input.File, ParameterType.RequestBody);
+            request.WithJsonBody(input);
             
-            return client.ExecuteWithHandling(() => client.ExecuteAsync<FileInfoDto>(request));
+            return client.ExecuteWithHandling<FileInfoDto>(request);
         }
     }
 }

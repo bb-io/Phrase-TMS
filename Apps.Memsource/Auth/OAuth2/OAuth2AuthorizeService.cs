@@ -1,7 +1,7 @@
 ﻿using Blackbird.Applications.Sdk.Common.Authentication.OAuth2;
 using Microsoft.AspNetCore.WebUtilities;
 
-namespace Apps.PhraseTMS.Authorization.OAuth2
+namespace Apps.PhraseTMS.Auth.OAuth2
 {
     public class OAuth2AuthorizeService : IOAuth2AuthorizeService
     {

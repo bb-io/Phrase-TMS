@@ -1,13 +1,12 @@
-﻿namespace Apps.PhraseTMS.Models.Quotes.Requests
+﻿using Blackbird.Applications.Sdk.Common;
+
+namespace Apps.PhraseTMS.Models.Quotes.Requests
 {
     public class CreateQuoteRequest
     {
-        public string AnalyseUId { get; set; }
-
+        [Display("Analyse UID")] public string AnalyseUId { get; set; }
         public string Name { get; set; }
-
-        public string PriceListUId { get; set; }
-
-        public string ProjectUId { get; set; }
+        [Display("Price list UID")] public string PriceListUId { get; set; }
+        [Display("Project UID")] public string ProjectUId { get; set; }
     }
 }

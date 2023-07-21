@@ -1,7 +1,11 @@
-﻿namespace Apps.PhraseTMS.Models.TranslationMemories.Requests
+﻿using Blackbird.Applications.Sdk.Common;
+
+namespace Apps.PhraseTMS.Models.TranslationMemories.Requests
 {
     public class DeleteTransMemoryRequest
     {
-        public string TranslationMemoryUId { get; set; }
+        [Display("Translation memory UID")] public string TranslationMemoryUId { get; set; }
+
+        public bool? Purge { get; set; }
     }
 }

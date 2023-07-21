@@ -1,6 +1,6 @@
-﻿using Apps.PhraseTms.Dtos;
+﻿using Apps.PhraseTMS.Dtos;
 
-namespace Apps.PhraseTms.Models.Projects.Responses
+namespace Apps.PhraseTMS.Models.Projects.Responses
 {
     public class ListAllProjectsResponse
     {

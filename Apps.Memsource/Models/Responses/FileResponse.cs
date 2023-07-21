@@ -1,4 +1,4 @@
-﻿namespace Apps.OpenAI.Models.Responses
+﻿namespace Apps.PhraseTMS.Models.Responses
 {
     public class FileResponse
     {

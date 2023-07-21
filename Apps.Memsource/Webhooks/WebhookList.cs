@@ -1,5 +1,4 @@
-﻿using Apps.PhraseTms.Dtos;
-using Apps.PhraseTMS.Dtos;
+﻿using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Webhooks.Handlers.JobHandlers;
 using Apps.PhraseTMS.Webhooks.Handlers.OtherHandlers;
 using Apps.PhraseTMS.Webhooks.Handlers.ProjectHandlers;

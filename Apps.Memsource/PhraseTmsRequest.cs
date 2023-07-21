@@ -1,7 +1,7 @@
 ﻿using Blackbird.Applications.Sdk.Common.Authentication;
 using RestSharp;
 
-namespace Apps.PhraseTms
+namespace Apps.PhraseTMS
 {
     public class PhraseTmsRequest : RestRequest
     {
