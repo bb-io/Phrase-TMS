@@ -1,6 +1,7 @@
 ﻿using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Extension;
 using Apps.PhraseTMS.Models.Jobs.Requests;
+using Apps.PhraseTms.Models.Jobs.Responses;
 using Apps.PhraseTMS.Models.Jobs.Responses;
 using Apps.PhraseTMS.Models.Responses;
 using Blackbird.Applications.Sdk.Common;
@@ -16,7 +17,8 @@ namespace Apps.PhraseTMS.Actions
     public class JobActions
     {
         [Action("List all jobs", Description = "List all jobs in the project")]
-        public async Task<ListAllJobsResponse> ListAllJobs(
+        public async Task<
+            ListAllJobsResponse> ListAllJobs(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] ListAllJobsPathRequest input,
             [ActionParameter] ListAllJobsQuery query)
@@ -36,7 +38,7 @@ namespace Apps.PhraseTMS.Actions
         }
 
         [Action("Get job", Description = "Get job by UId")]
-        public async Task<GetJobResponse> GetJob(
+        public async Task<JobResponse> GetJob(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] GetJobRequest input)
         {
@@ -46,12 +48,14 @@ namespace Apps.PhraseTMS.Actions
 
             var response = await client.ExecuteWithHandling<JobDto>(request);
 
-            return new GetJobResponse
+            return new JobResponse
             {
+                Uid = response.Uid,
                 Filename = response.Filename,
                 TargetLanguage = response.TargetLang,
                 Status = response.Status,
-                DateDue = response.DateDue
+                ProjectUid = response.Project.UId,
+                //DateDue = response.DateDue
             };
         }
 

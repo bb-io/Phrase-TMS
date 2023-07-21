@@ -1,4 +1,5 @@
-﻿using Apps.PhraseTMS.Dtos;
+using Apps.PhraseTMS.Dtos;
+using Apps.PhraseTms.Models.Jobs.Responses;
 using Apps.PhraseTMS.Webhooks.Handlers.JobHandlers;
 using Apps.PhraseTMS.Webhooks.Handlers.OtherHandlers;
 using Apps.PhraseTMS.Webhooks.Handlers.ProjectHandlers;
@@ -108,152 +109,232 @@ namespace Apps.PhraseTMS.Webhooks
         #region JobWebhooks
 
         [Webhook("On job created", typeof(JobCreationHandler), Description = "On job created")]
-        public async Task<WebhookResponse<JobDto>> JobCreation(WebhookRequest webhookRequest)
+        public async Task<WebhookResponse<JobResponse>> JobCreation(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
             if (data is null)
             {
                 throw new InvalidCastException(nameof(webhookRequest.Body));
             }
-            return new WebhookResponse<JobDto>
+            return new WebhookResponse<JobResponse>
             {
                 HttpResponseMessage = null,
-                Result = data.JobParts.First()
+                Result = new JobResponse
+                {
+                    Uid = data.JobParts.FirstOrDefault()?.Uid,
+                    Filename = data.JobParts.FirstOrDefault()?.Filename,
+                    TargetLanguage = data.JobParts.FirstOrDefault()?.TargetLang,
+                    Status = data.JobParts.FirstOrDefault()?.Status,
+                    ProjectUid = data.JobParts.FirstOrDefault()?.Project.UId,
+                    //DateDue = response.DateDue
+                }
             };
         }
 
         [Webhook("On job deleted", typeof(JobDeletionHandler), Description = "On job deleted")]
-        public async Task<WebhookResponse<JobDto>> JobDeletion(WebhookRequest webhookRequest)
+        public async Task<WebhookResponse<JobResponse>> JobDeletion(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
             if (data is null)
             {
                 throw new InvalidCastException(nameof(webhookRequest.Body));
             }
-            return new WebhookResponse<JobDto>
+            return new WebhookResponse<JobResponse>
             {
                 HttpResponseMessage = null,
-                Result = data.JobParts.First()
+                Result = new JobResponse
+                {
+                    Uid = data.JobParts.FirstOrDefault()?.Uid,
+                    Filename = data.JobParts.FirstOrDefault()?.Filename,
+                    TargetLanguage = data.JobParts.FirstOrDefault()?.TargetLang,
+                    Status = data.JobParts.FirstOrDefault()?.Status,
+                    ProjectUid = data.JobParts.FirstOrDefault()?.Project.UId,
+                    //DateDue = response.DateDue
+                }
             };
         }
 
         [Webhook("On continuous job updated", typeof(JobContinuousUpdatedHandler), Description = "On continuous job updated")]
-        public async Task<WebhookResponse<JobDto>> JobContinuousUpdated(WebhookRequest webhookRequest)
+        public async Task<WebhookResponse<JobResponse>> JobContinuousUpdated(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
             if (data is null)
             {
                 throw new InvalidCastException(nameof(webhookRequest.Body));
             }
-            return new WebhookResponse<JobDto>
+            return new WebhookResponse<JobResponse>
             {
                 HttpResponseMessage = null,
-                Result = data.JobParts.First()
+                Result = new JobResponse
+                {
+                    Uid = data.JobParts.FirstOrDefault()?.Uid,
+                    Filename = data.JobParts.FirstOrDefault()?.Filename,
+                    TargetLanguage = data.JobParts.FirstOrDefault()?.TargetLang,
+                    Status = data.JobParts.FirstOrDefault()?.Status,
+                    ProjectUid = data.JobParts.FirstOrDefault()?.Project.UId,
+                    //DateDue = response.DateDue
+                }
             };
         }
 
         [Webhook("On job assigned", typeof(JobAssignedHandler), Description = "On job assigned")]
-        public async Task<WebhookResponse<JobDto>> JobAssigned(WebhookRequest webhookRequest)
+        public async Task<WebhookResponse<JobResponse>> JobAssigned(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
             if (data is null)
             {
                 throw new InvalidCastException(nameof(webhookRequest.Body));
             }
-            return new WebhookResponse<JobDto>
+            return new WebhookResponse<JobResponse>
             {
                 HttpResponseMessage = null,
-                Result = data.JobParts.First()
+                Result = new JobResponse
+                {
+                    Uid = data.JobParts.FirstOrDefault()?.Uid,
+                    Filename = data.JobParts.FirstOrDefault()?.Filename,
+                    TargetLanguage = data.JobParts.FirstOrDefault()?.TargetLang,
+                    Status = data.JobParts.FirstOrDefault()?.Status,
+                    ProjectUid = data.JobParts.FirstOrDefault()?.Project.UId,
+                    //DateDue = response.DateDue
+                }
             };
         }
 
         [Webhook("On job due date changed", typeof(JobDueDateChangedHandler), Description = "On job due date changed")]
-        public async Task<WebhookResponse<JobDto>> JobDueDateChanged(WebhookRequest webhookRequest)
+        public async Task<WebhookResponse<JobResponse>> JobDueDateChanged(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
             if (data is null)
             {
                 throw new InvalidCastException(nameof(webhookRequest.Body));
             }
-            return new WebhookResponse<JobDto>
+            return new WebhookResponse<JobResponse>
             {
                 HttpResponseMessage = null,
-                Result = data.JobParts.First()
+                Result = new JobResponse
+                {
+                    Uid = data.JobParts.FirstOrDefault()?.Uid,
+                    Filename = data.JobParts.FirstOrDefault()?.Filename,
+                    TargetLanguage = data.JobParts.FirstOrDefault()?.TargetLang,
+                    Status = data.JobParts.FirstOrDefault()?.Status,
+                    ProjectUid = data.JobParts.FirstOrDefault()?.Project.UId,
+                    //DateDue = response.DateDue
+                }
             };
         }
 
         [Webhook("On job exported", typeof(JobExportedHandler), Description = "On job exported")]
-        public async Task<WebhookResponse<JobDto>> JobExported(WebhookRequest webhookRequest)
+        public async Task<WebhookResponse<JobResponse>> JobExported(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
             if (data is null)
             {
                 throw new InvalidCastException(nameof(webhookRequest.Body));
             }
-            return new WebhookResponse<JobDto>
+            return new WebhookResponse<JobResponse>
             {
                 HttpResponseMessage = null,
-                Result = data.JobParts.First()
+                Result = new JobResponse
+                {
+                    Uid = data.JobParts.FirstOrDefault()?.Uid,
+                    Filename = data.JobParts.FirstOrDefault()?.Filename,
+                    TargetLanguage = data.JobParts.FirstOrDefault()?.TargetLang,
+                    Status = data.JobParts.FirstOrDefault()?.Status,
+                    ProjectUid = data.JobParts.FirstOrDefault()?.Project.UId,
+                    //DateDue = response.DateDue
+                }
             };
         }
 
         [Webhook("On job source updated", typeof(JobSourceUpdatedHandler), Description = "On job source updated")]
-        public async Task<WebhookResponse<JobDto>> JobSourceUpdated(WebhookRequest webhookRequest)
+        public async Task<WebhookResponse<JobResponse>> JobSourceUpdated(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
             if (data is null)
             {
                 throw new InvalidCastException(nameof(webhookRequest.Body));
             }
-            return new WebhookResponse<JobDto>
+            return new WebhookResponse<JobResponse>
             {
                 HttpResponseMessage = null,
-                Result = data.JobParts.First()
+                Result = new JobResponse
+                {
+                    Uid = data.JobParts.FirstOrDefault()?.Uid,
+                    Filename = data.JobParts.FirstOrDefault()?.Filename,
+                    TargetLanguage = data.JobParts.FirstOrDefault()?.TargetLang,
+                    Status = data.JobParts.FirstOrDefault()?.Status,
+                    ProjectUid = data.JobParts.FirstOrDefault()?.Project.UId,
+                    //DateDue = response.DateDue
+                }
             };
         }
 
         [Webhook("On job status changed", typeof(JobStatusChangedHandler), Description = "On job status changed")]
-        public async Task<WebhookResponse<JobDto>> JobStatusChanged(WebhookRequest webhookRequest)
+        public async Task<WebhookResponse<JobResponse>> JobStatusChanged(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
             if (data is null)
             {
                 throw new InvalidCastException(nameof(webhookRequest.Body));
             }
-            return new WebhookResponse<JobDto>
+            return new WebhookResponse<JobResponse>
             {
                 HttpResponseMessage = null,
-                Result = data.JobParts.First()
-            };
+                Result = new JobResponse
+                {
+                    Uid = data.JobParts.FirstOrDefault()?.Uid,
+                    Filename = data.JobParts.FirstOrDefault()?.Filename,
+                    TargetLanguage = data.JobParts.FirstOrDefault()?.TargetLang,
+                    Status = data.JobParts.FirstOrDefault()?.Status,
+                    ProjectUid = data.JobParts.FirstOrDefault()?.Project.UId,
+                    //DateDue = response.DateDue
+                }
+        };
         }
 
         [Webhook("On job target updated", typeof(JobTargetUpdatedHandler), Description = "On job target updated")]
-        public async Task<WebhookResponse<JobDto>> JobTargetUpdated(WebhookRequest webhookRequest)
+        public async Task<WebhookResponse<JobResponse>> JobTargetUpdated(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
             if (data is null)
             {
                 throw new InvalidCastException(nameof(webhookRequest.Body));
             }
-            return new WebhookResponse<JobDto>
+            return new WebhookResponse<JobResponse>
             {
                 HttpResponseMessage = null,
-                Result = data.JobParts.First()
+                Result = new JobResponse
+                {
+                    Uid = data.JobParts.FirstOrDefault()?.Uid,
+                    Filename = data.JobParts.FirstOrDefault()?.Filename,
+                    TargetLanguage = data.JobParts.FirstOrDefault()?.TargetLang,
+                    Status = data.JobParts.FirstOrDefault()?.Status,
+                    ProjectUid = data.JobParts.FirstOrDefault()?.Project.UId,
+                    //DateDue = response.DateDue
+                }
             };
         }
 
         [Webhook("On job unexported", typeof(JobUnexportedHandler), Description = "On job unexported")]
-        public async Task<WebhookResponse<JobDto>> JobUnexported(WebhookRequest webhookRequest)
+        public async Task<WebhookResponse<JobResponse>> JobUnexported(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
             if (data is null)
             {
                 throw new InvalidCastException(nameof(webhookRequest.Body));
             }
-            return new WebhookResponse<JobDto>
+            return new WebhookResponse<JobResponse>
             {
                 HttpResponseMessage = null,
-                Result = data.JobParts.First()
+                Result = new JobResponse
+                {
+                    Uid = data.JobParts.FirstOrDefault()?.Uid,
+                    Filename = data.JobParts.FirstOrDefault()?.Filename,
+                    TargetLanguage = data.JobParts.FirstOrDefault()?.TargetLang,
+                    Status = data.JobParts.FirstOrDefault()?.Status,
+                    ProjectUid = data.JobParts.FirstOrDefault()?.Project.UId,
+                    //DateDue = response.DateDue
+                }
             };
         }
 
