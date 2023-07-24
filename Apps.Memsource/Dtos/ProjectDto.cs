@@ -12,6 +12,6 @@ namespace Apps.PhraseTMS.Dtos
         public string UId { get; set; }
 
         [Display("Creation date")]
-        public string DateCreated { get; set; }
+        public DateTime DateCreated { get; set; }
     }
 }
