@@ -23,15 +23,15 @@ namespace Apps.PhraseTMS.Actions
             var endpoint = "/api2/v1/files";
             var request = new PhraseTmsRequest(endpoint.WithQuery(query), Method.Get, authenticationCredentialsProviders);
 
-            var response = await client.ExecuteWithHandling<ResponseWrapper<List<FileInfoDto>>>(request);
+            var response = await client.Paginate<FileInfoDto>(request);
 
             return new ListAllFilesResponse
             {
-                Files = response.Content
+                Files = response
             };
         }
 
-        [Action("Get file", Description = "Get file")]
+        [Action("Get file", Description = "Get specific uploaded file")]
         public async Task<GetFileResponse> GetFile(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] GetFileRequest input)
@@ -48,7 +48,7 @@ namespace Apps.PhraseTMS.Actions
             };
         }
 
-        [Action("Upload file", Description = "Upload file")]
+        [Action("Upload file", Description = "Upload a new file")]
         public Task<FileInfoDto> UploadFile(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] UploadFileRequest input)

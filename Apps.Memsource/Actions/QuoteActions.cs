@@ -11,7 +11,7 @@ namespace Apps.PhraseTMS.Actions
     [ActionList]
     public class QuoteActions
     {
-        [Action("Get quote", Description = "Get quote")]
+        [Action("Get quote", Description = "Get quote by UID")]
         public async Task<QuoteDto> GetQuote(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] GetQuoteRequest input)
         {
@@ -22,7 +22,7 @@ namespace Apps.PhraseTMS.Actions
             return JsonConvert.DeserializeObject<QuoteDto>(response.Content);
         }
 
-        [Action("Create quote", Description = "Create quote")]
+        [Action("Create quote", Description = "Create a new project quote")]
         public Task<QuoteDto> CreateQuote(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] CreateQuoteRequest input)
         {
@@ -38,7 +38,7 @@ namespace Apps.PhraseTMS.Actions
             return client.ExecuteWithHandling<QuoteDto>(request);
         }
 
-        [Action("Delete quote", Description = "Delete quote")]
+        [Action("Delete quote", Description = "Delete specific quote")]
         public Task DeleteQuote(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] GetQuoteRequest input)
         {

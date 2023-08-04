@@ -13,7 +13,7 @@ namespace Apps.PhraseTMS.Actions
     [ActionList]
     public class QualityAssuranceActions
     {
-        [Action("Add ignored warning", Description = "Add ignored warning")]
+        [Action("Add ignored warning", Description = "Add a new ignored warning to the job segment")]
         public Task AddIgnoredWarning(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] AddIgnoredWarningRequest input)
@@ -36,7 +36,7 @@ namespace Apps.PhraseTMS.Actions
             return client.ExecuteWithHandling(request);
         }
 
-        [Action("Get list LQA profiles", Description = "Get list LQA profiles")]
+        [Action("List LQA profiles", Description = "List all LQA profiles")]
         public async Task<ListLQAProfilesResponse> ListLQAProfiles(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] ListLQAProfilesQuery query)
@@ -47,15 +47,15 @@ namespace Apps.PhraseTMS.Actions
             var request =
                 new PhraseTmsRequest(endpoint.WithQuery(query), Method.Get, authenticationCredentialsProviders);
 
-            var response = await client.ExecuteWithHandling<ResponseWrapper<List<LQAProfileDto>>>(request);
+            var response = await client.Paginate<LQAProfileDto>(request);
 
             return new ListLQAProfilesResponse
             {
-                Profiles = response.Content
+                Profiles = response
             };
         }
 
-        [Action("Delete LQA profile", Description = "Delete LQA profile")]
+        [Action("Delete LQA profile", Description = "Delete specific LQA profile")]
         public Task DeleteLQAProfile(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] DeleteLQAProfileRequest input)

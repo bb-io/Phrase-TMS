@@ -9,15 +9,15 @@ namespace Apps.PhraseTMS.Connections
 
         public IEnumerable<ConnectionPropertyGroup> ConnectionPropertyGroups => new List<ConnectionPropertyGroup>
         {
-            new ConnectionPropertyGroup
+            new()
             {
                 Name = "OAuth2",
                 AuthenticationType = ConnectionAuthenticationType.OAuth2,
                 ConnectionUsage = ConnectionUsage.Actions,
                 ConnectionProperties = new List<ConnectionProperty>
                 {
-                    new ConnectionProperty("client_id"),
-                    new ConnectionProperty("url"),
+                    new("client_id"),
+                    new("url"),
                 }
             }, 
             // Api token

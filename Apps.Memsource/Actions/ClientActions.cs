@@ -13,7 +13,7 @@ namespace Apps.PhraseTMS.Actions
     [ActionList]
     public class ClientActions
     {
-        [Action("List all clients", Description = "List all clients")]
+        [Action("List clients", Description = "List all clients")]
         public async Task<ListClientsResponse> ListClients(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] ListClientsQuery query)
@@ -23,15 +23,15 @@ namespace Apps.PhraseTMS.Actions
             var endpoint = "/api2/v1/clients";
             var request = new PhraseTmsRequest(endpoint.WithQuery(query), Method.Get, authenticationCredentialsProviders);
 
-            var response = await client.ExecuteWithHandling<ResponseWrapper<List<ClientDto>>>(request);
+            var response = await client.Paginate<ClientDto>(request);
 
             return new ListClientsResponse
             {
-                Clients = response.Content
+                Clients = response
             };
         }
 
-        [Action("Get client", Description = "Get client")]
+        [Action("Get client", Description = "Get specific client")]
         public Task<ClientDto> GetClient(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] GetClientRequest input)
@@ -43,7 +43,7 @@ namespace Apps.PhraseTMS.Actions
             return client.ExecuteWithHandling<ClientDto>(request);
         }
 
-        [Action("Add new client", Description = "Add new client")]
+        [Action("Add client", Description = "Add a new client")]
         public Task<ClientDto> AddClient(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] AddClientRequest input)
@@ -55,7 +55,7 @@ namespace Apps.PhraseTMS.Actions
             return client.ExecuteWithHandling<ClientDto>(request);
         }
 
-        [Action("Delete client", Description = "Delete client")]
+        [Action("Delete client", Description = "Delete specific client")]
         public Task DeleteClient(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] GetClientRequest input)
         {

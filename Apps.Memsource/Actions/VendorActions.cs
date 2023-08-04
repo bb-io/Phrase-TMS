@@ -13,7 +13,7 @@ namespace Apps.PhraseTMS.Actions
     [ActionList]
     public class VendorActions
     {
-        [Action("Add new vendor", Description = "Add new vendor")]
+        [Action("Add vendor", Description = "Add a new vendor")]
         public Task<VendorDto> AddVendor(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] AddVendorRequest input)
@@ -31,7 +31,7 @@ namespace Apps.PhraseTMS.Actions
             return client.ExecuteWithHandling<VendorDto>(request);
         }
 
-        [Action("List all vendors", Description = "List all vendors")]
+        [Action("List vendors", Description = "List all vendors")]
         public async Task<ListVendorsResponse> ListVendors(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] ListVendorsQuery query)
@@ -49,7 +49,7 @@ namespace Apps.PhraseTMS.Actions
             };
         }
 
-        [Action("Get vendor", Description = "Get vendor")]
+        [Action("Get vendor", Description = "Get specific vendor")]
         public Task<VendorDto> GetVendor(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             GetVendorRequest input)

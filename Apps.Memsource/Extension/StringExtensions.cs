@@ -14,4 +14,9 @@ public static class StringExtensions
 
         return QueryHelpers.AddQueryString(str, query);
     }
+    
+    public static string WithQuery(this string str, string parameter, string value)
+    {
+        return QueryHelpers.AddQueryString(str, parameter, value);
+    }
 }

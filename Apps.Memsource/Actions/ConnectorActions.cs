@@ -12,7 +12,7 @@ namespace Apps.PhraseTMS.Actions
     [ActionList]
     public class ConnectorActions
     {
-        [Action("List all connectors", Description = "List all connectors")]
+        [Action("List connectors", Description = "List all connectors")]
         public Task<ConnectorsResponseWrapper> ListConnectors(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] ListConnectorsQuery query)

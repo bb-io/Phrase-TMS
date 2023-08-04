@@ -13,7 +13,7 @@ namespace Apps.PhraseTMS.Actions
     [ActionList]
     public class UserActions
     {
-        [Action("List all users", Description = "List all users")]
+        [Action("List users", Description = "List all users")]
         public async Task<ListAllUsersResponse> ListAllUsers(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] ListAllUsersQuery query)
@@ -23,11 +23,11 @@ namespace Apps.PhraseTMS.Actions
             var endpoint = "/api2/v1/users";
             var request = new PhraseTmsRequest(endpoint.WithQuery(query), Method.Get, authenticationCredentialsProviders);
 
-            var response = await client.ExecuteWithHandling<ResponseWrapper<List<UserDto>>>(request);
+            var response = await client.Paginate<UserDto>(request);
 
             return new ListAllUsersResponse
             {
-                Users = response.Content
+                Users = response
             };
         }
 

@@ -14,7 +14,7 @@ namespace Apps.PhraseTMS.Actions
     [ActionList]
     public class AnalysisActions
     {
-        [Action("List analyses", Description = "List analyses")]
+        [Action("List analyses", Description = "List all job's analyses")]
         public async Task<ListAnalysesResponse> ListAnalyses(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] ListAnalysesPathRequest path,
@@ -27,15 +27,15 @@ namespace Apps.PhraseTMS.Actions
             
             var request = new PhraseTmsRequest(endpoint,
                 Method.Get, authenticationCredentialsProviders);
-            var response = await client.ExecuteWithHandling<ResponseWrapper<List<AnalysisDto>>>(request);
+            var response = await client.Paginate<AnalysisDto>(request);
 
             return new ListAnalysesResponse
             {
-                Analyses = response.Content
+                Analyses = response
             };
         }
 
-        [Action("Get analysis", Description = "Get analysis")]
+        [Action("Get analysis", Description = "Get job's analysis")]
         public Task<AnalysisDto> GetAnalysis(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] GetAnalysisRequest input)
@@ -46,7 +46,7 @@ namespace Apps.PhraseTMS.Actions
             return client.ExecuteWithHandling<AnalysisDto>(request);
         }
 
-        [Action("Create analysis", Description = "Create analysis")]
+        [Action("Create analysis", Description = "Create a new analysis")]
         public AsyncRequest CreateAnalysis(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] CreateAnalysisInput input)

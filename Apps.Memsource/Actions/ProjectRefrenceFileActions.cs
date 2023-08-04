@@ -13,7 +13,7 @@ namespace Apps.PhraseTMS.Actions
     [ActionList]
     public class ProjectRefrenceFileActions
     {
-        [Action("List all reference files", Description = "List all project reference files")]
+        [Action("List reference files", Description = "List all project reference files")]
         public async Task<ListReferenceFilesResponse> ListReferenceFiles(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] ListReferenceFilesRequest input,
@@ -25,15 +25,15 @@ namespace Apps.PhraseTMS.Actions
             var request = new PhraseTmsRequest(endpoint.WithQuery(query), Method.Get,
                 authenticationCredentialsProviders);
 
-            var response = await client.ExecuteWithHandling<ResponseWrapper<List<ReferenceFileInfoDto>>>(request);
+            var response = await client.Paginate<ReferenceFileInfoDto>(request);
 
             return new ListReferenceFilesResponse
             {
-                ReferenceFileInfo = response.Content
+                ReferenceFileInfo = response
             };
         }
 
-        [Action("Create project reference file", Description = "Create project reference file")]
+        [Action("Create reference file", Description = "Create a new project reference file")]
         public Task<ReferenceFileInfoDto> CreateReferenceFile(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] CreateReferenceFileRequest input)
@@ -49,7 +49,7 @@ namespace Apps.PhraseTMS.Actions
             return client.ExecuteWithHandling<ReferenceFileInfoDto>(request);
         }
 
-        [Action("Download reference files", Description = "Download project reference files")]
+        [Action("Download reference file", Description = "Download project reference file")]
         public async Task<DownloadReferenceFilesResponse> DownloadReferenceFiles(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] DownloadReferenceFilesRequest input)
@@ -70,7 +70,7 @@ namespace Apps.PhraseTMS.Actions
             };
         }
 
-        [Action("Delete reference file", Description = "Delete reference file")]
+        [Action("Delete reference file", Description = "Delete specific project reference file")]
         public Task DeleteReferenceFile(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] DeleteReferenceFileRequest input)

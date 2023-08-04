@@ -13,7 +13,7 @@ namespace Apps.PhraseTMS.Actions
     [ActionList]
     public class TranslationActions
     {
-        [Action("List translation settings", Description = "List translation settings")]
+        [Action("List translation settings", Description = "List all machine translate settings")]
         public async Task<ListTranslationSettingsResponse> ListTranslationSettings(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] ListTranslationSettingsQuery query)
@@ -24,16 +24,15 @@ namespace Apps.PhraseTMS.Actions
             var request = new PhraseTmsRequest(endpoint.WithQuery(query), Method.Get,
                 authenticationCredentialsProviders);
 
-            var response = await client
-                .ExecuteWithHandling<ResponseWrapper<List<TranslationSettingDto>>>(request);
+            var response = await client.Paginate<TranslationSettingDto>(request);
 
             return new ListTranslationSettingsResponse
             {
-                TranslationSettings = response.Content
+                TranslationSettings = response
             };
         }
 
-        [Action("Translate with MT", Description = "Translate with MT with custom settings")]
+        [Action("Translate with MT", Description = "Translate with machine translation with custom settings")]
         public Task<TranslationDto> TranslateMT(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] [Display("MT settings UID")] string mtSettingsUId,
@@ -47,7 +46,7 @@ namespace Apps.PhraseTMS.Actions
             return client.ExecuteWithHandling<TranslationDto>(request);
         }
 
-        [Action("Translate with MT by project", Description = "Translate with MT with project settings")]
+        [Action("Translate with MT by project", Description = "Translate with machine translation with project settings")]
         public Task<TranslationDto> TranslateMTProject(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] TranslateMTProjectRequest input)

@@ -16,7 +16,7 @@ namespace Apps.PhraseTMS.Actions
     [ActionList]
     public class JobActions
     {
-        [Action("List all jobs", Description = "List all jobs in the project")]
+        [Action("List jobs", Description = "List all jobs in the project")]
         public async Task<
             ListAllJobsResponse> ListAllJobs(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
@@ -29,11 +29,11 @@ namespace Apps.PhraseTMS.Actions
             var request = new PhraseTmsRequest(endpoint.WithQuery(query), Method.Get,
                 authenticationCredentialsProviders);
 
-            var response = await client.ExecuteWithHandling<ResponseWrapper<List<JobDto>>>(request);
+            var response = await client.Paginate<JobDto>(request);
 
             return new ListAllJobsResponse
             {
-                Jobs = response.Content
+                Jobs = response
             };
         }
 
@@ -59,7 +59,7 @@ namespace Apps.PhraseTMS.Actions
             };
         }
 
-        [Action("Create job", Description = "Create job")]
+        [Action("Create job", Description = "Create a new job")]
         public async Task<JobDto> CreateJob(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] CreateJobRequest input)
@@ -98,7 +98,7 @@ namespace Apps.PhraseTMS.Actions
             return client.ExecuteWithHandling(request);
         }
 
-        [Action("Get segments", Description = "Get segments in job")]
+        [Action("Get segments", Description = "Get all segments in job")]
         public async Task<GetSegmentsResponse> GetSegments(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] GetSegmentsRequest input,
@@ -121,7 +121,7 @@ namespace Apps.PhraseTMS.Actions
             };
         }
 
-        [Action("Edit job", Description = "Edit job")]
+        [Action("Edit job", Description = "Edit selected job")]
         public Task EditJob(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] EditJobPath input,
             [ActionParameter] EditJobBody body)
@@ -134,7 +134,7 @@ namespace Apps.PhraseTMS.Actions
             return client.ExecuteWithHandling(request);
         }
 
-        [Action("Download target file", Description = "Download target file")]
+        [Action("Download target file", Description = "Download target file of a job")]
         public async Task<TargetFileResponse> DownloadTargetFile(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] TargetFileRequest input)

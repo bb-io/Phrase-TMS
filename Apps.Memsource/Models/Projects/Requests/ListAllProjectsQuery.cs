@@ -24,8 +24,6 @@ public class ListAllProjectsQuery
     [Display("Job statuses")] public IEnumerable<string>? JobStatuses { get; set; }
     [Display("Job status group")] public string? JobStatusGroup { get; set; }
     [Display("Buyer ID")] public long? BuyerId { get; set; }
-    [Display("Page number")] public int? PageNumber { get; set; }
-    [Display("Page size")] public int? PageSize { get; set; }
     [Display("Name or internal ID")] public string? NameOrInternalId { get; set; }
     [Display("Include archived")] public bool? IncludeArchived { get; set; }
     [Display("Archived only")] public bool? ArchivedOnly { get; set; }

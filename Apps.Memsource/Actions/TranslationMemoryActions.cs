@@ -14,7 +14,7 @@ namespace Apps.PhraseTMS.Actions
     [ActionList]
     public class TranslationMemoryActions
     {
-        [Action("List translation memories", Description = "List translation memories")]
+        [Action("List translation memories", Description = "List all translation memories")]
         public async Task<ListTranslationMemoriesResponse> ListTranslationMemories(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] ListTranslationMemoriesQuery query)
@@ -25,15 +25,15 @@ namespace Apps.PhraseTMS.Actions
             var request =
                 new PhraseTmsRequest(endpoint.WithQuery(query), Method.Get, authenticationCredentialsProviders);
 
-            var response = await client.ExecuteWithHandling<ResponseWrapper<List<TranslationMemoryDto>>>(request);
+            var response = await client.Paginate<TranslationMemoryDto>(request);
 
             return new ListTranslationMemoriesResponse
             {
-                Memories = response.Content
+                Memories = response
             };
         }
 
-        [Action("Create translation memory", Description = "Create translation memory")]
+        [Action("Create translation memory", Description = "Create a new translation memory")]
         public Task<TranslationMemoryDto> CreateTranslationMemory(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] CreateTranslationMemoryRequest input)
@@ -52,7 +52,7 @@ namespace Apps.PhraseTMS.Actions
             return client.ExecuteWithHandling<TranslationMemoryDto>(request);
         }
 
-        [Action("Get translation memory", Description = "Get translation memory")]
+        [Action("Get translation memory", Description = "Get specific translation memory")]
         public Task<TranslationMemoryDto> GetTranslationMemory(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] GetTranslationMemoryRequest input)
@@ -64,7 +64,7 @@ namespace Apps.PhraseTMS.Actions
             return client.ExecuteWithHandling<TranslationMemoryDto>(request);
         }
 
-        [Action("Import TMX file", Description = "Import TMX file")]
+        [Action("Import TMX file", Description = "Import new TMX file")]
         public AsyncRequest ImportTmx(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] ImportTmxRequest input,
             [ActionParameter] ImportTmxQuery query)
@@ -81,7 +81,7 @@ namespace Apps.PhraseTMS.Actions
             return client.PerformAsyncRequest(request, authenticationCredentialsProviders);
         }
 
-        [Action("Export translation memory", Description = "Export translation memory")]
+        [Action("Export translation memory", Description = "Export selected translation memory")]
         public async Task<ExportTranslationMemoryResponse> ExportTranslationMemory(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] ExportTransMemoryRequest input,
@@ -108,7 +108,7 @@ namespace Apps.PhraseTMS.Actions
             };
         }
 
-        [Action("Insert segment into memory", Description = "Insert segment into memory")]
+        [Action("Insert segment into memory", Description = "Insert a new segment into the translation memory")]
         public Task InsertSegment(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] InsertSegmentRequest input)
         {

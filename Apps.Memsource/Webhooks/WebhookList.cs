@@ -14,7 +14,7 @@ namespace Apps.PhraseTMS.Webhooks
     {
         #region ProjectWebhooks
 
-        [Webhook("On project created", typeof(ProjectCreationHandler), Description = "On project created")]
+        [Webhook("On project created", typeof(ProjectCreationHandler), Description = "On a new project created")]
         public async Task<WebhookResponse<ProjectDto>> ProjectCreation(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<ProjectWrapper>(webhookRequest.Body.ToString());
@@ -29,7 +29,7 @@ namespace Apps.PhraseTMS.Webhooks
             };
         }
 
-        [Webhook("On project deleted", typeof(ProjectDeletionHandler), Description = "On project deleted")]
+        [Webhook("On project deleted", typeof(ProjectDeletionHandler), Description = "On any project deleted")]
         public async Task<WebhookResponse<ProjectDto>> ProjectDeletion(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<ProjectWrapper>(webhookRequest.Body.ToString());
@@ -44,7 +44,7 @@ namespace Apps.PhraseTMS.Webhooks
             };
         }
 
-        [Webhook("On project due date changed", typeof(ProjectDueDateChangedHandler), Description = "On project due date changed")]
+        [Webhook("On project due date changed", typeof(ProjectDueDateChangedHandler), Description = "On any project due date changed")]
         public async Task<WebhookResponse<ProjectDto>> ProjectDueDateChanged(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<ProjectWrapper>(webhookRequest.Body.ToString());
@@ -59,7 +59,7 @@ namespace Apps.PhraseTMS.Webhooks
             };
         }
 
-        [Webhook("On project metadata updated", typeof(ProjectMetadataUpdatedHandler), Description = "On project metadata updated")]
+        [Webhook("On project metadata updated", typeof(ProjectMetadataUpdatedHandler), Description = "On any project metadata updated")]
         public async Task<WebhookResponse<ProjectDto>> ProjectMetadataUpdated(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<ProjectWrapper>(webhookRequest.Body.ToString());
@@ -74,7 +74,7 @@ namespace Apps.PhraseTMS.Webhooks
             };
         }
 
-        [Webhook("On shared project assigned", typeof(ProjectSharedAssignedHandler), Description = "On shared project assigned")]
+        [Webhook("On shared project assigned", typeof(ProjectSharedAssignedHandler), Description = "On any shared project assigned")]
         public async Task<WebhookResponse<ProjectDto>> ProjectSharedAssigned(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<ProjectWrapper>(webhookRequest.Body.ToString());
@@ -89,7 +89,7 @@ namespace Apps.PhraseTMS.Webhooks
             };
         }
 
-        [Webhook("On project status changed", typeof(ProjectStatusChangedHandler), Description = "On project status changed")]
+        [Webhook("On project status changed", typeof(ProjectStatusChangedHandler), Description = "On any project status changed")]
         public async Task<WebhookResponse<ProjectDto>> ProjectStatusChanged(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<ProjectWrapper>(webhookRequest.Body.ToString());
@@ -108,7 +108,7 @@ namespace Apps.PhraseTMS.Webhooks
 
         #region JobWebhooks
 
-        [Webhook("On job created", typeof(JobCreationHandler), Description = "On job created")]
+        [Webhook("On job created", typeof(JobCreationHandler), Description = "On a new job created")]
         public async Task<WebhookResponse<JobResponse>> JobCreation(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
@@ -131,7 +131,7 @@ namespace Apps.PhraseTMS.Webhooks
             };
         }
 
-        [Webhook("On job deleted", typeof(JobDeletionHandler), Description = "On job deleted")]
+        [Webhook("On job deleted", typeof(JobDeletionHandler), Description = "On any job deleted")]
         public async Task<WebhookResponse<JobResponse>> JobDeletion(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
@@ -154,7 +154,7 @@ namespace Apps.PhraseTMS.Webhooks
             };
         }
 
-        [Webhook("On continuous job updated", typeof(JobContinuousUpdatedHandler), Description = "On continuous job updated")]
+        [Webhook("On continuous job updated", typeof(JobContinuousUpdatedHandler), Description = "On any continuous job updated")]
         public async Task<WebhookResponse<JobResponse>> JobContinuousUpdated(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
@@ -177,7 +177,7 @@ namespace Apps.PhraseTMS.Webhooks
             };
         }
 
-        [Webhook("On job assigned", typeof(JobAssignedHandler), Description = "On job assigned")]
+        [Webhook("On job assigned", typeof(JobAssignedHandler), Description = "On any job assigned")]
         public async Task<WebhookResponse<JobResponse>> JobAssigned(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
@@ -200,7 +200,7 @@ namespace Apps.PhraseTMS.Webhooks
             };
         }
 
-        [Webhook("On job due date changed", typeof(JobDueDateChangedHandler), Description = "On job due date changed")]
+        [Webhook("On job due date changed", typeof(JobDueDateChangedHandler), Description = "On any job due date changed")]
         public async Task<WebhookResponse<JobResponse>> JobDueDateChanged(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
@@ -223,7 +223,7 @@ namespace Apps.PhraseTMS.Webhooks
             };
         }
 
-        [Webhook("On job exported", typeof(JobExportedHandler), Description = "On job exported")]
+        [Webhook("On job exported", typeof(JobExportedHandler), Description = "On any job exported")]
         public async Task<WebhookResponse<JobResponse>> JobExported(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
@@ -246,7 +246,7 @@ namespace Apps.PhraseTMS.Webhooks
             };
         }
 
-        [Webhook("On job source updated", typeof(JobSourceUpdatedHandler), Description = "On job source updated")]
+        [Webhook("On job source updated", typeof(JobSourceUpdatedHandler), Description = "On any job source updated")]
         public async Task<WebhookResponse<JobResponse>> JobSourceUpdated(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
@@ -269,7 +269,7 @@ namespace Apps.PhraseTMS.Webhooks
             };
         }
 
-        [Webhook("On job status changed", typeof(JobStatusChangedHandler), Description = "On job status changed")]
+        [Webhook("On job status changed", typeof(JobStatusChangedHandler), Description = "On any job status changed")]
         public async Task<WebhookResponse<JobResponse>> JobStatusChanged(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
@@ -292,7 +292,7 @@ namespace Apps.PhraseTMS.Webhooks
         };
         }
 
-        [Webhook("On job target updated", typeof(JobTargetUpdatedHandler), Description = "On job target updated")]
+        [Webhook("On job target updated", typeof(JobTargetUpdatedHandler), Description = "On any job target updated")]
         public async Task<WebhookResponse<JobResponse>> JobTargetUpdated(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
@@ -315,7 +315,7 @@ namespace Apps.PhraseTMS.Webhooks
             };
         }
 
-        [Webhook("On job unexported", typeof(JobUnexportedHandler), Description = "On job unexported")]
+        [Webhook("On job unexported", typeof(JobUnexportedHandler), Description = "On any job unexported")]
         public async Task<WebhookResponse<JobResponse>> JobUnexported(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
@@ -342,7 +342,7 @@ namespace Apps.PhraseTMS.Webhooks
 
         #region ProjectTemplates
 
-        [Webhook("On template created", typeof(TemplateCreationHandler), Description = "On template created")]
+        [Webhook("On template created", typeof(TemplateCreationHandler), Description = "On a new template created")]
         public async Task<WebhookResponse<ProjectTemplateDto>> ProjectTemplateCreation(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<ProjectTemplateWrapper>(webhookRequest.Body.ToString());
@@ -357,7 +357,7 @@ namespace Apps.PhraseTMS.Webhooks
             };
         }
 
-        [Webhook("On template deleted", typeof(TemplateDeletionHandler), Description = "On template deleted")]
+        [Webhook("On template deleted", typeof(TemplateDeletionHandler), Description = "On any template deleted")]
         public async Task<WebhookResponse<ProjectTemplateDto>> ProjectTemplateDeletion(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<ProjectTemplateWrapper>(webhookRequest.Body.ToString());
@@ -372,7 +372,7 @@ namespace Apps.PhraseTMS.Webhooks
             };
         }
 
-        [Webhook("On template updated", typeof(TemplateUpdatedHandler), Description = "On template updated")]
+        [Webhook("On template updated", typeof(TemplateUpdatedHandler), Description = "On any template updated")]
         public async Task<WebhookResponse<ProjectTemplateDto>> ProjectTemplateUpdated(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<ProjectTemplateWrapper>(webhookRequest.Body.ToString());
@@ -391,7 +391,7 @@ namespace Apps.PhraseTMS.Webhooks
 
         #region OtherWebhooks
 
-        [Webhook("On analysis created", typeof(AnalysisCreationHandler), Description = "On analysis created")]
+        [Webhook("On analysis created", typeof(AnalysisCreationHandler), Description = "On a new analysis created")]
         public async Task<WebhookResponse<AnalysisDto>> AnalysisCreation(WebhookRequest webhookRequest)
         {
             var data = JsonConvert.DeserializeObject<AnalyseWrapper>(webhookRequest.Body.ToString());

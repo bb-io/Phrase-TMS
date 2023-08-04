@@ -1,5 +1,7 @@
-﻿using Apps.PhraseTMS.Models;
+﻿using Apps.PhraseTMS.Extension;
+using Apps.PhraseTMS.Models;
 using Apps.PhraseTMS.Models.Async;
+using Apps.PhraseTMS.Models.Responses;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Newtonsoft.Json;
 using RestSharp;
@@ -80,6 +82,28 @@ namespace Apps.PhraseTMS
                 return response;
 
             throw ConfigureErrorException(response.Content);
+        }
+        
+        public async Task<List<T>> Paginate<T>(RestRequest request)
+        {
+            var pageNumber = 0;
+            int totalPages;
+            
+            var resource = request.Resource;
+            var result = new List<T>();
+
+            do
+            {
+                request.Resource = resource.WithQuery("pageNumber", pageNumber++.ToString());
+
+                var response = await ExecuteWithHandling<PaginationResponse<T[]>>(request);
+                totalPages = response.TotalPages;
+                
+                result.AddRange(response.Content);
+                
+            } while (pageNumber < totalPages);
+
+            return result;
         }
 
         private Exception ConfigureErrorException(string responseContent)

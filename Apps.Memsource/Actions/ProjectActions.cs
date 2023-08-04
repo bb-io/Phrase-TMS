@@ -13,7 +13,7 @@ namespace Apps.PhraseTMS.Actions
     [ActionList]
     public class ProjectActions
     {
-        [Action("List all projects", Description = "List all projects")]
+        [Action("List projects", Description = "List all projects")]
         public async Task<ListAllProjectsResponse> ListAllProjects(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] ListAllProjectsQuery query)
@@ -23,11 +23,11 @@ namespace Apps.PhraseTMS.Actions
             var endpoint = "/api2/v1/projects";
             var request = new PhraseTmsRequest(endpoint.WithQuery(query), Method.Get, authenticationCredentialsProviders);
 
-            var response = await client.ExecuteWithHandling<ResponseWrapper<List<ProjectDto>>>(request);
+            var response = await client.Paginate<ProjectDto>(request);
 
             return new ListAllProjectsResponse
             {
-                Projects = response.Content
+                Projects = response
             };
         }
 
@@ -43,7 +43,7 @@ namespace Apps.PhraseTMS.Actions
             return client.ExecuteWithHandling<ProjectDto>(request);
         }
 
-        [Action("Create project", Description = "Create project")]
+        [Action("Create project", Description = "Create a new project")]
         public Task<ProjectDto> CreateProject(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] CreateProjectRequest input)
@@ -60,7 +60,7 @@ namespace Apps.PhraseTMS.Actions
             return client.ExecuteWithHandling<ProjectDto>(request);
         }
 
-        [Action("Create project from template", Description = "Create project from template")]
+        [Action("Create project from template", Description = "Create a new project from the specific template")]
         public Task<ProjectDto> CreateProjectFromTemplate(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] CreateFromTemplateRequest input)
@@ -76,7 +76,7 @@ namespace Apps.PhraseTMS.Actions
             return client.ExecuteWithHandling<ProjectDto>(request);
         }
 
-        [Action("Add target language", Description = "Add target language")]
+        [Action("Add target language", Description = "Add a target language to the project")]
         public Task AddTargetLanguage(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] AddTargetLanguageRequest input)
         {
@@ -91,7 +91,7 @@ namespace Apps.PhraseTMS.Actions
             return client.ExecuteWithHandling(request);
         }
 
-        [Action("Edit project", Description = "Edit project")]
+        [Action("Edit project", Description = "Edit selected project")]
         public Task EditProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] EditProjectRequest input)
         {
@@ -107,7 +107,7 @@ namespace Apps.PhraseTMS.Actions
             return client.ExecuteWithHandling(request);
         }
 
-        [Action("Delete project", Description = "Delete project")]
+        [Action("Delete project", Description = "Delete specific project")]
         public Task DeleteProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] DeleteProjectRequest input)
         {
