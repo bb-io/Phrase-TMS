@@ -1,8 +1,8 @@
-﻿using Apps.PhraseTMS.Extension;
-using Apps.PhraseTMS.Models;
+﻿using Apps.PhraseTMS.Models;
 using Apps.PhraseTMS.Models.Async;
 using Apps.PhraseTMS.Models.Responses;
 using Blackbird.Applications.Sdk.Common.Authentication;
+using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using Newtonsoft.Json;
 using RestSharp;
 
@@ -94,7 +94,7 @@ namespace Apps.PhraseTMS
 
             do
             {
-                request.Resource = resource.WithQuery("pageNumber", pageNumber++.ToString());
+                request.Resource = resource.SetQueryParameter("pageNumber", pageNumber++.ToString());
 
                 var response = await ExecuteWithHandling<PaginationResponse<T[]>>(request);
                 totalPages = response.TotalPages;

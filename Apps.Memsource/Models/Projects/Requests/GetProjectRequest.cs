@@ -1,10 +1,6 @@
-﻿using Blackbird.Applications.Sdk.Common;
-
-namespace Apps.PhraseTMS.Models.Projects.Requests
+﻿namespace Apps.PhraseTMS.Models.Projects.Requests
 {
-    public class GetProjectRequest
+    public class GetProjectRequest : ProjectRequest
     {
-        [Display("Project UID")]
-        public string ProjectUId { get; set; }
     }
 }

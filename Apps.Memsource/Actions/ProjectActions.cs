@@ -1,11 +1,10 @@
 ﻿using Apps.PhraseTMS.Dtos;
-using Apps.PhraseTMS.Extension;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Apps.PhraseTMS.Models.Projects.Responses;
-using Apps.PhraseTMS.Models.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Authentication;
+using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using RestSharp;
 
 namespace Apps.PhraseTMS.Actions
@@ -29,6 +28,20 @@ namespace Apps.PhraseTMS.Actions
             {
                 Projects = response
             };
+        }
+        
+        [Action("List project templates", Description = "List all project templates")]
+        public async Task<ListAllProjectTemplatesResponse> ListAllProjectTemplates(
+            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+        {
+            var client = new PhraseTmsClient(authenticationCredentialsProviders);
+            
+            var endpoint = "/api2/v1/projectTemplates";
+            var request = new PhraseTmsRequest(endpoint, Method.Get, authenticationCredentialsProviders);
+
+            var response = await client.Paginate<ProjectTemplateDto>(request);
+
+            return new(response);
         }
 
         [Action("Get project", Description = "Get project by UId")]

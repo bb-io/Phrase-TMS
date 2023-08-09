@@ -1,9 +1,8 @@
-﻿using Blackbird.Applications.Sdk.Common;
+﻿using Apps.PhraseTMS.Models.Projects.Requests;
 
 namespace Apps.PhraseTMS.Models.ProjectReferenceFiles.Requests
 {
-    public class ListReferenceFilesRequest
+    public class ListReferenceFilesRequest : ProjectRequest
     {
-        [Display("Project UID")] public string ProjectUId { get; set; }
     }
 }

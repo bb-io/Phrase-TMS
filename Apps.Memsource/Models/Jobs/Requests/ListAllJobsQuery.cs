@@ -1,4 +1,6 @@
-﻿using Blackbird.Applications.Sdk.Common;
+﻿using Apps.PhraseTMS.DataSourceHandlers;
+using Blackbird.Applications.Sdk.Common;
+using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.PhraseTMS.Models.Jobs.Requests;
 
@@ -16,10 +18,12 @@ public class ListAllJobsQuery
     [Display("Due in hours")]
     public int? DueInHours { get; set; }
 
-    [Display("File name")]
+    [Display("File")]
+    [DataSource(typeof(FileNameDataHandler))]
     public string? Filename { get; set; }
 
     [Display("Target language")]
+    [DataSource(typeof(LanguageDataHandler))]
     public string? TargetLang { get; set; }
 
     [Display("Assigned vendor")]

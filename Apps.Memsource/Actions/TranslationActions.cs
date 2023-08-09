@@ -4,9 +4,9 @@ using RestSharp;
 using Apps.PhraseTMS.Models.Translations.Requests;
 using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Extension;
-using Apps.PhraseTMS.Models.Responses;
 using Apps.PhraseTMS.Models.Translations.Responses;
 using Blackbird.Applications.Sdk.Common.Actions;
+using Blackbird.Applications.Sdk.Utils.Extensions.String;
 
 namespace Apps.PhraseTMS.Actions
 {

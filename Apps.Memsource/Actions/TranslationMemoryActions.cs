@@ -4,10 +4,10 @@ using RestSharp;
 using Apps.PhraseTMS.Models.TranslationMemories.Requests;
 using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Extension;
-using Apps.PhraseTMS.Models.Responses;
 using Apps.PhraseTMS.Models.TranslationMemories.Responses;
 using Apps.PhraseTMS.Models.Async;
 using Blackbird.Applications.Sdk.Common.Actions;
+using Blackbird.Applications.Sdk.Utils.Extensions.String;
 
 namespace Apps.PhraseTMS.Actions
 {

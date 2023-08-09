@@ -1,12 +1,12 @@
 ﻿using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Extension;
-using Apps.PhraseTMS.Models.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using RestSharp;
 using Apps.PhraseTMS.Models.Clients.Response;
 using Apps.PhraseTMS.Models.Clients.Requests;
 using Blackbird.Applications.Sdk.Common.Actions;
+using Blackbird.Applications.Sdk.Utils.Extensions.String;
 
 namespace Apps.PhraseTMS.Actions
 {
@@ -34,10 +34,10 @@ namespace Apps.PhraseTMS.Actions
         [Action("Get client", Description = "Get specific client")]
         public Task<ClientDto> GetClient(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-            [ActionParameter] GetClientRequest input)
+            [ActionParameter] ClientRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
-            var request = new PhraseTmsRequest($"/api2/v1/clients/{input.ClientUId}", Method.Get,
+            var request = new PhraseTmsRequest($"/api2/v1/clients/{input.ClientUid}", Method.Get,
                 authenticationCredentialsProviders);
 
             return client.ExecuteWithHandling<ClientDto>(request);
@@ -57,10 +57,10 @@ namespace Apps.PhraseTMS.Actions
 
         [Action("Delete client", Description = "Delete specific client")]
         public Task DeleteClient(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-            [ActionParameter] GetClientRequest input)
+            [ActionParameter] ClientRequest input)
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
-            var request = new PhraseTmsRequest($"/api2/v1/clients/{input.ClientUId}", Method.Delete,
+            var request = new PhraseTmsRequest($"/api2/v1/clients/{input.ClientUid}", Method.Delete,
                 authenticationCredentialsProviders);
 
             return client.ExecuteWithHandling(request);

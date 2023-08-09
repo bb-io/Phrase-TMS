@@ -1,4 +1,6 @@
-﻿using Blackbird.Applications.Sdk.Common;
+﻿using Apps.PhraseTMS.DataSourceHandlers;
+using Blackbird.Applications.Sdk.Common;
+using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.PhraseTMS.Models.Projects.Requests
 {
@@ -7,6 +9,7 @@ namespace Apps.PhraseTMS.Models.Projects.Requests
         public string Name { get; set; }
 
         [Display("Source language")]
+        [DataSource(typeof(LanguageDataHandler))]
         public string SourceLanguage { get; set; }
 
         [Display("Target languages")]

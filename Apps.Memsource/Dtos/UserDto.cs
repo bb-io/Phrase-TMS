@@ -6,6 +6,7 @@ namespace Apps.PhraseTMS.Dtos
     {
         //public string Id { get; set; }
         [Display("First name")] public string FirstName { get; set; }
+        [Display("Full name")] public string FullName => $"{FirstName} {LastName}";
         public string Role { get; set; }
         public bool Active { get; set; }
         [Display("User name")] public string UserName { get; set; }

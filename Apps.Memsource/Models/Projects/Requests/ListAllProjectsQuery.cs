@@ -1,4 +1,6 @@
-﻿using Blackbird.Applications.Sdk.Common;
+﻿using Apps.PhraseTMS.DataSourceHandlers.EnumHandlers;
+using Blackbird.Applications.Sdk.Common;
+using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.PhraseTMS.Models.Projects.Requests;
 
@@ -22,7 +24,11 @@ public class ListAllProjectsQuery
     [Display("Source languages")] public IEnumerable<string>? SourceLangs { get; set; }
     [Display("Owner ID")] public long? OwnerId { get; set; }
     [Display("Job statuses")] public IEnumerable<string>? JobStatuses { get; set; }
-    [Display("Job status group")] public string? JobStatusGroup { get; set; }
+    
+    [Display("Job status group")] 
+    [DataSource(typeof(JobStatusGroupDataHandler))]
+    public string? JobStatusGroup { get; set; }
+    
     [Display("Buyer ID")] public long? BuyerId { get; set; }
     [Display("Name or internal ID")] public string? NameOrInternalId { get; set; }
     [Display("Include archived")] public bool? IncludeArchived { get; set; }

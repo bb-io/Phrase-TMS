@@ -1,10 +1,10 @@
-﻿using Blackbird.Applications.Sdk.Common;
+﻿using Apps.PhraseTMS.Models.Projects.Requests;
+using Blackbird.Applications.Sdk.Common;
 
 namespace Apps.PhraseTMS.Models.ProjectReferenceFiles.Requests
 {
-    public class DeleteReferenceFileRequest
+    public class DeleteReferenceFileRequest : ProjectRequest
     {
-        [Display("Project UID")] public string ProjectUId { get; set; }
         [Display("Reference file UID")] public string ReferenceFileUId { get; set; }
     }
 }

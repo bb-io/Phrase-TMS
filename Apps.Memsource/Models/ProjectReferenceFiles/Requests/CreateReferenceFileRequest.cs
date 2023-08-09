@@ -1,11 +1,10 @@
-﻿using Blackbird.Applications.Sdk.Common;
+﻿using Apps.PhraseTMS.Models.Projects.Requests;
+using Blackbird.Applications.Sdk.Common;
 
 namespace Apps.PhraseTMS.Models.ProjectReferenceFiles.Requests
 {
-    public class CreateReferenceFileRequest
+    public class CreateReferenceFileRequest : ProjectRequest
     {
-        [Display("Project UID")] public string ProjectUId { get; set; }
-
         public byte[] File { get; set; }
 
         [Display("File name")]

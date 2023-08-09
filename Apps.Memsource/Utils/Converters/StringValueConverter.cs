@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using Apps.PhraseTMS.Extension;
+using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using Newtonsoft.Json;
 
 namespace Apps.PhraseTMS.Utils.Converters;

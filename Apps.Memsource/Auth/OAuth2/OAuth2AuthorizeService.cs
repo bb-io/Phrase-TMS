@@ -1,5 +1,5 @@
 ﻿using Blackbird.Applications.Sdk.Common.Authentication.OAuth2;
-using Microsoft.AspNetCore.WebUtilities;
+using Blackbird.Applications.Sdk.Utils.Extensions.String;
 
 namespace Apps.PhraseTMS.Auth.OAuth2
 {
@@ -15,7 +15,7 @@ namespace Apps.PhraseTMS.Auth.OAuth2
                 { "response_type", "code" },
                 { "state", values["state"] }
             };
-            return QueryHelpers.AddQueryString(oauthUrl, parameters);
+            return oauthUrl.WithQuery(parameters);
         }
     }
 }

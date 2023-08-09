@@ -2,9 +2,8 @@
 
 namespace Apps.PhraseTMS.Models.Projects.Requests
 {
-    public class AddTargetLanguageRequest
+    public class AddTargetLanguageRequest : ProjectRequest
     {
-        [Display("Project UID")] public string ProjectUId { get; set; }
         [Display("Target languages")] public IEnumerable<string> TargetLanguages { get; set; }
     }
 }

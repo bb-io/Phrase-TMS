@@ -1,4 +1,6 @@
-﻿using Blackbird.Applications.Sdk.Common;
+﻿using Apps.PhraseTMS.DataSourceHandlers;
+using Blackbird.Applications.Sdk.Common;
+using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.PhraseTMS.Models.Vendors.Requests
 {
@@ -7,7 +9,8 @@ namespace Apps.PhraseTMS.Models.Vendors.Requests
         [Display("Vendor token")]
         public string VendorToken { get; set; }
 
-        [Display("Price list UID")]
+        [Display("Price list")]
+        [DataSource(typeof(PriceListDataHandler))]
         public string PriceListUId { get; set; }
         
         [Display("Source locales")]

@@ -1,12 +1,11 @@
 ﻿using Apps.PhraseTMS.Dtos;
-using Apps.PhraseTMS.Extension;
-using Apps.PhraseTMS.Models.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using RestSharp;
 using Apps.PhraseTMS.Models.QualityAssurance.Responses;
 using Apps.PhraseTMS.Models.QualityAssurance.Requests;
 using Blackbird.Applications.Sdk.Common.Actions;
+using Blackbird.Applications.Sdk.Utils.Extensions.String;
 
 namespace Apps.PhraseTMS.Actions
 {

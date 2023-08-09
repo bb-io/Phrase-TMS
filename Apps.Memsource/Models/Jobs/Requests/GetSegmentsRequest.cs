@@ -1,12 +1,10 @@
-﻿using Blackbird.Applications.Sdk.Common;
+﻿using Apps.PhraseTMS.Models.Projects.Requests;
+using Blackbird.Applications.Sdk.Common;
 
 namespace Apps.PhraseTMS.Models.Jobs.Requests
 {
-    public class GetSegmentsRequest
+    public class GetSegmentsRequest : ProjectRequest
     {
-        [Display("Project UID")]
-        public string ProjectUId { get; set; }
-
         [Display("Job UID")]
         public string JobUId { get; set; }
     }

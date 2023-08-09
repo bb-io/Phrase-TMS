@@ -3,10 +3,10 @@ using Blackbird.Applications.Sdk.Common.Authentication;
 using RestSharp;
 using Apps.PhraseTMS.Models.Vendors.Requests;
 using Apps.PhraseTMS.Dtos;
-using Apps.PhraseTMS.Extension;
 using Apps.PhraseTMS.Models.Responses;
 using Apps.PhraseTMS.Models.Vendors.Response;
 using Blackbird.Applications.Sdk.Common.Actions;
+using Blackbird.Applications.Sdk.Utils.Extensions.String;
 
 namespace Apps.PhraseTMS.Actions
 {

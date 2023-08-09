@@ -1,4 +1,6 @@
-﻿using Blackbird.Applications.Sdk.Common;
+﻿using Apps.PhraseTMS.DataSourceHandlers;
+using Blackbird.Applications.Sdk.Common;
+using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.PhraseTMS.Models.Projects.Requests
 {
@@ -6,7 +8,8 @@ namespace Apps.PhraseTMS.Models.Projects.Requests
     {
         public string Name { get; set; }
 
-        [Display("Template UID")]
+        [Display("Template")]
+        [DataSource(typeof(ProjectTemplateDataHandler))]
         public string TemplateUId { get; set; }
     }
 }

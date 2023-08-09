@@ -7,6 +7,7 @@ using Apps.PhraseTMS.Models.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Authentication;
+using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;

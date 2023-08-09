@@ -1,4 +1,6 @@
-﻿using Blackbird.Applications.Sdk.Common;
+﻿using Apps.PhraseTMS.DataSourceHandlers.EnumHandlers;
+using Blackbird.Applications.Sdk.Common;
+using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.PhraseTMS.Models.Analysis.Requests
 {
@@ -46,7 +48,11 @@ namespace Apps.PhraseTMS.Models.Analysis.Requests
 
         [Display("Callback Url")] public string? CallbackUrl { get; set; }
         [Display("Net rate scheme ID")] public string? NetRateSchemeId { get; set; }
-        [Display("Provider type")] public string? ProviderType { get; set; }
+        
+        [Display("Provider type")] 
+        [DataSource(typeof(ProviderTypeDataHandler))]
+        public string? ProviderType { get; set; }
+        
         [Display("Provider ID")] public string? ProviderId { get; set; }
         [Display("Default project owner ID")] public int? DefaultProjectOwnerId { get; set; }
     }
