@@ -5,6 +5,7 @@ using RestSharp;
 using Apps.PhraseTMS.Models.QualityAssurance.Responses;
 using Apps.PhraseTMS.Models.QualityAssurance.Requests;
 using Blackbird.Applications.Sdk.Common.Actions;
+using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
 
 namespace Apps.PhraseTMS.Actions
@@ -21,7 +22,7 @@ namespace Apps.PhraseTMS.Actions
             var request = new PhraseTmsRequest(
                 $"/api2/v1/projects/{input.ProjectUId}/jobs/{input.JobUId}/qualityAssurances/ignoredWarnings",
                 Method.Post, authenticationCredentialsProviders);
-            request.AddJsonBody(new
+            request.WithJsonBody(new
             {
                 segments = new[]
                 {

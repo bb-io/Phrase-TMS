@@ -1,11 +1,12 @@
-﻿using Blackbird.Applications.Sdk.Common;
+﻿using Apps.PhraseTMS.Constants;
+using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using RestSharp;
 using Apps.PhraseTMS.Models.Files.Responses;
 using Apps.PhraseTMS.Dtos;
-using Apps.PhraseTMS.Extension;
 using Apps.PhraseTMS.Models.Files.Requests;
 using Blackbird.Applications.Sdk.Common.Actions;
+using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
 
 namespace Apps.PhraseTMS.Actions
@@ -58,7 +59,7 @@ namespace Apps.PhraseTMS.Actions
             request.AddHeader("Content-Disposition", $"filename*=UTF-8''{input.FileName}");
             request.AddHeader("Content-Type", "application/octet-stream");
             request.AddParameter("application/octet-stream", input.File, ParameterType.RequestBody);
-            request.WithJsonBody(input);
+            request.WithJsonBody(input,  JsonConfig.Settings);
             
             return client.ExecuteWithHandling<FileInfoDto>(request);
         }

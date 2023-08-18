@@ -11,7 +11,6 @@ namespace Apps.PhraseTMS.Models.Jobs.Requests
         public byte[] File { get; set; }
         
         [Display("File name")] 
-        [DataSource(typeof(FileNameDataHandler))]
         public string FileName { get; set; }
         [Display("File type")] public string FileType { get; set; }
     }

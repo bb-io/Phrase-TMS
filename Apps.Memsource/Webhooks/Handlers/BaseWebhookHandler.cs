@@ -1,7 +1,9 @@
-﻿using Apps.PhraseTMS.Models.Responses;
+﻿
+using Apps.PhraseTMS.Models.Responses;
 using Apps.PhraseTMS.Webhooks.Handlers.Models;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Webhooks;
+using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using RestSharp;
 
 namespace Apps.PhraseTMS.Webhooks.Handlers
@@ -20,7 +22,7 @@ namespace Apps.PhraseTMS.Webhooks.Handlers
         {
             var client = new PhraseTmsClient(authenticationCredentialsProvider);
             var request = new PhraseTmsRequest($"/api2/v2/webhooks", Method.Post, authenticationCredentialsProvider);
-            request.AddJsonBody(new
+            request.WithJsonBody(new
             {
                 events = new[] { SubscriptionEvent },
                 url = values["payloadUrl"],

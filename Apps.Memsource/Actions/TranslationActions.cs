@@ -1,11 +1,12 @@
-﻿using Blackbird.Applications.Sdk.Common;
+﻿using Apps.PhraseTMS.Constants;
+using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using RestSharp;
 using Apps.PhraseTMS.Models.Translations.Requests;
 using Apps.PhraseTMS.Dtos;
-using Apps.PhraseTMS.Extension;
 using Apps.PhraseTMS.Models.Translations.Responses;
 using Blackbird.Applications.Sdk.Common.Actions;
+using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
 
 namespace Apps.PhraseTMS.Actions
@@ -41,7 +42,7 @@ namespace Apps.PhraseTMS.Actions
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/machineTranslations/{mtSettingsUId}/translate",
                 Method.Post, authenticationCredentialsProviders);
-            request.WithJsonBody(input);
+            request.WithJsonBody(input,  JsonConfig.Settings);
 
             return client.ExecuteWithHandling<TranslationDto>(request);
         }
@@ -55,10 +56,10 @@ namespace Apps.PhraseTMS.Actions
             var request = new PhraseTmsRequest(
                 $"/api2/v1/projects/{input.ProjectUId}/jobs/{input.JobUId}/translations/translateWithMachineTranslation",
                 Method.Post, authenticationCredentialsProviders);
-            request.AddJsonBody(new
+            request.WithJsonBody(new
             {
                 sourceTexts = input.SourceTexts.ToArray(),
-            });
+            },  JsonConfig.Settings);
             return client.ExecuteWithHandling<TranslationDto>(request);
         }
     }

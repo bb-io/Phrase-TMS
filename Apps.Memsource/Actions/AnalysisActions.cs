@@ -1,5 +1,5 @@
-﻿using Apps.PhraseTMS.Dtos;
-using Apps.PhraseTMS.Extension;
+﻿using Apps.PhraseTMS.Constants;
+using Apps.PhraseTMS.Dtos;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common;
 using RestSharp;
@@ -7,6 +7,7 @@ using Apps.PhraseTMS.Models.Analysis.Requests;
 using Apps.PhraseTMS.Models.Analysis.Responses;
 using Apps.PhraseTMS.Models.Async;
 using Blackbird.Applications.Sdk.Common.Actions;
+using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
 
 namespace Apps.PhraseTMS.Actions
@@ -53,7 +54,7 @@ namespace Apps.PhraseTMS.Actions
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v2/analyses", Method.Post, authenticationCredentialsProviders);
-            request.WithJsonBody(new CreateAnalysisRequest(input));
+            request.WithJsonBody(new CreateAnalysisRequest(input),  JsonConfig.Settings);
             
             var asyncRequest = client.PerformMultipleAsyncRequest(request, authenticationCredentialsProviders);
             return asyncRequest.First();

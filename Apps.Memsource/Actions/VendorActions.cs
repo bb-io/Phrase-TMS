@@ -6,6 +6,7 @@ using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Models.Responses;
 using Apps.PhraseTMS.Models.Vendors.Response;
 using Blackbird.Applications.Sdk.Common.Actions;
+using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
 
 namespace Apps.PhraseTMS.Actions
@@ -20,7 +21,7 @@ namespace Apps.PhraseTMS.Actions
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/vendors", Method.Post, authenticationCredentialsProviders);
-            request.AddJsonBody(new
+            request.WithJsonBody(new
             {
                 vendorToken = input.VendorToken,
                 priceList = new { uid = input.PriceListUId },

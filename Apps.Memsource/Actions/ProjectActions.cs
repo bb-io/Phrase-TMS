@@ -4,6 +4,7 @@ using Apps.PhraseTMS.Models.Projects.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Authentication;
+using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using RestSharp;
 
@@ -63,7 +64,7 @@ namespace Apps.PhraseTMS.Actions
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest("/api2/v1/projects", Method.Post, authenticationCredentialsProviders);
-            request.AddJsonBody(new
+            request.WithJsonBody(new
             {
                 name = input.Name,
                 sourceLang = input.SourceLanguage,
@@ -81,7 +82,7 @@ namespace Apps.PhraseTMS.Actions
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/projects/applyTemplate/{input.TemplateUId}", Method.Post,
                 authenticationCredentialsProviders);
-            request.AddJsonBody(new
+            request.WithJsonBody(new
             {
                 name = input.Name
             });
@@ -96,7 +97,7 @@ namespace Apps.PhraseTMS.Actions
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/targetLangs", Method.Post,
                 authenticationCredentialsProviders);
-            request.AddJsonBody(new
+            request.WithJsonBody(new
             {
                 targetLangs = input.TargetLanguages.ToArray()
             });
@@ -111,7 +112,7 @@ namespace Apps.PhraseTMS.Actions
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Patch,
                 authenticationCredentialsProviders);
-            request.AddJsonBody(new
+            request.WithJsonBody(new
             {
                 name = input.ProjectName,
                 status = input.Status,

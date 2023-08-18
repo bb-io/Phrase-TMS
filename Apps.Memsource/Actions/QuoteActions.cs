@@ -5,6 +5,7 @@ using RestSharp;
 using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Models.Quotes.Requests;
 using Blackbird.Applications.Sdk.Common.Actions;
+using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 
 namespace Apps.PhraseTMS.Actions
 {
@@ -28,7 +29,7 @@ namespace Apps.PhraseTMS.Actions
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v2/quotes", Method.Post, authenticationCredentialsProviders);
-            request.AddJsonBody(new
+            request.WithJsonBody(new
             {
                 analyse = new { id = input.AnalyseUId },
                 name = input.Name,

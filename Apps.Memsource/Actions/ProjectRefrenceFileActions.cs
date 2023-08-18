@@ -5,6 +5,7 @@ using RestSharp;
 using Apps.PhraseTMS.Models.ProjectReferenceFiles.Requests;
 using Apps.PhraseTMS.Models.ProjectReferenceFiles.Responses;
 using Blackbird.Applications.Sdk.Common.Actions;
+using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
 
 namespace Apps.PhraseTMS.Actions
@@ -77,7 +78,7 @@ namespace Apps.PhraseTMS.Actions
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/references",
                 Method.Delete, authenticationCredentialsProviders);
-            request.AddJsonBody(new
+            request.WithJsonBody(new
             {
                 referenceFiles = new[] { new { id = input.ReferenceFileUId } }
             });

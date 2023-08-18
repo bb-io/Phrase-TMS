@@ -1,5 +1,5 @@
-﻿using Apps.PhraseTMS.Dtos;
-using Apps.PhraseTMS.Extension;
+﻿using Apps.PhraseTMS.Constants;
+using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Models.Jobs.Requests;
 using Apps.PhraseTms.Models.Jobs.Responses;
 using Apps.PhraseTMS.Models.Jobs.Responses;
@@ -7,6 +7,7 @@ using Apps.PhraseTMS.Models.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Authentication;
+using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -73,10 +74,15 @@ namespace Apps.PhraseTMS.Actions
             {
                 targetLangs = input.TargetLanguages
             });
+            
+            var headers = new Dictionary<string, string>()
+            {
+                { "Memsource", output },
+                { "Content-Disposition", $"filename*=UTF-8''{input.FileName}.{input.FileType}" },
+                { "Content-Type", "application/octet-stream" },
+            };
 
-            request.AddHeader("Memsource", output);
-            request.AddHeader("Content-Disposition", $"filename*=UTF-8''{input.FileName}.{input.FileType}");
-            request.AddHeader("Content-Type", "application/octet-stream");
+            headers.ToList().ForEach(x => request.AddHeader(x.Key, x.Value));
             request.AddParameter("application/octet-stream", input.File, ParameterType.RequestBody);
 
             var response = await client.ExecuteWithHandling<JobResponseWrapper>(request);
@@ -91,7 +97,7 @@ namespace Apps.PhraseTMS.Actions
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/jobs/batch",
                 Method.Delete, authenticationCredentialsProviders);
-            request.AddJsonBody(new
+            request.WithJsonBody(new
             {
                 jobs = input.JobsUIds.Select(u => new { uid = u })
             });
@@ -130,7 +136,7 @@ namespace Apps.PhraseTMS.Actions
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/jobs/{input.JobUId}",
                 Method.Patch, authenticationCredentialsProviders);
-            request.WithJsonBody(body);
+            request.WithJsonBody(body,  JsonConfig.Settings);
 
             return client.ExecuteWithHandling(request);
         }

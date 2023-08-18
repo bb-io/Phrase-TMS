@@ -1,12 +1,13 @@
-﻿using Blackbird.Applications.Sdk.Common;
+﻿using Apps.PhraseTMS.Constants;
+using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using RestSharp;
 using Apps.PhraseTMS.Models.TranslationMemories.Requests;
 using Apps.PhraseTMS.Dtos;
-using Apps.PhraseTMS.Extension;
 using Apps.PhraseTMS.Models.TranslationMemories.Responses;
 using Apps.PhraseTMS.Models.Async;
 using Blackbird.Applications.Sdk.Common.Actions;
+using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
 
 namespace Apps.PhraseTMS.Actions
@@ -41,7 +42,7 @@ namespace Apps.PhraseTMS.Actions
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/transMemories", Method.Post,
                 authenticationCredentialsProviders);
-            request.AddJsonBody(new
+            request.WithJsonBody(new
             {
                 name = input.Name,
                 sourceLang = input.SourceLang,
@@ -90,7 +91,7 @@ namespace Apps.PhraseTMS.Actions
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v2/transMemories/{input.TranslationMemoryUId}/export",
                 Method.Get, authenticationCredentialsProviders);
-            request.WithJsonBody(body);
+            request.WithJsonBody(body,  JsonConfig.Settings);
 
             var asyncRequest = client.PerformAsyncRequest(request, authenticationCredentialsProviders);
 
@@ -116,7 +117,7 @@ namespace Apps.PhraseTMS.Actions
             var request = new PhraseTmsRequest($"/api2/v1/transMemories/{input.TranslationMemoryUId}/segments",
                 Method.Post, authenticationCredentialsProviders);
 
-            request.AddJsonBody(new
+            request.WithJsonBody(new
             {
                 sourceSegment = input.SourceSegment,
                 targetSegment = input.TargetSegment,
