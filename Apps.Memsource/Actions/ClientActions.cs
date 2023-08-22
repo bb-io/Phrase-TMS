@@ -56,6 +56,19 @@ namespace Apps.PhraseTMS.Actions
             return client.ExecuteWithHandling<ClientDto>(request);
         }
 
+        [Action("Update client", Description = "Update specific client")]
+        public Task<ClientDto> UpdateClient(
+            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+            [ActionParameter] ClientRequest client,
+            [ActionParameter] AddClientRequest input)
+        {
+            var apiClient = new PhraseTmsClient(authenticationCredentialsProviders);
+            var request = new PhraseTmsRequest($"/api2/v1/clients/{client.ClientUid}", Method.Put, authenticationCredentialsProviders);
+            request.WithJsonBody(input, JsonConfig.Settings);
+            
+            return apiClient.ExecuteWithHandling<ClientDto>(request);
+        }
+
         [Action("Delete client", Description = "Delete specific client")]
         public Task DeleteClient(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] ClientRequest input)
