@@ -12,6 +12,5 @@ namespace Apps.PhraseTMS.Models.Jobs.Requests
         
         [Display("File name")] 
         public string FileName { get; set; }
-        [Display("File type")] public string FileType { get; set; }
     }
 }

@@ -78,7 +78,7 @@ namespace Apps.PhraseTMS.Actions
             var headers = new Dictionary<string, string>()
             {
                 { "Memsource", output },
-                { "Content-Disposition", $"filename*=UTF-8''{input.FileName}.{input.FileType}" },
+                { "Content-Disposition", $"filename*=UTF-8''{input.FileName}" },
                 { "Content-Type", "application/octet-stream" },
             };
 
