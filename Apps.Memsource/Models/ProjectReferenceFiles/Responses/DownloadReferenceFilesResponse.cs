@@ -1,12 +1,11 @@
 ﻿using Blackbird.Applications.Sdk.Common;
+using File = Blackbird.Applications.Sdk.Common.Files.File;
 
 namespace Apps.PhraseTMS.Models.ProjectReferenceFiles.Responses
 {
     public class DownloadReferenceFilesResponse
     {
-        public byte[] File { get; set; }
+        public File File { get; set; }
 
-        [Display("File name")]
-        public string Filename { get; set; }
     }
 }

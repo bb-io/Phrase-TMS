@@ -7,6 +7,8 @@ using Apps.PhraseTMS.Models.ProjectReferenceFiles.Responses;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
+using File = Blackbird.Applications.Sdk.Common.Files.File;
+using System.Net.Mime;
 
 namespace Apps.PhraseTMS.Actions
 {
@@ -42,7 +44,7 @@ namespace Apps.PhraseTMS.Actions
             var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/references",
                 Method.Post, authenticationCredentialsProviders);
 
-            request.AddHeader("Content-Disposition", $"filename*=UTF-8''{input.FileName}");
+            request.AddHeader("Content-Disposition", $"filename*=UTF-8''{input.File.Name}");
             request.AddHeader("Content-Type", "application/octet-stream");
             request.AddParameter("application/octet-stream", input.File, ParameterType.RequestBody);
 
@@ -63,10 +65,16 @@ namespace Apps.PhraseTMS.Actions
             byte[] fileData = response.RawBytes;
             var filenameHeader = response.ContentHeaders.First(h => h.Name == "Content-Disposition");
             var filename = filenameHeader.Value.ToString().Split(';')[1].Split("\'\'")[1];
+            string mimeType = "";
+            if (MimeTypes.TryGetMimeType(filename, out mimeType))
+                mimeType = MediaTypeNames.Application.Octet;
+
             return new DownloadReferenceFilesResponse
             {
-                File = fileData,
-                Filename = filename
+                File = new File(fileData) {
+                    Name = filename,
+                    ContentType = mimeType
+                }
             };
         }
 

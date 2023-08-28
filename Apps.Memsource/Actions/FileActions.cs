@@ -8,6 +8,8 @@ using Apps.PhraseTMS.Models.Files.Requests;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
+using File = Blackbird.Applications.Sdk.Common.Files.File;
+using System.Net.Mime;
 
 namespace Apps.PhraseTMS.Actions
 {
@@ -41,11 +43,15 @@ namespace Apps.PhraseTMS.Actions
             var request = new PhraseTmsRequest($"/api2/v1/files/{input.FileUId}", Method.Get,
                 authenticationCredentialsProviders);
 
-            var response = await client.ExecuteWithHandling<string>(request);
+            var response = (await client.ExecuteAsync(request)).RawBytes;
 
             return new GetFileResponse
             {
-                FileContent = response
+                File = new File(response) 
+                { 
+                    Name = input.FileUId,
+                    ContentType = MediaTypeNames.Application.Octet
+                }
             };
         }
 

@@ -12,6 +12,8 @@ using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
+using System.Net.Mime;
+using File = Blackbird.Applications.Sdk.Common.Files.File;
 
 namespace Apps.PhraseTMS.Actions
 {
@@ -78,12 +80,12 @@ namespace Apps.PhraseTMS.Actions
             var headers = new Dictionary<string, string>()
             {
                 { "Memsource", output },
-                { "Content-Disposition", $"filename*=UTF-8''{input.FileName}" },
+                { "Content-Disposition", $"filename*=UTF-8''{input.File.Name}" },
                 { "Content-Type", "application/octet-stream" },
             };
 
             headers.ToList().ForEach(x => request.AddHeader(x.Key, x.Value));
-            request.AddParameter("application/octet-stream", input.File, ParameterType.RequestBody);
+            request.AddParameter("application/octet-stream", input.File.Bytes, ParameterType.RequestBody);
 
             var response = await client.ExecuteWithHandling<JobResponseWrapper>(request);
 
@@ -164,11 +166,17 @@ namespace Apps.PhraseTMS.Actions
             var fileData = responseDownload.RawBytes;
             var filenameHeader = responseDownload.ContentHeaders.First(h => h.Name == "Content-Disposition");
             var filename = filenameHeader.Value.ToString().Split(';')[1].Split("\'\'")[1];
+            string mimeType = "";
+            if (MimeTypes.TryGetMimeType(filename, out mimeType))
+                mimeType = MediaTypeNames.Application.Octet;
 
             return new TargetFileResponse
             {
-                Filename = filename,
-                File = fileData
+                File = new File(fileData)
+                {
+                    Name = filename,
+                    ContentType = mimeType
+                }
             };
         }
     }

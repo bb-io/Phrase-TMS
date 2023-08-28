@@ -2,15 +2,17 @@
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Dynamic;
+using File = Blackbird.Applications.Sdk.Common.Files.File;
 
 namespace Apps.PhraseTMS.Models.Jobs.Requests
 {
     public class CreateJobRequest : ProjectRequest
     {
-        [Display("Target languages")] public IEnumerable<string> TargetLanguages { get; set; }
-        public byte[] File { get; set; }
+        [Display("Target languages")] 
+        public IEnumerable<string> TargetLanguages { get; set; }
+
+        [Display("File")]
+        public File File { get; set; }
         
-        [Display("File name")] 
-        public string FileName { get; set; }
     }
 }

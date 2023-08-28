@@ -1,7 +1,11 @@
-﻿namespace Apps.PhraseTMS.Models.TranslationMemories.Responses
+﻿using Blackbird.Applications.Sdk.Common;
+using File = Blackbird.Applications.Sdk.Common.Files.File;
+
+namespace Apps.PhraseTMS.Models.TranslationMemories.Responses
 {
     public class ExportTranslationMemoryResponse
     {
-        public byte[] File { get; set; }
+        [Display("File")]
+        public File File { get; set; }
     }
 }

@@ -9,6 +9,8 @@ using Apps.PhraseTMS.Models.Async;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
+using File = Blackbird.Applications.Sdk.Common.Files.File;
+using System.Net.Mime;
 
 namespace Apps.PhraseTMS.Actions
 {
@@ -76,9 +78,9 @@ namespace Apps.PhraseTMS.Actions
             var request = new PhraseTmsRequest(endpoint.WithQuery(query),
                 Method.Post, authenticationCredentialsProviders);
 
-            request.AddHeader("Content-Disposition", $"filename*=UTF-8''{input.FileName}");
+            request.AddHeader("Content-Disposition", $"filename*=UTF-8''{input.File.Name}");
             request.AddHeader("Content-Type", "application/octet-stream");
-            request.AddParameter("application/octet-stream", input.File, ParameterType.RequestBody);
+            request.AddParameter("application/octet-stream", input.File.Bytes, ParameterType.RequestBody);
             return client.PerformAsyncRequest(request, authenticationCredentialsProviders);
         }
 
@@ -105,7 +107,11 @@ namespace Apps.PhraseTMS.Actions
             var fileData = responseDownload.RawBytes;
             return new ExportTranslationMemoryResponse
             {
-                File = fileData
+                File = new File(fileData)
+                {
+                    Name = $"{input.TranslationMemoryUId}.tmx",
+                    ContentType = MediaTypeNames.Application.Octet
+                }
             };
         }
 

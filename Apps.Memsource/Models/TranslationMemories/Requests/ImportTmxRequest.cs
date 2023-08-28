@@ -1,6 +1,7 @@
 ﻿using Apps.PhraseTMS.DataSourceHandlers;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Dynamic;
+using File = Blackbird.Applications.Sdk.Common.Files.File;
 
 namespace Apps.PhraseTMS.Models.TranslationMemories.Requests
 {
@@ -10,9 +11,7 @@ namespace Apps.PhraseTMS.Models.TranslationMemories.Requests
         [DataSource(typeof(TmDataHandler))]
         public string TranslationMemoryUId { get; set; }
 
-        public byte[] File { get; set; }
-
-        [Display("File name")]
-        public string FileName { get; set; }
+        [Display("File")]
+        public File File { get; set; }
     }
 }
