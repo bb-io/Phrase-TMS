@@ -7,7 +7,7 @@ namespace Apps.PhraseTMS.Auth.OAuth2
     {
         public string GetAuthorizationUrl(Dictionary<string, string> values)
         {
-            const string oauthUrl = "https://us.cloud.memsource.com/web/oauth/authorize";
+            var oauthUrl = values["url"].TrimEnd('/') + "/web/oauth/authorize";
             var parameters = new Dictionary<string, string>
             {
                 { "client_id", values["client_id"] },

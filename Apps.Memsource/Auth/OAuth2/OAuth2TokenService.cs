@@ -33,7 +33,8 @@ namespace Apps.PhraseTMS.Auth.OAuth2
                 { "redirect_uri", ApplicationConstants.RedirectUri },
                 { "code", code }
             };
-            return await RequestToken(bodyParameters, cancellationToken);
+            var url = values["url"].TrimEnd('/') + "/web/oauth/token";
+            return await RequestToken(bodyParameters, url, cancellationToken);
         }
 
         public Task RevokeToken(Dictionary<string, string> values)
@@ -41,12 +42,12 @@ namespace Apps.PhraseTMS.Auth.OAuth2
             throw new NotImplementedException();
         }
 
-        private async Task<Dictionary<string, string>> RequestToken(Dictionary<string, string> bodyParameters, CancellationToken cancellationToken)
+        private async Task<Dictionary<string, string>> RequestToken(Dictionary<string, string> bodyParameters, string url, CancellationToken cancellationToken)
         {
             var utcNow = DateTime.UtcNow;
             using HttpClient httpClient = new HttpClient();
             using var httpContent = new FormUrlEncodedContent(bodyParameters);
-            using var response = await httpClient.PostAsync(TokenUrl, httpContent, cancellationToken);
+            using var response = await httpClient.PostAsync(url, httpContent, cancellationToken);
             var responseContent = await response.Content.ReadAsStringAsync();
             var resultDictionary = JsonSerializer.Deserialize<Dictionary<string, object>>(responseContent)?.ToDictionary(r => r.Key, r => r.Value?.ToString())
                 ?? throw new InvalidOperationException($"Invalid response content: {responseContent}");

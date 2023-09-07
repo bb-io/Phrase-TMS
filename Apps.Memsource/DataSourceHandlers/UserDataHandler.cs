@@ -17,13 +17,15 @@ public class UserDataHandler : BaseInvocable, IAsyncDataSourceHandler
 
     public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
     {
+
         var actions = new UserActions();
-        var response = await actions.ListAllUsers(Creds, new());
-        
+        var response = await actions.ListAllUsers(Creds, new());            
+
         return response.Users
             .Where(x => context.SearchString == null ||
                         x.FullName.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
             .Take(20)
             .ToDictionary(x => x.UId, x => x.FullName);
+
     }
 }

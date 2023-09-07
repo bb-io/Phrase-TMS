@@ -16,8 +16,8 @@ namespace Apps.PhraseTMS.Connections
                 ConnectionUsage = ConnectionUsage.Actions,
                 ConnectionProperties = new List<ConnectionProperty>
                 {
-                    new("client_id"),
-                    new("url"),
+                    new("client_id"){DisplayName = "Client ID"},
+                    new("url"){DisplayName = "URL"},
                 }
             }, 
             // Api token
