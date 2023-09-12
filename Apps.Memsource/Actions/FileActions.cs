@@ -62,9 +62,9 @@ namespace Apps.PhraseTMS.Actions
         {
             var client = new PhraseTmsClient(authenticationCredentialsProviders);
             var request = new PhraseTmsRequest("/api2/v1/files", Method.Post, authenticationCredentialsProviders);
-            request.AddHeader("Content-Disposition", $"filename*=UTF-8''{input.FileName}");
+            request.AddHeader("Content-Disposition", $"filename*=UTF-8''{input.FileName ?? input.File.Name}");
             request.AddHeader("Content-Type", "application/octet-stream");
-            request.AddParameter("application/octet-stream", input.File, ParameterType.RequestBody);
+            request.AddParameter("application/octet-stream", input.File.Bytes, ParameterType.RequestBody);
             request.WithJsonBody(input,  JsonConfig.Settings);
             
             return client.ExecuteWithHandling<FileInfoDto>(request);
