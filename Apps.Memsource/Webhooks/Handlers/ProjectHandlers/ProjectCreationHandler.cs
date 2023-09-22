@@ -1,10 +1,9 @@
-﻿namespace Apps.PhraseTMS.Webhooks.Handlers.ProjectHandlers
+﻿namespace Apps.PhraseTMS.Webhooks.Handlers.ProjectHandlers;
+
+public class ProjectCreationHandler : BaseWebhookHandler
 {
-    public class ProjectCreationHandler : BaseWebhookHandler
-    {
 
-        const string SubscriptionEvent = "PROJECT_CREATED";
+    const string SubscriptionEvent = "PROJECT_CREATED";
 
-        public ProjectCreationHandler() : base(SubscriptionEvent) { }
-    }
+    public ProjectCreationHandler() : base(SubscriptionEvent) { }
 }

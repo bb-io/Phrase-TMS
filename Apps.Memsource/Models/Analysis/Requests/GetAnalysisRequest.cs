@@ -1,10 +1,9 @@
 ﻿using Blackbird.Applications.Sdk.Common;
 
-namespace Apps.PhraseTMS.Models.Analysis.Requests
+namespace Apps.PhraseTMS.Models.Analysis.Requests;
+
+public class GetAnalysisRequest
 {
-    public class GetAnalysisRequest
-    {
-        [Display("Analysis UID")]
-        public string AnalysisUId { get; set; }
-    }
+    [Display("Analysis UID")]
+    public string AnalysisUId { get; set; }
 }

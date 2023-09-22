@@ -1,7 +1,6 @@
-﻿namespace Apps.PhraseTMS.Dtos
+﻿namespace Apps.PhraseTMS.Dtos;
+
+public class AsyncRequestDto
 {
-    public class AsyncRequestDto
-    {
-        public string Id { get; set; }
-    }
+    public string Id { get; set; }
 }

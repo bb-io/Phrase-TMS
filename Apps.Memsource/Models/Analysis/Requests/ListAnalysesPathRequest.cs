@@ -1,10 +1,9 @@
 ﻿using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.Sdk.Common;
 
-namespace Apps.PhraseTMS.Models.Analysis.Requests
+namespace Apps.PhraseTMS.Models.Analysis.Requests;
+
+public class ListAnalysesPathRequest : ProjectRequest
 {
-    public class ListAnalysesPathRequest : ProjectRequest
-    {
-        [Display("Job UID")] public string JobUId { get; set; }
-    }
+    [Display("Job UID")] public string JobUId { get; set; }
 }

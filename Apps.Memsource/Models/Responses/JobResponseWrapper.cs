@@ -1,9 +1,8 @@
-﻿using Apps.PhraseTMS.Dtos;
+﻿using Apps.PhraseTMS.Models.Jobs.Responses;
 
-namespace Apps.PhraseTMS.Models.Responses
+namespace Apps.PhraseTMS.Models.Responses;
+
+public class JobResponseWrapper
 {
-    public class JobResponseWrapper
-    {
-        public IEnumerable<JobDto> Jobs { get; set; }
-    }
+    public IEnumerable<CreateJobResponse> Jobs { get; set; }
 }

@@ -9,75 +9,74 @@ using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
 
-namespace Apps.PhraseTMS.Actions
+namespace Apps.PhraseTMS.Actions;
+
+[ActionList]
+public class ClientActions
 {
-    [ActionList]
-    public class ClientActions
+    [Action("List clients", Description = "List all clients")]
+    public async Task<ListClientsResponse> ListClients(
+        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] ListClientsQuery query)
     {
-        [Action("List clients", Description = "List all clients")]
-        public async Task<ListClientsResponse> ListClients(
-            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-            [ActionParameter] ListClientsQuery query)
+        var client = new PhraseTmsClient(authenticationCredentialsProviders);
+
+        var endpoint = "/api2/v1/clients";
+        var request = new PhraseTmsRequest(endpoint.WithQuery(query), Method.Get, authenticationCredentialsProviders);
+
+        var response = await client.Paginate<ClientDto>(request);
+
+        return new ListClientsResponse
         {
-            var client = new PhraseTmsClient(authenticationCredentialsProviders);
+            Clients = response
+        };
+    }
 
-            var endpoint = "/api2/v1/clients";
-            var request = new PhraseTmsRequest(endpoint.WithQuery(query), Method.Get, authenticationCredentialsProviders);
+    [Action("Get client", Description = "Get specific client")]
+    public Task<ClientDto> GetClient(
+        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] ClientRequest input)
+    {
+        var client = new PhraseTmsClient(authenticationCredentialsProviders);
+        var request = new PhraseTmsRequest($"/api2/v1/clients/{input.ClientUid}", Method.Get,
+            authenticationCredentialsProviders);
 
-            var response = await client.Paginate<ClientDto>(request);
+        return client.ExecuteWithHandling<ClientDto>(request);
+    }
 
-            return new ListClientsResponse
-            {
-                Clients = response
-            };
-        }
-
-        [Action("Get client", Description = "Get specific client")]
-        public Task<ClientDto> GetClient(
-            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-            [ActionParameter] ClientRequest input)
-        {
-            var client = new PhraseTmsClient(authenticationCredentialsProviders);
-            var request = new PhraseTmsRequest($"/api2/v1/clients/{input.ClientUid}", Method.Get,
-                authenticationCredentialsProviders);
-
-            return client.ExecuteWithHandling<ClientDto>(request);
-        }
-
-        [Action("Add client", Description = "Add a new client")]
-        public Task<ClientDto> AddClient(
-            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-            [ActionParameter] AddClientRequest input)
-        {
-            var client = new PhraseTmsClient(authenticationCredentialsProviders);
-            var request = new PhraseTmsRequest($"/api2/v1/clients", Method.Post, authenticationCredentialsProviders);
-            request.WithJsonBody(input, JsonConfig.Settings);
+    [Action("Add client", Description = "Add a new client")]
+    public Task<ClientDto> AddClient(
+        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] AddClientRequest input)
+    {
+        var client = new PhraseTmsClient(authenticationCredentialsProviders);
+        var request = new PhraseTmsRequest($"/api2/v1/clients", Method.Post, authenticationCredentialsProviders);
+        request.WithJsonBody(input, JsonConfig.Settings);
             
-            return client.ExecuteWithHandling<ClientDto>(request);
-        }
+        return client.ExecuteWithHandling<ClientDto>(request);
+    }
 
-        [Action("Update client", Description = "Update specific client")]
-        public Task<ClientDto> UpdateClient(
-            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-            [ActionParameter] ClientRequest client,
-            [ActionParameter] AddClientRequest input)
-        {
-            var apiClient = new PhraseTmsClient(authenticationCredentialsProviders);
-            var request = new PhraseTmsRequest($"/api2/v1/clients/{client.ClientUid}", Method.Put, authenticationCredentialsProviders);
-            request.WithJsonBody(input, JsonConfig.Settings);
+    [Action("Update client", Description = "Update specific client")]
+    public Task<ClientDto> UpdateClient(
+        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] ClientRequest client,
+        [ActionParameter] AddClientRequest input)
+    {
+        var apiClient = new PhraseTmsClient(authenticationCredentialsProviders);
+        var request = new PhraseTmsRequest($"/api2/v1/clients/{client.ClientUid}", Method.Put, authenticationCredentialsProviders);
+        request.WithJsonBody(input, JsonConfig.Settings);
             
-            return apiClient.ExecuteWithHandling<ClientDto>(request);
-        }
+        return apiClient.ExecuteWithHandling<ClientDto>(request);
+    }
 
-        [Action("Delete client", Description = "Delete specific client")]
-        public Task DeleteClient(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-            [ActionParameter] ClientRequest input)
-        {
-            var client = new PhraseTmsClient(authenticationCredentialsProviders);
-            var request = new PhraseTmsRequest($"/api2/v1/clients/{input.ClientUid}", Method.Delete,
-                authenticationCredentialsProviders);
+    [Action("Delete client", Description = "Delete specific client")]
+    public Task DeleteClient(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] ClientRequest input)
+    {
+        var client = new PhraseTmsClient(authenticationCredentialsProviders);
+        var request = new PhraseTmsRequest($"/api2/v1/clients/{input.ClientUid}", Method.Delete,
+            authenticationCredentialsProviders);
 
-            return client.ExecuteWithHandling(request);
-        }
+        return client.ExecuteWithHandling(request);
     }
 }

@@ -2,12 +2,11 @@
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 
-namespace Apps.PhraseTMS.Models.QualityAssurance.Requests
+namespace Apps.PhraseTMS.Models.QualityAssurance.Requests;
+
+public class DeleteLQAProfileRequest
 {
-    public class DeleteLQAProfileRequest
-    {
-        [Display("LQA profile")]
-        [DataSource(typeof(LQAProfileDataHandler))]
-        public string LQAProfileUId { get; set; }
-    }
+    [Display("LQA profile")]
+    [DataSource(typeof(LQAProfileDataHandler))]
+    public string LQAProfileUId { get; set; }
 }

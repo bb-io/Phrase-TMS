@@ -2,17 +2,16 @@
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 
-namespace Apps.PhraseTMS.Models.Projects.Requests
+namespace Apps.PhraseTMS.Models.Projects.Requests;
+
+public class CreateProjectRequest
 {
-    public class CreateProjectRequest
-    {
-        public string Name { get; set; }
+    public string Name { get; set; }
 
-        [Display("Source language")]
-        [DataSource(typeof(LanguageDataHandler))]
-        public string SourceLanguage { get; set; }
+    [Display("Source language")]
+    [DataSource(typeof(LanguageDataHandler))]
+    public string SourceLanguage { get; set; }
 
-        [Display("Target languages")]
-        public IEnumerable<string> TargetLanguages { get; set; }
-    }
+    [Display("Target languages")]
+    public IEnumerable<string> TargetLanguages { get; set; }
 }

@@ -7,46 +7,45 @@ using Apps.PhraseTMS.Models.Quotes.Requests;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 
-namespace Apps.PhraseTMS.Actions
+namespace Apps.PhraseTMS.Actions;
+
+[ActionList]
+public class QuoteActions
 {
-    [ActionList]
-    public class QuoteActions
+    [Action("Get quote", Description = "Get quote by UID")]
+    public async Task<QuoteDto> GetQuote(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] GetQuoteRequest input)
     {
-        [Action("Get quote", Description = "Get quote by UID")]
-        public async Task<QuoteDto> GetQuote(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-            [ActionParameter] GetQuoteRequest input)
-        {
-            var client = new PhraseTmsClient(authenticationCredentialsProviders);
-            var request = new PhraseTmsRequest($"/api2/v1/quotes/{input.QuoteUId}", Method.Get, authenticationCredentialsProviders);
-            var response = await client.ExecuteWithHandling(request);
+        var client = new PhraseTmsClient(authenticationCredentialsProviders);
+        var request = new PhraseTmsRequest($"/api2/v1/quotes/{input.QuoteUId}", Method.Get, authenticationCredentialsProviders);
+        var response = await client.ExecuteWithHandling(request);
             
-            return JsonConvert.DeserializeObject<QuoteDto>(response.Content);
-        }
+        return JsonConvert.DeserializeObject<QuoteDto>(response.Content);
+    }
 
-        [Action("Create quote", Description = "Create a new project quote")]
-        public Task<QuoteDto> CreateQuote(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-            [ActionParameter] CreateQuoteRequest input)
+    [Action("Create quote", Description = "Create a new project quote")]
+    public Task<QuoteDto> CreateQuote(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] CreateQuoteRequest input)
+    {
+        var client = new PhraseTmsClient(authenticationCredentialsProviders);
+        var request = new PhraseTmsRequest($"/api2/v2/quotes", Method.Post, authenticationCredentialsProviders);
+        request.WithJsonBody(new
         {
-            var client = new PhraseTmsClient(authenticationCredentialsProviders);
-            var request = new PhraseTmsRequest($"/api2/v2/quotes", Method.Post, authenticationCredentialsProviders);
-            request.WithJsonBody(new
-            {
-                analyse = new { id = input.AnalyseUId },
-                name = input.Name,
-                priceList = new { id = input.PriceListUId },
-                project = new { uid = input.ProjectUId }
-            });
-            return client.ExecuteWithHandling<QuoteDto>(request);
-        }
+            analyse = new { id = input.AnalyseUId },
+            name = input.Name,
+            priceList = new { id = input.PriceListUId },
+            project = new { uid = input.ProjectUId }
+        });
+        return client.ExecuteWithHandling<QuoteDto>(request);
+    }
 
-        [Action("Delete quote", Description = "Delete specific quote")]
-        public Task DeleteQuote(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-            [ActionParameter] GetQuoteRequest input)
-        {
-            var client = new PhraseTmsClient(authenticationCredentialsProviders);
-            var request = new PhraseTmsRequest($"/api2/v1/quotes/{input.QuoteUId}", Method.Delete, authenticationCredentialsProviders);
+    [Action("Delete quote", Description = "Delete specific quote")]
+    public Task DeleteQuote(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] GetQuoteRequest input)
+    {
+        var client = new PhraseTmsClient(authenticationCredentialsProviders);
+        var request = new PhraseTmsRequest($"/api2/v1/quotes/{input.QuoteUId}", Method.Delete, authenticationCredentialsProviders);
             
-            return client.ExecuteWithHandling(request);       
-        }
+        return client.ExecuteWithHandling(request);       
     }
 }

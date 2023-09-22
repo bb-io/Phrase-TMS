@@ -2,12 +2,11 @@
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 
-namespace Apps.PhraseTMS.Models.Users.Requests
+namespace Apps.PhraseTMS.Models.Users.Requests;
+
+public class GetUserRequest
 {
-    public class GetUserRequest
-    {
-        [Display("User")]
-        [DataSource(typeof(UserDataHandler))]
-        public string UserUId { get; set; }
-    }
+    [Display("User")]
+    [DataSource(typeof(UserDataHandler))]
+    public string UserUId { get; set; }
 }

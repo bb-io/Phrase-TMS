@@ -1,9 +1,8 @@
 ﻿using Apps.PhraseTMS.Dtos;
 
-namespace Apps.PhraseTMS.Models.Users.Response
+namespace Apps.PhraseTMS.Models.Users.Response;
+
+public class ListAllUsersResponse
 {
-    public class ListAllUsersResponse
-    {
-        public IEnumerable<UserDto> Users { get; set; }
-    }
+    public IEnumerable<UserDto> Users { get; set; }
 }

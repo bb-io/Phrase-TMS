@@ -1,7 +1,6 @@
-﻿namespace Apps.PhraseTMS.Models.Requests
+﻿namespace Apps.PhraseTMS.Models.Requests;
+
+public class FileRequest
 {
-    public class FileRequest
-    {
-        public string Key { get; set; }
-    }
+    public string Key { get; set; }
 }

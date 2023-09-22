@@ -1,7 +1,6 @@
-﻿namespace Apps.PhraseTMS.Models.Responses
+﻿namespace Apps.PhraseTMS.Models.Responses;
+
+public class GetAuthTokenTestResponse
 {
-    public class GetAuthTokenTestResponse
-    {
-        public string OAuthToken { get; set; }
-    }
+    public string OAuthToken { get; set; }
 }

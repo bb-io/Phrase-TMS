@@ -1,10 +1,9 @@
-﻿namespace Apps.PhraseTMS.Webhooks.Handlers.OtherHandlers
+﻿namespace Apps.PhraseTMS.Webhooks.Handlers.OtherHandlers;
+
+public class AnalysisCreationHandler : BaseWebhookHandler
 {
-    public class AnalysisCreationHandler : BaseWebhookHandler
-    {
 
-        const string SubscriptionEvent = "ANALYSIS_CREATED";
+    const string SubscriptionEvent = "ANALYSIS_CREATED";
 
-        public AnalysisCreationHandler() : base(SubscriptionEvent) { }
-    }
+    public AnalysisCreationHandler() : base(SubscriptionEvent) { }
 }

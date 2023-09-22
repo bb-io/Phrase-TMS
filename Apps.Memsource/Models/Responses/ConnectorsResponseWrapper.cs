@@ -1,9 +1,8 @@
 ﻿using Apps.PhraseTMS.Dtos;
 
-namespace Apps.PhraseTMS.Models.Responses
+namespace Apps.PhraseTMS.Models.Responses;
+
+public class ConnectorsResponseWrapper
 {
-    public class ConnectorsResponseWrapper
-    {
-        public IEnumerable<ConnectorDto> Connectors { get; set; }
-    }
+    public IEnumerable<ConnectorDto> Connectors { get; set; }
 }

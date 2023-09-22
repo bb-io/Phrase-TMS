@@ -1,7 +1,6 @@
-﻿namespace Apps.PhraseTMS.Models.Responses
+﻿namespace Apps.PhraseTMS.Models.Responses;
+
+public class ProjectFilesResponse
 {
-    public class ProjectFilesResponse
-    {
-        public string ProjectFiles { get; set; }
-    }
+    public string ProjectFiles { get; set; }
 }

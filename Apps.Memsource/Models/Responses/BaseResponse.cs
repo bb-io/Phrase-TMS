@@ -1,9 +1,8 @@
-﻿namespace Apps.PhraseTMS.Models.Responses
-{
-    public class BaseResponse
-    {
-        public int StatusCode { get; set; }
+﻿namespace Apps.PhraseTMS.Models.Responses;
 
-        public string Details { get; set; }
-    }
+public class BaseResponse
+{
+    public int StatusCode { get; set; }
+
+    public string Details { get; set; }
 }

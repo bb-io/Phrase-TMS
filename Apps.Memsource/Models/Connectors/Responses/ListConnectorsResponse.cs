@@ -1,6 +1,5 @@
-﻿namespace Apps.PhraseTMS.Models.Connectors.Responses
+﻿namespace Apps.PhraseTMS.Models.Connectors.Responses;
+
+public class ListConnectorsResponse
 {
-    public class ListConnectorsResponse
-    {
-    }
 }

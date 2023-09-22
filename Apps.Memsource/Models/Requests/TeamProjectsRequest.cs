@@ -1,7 +1,6 @@
-﻿namespace Apps.PhraseTMS.Models.Requests
+﻿namespace Apps.PhraseTMS.Models.Requests;
+
+public class TeamProjectsRequest
 {
-    public class TeamProjectsRequest
-    {
-        public string TeamId { get; set; }
-    }
+    public string TeamId { get; set; }
 }

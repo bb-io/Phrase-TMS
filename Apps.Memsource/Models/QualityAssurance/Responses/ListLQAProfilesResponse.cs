@@ -1,9 +1,8 @@
 ﻿using Apps.PhraseTMS.Dtos;
 
-namespace Apps.PhraseTMS.Models.QualityAssurance.Responses
+namespace Apps.PhraseTMS.Models.QualityAssurance.Responses;
+
+public class ListLQAProfilesResponse
 {
-    public class ListLQAProfilesResponse
-    {
-        public IEnumerable<LQAProfileDto> Profiles { get; set; }
-    }
+    public IEnumerable<LQAProfileDto> Profiles { get; set; }
 }

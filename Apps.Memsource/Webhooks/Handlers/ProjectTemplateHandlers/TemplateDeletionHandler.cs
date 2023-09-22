@@ -1,10 +1,9 @@
-﻿namespace Apps.PhraseTMS.Webhooks.Handlers.ProjectTemplateHandlers
+﻿namespace Apps.PhraseTMS.Webhooks.Handlers.ProjectTemplateHandlers;
+
+public class TemplateDeletionHandler : BaseWebhookHandler
 {
-    public class TemplateDeletionHandler : BaseWebhookHandler
-    {
 
-        const string SubscriptionEvent = "PROJECT_TEMPLATE_DELETED";
+    const string SubscriptionEvent = "PROJECT_TEMPLATE_DELETED";
 
-        public TemplateDeletionHandler() : base(SubscriptionEvent) { }
-    }
+    public TemplateDeletionHandler() : base(SubscriptionEvent) { }
 }

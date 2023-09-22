@@ -1,9 +1,8 @@
 ﻿using Apps.PhraseTMS.Dtos;
 
-namespace Apps.PhraseTMS.Models.TranslationMemories.Responses
+namespace Apps.PhraseTMS.Models.TranslationMemories.Responses;
+
+public class ListTranslationMemoriesResponse
 {
-    public class ListTranslationMemoriesResponse
-    {
-        public IEnumerable<TranslationMemoryDto> Memories { get; set; }
-    }
+    public IEnumerable<TranslationMemoryDto> Memories { get; set; }
 }

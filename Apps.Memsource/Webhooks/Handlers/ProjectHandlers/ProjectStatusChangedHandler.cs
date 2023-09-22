@@ -1,9 +1,8 @@
-﻿namespace Apps.PhraseTMS.Webhooks.Handlers.ProjectHandlers
-{
-    public class ProjectStatusChangedHandler : BaseWebhookHandler
-    {
-        const string SubscriptionEvent = "PROJECT_STATUS_CHANGED";
+﻿namespace Apps.PhraseTMS.Webhooks.Handlers.ProjectHandlers;
 
-        public ProjectStatusChangedHandler() : base(SubscriptionEvent) { }
-    }
+public class ProjectStatusChangedHandler : BaseWebhookHandler
+{
+    const string SubscriptionEvent = "PROJECT_STATUS_CHANGED";
+
+    public ProjectStatusChangedHandler() : base(SubscriptionEvent) { }
 }

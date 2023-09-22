@@ -1,10 +1,9 @@
-﻿namespace Apps.PhraseTMS.Webhooks.Handlers.ProjectTemplateHandlers
+﻿namespace Apps.PhraseTMS.Webhooks.Handlers.ProjectTemplateHandlers;
+
+public class TemplateCreationHandler : BaseWebhookHandler
 {
-    public class TemplateCreationHandler : BaseWebhookHandler
-    {
 
-        const string SubscriptionEvent = "PROJECT_TEMPLATE_CREATED";
+    const string SubscriptionEvent = "PROJECT_TEMPLATE_CREATED";
 
-        public TemplateCreationHandler() : base(SubscriptionEvent) { }
-    }
+    public TemplateCreationHandler() : base(SubscriptionEvent) { }
 }

@@ -1,9 +1,8 @@
 ﻿using Apps.PhraseTMS.Dtos;
 
-namespace Apps.PhraseTMS.Models.Vendors.Response
+namespace Apps.PhraseTMS.Models.Vendors.Response;
+
+public class ListVendorsResponse
 {
-    public class ListVendorsResponse
-    {
-        public IEnumerable<VendorDto> Vendors { get; set; } 
-    }
+    public IEnumerable<VendorDto> Vendors { get; set; } 
 }

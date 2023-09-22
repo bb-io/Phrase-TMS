@@ -1,9 +1,8 @@
 ﻿using Apps.PhraseTMS.Dtos;
 
-namespace Apps.PhraseTMS.Models.Files.Responses
+namespace Apps.PhraseTMS.Models.Files.Responses;
+
+public class ListAllFilesResponse
 {
-    public class ListAllFilesResponse
-    {
-        public IEnumerable<FileInfoDto> Files { get; set; }
-    }
+    public IEnumerable<FileInfoDto> Files { get; set; }
 }

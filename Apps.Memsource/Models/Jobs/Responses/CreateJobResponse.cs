@@ -1,8 +1,8 @@
 ﻿using Blackbird.Applications.Sdk.Common;
 
-namespace Apps.PhraseTMS.Dtos;
+namespace Apps.PhraseTMS.Models.Jobs.Responses;
 
-public class JobDto
+public class CreateJobResponse
 {
     [Display("UID")] public string Uid { get; set; }
 
@@ -11,8 +11,4 @@ public class JobDto
     public string Status { get; set; }
 
     [Display("Target language")] public string TargetLang { get; set; }
-
-    // [Display("Due date")]
-    // public string DateDue { get; set; }
-    public ProjectDto Project { get; set; }
 }

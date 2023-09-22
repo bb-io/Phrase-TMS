@@ -1,8 +1,7 @@
-﻿namespace Apps.PhraseTMS.Dtos
+﻿namespace Apps.PhraseTMS.Dtos;
+
+public class LanguageDto
 {
-    public class LanguageDto
-    {
-        public string Code { get; set; }
-        public string Name { get; set; }
-    }
+    public string Code { get; set; }
+    public string Name { get; set; }
 }

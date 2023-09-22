@@ -1,16 +1,15 @@
 ﻿using Blackbird.Applications.Sdk.Common;
 
-namespace Apps.PhraseTMS.Dtos
+namespace Apps.PhraseTMS.Dtos;
+
+public class ClientDto
 {
-    public class ClientDto
-    {
-        public string Name { get; set; }
+    public string Name { get; set; }
 
-        [Display("UID")]
-        public string UId { get; set; }
+    [Display("UID")]
+    public string UId { get; set; }
         
-        [Display("External ID")]
+    [Display("External ID")]
 
-        public string ExternalId { get; set; }
-    }
+    public string ExternalId { get; set; }
 }

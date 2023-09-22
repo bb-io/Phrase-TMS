@@ -1,12 +1,11 @@
 ﻿using Blackbird.Applications.Sdk.Common;
 
-namespace Apps.PhraseTMS.Dtos
-{
-    public class LQAProfileDto
-    {
-        [Display("UID")]
-        public string Uid { get; set; }
+namespace Apps.PhraseTMS.Dtos;
 
-        public string Name { get; set; }
-    }
+public class LQAProfileDto
+{
+    [Display("UID")]
+    public string Uid { get; set; }
+
+    public string Name { get; set; }
 }

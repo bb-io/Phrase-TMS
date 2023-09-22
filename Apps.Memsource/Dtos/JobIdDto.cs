@@ -1,7 +1,6 @@
-﻿namespace Apps.PhraseTMS.Dtos
+﻿namespace Apps.PhraseTMS.Dtos;
+
+public class JobIdDto
 {
-    public class JobIdDto
-    {
-        public string UId { get; set; }
-    }
+    public string UId { get; set; }
 }

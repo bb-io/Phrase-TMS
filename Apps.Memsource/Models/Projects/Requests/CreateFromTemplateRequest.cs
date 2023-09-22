@@ -2,14 +2,13 @@
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 
-namespace Apps.PhraseTMS.Models.Projects.Requests
-{
-    public class CreateFromTemplateRequest
-    {
-        public string Name { get; set; }
+namespace Apps.PhraseTMS.Models.Projects.Requests;
 
-        [Display("Template")]
-        [DataSource(typeof(ProjectTemplateDataHandler))]
-        public string TemplateUId { get; set; }
-    }
+public class CreateFromTemplateRequest
+{
+    public string Name { get; set; }
+
+    [Display("Template")]
+    [DataSource(typeof(ProjectTemplateDataHandler))]
+    public string TemplateUId { get; set; }
 }

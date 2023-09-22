@@ -1,6 +1,5 @@
-﻿namespace Apps.PhraseTMS.Models.Projects.Requests
+﻿namespace Apps.PhraseTMS.Models.Projects.Requests;
+
+public class GetProjectRequest : ProjectRequest
 {
-    public class GetProjectRequest : ProjectRequest
-    {
-    }
 }

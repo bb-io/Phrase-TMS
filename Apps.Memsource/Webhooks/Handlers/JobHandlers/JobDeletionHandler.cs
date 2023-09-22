@@ -1,10 +1,9 @@
-﻿namespace Apps.PhraseTMS.Webhooks.Handlers.JobHandlers
+﻿namespace Apps.PhraseTMS.Webhooks.Handlers.JobHandlers;
+
+public class JobDeletionHandler : BaseWebhookHandler
 {
-    public class JobDeletionHandler : BaseWebhookHandler
-    {
 
-        const string SubscriptionEvent = "JOB_DELETED";
+    const string SubscriptionEvent = "JOB_DELETED";
 
-        public JobDeletionHandler() : base(SubscriptionEvent) { }
-    }
+    public JobDeletionHandler() : base(SubscriptionEvent) { }
 }

@@ -1,10 +1,9 @@
-﻿namespace Apps.PhraseTMS.Webhooks.Handlers.JobHandlers
+﻿namespace Apps.PhraseTMS.Webhooks.Handlers.JobHandlers;
+
+public class JobContinuousUpdatedHandler : BaseWebhookHandler
 {
-    public class JobContinuousUpdatedHandler : BaseWebhookHandler
-    {
 
-        const string SubscriptionEvent = "CONTINUOUS_JOB_UPDATED";
+    const string SubscriptionEvent = "CONTINUOUS_JOB_UPDATED";
 
-        public JobContinuousUpdatedHandler() : base(SubscriptionEvent) { }
-    }
+    public JobContinuousUpdatedHandler() : base(SubscriptionEvent) { }
 }

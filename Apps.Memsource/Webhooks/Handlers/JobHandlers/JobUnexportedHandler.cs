@@ -1,10 +1,9 @@
-﻿namespace Apps.PhraseTMS.Webhooks.Handlers.JobHandlers
+﻿namespace Apps.PhraseTMS.Webhooks.Handlers.JobHandlers;
+
+public class JobUnexportedHandler : BaseWebhookHandler
 {
-    public class JobUnexportedHandler : BaseWebhookHandler
-    {
 
-        const string SubscriptionEvent = "JOB_UNEXPORTED";
+    const string SubscriptionEvent = "JOB_UNEXPORTED";
 
-        public JobUnexportedHandler() : base(SubscriptionEvent) { }
-    }
+    public JobUnexportedHandler() : base(SubscriptionEvent) { }
 }

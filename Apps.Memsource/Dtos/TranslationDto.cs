@@ -1,7 +1,6 @@
-﻿namespace Apps.PhraseTMS.Dtos
+﻿namespace Apps.PhraseTMS.Dtos;
+
+public class TranslationDto
 {
-    public class TranslationDto
-    {
-        public IEnumerable<string> Translations { get; set; }
-    }
+    public IEnumerable<string> Translations { get; set; }
 }

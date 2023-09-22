@@ -1,10 +1,9 @@
-﻿namespace Apps.PhraseTMS.Webhooks.Handlers.JobHandlers
+﻿namespace Apps.PhraseTMS.Webhooks.Handlers.JobHandlers;
+
+public class JobCreationHandler : BaseWebhookHandler
 {
-    public class JobCreationHandler : BaseWebhookHandler
-    {
 
-        const string SubscriptionEvent = "JOB_CREATED";
+    const string SubscriptionEvent = "JOB_CREATED";
 
-        public JobCreationHandler() : base(SubscriptionEvent) { }
-    }
+    public JobCreationHandler() : base(SubscriptionEvent) { }
 }
