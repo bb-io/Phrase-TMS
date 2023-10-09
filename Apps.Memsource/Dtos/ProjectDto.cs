@@ -4,7 +4,7 @@ namespace Apps.PhraseTMS.Dtos;
 
 public class ProjectDto
 {
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     //public string Id { get; set; }
 
@@ -12,5 +12,5 @@ public class ProjectDto
     public string UId { get; set; }
 
     [Display("Creation date")]
-    public DateTime DateCreated { get; set; }
+    public DateTime? DateCreated { get; set; }
 }

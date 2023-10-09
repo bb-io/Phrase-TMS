@@ -13,6 +13,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 using System.Net.Mime;
+using Apps.PhraseTMS.Models;
+using Apps.PhraseTMS.Models.Files.Requests;
 using File = Blackbird.Applications.Sdk.Common.Files.File;
 
 namespace Apps.PhraseTMS.Actions;
@@ -34,6 +36,10 @@ public class JobActions
             authenticationCredentialsProviders);
 
         var response = await client.Paginate<JobDto>(request);
+        response.ForEach(x => x.Project = new()
+        {
+            UId = input.ProjectUId
+        });
 
         return new ListAllJobsResponse
         {
@@ -178,5 +184,64 @@ public class JobActions
                 ContentType = mimeType
             }
         };
+    }
+
+    [Action("Download original file", Description = "Download original file of a job")]
+    public async Task<TargetFileResponse> DownloadOriginalFile(
+        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] TargetFileRequest input)
+    {
+        var client = new PhraseTmsClient(authenticationCredentialsProviders);
+        var requestFile = new PhraseTmsRequest(
+            $"/api2/v1/projects/{input.ProjectUId}/jobs/{input.JobUId}/original?format=ORIGINAL",
+            Method.Get, authenticationCredentialsProviders);
+
+        var responseDownload = await client.ExecuteWithHandling(requestFile);
+
+        var fileData = responseDownload.RawBytes;
+        var filenameHeader = responseDownload.ContentHeaders.First(h => h.Name == "Content-Disposition");
+        var filename = filenameHeader.Value.ToString().Split(';')[1].Split("\'\'")[1];
+
+        return new TargetFileResponse
+        {
+            File = new File(fileData)
+            {
+                Name = filename,
+                ContentType = MediaTypeNames.Application.Octet
+            }
+        };
+    }
+
+    [Action("Update target file", Description = "Update target file of a job")]
+    public Task UpdateTargetFile(
+        IEnumerable<AuthenticationCredentialsProvider> creds,
+        [ActionParameter] TargetFileRequest job,
+        [ActionParameter] UpdateTargetFileInput input)
+    {
+        var client = new PhraseTmsClient(creds);
+
+        var jsonPayload = JsonConvert.SerializeObject(new UpdateTargetFileRequest()
+            {
+                Jobs = new[]
+                {
+                    new UidRequest()
+                    {
+                        Uid = job.JobUId
+                    }
+                },
+                PropagateConfirmedToTm = input.PropagateConfirmedToTm ?? default,
+                UnconfirmChangedSegments = input.UnconfirmChangedSegments ?? default
+            }, JsonConfig.Settings)
+            .Replace("\r", string.Empty)
+            .Replace("\n", string.Empty)
+            .Replace(" ", string.Empty);
+
+        var request = new PhraseTmsRequest($"/api2/v1/projects/{job.ProjectUId}/jobs/target", Method.Post, creds)
+            .AddHeader("Content-Disposition", $"filename*=UTF-8''{input.FileName ?? input.File.Name}")
+            .AddHeader("Content-Type", "application/octet-stream")
+            .AddHeader("Memsource", jsonPayload)
+            .AddParameter("application/octet-stream", input.File.Bytes, ParameterType.RequestBody);
+
+        return client.ExecuteWithHandling(request);
     }
 }
