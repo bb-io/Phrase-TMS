@@ -4,6 +4,8 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	<Product>Blackbird Phrase TMS</Product>
+	<Version>1.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
