@@ -295,7 +295,7 @@ public class WebhookList
     [Webhook("On job target updated", typeof(JobTargetUpdatedHandler), Description = "On any job target updated")]
     public async Task<WebhookResponse<JobResponse>> JobTargetUpdated(WebhookRequest webhookRequest)
     {
-        var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
+        var data = JsonConvert.DeserializeObject<JobWrapper>(webhookRequest.Body.ToString());
         if (data is null)
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
@@ -305,11 +305,11 @@ public class WebhookList
             HttpResponseMessage = null,
             Result = new JobResponse
             {
-                Uid = data.JobParts.FirstOrDefault()?.Uid,
-                Filename = data.JobParts.FirstOrDefault()?.Filename,
-                TargetLanguage = data.JobParts.FirstOrDefault()?.TargetLang,
-                Status = data.JobParts.FirstOrDefault()?.Status,
-                ProjectUid = data.JobParts.FirstOrDefault()?.Project.UId,
+                Uid = data.JobPart.Uid,
+                Filename = data.JobPart.Filename,
+                TargetLanguage = data.JobPart.TargetLang,
+                Status = data.JobPart.Status,
+                ProjectUid = data.JobPart.Project.UId,
                 //DateDue = response.DateDue
             }
         };
@@ -417,6 +417,11 @@ public class ProjectWrapper
 public class JobsWrapper
 {
     public List<JobDto> JobParts { get; set; }
+}
+
+public class JobWrapper
+{
+    public JobDto JobPart { get; set; }
 }
 
 public class ProjectTemplateWrapper
