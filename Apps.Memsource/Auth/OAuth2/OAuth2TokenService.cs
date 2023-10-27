@@ -1,12 +1,18 @@
 ﻿using System.Text.Json;
+using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication.OAuth2;
+using Blackbird.Applications.Sdk.Common.Invocation;
 
 namespace Apps.PhraseTMS.Auth.OAuth2;
 
-public class OAuth2TokenService : IOAuth2TokenService
+public class OAuth2TokenService : BaseInvocable, IOAuth2TokenService
 {
     private const string ExpiresAtKeyName = "expires_at";
     private const string TokenUrl = "https://us.cloud.memsource.com/web/oauth/token";
+
+    public OAuth2TokenService(InvocationContext invocationContext) : base(invocationContext)
+    {
+    }
 
     public bool IsRefreshToken(Dictionary<string, string> values)
     {
@@ -30,7 +36,7 @@ public class OAuth2TokenService : IOAuth2TokenService
         {
             { "grant_type", grant_type },
             { "client_id", values["client_id"] },
-            { "redirect_uri", ApplicationConstants.RedirectUri },
+            { "redirect_uri", InvocationContext.UriInfo.AuthorizationCodeRedirectUri.ToString() },
             { "code", code }
         };
         var url = values["url"].TrimEnd('/') + "/web/oauth/token";
