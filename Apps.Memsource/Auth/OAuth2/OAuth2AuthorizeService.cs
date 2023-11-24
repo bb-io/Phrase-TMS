@@ -13,13 +13,16 @@ public class OAuth2AuthorizeService : BaseInvocable, IOAuth2AuthorizeService
 
     public string GetAuthorizationUrl(Dictionary<string, string> values)
     {
+        string bridgeOauthUrl = $"{InvocationContext.UriInfo.BridgeServiceUrl.ToString().TrimEnd('/')}/oauth";
         var oauthUrl = values["url"].TrimEnd('/') + "/web/oauth/authorize";
         var parameters = new Dictionary<string, string>
         {
             { "client_id", values["client_id"] },
-            { "redirect_uri", InvocationContext.UriInfo.AuthorizationCodeRedirectUri.ToString() },
+            { "redirect_uri", $"{InvocationContext.UriInfo.BridgeServiceUrl.ToString().TrimEnd('/')}/AuthorizationCode" },
             { "response_type", "code" },
-            { "state", values["state"] }
+            { "state", values["state"] },
+            { "authorization_url", oauthUrl},
+            { "actual_redirect_uri", InvocationContext.UriInfo.AuthorizationCodeRedirectUri.ToString() },
         };
         return oauthUrl.WithQuery(parameters);
     }
