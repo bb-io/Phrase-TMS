@@ -36,7 +36,7 @@ public class OAuth2TokenService : BaseInvocable, IOAuth2TokenService
         {
             { "grant_type", grant_type },
             { "client_id", values["client_id"] },
-            { "redirect_uri", InvocationContext.UriInfo.AuthorizationCodeRedirectUri.ToString() },
+            { "redirect_uri", $"{InvocationContext.UriInfo.BridgeServiceUrl.ToString().TrimEnd('/')}/AuthorizationCode" },
             { "code", code }
         };
         var url = values["url"].TrimEnd('/') + "/web/oauth/token";
