@@ -53,7 +53,7 @@ public class VendorActions
     [Action("Get vendor", Description = "Get specific vendor")]
     public Task<VendorDto> GetVendor(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        GetVendorRequest input)
+        [ActionParameter] GetVendorRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var request = new PhraseTmsRequest($"/api2/v1/vendors/{input.VendorId}", Method.Get,
