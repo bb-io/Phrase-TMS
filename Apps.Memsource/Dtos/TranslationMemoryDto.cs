@@ -16,6 +16,7 @@ public class TranslationMemoryDto
     public string SourceLang { get; set; }
 
     [Display("Target languages")]
+    [DataSource(typeof(LanguageDataHandler))]
     public IEnumerable<string> TargetLangs { get; set; }
 
     [Display("Created at")]

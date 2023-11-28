@@ -13,6 +13,7 @@ public class CreateTranslationMemoryRequest
     public string SourceLang { get; set; }
 
     [Display("Target languages")]
+    [DataSource(typeof(LanguageDataHandler))]
     public string[] TargetLang { get; set; }
         
     public string? Note { get; set; }

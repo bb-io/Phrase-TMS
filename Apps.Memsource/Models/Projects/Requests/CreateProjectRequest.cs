@@ -13,5 +13,6 @@ public class CreateProjectRequest
     public string SourceLanguage { get; set; }
 
     [Display("Target languages")]
+    [DataSource(typeof(LanguageDataHandler))]
     public IEnumerable<string> TargetLanguages { get; set; }
 }
