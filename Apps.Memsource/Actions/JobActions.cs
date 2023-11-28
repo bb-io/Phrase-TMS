@@ -65,7 +65,6 @@ public class JobActions
             TargetLanguage = response.TargetLang,
             Status = response.Status,
             ProjectUid = response.Project.UId,
-            //DateDue = response.DateDue
         };
     }
 

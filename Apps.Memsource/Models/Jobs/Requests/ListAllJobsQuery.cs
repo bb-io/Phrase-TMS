@@ -23,7 +23,7 @@ public class ListAllJobsQuery
     public string? Filename { get; set; }
 
     [Display("Target language")]
-    [DataSource(typeof(LanguageDataHandler))]
+    [DataSource(typeof(JobTargetLanguagesDataHandler))]
     public string? TargetLang { get; set; }
 
     [Display("Assigned vendor")]

@@ -1,12 +1,16 @@
-﻿using Apps.PhraseTMS.DataSourceHandlers.EnumHandlers;
+﻿using Apps.PhraseTMS.DataSourceHandlers;
+using Apps.PhraseTMS.DataSourceHandlers.EnumHandlers;
+using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.PhraseTMS.Models.Analysis.Requests;
 
-public class CreateAnalysisInput
+public class CreateAnalysisInput : ProjectRequest
 {
-    [Display("Jobs UIDs")] public IEnumerable<string> JobsUIds { get; set; }
+    [Display("Jobs")]
+    [DataSource(typeof(JobDataHandler))]
+    public IEnumerable<string> JobsUIds { get; set; }
 
     public string? Type { get; set; }
 

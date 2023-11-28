@@ -10,9 +10,11 @@ public class JobDto
 
     public string Status { get; set; }
 
-    [Display("Target language")] public string TargetLang { get; set; }
+    [Display("Inner ID", Description = "InnerId is a sequential number of a job in a project.\nJobs created from the same file share the same innerId across workflow steps.")]
+    public string InnerId { get; set; }
 
-    // [Display("Due date")]
-    // public string DateDue { get; set; }
+    [Display("Target language")] 
+    public string TargetLang { get; set; }
+
     public ProjectDto Project { get; set; }
 }

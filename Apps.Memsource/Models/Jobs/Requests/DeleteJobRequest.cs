@@ -1,10 +1,13 @@
-﻿using Apps.PhraseTMS.Models.Projects.Requests;
+﻿using Apps.PhraseTMS.DataSourceHandlers;
+using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.Sdk.Common;
+using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.PhraseTMS.Models.Jobs.Requests;
 
 public class DeleteJobRequest : ProjectRequest
 {
-    [Display("Job UIDs")]
+    [Display("Jobs")]
+    [DataSource(typeof(JobDataHandler))]
     public IEnumerable<string> JobsUIds { get; set; }
 }
