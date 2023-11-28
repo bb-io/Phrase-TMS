@@ -5,8 +5,8 @@ namespace Apps.PhraseTMS.Models.Jobs.Requests;
 public class GetSegmentsQuery
 {
     [Display("Begin index")]
-    public int? BeginIndex { get; set; }
+    public int? beginIndex { get; set; }
 
     [Display("End index")]
-    public int? EndIndex { get; set; }
+    public int? endIndex { get; set; }
 }
