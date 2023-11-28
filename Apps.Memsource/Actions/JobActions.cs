@@ -124,15 +124,7 @@ public class JobActions
         var request = new PhraseTmsRequest(endpoint.WithQuery(query),
             Method.Get, authenticationCredentialsProviders);
 
-        var response = await client.ExecuteWithHandling(request);
-
-        dynamic content = (JObject)JsonConvert.DeserializeObject(response.Content);
-        JArray segmentsArr = content.segments;
-        var segments = segmentsArr.ToObject<List<SegmentDto>>();
-        return new GetSegmentsResponse
-        {
-            Segments = segments
-        };
+        return await client.ExecuteWithHandling<GetSegmentsResponse>(request);
     }
 
     [Action("Edit job", Description = "Edit selected job")]

@@ -1,6 +1,7 @@
 ﻿using Apps.PhraseTMS.Actions;
 using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Models.Jobs.Requests;
+using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Dynamic;
@@ -30,6 +31,10 @@ namespace Apps.PhraseTMS.DataSourceHandlers
 
         public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
         {
+            if(string.IsNullOrEmpty(JobRequest.JobUId))
+            {
+                throw new ArgumentException("Please fill in job first");
+            }
             var client = new PhraseTmsClient(Creds);
             var endpoint = $"/api2/v3/projects/{JobRequest.ProjectUId}/jobs/{JobRequest.JobUId}/analyses";
             var request = new PhraseTmsRequest(endpoint, Method.Get, Creds);
