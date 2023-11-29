@@ -1,6 +1,6 @@
 ﻿namespace Apps.PhraseTMS.Models.Projects.Requests;
 
-public class DeleteProjectRequest : ProjectRequest
+public class DeleteProjectRequest
 {
     public bool? Purge { get; set; }
 }

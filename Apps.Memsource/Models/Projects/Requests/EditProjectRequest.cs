@@ -4,7 +4,7 @@ using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.PhraseTMS.Models.Projects.Requests;
 
-public class EditProjectRequest : ProjectRequest
+public class EditProjectRequest
 {
     [Display("Project name")] public string ProjectName { get; set; }
 

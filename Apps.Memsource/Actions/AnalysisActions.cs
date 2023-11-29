@@ -9,6 +9,8 @@ using Apps.PhraseTMS.Models.Async;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
+using Apps.PhraseTMS.Models.Projects.Requests;
+using Apps.PhraseTMS.Models.Jobs.Requests;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -18,12 +20,13 @@ public class AnalysisActions
     [Action("List analyses", Description = "List all job's analyses")]
     public async Task<ListAnalysesResponse> ListAnalyses(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] ListAnalysesPathRequest path,
         [ActionParameter] ListAnalysesQueryRequest query)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
 
-        var endpoint = $"/api2/v3/projects/{path.ProjectUId}/jobs/{path.JobUId}/analyses"
+        var endpoint = $"/api2/v3/projects/{projectRequest.ProjectUId}/jobs/{path.JobUId}/analyses"
             .WithQuery(query);
             
         var request = new PhraseTmsRequest(endpoint,
@@ -39,6 +42,8 @@ public class AnalysisActions
     [Action("Get analysis", Description = "Get job's analysis")]
     public Task<AnalysisDto> GetAnalysis(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] GetJobRequest jobRequest,
         [ActionParameter] GetAnalysisRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
@@ -50,6 +55,7 @@ public class AnalysisActions
     [Action("Create analysis", Description = "Create a new analysis")]
     public AsyncRequest CreateAnalysis(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] CreateAnalysisInput input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);

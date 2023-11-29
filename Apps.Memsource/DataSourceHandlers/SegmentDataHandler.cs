@@ -15,6 +15,7 @@ using System.Collections;
 using Apps.PhraseTMS.Models.Jobs.Requests;
 using Apps.PhraseTMS.Dtos;
 using System.Security.Cryptography;
+using Apps.PhraseTMS.Models.Projects.Requests;
 
 namespace Apps.PhraseTMS.DataSourceHandlers
 {
@@ -26,16 +27,21 @@ namespace Apps.PhraseTMS.DataSourceHandlers
 
         private GetJobRequest JobRequest { get; set; }
 
-        public SegmentDataHandler(InvocationContext invocationContext, [ActionParameter] GetJobRequest jobRequest) : base(invocationContext)
+        private ProjectRequest ProjectRequest { get; set; }
+
+        public SegmentDataHandler(InvocationContext invocationContext, 
+            [ActionParameter] GetJobRequest jobRequest,
+            [ActionParameter] ProjectRequest projectRequest) : base(invocationContext)
         {
             JobRequest = jobRequest;
+            ProjectRequest = projectRequest;
         }
 
         public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
         {
             var client = new PhraseTmsClient(Creds);
 
-            var segmentsCountEndpoint = $"/api2/v1/projects/{JobRequest.ProjectUId}/jobs/segmentsCount";
+            var segmentsCountEndpoint = $"/api2/v1/projects/{ProjectRequest.ProjectUId}/jobs/segmentsCount";
             var segmentsCountRequest = new PhraseTmsRequest(segmentsCountEndpoint, Method.Post, Creds);
             segmentsCountRequest.AddJsonBody(new
             {
@@ -47,7 +53,7 @@ namespace Apps.PhraseTMS.DataSourceHandlers
                 }
             });
             var segmentCounts = await client.ExecuteWithHandling<SegmentCountDto>(segmentsCountRequest);
-            var endpoint = $"/api2/v1/projects/{JobRequest.ProjectUId}/jobs/{JobRequest.JobUId}/segments"
+            var endpoint = $"/api2/v1/projects/{ProjectRequest.ProjectUId}/jobs/{JobRequest.JobUId}/segments"
                 .WithQuery(new GetSegmentsQuery() { 
                     beginIndex = 0, 
                     endIndex = segmentCounts.SegmentsCountsResults.Where(s => s.JobPartUid == JobRequest.JobUId).First().Counts.SegmentsCount 
@@ -61,8 +67,9 @@ namespace Apps.PhraseTMS.DataSourceHandlers
                 .Take(20)
                 .ToDictionary(x => x.Id, x => 
                 {
-                    var target = string.IsNullOrEmpty(x.Target) ? x.Target : "empty";
-                    return $"{x.Source} -> {target}"; 
+                    //var target = string.IsNullOrEmpty(x.Target) ? x.Target : "empty";
+                    //return $"{x.Source} -> {target}"; 
+                    return x.Source;
                 });
         }
     }

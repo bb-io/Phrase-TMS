@@ -5,7 +5,7 @@ using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.PhraseTMS.Models.Jobs.Requests;
 
-public class EditJobPath : ProjectRequest
+public class EditJobPath
 {
     [Display("Job")]
     [DataSource(typeof(JobDataHandler))]

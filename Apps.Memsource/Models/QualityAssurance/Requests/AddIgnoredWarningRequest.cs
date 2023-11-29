@@ -6,7 +6,7 @@ using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.PhraseTMS.Models.QualityAssurance.Requests;
 
-public class AddIgnoredWarningRequest : GetJobRequest
+public class AddIgnoredWarningRequest
 {
     [Display("Segment")]
     [DataSource(typeof(SegmentDataHandler))]

@@ -5,7 +5,7 @@ using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.PhraseTMS.Models.Analysis.Requests;
 
-public class ListAnalysesPathRequest : ProjectRequest
+public class ListAnalysesPathRequest
 {
     [Display("Job")]
     [DataSource(typeof(JobDataHandler))]

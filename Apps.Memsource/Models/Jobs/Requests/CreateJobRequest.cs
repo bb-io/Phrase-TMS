@@ -6,7 +6,7 @@ using File = Blackbird.Applications.Sdk.Common.Files.File;
 
 namespace Apps.PhraseTMS.Models.Jobs.Requests;
 
-public class CreateJobRequest : ProjectRequest
+public class CreateJobRequest
 {
     [Display("Target languages")]
     [DataSource(typeof(JobTargetLanguagesDataHandler))]

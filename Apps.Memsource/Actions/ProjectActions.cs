@@ -92,10 +92,11 @@ public class ProjectActions
 
     [Action("Add target language", Description = "Add a target language to the project")]
     public Task AddTargetLanguage(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] AddTargetLanguageRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
-        var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/targetLangs", Method.Post,
+        var request = new PhraseTmsRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/targetLangs", Method.Post,
             authenticationCredentialsProviders);
         request.WithJsonBody(new
         {
@@ -107,10 +108,11 @@ public class ProjectActions
 
     [Action("Edit project", Description = "Edit selected project")]
     public Task EditProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] EditProjectRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
-        var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Patch,
+        var request = new PhraseTmsRequest($"/api2/v1/projects/{projectRequest.ProjectUId}", Method.Patch,
             authenticationCredentialsProviders);
         request.WithJsonBody(new
         {
@@ -123,11 +125,12 @@ public class ProjectActions
 
     [Action("Delete project", Description = "Delete specific project")]
     public Task DeleteProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] DeleteProjectRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
 
-        var endpoint = $"/api2/v1/projects/{input.ProjectUId}";
+        var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}";
 
         if (input.Purge != null)
             endpoint += $"?purge={input.Purge}";

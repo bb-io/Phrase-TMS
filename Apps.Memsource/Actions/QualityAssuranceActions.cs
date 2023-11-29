@@ -7,6 +7,8 @@ using Apps.PhraseTMS.Models.QualityAssurance.Requests;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
+using Apps.PhraseTMS.Models.Jobs.Requests;
+using Apps.PhraseTMS.Models.Projects.Requests;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -16,11 +18,13 @@ public class QualityAssuranceActions
     [Action("Add ignored warning", Description = "Add a new ignored warning to the job segment")]
     public Task AddIgnoredWarning(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] GetJobRequest jobRequest,
         [ActionParameter] AddIgnoredWarningRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var request = new PhraseTmsRequest(
-            $"/api2/v1/projects/{input.ProjectUId}/jobs/{input.JobUId}/qualityAssurances/ignoredWarnings",
+            $"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/{jobRequest.JobUId}/qualityAssurances/ignoredWarnings",
             Method.Post, authenticationCredentialsProviders);
         request.WithJsonBody(new
         {

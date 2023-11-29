@@ -8,6 +8,7 @@ using Apps.PhraseTMS.Models.Translations.Responses;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
+using Apps.PhraseTMS.Models.Projects.Requests;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -50,11 +51,12 @@ public class TranslationActions
     [Action("Translate with MT by project", Description = "Translate with machine translation with project settings")]
     public Task<TranslationDto> TranslateMTProject(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] TranslateMTProjectRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var request = new PhraseTmsRequest(
-            $"/api2/v1/projects/{input.ProjectUId}/jobs/{input.JobUId}/translations/translateWithMachineTranslation",
+            $"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/{input.JobUId}/translations/translateWithMachineTranslation",
             Method.Post, authenticationCredentialsProviders);
         request.WithJsonBody(new
         {

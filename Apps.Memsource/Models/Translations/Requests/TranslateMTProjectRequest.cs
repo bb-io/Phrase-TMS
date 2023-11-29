@@ -5,7 +5,7 @@ using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.PhraseTMS.Models.Translations.Requests;
 
-public class TranslateMTProjectRequest : ProjectRequest
+public class TranslateMTProjectRequest
 {
     [Display("Job")]
     [DataSource(typeof(JobDataHandler))]
