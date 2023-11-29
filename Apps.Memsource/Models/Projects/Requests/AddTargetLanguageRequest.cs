@@ -4,7 +4,7 @@ using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.PhraseTMS.Models.Projects.Requests;
 
-public class AddTargetLanguageRequest : ProjectRequest
+public class AddTargetLanguageRequest
 {
     [Display("Target languages")]
     [DataSource(typeof(LanguageDataHandler))]

@@ -6,7 +6,7 @@ using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.PhraseTMS.Models.Quotes.Requests;
 
-public class CreateQuoteRequest : GetJobRequest
+public class CreateQuoteRequest
 {
     [Display("Analyse")]
     [DataSource(typeof(AnalysisDataHandler))]

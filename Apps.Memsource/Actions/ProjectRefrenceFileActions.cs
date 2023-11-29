@@ -9,6 +9,7 @@ using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using File = Blackbird.Applications.Sdk.Common.Files.File;
 using System.Net.Mime;
+using Apps.PhraseTMS.Models.Projects.Requests;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -38,10 +39,11 @@ public class ProjectRefrenceFileActions
     [Action("Create reference file", Description = "Create a new project reference file")]
     public Task<ReferenceFileInfoDto> CreateReferenceFile(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] CreateReferenceFileRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
-        var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/references",
+        var request = new PhraseTmsRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/references",
             Method.Post, authenticationCredentialsProviders);
 
         request.AddHeader("Content-Disposition", $"filename*=UTF-8''{input.File.Name}");
@@ -54,11 +56,12 @@ public class ProjectRefrenceFileActions
     [Action("Download reference file", Description = "Download project reference file")]
     public async Task<DownloadReferenceFilesResponse> DownloadReferenceFiles(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] DownloadReferenceFilesRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var request = new PhraseTmsRequest(
-            $"/api2/v1/projects/{input.ProjectUId}/references/{input.ReferenceFileUId}",
+            $"/api2/v1/projects/{projectRequest.ProjectUId}/references/{input.ReferenceFileUId}",
             Method.Get, authenticationCredentialsProviders);
         var response = await client.ExecuteWithHandling(request);
 
@@ -81,10 +84,11 @@ public class ProjectRefrenceFileActions
     [Action("Delete reference file", Description = "Delete specific project reference file")]
     public Task DeleteReferenceFile(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] DeleteReferenceFileRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
-        var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/references",
+        var request = new PhraseTmsRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/references",
             Method.Delete, authenticationCredentialsProviders);
         request.WithJsonBody(new
         {

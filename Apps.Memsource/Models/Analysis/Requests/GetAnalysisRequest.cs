@@ -5,7 +5,7 @@ using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.PhraseTMS.Models.Analysis.Requests;
 
-public class GetAnalysisRequest : GetJobRequest
+public class GetAnalysisRequest
 {
     [Display("Analysis")]
     [DataSource(typeof(AnalysisDataHandler))]

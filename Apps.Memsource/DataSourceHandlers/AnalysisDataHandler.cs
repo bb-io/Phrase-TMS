@@ -24,8 +24,13 @@ namespace Apps.PhraseTMS.DataSourceHandlers
 
         private GetJobRequest JobRequest { get; set; }
 
-        public AnalysisDataHandler(InvocationContext invocationContext, [ActionParameter] GetJobRequest jobRequest) : base(invocationContext)
+        private ProjectRequest ProjectRequest { get; set; }
+
+        public AnalysisDataHandler(InvocationContext invocationContext, 
+            [ActionParameter] GetJobRequest jobRequest,
+            [ActionParameter] ProjectRequest projectRequest) : base(invocationContext)
         {
+            ProjectRequest = projectRequest;
             JobRequest = jobRequest;
         }
 
@@ -36,7 +41,7 @@ namespace Apps.PhraseTMS.DataSourceHandlers
                 throw new ArgumentException("Please fill in job first");
             }
             var client = new PhraseTmsClient(Creds);
-            var endpoint = $"/api2/v3/projects/{JobRequest.ProjectUId}/jobs/{JobRequest.JobUId}/analyses";
+            var endpoint = $"/api2/v3/projects/{ProjectRequest.ProjectUId}/jobs/{JobRequest.JobUId}/analyses";
             var request = new PhraseTmsRequest(endpoint, Method.Get, Creds);
             var analysis = await client.Paginate<AnalysisDto>(request);
             return analysis

@@ -6,6 +6,8 @@ using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Models.Quotes.Requests;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
+using Apps.PhraseTMS.Models.Jobs.Requests;
+using Apps.PhraseTMS.Models.Projects.Requests;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -25,6 +27,8 @@ public class QuoteActions
 
     [Action("Create quote", Description = "Create a new project quote")]
     public Task<QuoteDto> CreateQuote(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] GetJobRequest jobRequest,
         [ActionParameter] CreateQuoteRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
@@ -34,7 +38,7 @@ public class QuoteActions
             analyse = new { id = input.AnalyseUId },
             name = input.Name,
             priceList = new { id = input.PriceListUId },
-            project = new { uid = input.ProjectUId }
+            project = new { uid = projectRequest.ProjectUId }
         });
         return client.ExecuteWithHandling<QuoteDto>(request);
     }

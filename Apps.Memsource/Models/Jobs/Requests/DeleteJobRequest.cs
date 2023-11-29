@@ -5,7 +5,7 @@ using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.PhraseTMS.Models.Jobs.Requests;
 
-public class DeleteJobRequest : ProjectRequest
+public class DeleteJobRequest
 {
     [Display("Jobs")]
     [DataSource(typeof(JobDataHandler))]
