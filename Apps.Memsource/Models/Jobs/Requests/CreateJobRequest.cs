@@ -9,7 +9,7 @@ namespace Apps.PhraseTMS.Models.Jobs.Requests;
 public class CreateJobRequest
 {
     [Display("Target languages")]
-    [DataSource(typeof(JobTargetLanguagesDataHandler))]
+    [DataSource(typeof(LanguageDataHandler))]
     public IEnumerable<string> TargetLanguages { get; set; }
 
     [Display("File")]
