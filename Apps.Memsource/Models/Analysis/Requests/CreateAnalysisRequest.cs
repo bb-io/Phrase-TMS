@@ -26,13 +26,15 @@ public class CreateAnalysisRequest
         CompareWorkflowLevel = input.CompareWorkflowLevel;
         UseProjectAnalysisSettings = input.UseProjectAnalysisSettings;
         CallbackUrl = input.CallbackUrl;
-        NetRateScheme = new() { Id = input.NetRateSchemeId };
-        Provider = new()
-        {
-            Id = input.ProviderId,
-            Type = input.ProviderType,
-            DefaultProjectOwnerId = input.DefaultProjectOwnerId
-        };
+        NetRateScheme = input.NetRateSchemeId is null ? null : new() { Id = input.NetRateSchemeId };
+        Provider = input.ProviderId is null
+            ? null
+            : new()
+            {
+                Id = input.ProviderId,
+                Type = input.ProviderType,
+                DefaultProjectOwnerId = input.DefaultProjectOwnerId
+            };
     }
 
     public IEnumerable<JobUidModel> Jobs { get; set; }
@@ -70,6 +72,6 @@ public class CreateAnalysisRequest
     public bool? UseProjectAnalysisSettings { get; set; }
 
     public string? CallbackUrl { get; set; }
-    public NetRateScheme NetRateScheme { get; set; }
-    public Provider Provider { get; set; }
+    public NetRateScheme? NetRateScheme { get; set; }
+    public Provider? Provider { get; set; }
 }
