@@ -35,12 +35,11 @@ public class PhraseTmsClient : RestClient
         return asyncRequest;
     }
 
-    public List<AsyncRequest> PerformMultipleAsyncRequest(PhraseTmsRequest request,
+    public async Task<List<AsyncRequest>> PerformMultipleAsyncRequest(PhraseTmsRequest request,
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
     {
         var result = new List<AsyncRequest>();
-        var asyncRequestResponse = this.Execute<AsyncRequestMultipleResponse>(request).Data;
-        if (asyncRequestResponse is null) return default;
+        var asyncRequestResponse = await ExecuteWithHandling<AsyncRequestMultipleResponse>(request);
         var asyncRequests = asyncRequestResponse.AsyncRequests;
 
         foreach (var asyncRequest in asyncRequests)
@@ -48,11 +47,10 @@ public class PhraseTmsClient : RestClient
             AsyncRequest asyncRequestSeparate = null;
             while (asyncRequestSeparate?.AsyncResponse is null)
             {
-                Task.Delay(2000);
+                await Task.Delay(2000);
                 var asyncStatusRequest = new PhraseTmsRequest($"/api2/v1/async/{asyncRequest.AsyncRequest.Id}",
                     Method.Get, authenticationCredentialsProviders);
-                asyncRequestSeparate = this.Get<AsyncRequest>(asyncStatusRequest);
-                if (asyncRequestSeparate is null) return default;
+                asyncRequestSeparate = await ExecuteWithHandling<AsyncRequest>(asyncStatusRequest);
             }
 
             result.Add(asyncRequestSeparate);
