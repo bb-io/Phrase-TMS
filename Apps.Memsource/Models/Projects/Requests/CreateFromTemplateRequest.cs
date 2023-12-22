@@ -11,4 +11,7 @@ public class CreateFromTemplateRequest
     [Display("Template")]
     [DataSource(typeof(ProjectTemplateDataHandler))]
     public string TemplateUId { get; set; }
+    
+    [Display("Date due")]
+    public DateTime? DateDue { get; set; }
 }

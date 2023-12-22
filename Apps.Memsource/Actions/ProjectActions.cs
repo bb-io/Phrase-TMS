@@ -68,7 +68,8 @@ public class ProjectActions
         {
             name = input.Name,
             sourceLang = input.SourceLanguage,
-            targetLangs = input.TargetLanguages.ToArray()
+            targetLangs = input.TargetLanguages.ToArray(),
+            dateDue = input.DateDue
         });
 
         return client.ExecuteWithHandling<ProjectDto>(request);
@@ -84,7 +85,8 @@ public class ProjectActions
             authenticationCredentialsProviders);
         request.WithJsonBody(new
         {
-            name = input.Name
+            name = input.Name,
+            dateDue = input.DateDue
         });
 
         return client.ExecuteWithHandling<ProjectDto>(request);
