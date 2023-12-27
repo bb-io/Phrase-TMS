@@ -1,9 +1,10 @@
 ﻿using Apps.PhraseTMS.Models.Projects.Requests;
-using File = Blackbird.Applications.Sdk.Common.Files.File;
+using Blackbird.Applications.Sdk.Common.Files;
+
 
 namespace Apps.PhraseTMS.Models.ProjectReferenceFiles.Requests;
 
 public class CreateReferenceFileRequest
 {
-    public File File { get; set; }
+    public FileReference File { get; set; }
 }

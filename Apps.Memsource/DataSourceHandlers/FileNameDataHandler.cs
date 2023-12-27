@@ -17,7 +17,7 @@ public class FileNameDataHandler : BaseInvocable, IAsyncDataSourceHandler
 
     public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
     {
-        var actions = new FileActions();
+        var actions = new FileActions(null);
         var response = await actions.ListAllFiles(Creds, new());
         
         return response.Files

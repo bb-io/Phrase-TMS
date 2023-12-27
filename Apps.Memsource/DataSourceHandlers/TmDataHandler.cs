@@ -17,7 +17,7 @@ public class TmDataHandler : BaseInvocable, IAsyncDataSourceHandler
 
     public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
     {
-        var actions = new TranslationMemoryActions();
+        var actions = new TranslationMemoryActions(null);
         var response = await actions.ListTranslationMemories(Creds, new());
         
         return response.Memories
