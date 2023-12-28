@@ -53,7 +53,7 @@ public class AnalysisActions
     }
 
     [Action("Create analysis", Description = "Create a new analysis")]
-    public AsyncRequest CreateAnalysis(
+    public async Task<AsyncRequest> CreateAnalysis(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] CreateAnalysisInput input)
@@ -62,7 +62,7 @@ public class AnalysisActions
         var request = new PhraseTmsRequest($"/api2/v2/analyses", Method.Post, authenticationCredentialsProviders);
         request.WithJsonBody(new CreateAnalysisRequest(input),  JsonConfig.Settings);
             
-        var asyncRequest = client.PerformMultipleAsyncRequest(request, authenticationCredentialsProviders);
+        var asyncRequest = await client.PerformMultipleAsyncRequest(request, authenticationCredentialsProviders);
         return asyncRequest.First();
     }
 }

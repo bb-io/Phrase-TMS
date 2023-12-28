@@ -15,7 +15,7 @@ Before you can connect you need to make sure that:
 - You have a Phrase account on the instance you want to connect to.
 - You have permission to create and modify Registered OAuth apps.
 - In Phrase go to Settings > Registered OAuth apps and click _New_.
-- Fill in any name and description. For Redirect URI fill in: `https://sandbox.blackbird.io/api-rest/connections/AuthorizationCode` and click _Save_.
+- Fill in any name and description. For Redirect URI fill in: `https://bridge.blackbird.io/api/AuthorizationCode` and click _Save_.
 - Copy the _Client ID_ of the newly created OAuth app.
 
 ## Connecting
