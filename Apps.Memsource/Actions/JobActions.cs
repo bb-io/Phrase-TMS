@@ -15,14 +15,22 @@ using RestSharp;
 using System.Net.Mime;
 using Apps.PhraseTMS.Models;
 using Apps.PhraseTMS.Models.Files.Requests;
-using File = Blackbird.Applications.Sdk.Common.Files.File;
 using Apps.PhraseTMS.Models.Projects.Requests;
+using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
+using Blackbird.Applications.Sdk.Utils.Extensions.Files;
 
 namespace Apps.PhraseTMS.Actions;
 
 [ActionList]
 public class JobActions
 {
+    private readonly IFileManagementClient _fileManagementClient;
+
+    public JobActions(IFileManagementClient fileManagementClient)
+    {
+        _fileManagementClient = fileManagementClient;
+    }
+
     [Action("List jobs", Description = "List all jobs in the project")]
     public async Task<
         ListAllJobsResponse> ListAllJobs(
@@ -91,9 +99,10 @@ public class JobActions
             { "Content-Disposition", $"filename*=UTF-8''{input.File.Name}" },
             { "Content-Type", "application/octet-stream" },
         };
-
         headers.ToList().ForEach(x => request.AddHeader(x.Key, x.Value));
-        request.AddParameter("application/octet-stream", input.File.Bytes, ParameterType.RequestBody);
+
+        var fileBytes = _fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
+        request.AddParameter("application/octet-stream", fileBytes, ParameterType.RequestBody);
 
         var response = await client.ExecuteWithHandling<JobResponseWrapper>(request);
 
@@ -174,14 +183,9 @@ public class JobActions
         if (MimeTypes.TryGetMimeType(filename, out mimeType))
             mimeType = MediaTypeNames.Application.Octet;
 
-        return new TargetFileResponse
-        {
-            File = new File(fileData)
-            {
-                Name = filename,
-                ContentType = mimeType
-            }
-        };
+        using var stream = new MemoryStream(fileData);
+        var file = await _fileManagementClient.UploadAsync(stream, mimeType, filename);
+        return new TargetFileResponse { File = file };
     }
 
     [Action("Download original file", Description = "Download original file of a job")]
@@ -201,14 +205,9 @@ public class JobActions
         var filenameHeader = responseDownload.ContentHeaders.First(h => h.Name == "Content-Disposition");
         var filename = filenameHeader.Value.ToString().Split(';')[1].Split("\'\'")[1];
 
-        return new TargetFileResponse
-        {
-            File = new File(fileData)
-            {
-                Name = filename,
-                ContentType = MediaTypeNames.Application.Octet
-            }
-        };
+        using var stream = new MemoryStream(fileData);
+        var file = await _fileManagementClient.UploadAsync(stream, responseDownload.ContentType, filename);
+        return new TargetFileResponse { File = file };
     }
 
     [Action("Update target file", Description = "Update target file of a job")]
@@ -236,11 +235,12 @@ public class JobActions
             .Replace("\n", string.Empty)
             .Replace(" ", string.Empty);
 
+        var fileBytes = _fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
         var request = new PhraseTmsRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/target", Method.Post, creds)
             .AddHeader("Content-Disposition", $"filename*=UTF-8''{input.FileName ?? input.File.Name}")
             .AddHeader("Content-Type", "application/octet-stream")
             .AddHeader("Memsource", jsonPayload)
-            .AddParameter("application/octet-stream", input.File.Bytes, ParameterType.RequestBody);
+            .AddParameter("application/octet-stream", fileBytes, ParameterType.RequestBody);
 
         return client.ExecuteWithHandling(request);
     }
