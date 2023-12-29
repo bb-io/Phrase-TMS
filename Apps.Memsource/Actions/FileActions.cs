@@ -8,14 +8,24 @@ using Apps.PhraseTMS.Models.Files.Requests;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
-using File = Blackbird.Applications.Sdk.Common.Files.File;
 using System.Net.Mime;
+using Blackbird.Applications.Sdk.Common.Invocation;
+using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
+using Blackbird.Applications.Sdk.Utils.Extensions.Files;
 
 namespace Apps.PhraseTMS.Actions;
 
 [ActionList]
 public class FileActions
 {
+    private readonly IFileManagementClient _fileManagementClient;
+
+    public FileActions(IFileManagementClient fileManagementClient)
+    {
+        _fileManagementClient = fileManagementClient;
+    }
+
+
     [Action("List all files", Description = "List all files")]
     public async Task<ListAllFilesResponse> ListAllFiles(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
@@ -43,16 +53,10 @@ public class FileActions
         var request = new PhraseTmsRequest($"/api2/v1/files/{input.FileUId}", Method.Get,
             authenticationCredentialsProviders);
 
-        var response = (await client.ExecuteAsync(request)).RawBytes;
-
-        return new GetFileResponse
-        {
-            File = new File(response) 
-            { 
-                Name = input.FileUId,
-                ContentType = MediaTypeNames.Application.Octet
-            }
-        };
+        var response = await client.ExecuteAsync(request);
+        using var stream = new MemoryStream(response.RawBytes);
+        var file = await _fileManagementClient.UploadAsync(stream, response.ContentType, input.FileUId);
+        return new GetFileResponse { File = file };
     }
 
     [Action("Upload file", Description = "Upload a new file")]
@@ -64,7 +68,9 @@ public class FileActions
         var request = new PhraseTmsRequest("/api2/v1/files", Method.Post, authenticationCredentialsProviders);
         request.AddHeader("Content-Disposition", $"filename*=UTF-8''{input.FileName ?? input.File.Name}");
         request.AddHeader("Content-Type", "application/octet-stream");
-        request.AddParameter("application/octet-stream", input.File.Bytes, ParameterType.RequestBody);
+
+        var fileBytes = _fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
+        request.AddParameter("application/octet-stream", fileBytes, ParameterType.RequestBody);
         request.WithJsonBody(input,  JsonConfig.Settings);
             
         return client.ExecuteWithHandling<FileInfoDto>(request);

@@ -7,15 +7,22 @@ using Apps.PhraseTMS.Models.ProjectReferenceFiles.Responses;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
-using File = Blackbird.Applications.Sdk.Common.Files.File;
 using System.Net.Mime;
 using Apps.PhraseTMS.Models.Projects.Requests;
+using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 
 namespace Apps.PhraseTMS.Actions;
 
 [ActionList]
 public class ProjectRefrenceFileActions
 {
+    private readonly IFileManagementClient _fileManagementClient;
+
+    public ProjectRefrenceFileActions(IFileManagementClient fileManagementClient)
+    {
+        _fileManagementClient = fileManagementClient;
+    }
+
     [Action("List reference files", Description = "List all project reference files")]
     public async Task<ListReferenceFilesResponse> ListReferenceFiles(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
@@ -72,13 +79,9 @@ public class ProjectRefrenceFileActions
         if (MimeTypes.TryGetMimeType(filename, out mimeType))
             mimeType = MediaTypeNames.Application.Octet;
 
-        return new DownloadReferenceFilesResponse
-        {
-            File = new File(fileData) {
-                Name = filename,
-                ContentType = mimeType
-            }
-        };
+        using var stream = new MemoryStream(response.RawBytes);
+        var file = await _fileManagementClient.UploadAsync(stream, mimeType, filename);
+        return new DownloadReferenceFilesResponse{ File = file };
     }
 
     [Action("Delete reference file", Description = "Delete specific project reference file")]

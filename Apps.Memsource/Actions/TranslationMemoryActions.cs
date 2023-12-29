@@ -9,14 +9,22 @@ using Apps.PhraseTMS.Models.Async;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
-using File = Blackbird.Applications.Sdk.Common.Files.File;
 using System.Net.Mime;
+using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
+using Blackbird.Applications.Sdk.Utils.Extensions.Files;
 
 namespace Apps.PhraseTMS.Actions;
 
 [ActionList]
 public class TranslationMemoryActions
 {
+    private readonly IFileManagementClient _fileManagementClient;
+
+    public TranslationMemoryActions(IFileManagementClient fileManagementClient)
+    {
+        _fileManagementClient = fileManagementClient;
+    }
+
     [Action("List translation memories", Description = "List all translation memories")]
     public async Task<ListTranslationMemoriesResponse> ListTranslationMemories(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
@@ -80,7 +88,10 @@ public class TranslationMemoryActions
 
         request.AddHeader("Content-Disposition", $"filename*=UTF-8''{input.File.Name}");
         request.AddHeader("Content-Type", "application/octet-stream");
-        request.AddParameter("application/octet-stream", input.File.Bytes, ParameterType.RequestBody);
+
+        var fileBytes = _fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
+        request.AddParameter("application/octet-stream", fileBytes, ParameterType.RequestBody);
+
         return client.PerformAsyncRequest(request, authenticationCredentialsProviders);
     }
 
@@ -104,15 +115,9 @@ public class TranslationMemoryActions
 
         if (responseDownload == null) throw new Exception("Failed downloading target files");
 
-        var fileData = responseDownload.RawBytes;
-        return new ExportTranslationMemoryResponse
-        {
-            File = new File(fileData)
-            {
-                Name = $"{input.TranslationMemoryUId}.tmx",
-                ContentType = MediaTypeNames.Application.Octet
-            }
-        };
+        using var stream = new MemoryStream(responseDownload.RawBytes);
+        var file = await _fileManagementClient.UploadAsync(stream, responseDownload.ContentType, $"{input.TranslationMemoryUId}.tmx");
+        return new ExportTranslationMemoryResponse { File = file };
     }
 
     [Action("Insert segment into memory", Description = "Insert a new segment into the translation memory")]
