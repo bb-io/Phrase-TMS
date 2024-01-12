@@ -20,6 +20,7 @@ using Blackbird.Applications.Sdk.Glossaries.Utils.Converters;
 
 namespace Apps.PhraseTMS.Actions
 {
+    [ActionList]
     public class GlossaryActions : BaseInvocable
     {
         private readonly IFileManagementClient _fileManagementClient;
