@@ -65,7 +65,7 @@ namespace Apps.PhraseTMS.Actions
             requestGlossaryData.AddHeader("Content-Disposition", $"filename*=UTF-8''{input.File.Name}");
             requestGlossaryData.AddParameter("application/octet-stream", fileBytes, ParameterType.RequestBody);
 
-            await client.ExecuteAsync(requestGlossaryData);
+            await client.ExecuteWithHandling(requestGlossaryData);
         }
 
         [Action("Test conversion v3 to v2", Description = "Test conversion v3 to v2")]
@@ -75,7 +75,7 @@ namespace Apps.PhraseTMS.Actions
 
             var fileStream = await _fileManagementClient.DownloadAsync(input.File);
             var fileBytes = await fileStream.ConvertFromTBXV3ToV2();
-            return new ExportGlossaryResponse() { File = await _fileManagementClient.UploadAsync(fileBytes, MediaTypeNames.Application.Xml, $"{input.File.Name}.tbx") };
+            return new ExportGlossaryResponse() { File = await _fileManagementClient.UploadAsync(fileBytes, MediaTypeNames.Application.Xml, $"{input.File.Name}") };
         }
     }
 }
