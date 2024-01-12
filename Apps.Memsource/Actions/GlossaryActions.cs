@@ -58,7 +58,14 @@ namespace Apps.PhraseTMS.Actions
             var client = new PhraseTmsClient(InvocationContext.AuthenticationCredentialsProviders);
 
             var fileStream = await _fileManagementClient.DownloadAsync(input.File);
-            var fileBytes = await (await fileStream.ConvertFromTBXV3ToV2()).GetByteData();
+            var fileTBXV2Stream = await fileStream.ConvertFromTBXV3ToV2();
+
+            var doc = new System.Xml.XmlDocument();
+            doc.Load(fileTBXV2Stream);
+            var root = doc.DocumentElement;
+            root.Attributes.Remove(root.Attributes["xmlns"]);
+            var fileBytes = Encoding.Default.GetBytes(doc.OuterXml);
+
 
             var endpointGlossaryData = $"/api2/v1/termBases/{input.GlossaryUId}/upload";
             var requestGlossaryData = new PhraseTmsRequest(endpointGlossaryData, Method.Post, InvocationContext.AuthenticationCredentialsProviders);
