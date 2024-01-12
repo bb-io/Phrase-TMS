@@ -17,6 +17,9 @@ using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.Sdk.Glossaries.Utils.Parsers;
 using Blackbird.Applications.Sdk.Glossaries.Utils.Dtos;
 using Blackbird.Applications.Sdk.Glossaries.Utils.Converters;
+using System.Net.Http.Headers;
+using Blackbird.Applications.Sdk.Utils.Extensions.Files;
+using DocumentFormat.OpenXml.Office2016.Excel;
 
 namespace Apps.PhraseTMS.Actions
 {
@@ -49,34 +52,30 @@ namespace Apps.PhraseTMS.Actions
             return new ExportGlossaryResponse() { File = await _fileManagementClient.UploadAsync(resultStream, MediaTypeNames.Application.Xml, $"{responseGlossaryDetails.Name}.tbx") };
         }
 
-        //[Action("Import glossary", Description = "Import glossary")]
-        //public async Task<NewGlossaryResponse> ImportGlossary([ActionParameter] ImportGlossaryRequest request)
-        //{
-        //    using var glossaryStream = await _fileManagementClient.DownloadAsync(request.File);
-        //    var blackbirdGlossary = await glossaryStream.ConvertFromTBX();
+        [Action("Import glossary", Description = "Import glossary")]
+        public async Task ImportGlossary([ActionParameter] ImportGlossaryRequest input)
+        {
+            var client = new PhraseTmsClient(InvocationContext.AuthenticationCredentialsProviders);
 
-        //    var glosseryValues = new List<KeyValuePair<string, string>>();
-        //    foreach (var entry in blackbirdGlossary.ConceptEntries)
-        //    {
-        //        var langSection1 = entry.LanguageSections.ElementAt(0);
-        //        var langSection2 = entry.LanguageSections.ElementAt(1);
-        //        glosseryValues.Add(new(langSection1.Terms.First().Term, langSection2.Terms.First().Term));
-        //    }
-        //    var glossaryEntries = new GlossaryEntries(glosseryValues);
+            var fileStream = await _fileManagementClient.DownloadAsync(input.File);
+            var fileBytes = (await fileStream.ConvertFromTBXV3ToV2()).GetByteData();
 
-        //    var sourceLanguage = blackbirdGlossary.ConceptEntries.First().LanguageSections.ElementAt(0).LanguageCode;
-        //    var targetLanguage = blackbirdGlossary.ConceptEntries.First().LanguageSections.ElementAt(1).LanguageCode;
+            var endpointGlossaryData = $"/api2/v1/termBases/{input.GlossaryUId}/upload";
+            var requestGlossaryData = new PhraseTmsRequest(endpointGlossaryData, Method.Post, InvocationContext.AuthenticationCredentialsProviders);
+            requestGlossaryData.AddHeader("Content-Disposition", $"filename*=UTF-8''{input.File.Name}");
+            requestGlossaryData.AddParameter("application/octet-stream", fileBytes, ParameterType.RequestBody);
 
-        //    var result = await Client.CreateGlossaryAsync(request.Name ?? blackbirdGlossary.Title, sourceLanguage, targetLanguage, glossaryEntries);
-        //    await Client.WaitUntilGlossaryReadyAsync(result.GlossaryId);
-        //    return new NewGlossaryResponse
-        //    {
-        //        GossaryId = result.GlossaryId,
-        //        Name = result.Name,
-        //        SourceLanguageCode = result.SourceLanguageCode,
-        //        TargetLanguageCode = result.TargetLanguageCode,
-        //        EntryCount = result.EntryCount,
-        //    };
-        //}
+            await client.ExecuteAsync(requestGlossaryData);
+        }
+
+        [Action("Test conversion v3 to v2", Description = "Test conversion v3 to v2")]
+        public async Task<ExportGlossaryResponse> TestConvGlossary([ActionParameter] ImportGlossaryRequest input)
+        {
+            var client = new PhraseTmsClient(InvocationContext.AuthenticationCredentialsProviders);
+
+            var fileStream = await _fileManagementClient.DownloadAsync(input.File);
+            var fileBytes = await fileStream.ConvertFromTBXV3ToV2();
+            return new ExportGlossaryResponse() { File = await _fileManagementClient.UploadAsync(fileBytes, MediaTypeNames.Application.Xml, $"{input.File.Name}.tbx") };
+        }
     }
 }
