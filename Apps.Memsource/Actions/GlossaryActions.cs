@@ -74,15 +74,5 @@ namespace Apps.PhraseTMS.Actions
 
             await client.ExecuteWithHandling(requestGlossaryData);
         }
-
-        [Action("Test conversion v3 to v2", Description = "Test conversion v3 to v2")]
-        public async Task<ExportGlossaryResponse> TestConvGlossary([ActionParameter] ImportGlossaryRequest input)
-        {
-            var client = new PhraseTmsClient(InvocationContext.AuthenticationCredentialsProviders);
-
-            var fileStream = await _fileManagementClient.DownloadAsync(input.File);
-            var fileBytes = await fileStream.ConvertFromTBXV3ToV2();
-            return new ExportGlossaryResponse() { File = await _fileManagementClient.UploadAsync(fileBytes, MediaTypeNames.Application.Xml, $"{input.File.Name}") };
-        }
     }
 }
