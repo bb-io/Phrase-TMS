@@ -63,7 +63,7 @@ namespace Apps.PhraseTMS.Actions
             var endpointGlossaryData = $"/api2/v1/termBases/{input.GlossaryUId}/upload";
             var requestGlossaryData = new PhraseTmsRequest(endpointGlossaryData.WithQuery(new{updateTerms = false}), Method.Post, InvocationContext.AuthenticationCredentialsProviders);
             requestGlossaryData.AddHeader("Content-Disposition", $"filename*=UTF-8''{input.File.Name}");
-            requestGlossaryData.AddParameter("application/octet-stream", fileTBXV2Stream.GetByteData(), ParameterType.RequestBody);
+            requestGlossaryData.AddParameter("application/octet-stream", fileTBXV2Stream.GetByteData().Result, ParameterType.RequestBody);
 
             await client.ExecuteWithHandling(requestGlossaryData);
         }
