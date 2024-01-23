@@ -1,28 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <Product>Phrase TMS</Product>
-    <Description>Previously Memsource</Description>
-    <Version>1.0.15</Version>
-    <AssemblyName>Apps.PhraseTMS</AssemblyName>
-  </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="Connections\BearerConnectionProvider.cs" />
-    <Compile Remove="Connections\ConnectionProvider.cs" />
-    <Compile Remove="Connections\ConnectionProviderFactory.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Blackbird.Applications.Sdk.Common" Version="2.3.2-alpha1" />
-    <PackageReference Include="Blackbird.Applications.SDK.Extensions.FileManagement" Version="1.0.1" />
-    <PackageReference Include="Blackbird.Applications.Sdk.Utils" Version="1.0.11" />
-    <PackageReference Include="MimeTypes" Version="2.4.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource CopyToOutputDirectory="Always" Include="image\icon.png"></EmbeddedResource>
-  </ItemGroup>
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <Product>Phrase TMS</Product>
+        <Description>Previously Memsource</Description>
+        <Version>1.0.17</Version>
+        <AssemblyName>Apps.PhraseTMS</AssemblyName>
+    </PropertyGroup>
+    <ItemGroup>
+        <Compile Remove="Connections\BearerConnectionProvider.cs" />
+        <Compile Remove="Connections\ConnectionProvider.cs" />
+        <Compile Remove="Connections\ConnectionProviderFactory.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Blackbird.Applications.Sdk.Common" Version="2.3.3-alpha1" />
+        <PackageReference Include="Blackbird.Applications.SDK.Extensions.FileManagement" Version="1.0.1" />
+        <PackageReference Include="Blackbird.Applications.Sdk.Glossaries.Utils" Version="1.0.0-alpha7" />
+        <PackageReference Include="Blackbird.Applications.Sdk.Utils" Version="1.0.19" />
+        <PackageReference Include="MimeTypes" Version="2.4.1">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource CopyToOutputDirectory="Always" Include="image\icon.png"></EmbeddedResource>
+    </ItemGroup>
 </Project>
