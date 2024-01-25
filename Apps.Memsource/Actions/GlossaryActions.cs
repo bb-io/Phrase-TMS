@@ -22,6 +22,7 @@ using Blackbird.Applications.Sdk.Utils.Extensions.Files;
 using DocumentFormat.OpenXml.Office2016.Excel;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
+using Apps.PhraseTMS.Models.Glossary.Responses;
 
 namespace Apps.PhraseTMS.Actions
 {
@@ -36,7 +37,7 @@ namespace Apps.PhraseTMS.Actions
         }
 
         [Action("Create glossary", Description = "Create new glossary")]
-        public Task<GlossaryDto> CreateGlossary(
+        public async Task<CreateGlossaryResponse> CreateGlossary(
         [ActionParameter] CreateGlossaryRequest input)
         {
             var client = new PhraseTmsClient(InvocationContext.AuthenticationCredentialsProviders);
@@ -46,7 +47,11 @@ namespace Apps.PhraseTMS.Actions
                 name = input.Name,
                 langs = input.Languages.ToArray(),
             });
-            return client.ExecuteWithHandling<GlossaryDto>(request);
+            var glossaryDto = await client.ExecuteWithHandling<GlossaryDto>(request);
+            return new CreateGlossaryResponse()
+            {
+                GlossaryId = glossaryDto.UId
+            };
         }
 
         [Action("Export glossary", Description = "Export glossary")]
