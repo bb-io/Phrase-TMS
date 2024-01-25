@@ -16,7 +16,7 @@ namespace Apps.PhraseTMS.Models.Glossary.Requests
         [DataSource(typeof(TermBaseDataHandler))]
         public string GlossaryUId { get; set; }
 
-        [Display("Glossary", Description = "Glossary file exported from other Blackbird apps")]
+        [Display("Glossary file", Description = "Glossary file exported from other Blackbird apps")]
         public FileReference File { get; set; }
     }
 }
