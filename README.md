@@ -58,6 +58,12 @@ Before you can connect you need to make sure that:
 - **Get file**
 - **Upload file**
 
+### Glossary
+
+- **Create new glossary**
+- **Export glossary**
+- **Import glossary**
+
 ### Job
 
 - **List all jobs**
