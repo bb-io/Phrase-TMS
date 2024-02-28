@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Invoke Dev Workflow
-        if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/develop' || github.event.inputs.manual_trigger == 'true')
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: ${{ vars.GH_BUILD_WORKFLOW }}
