@@ -14,4 +14,13 @@ public class ProjectDto
 
     [Display("Target languages")]
     public List<string> TargetLangs { get; set; }
+
+    [Display("Due date")]
+    public DateTime? DateDue { get; set; }
+
+    [Display("Status")]
+    public string Status { get; set; }
+
+    [Display("Note")]
+    public string Note { get; set; }
 }
