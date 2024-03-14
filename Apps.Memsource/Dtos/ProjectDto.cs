@@ -5,7 +5,7 @@ namespace Apps.PhraseTMS.Dtos;
 
 public class ProjectDto
 {
-    public string Id { get; set; }
+    
     public string? Name { get; set; }
 
     [Display("UID")]
@@ -30,16 +30,16 @@ public class ProjectDto
     public string Note { get; set; }
 
     [JsonProperty("domain")]
-    public Domain Domain { get; set; }
+    public Domain? Domain { get; set; }
 
     [JsonProperty("client")]
-    public Client Client { get; set; }
+    public Client? Client { get; set; }
 
     [JsonProperty("subDomain")]
-    public subDomain SubDomain { get; set; }
+    public subDomain? SubDomain { get; set; }
 
     [JsonProperty("owner")]
-    public owner Owner { get; set; }
+    public owner? Owner { get; set; }
 
 }
 

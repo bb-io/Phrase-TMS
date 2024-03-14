@@ -10,7 +10,7 @@ public class GetProjectResponse
     public string Id { get; set; }
 
     [Display("Creation date")]
-    public string DateCreated { get; set; }
+    public DateTime DateCreated { get; set; }
 
     [Display("UID")]
     public string UId { get; set; }

@@ -46,31 +46,31 @@ public class ProjectActions
     }
 
     [Action("Get project", Description = "Get project by UId")]
-    public async Task<GetProjectResponse> GetProject(
+    public async Task<ProjectDto> GetProject(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] GetProjectRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Get,
             authenticationCredentialsProviders);
-        var response = client.ExecuteWithHandling<ProjectDto>(request).Result;
-        return new GetProjectResponse 
-        {
-            Id = response.Id,
-            UId = response.UId,
-            Status = response.Status,
-            Name = response.Name,
-            SourceLanguage = response.sourceLang,
-            TargetLangs = response.TargetLangs,
-            ClientName = response.Client.name,
-            Domain = response.Domain.name,
-            SubDomain = response.SubDomain.name,
-            DateCreated = response.DateCreated.ToString(),
-            DateDue = response.DateDue,
-            Note = response.Note,
-            Owner = response.Owner.userName 
+        return  client.ExecuteWithHandling<ProjectDto>(request).Result;
+        //return new GetProjectResponse 
+        //{
+        //    Id = response.Id,
+        //    UId = response.UId,
+        //    Status = response.Status,
+        //    Name = response.Name,
+        //    SourceLanguage = response.sourceLang,
+        //    TargetLangs = response.TargetLangs,
+        //    ClientName = response.Client.name,
+        //    Domain = response.Domain.name,
+        //    SubDomain = response.SubDomain.name,
+        //    DateCreated = response.DateCreated,
+        //    DateDue = response.DateDue,
+        //    Note = response.Note,
+        //    Owner = response.Owner.userName 
 
-        };
+        //};
     }
 
     [Action("Create project", Description = "Create a new project")]
