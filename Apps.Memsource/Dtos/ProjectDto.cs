@@ -27,7 +27,7 @@ public class ProjectDto
     public string Status { get; set; }
 
     [Display("Note")]
-    public string Note { get; set; }
+    public string? Note { get; set; }
 
     [JsonProperty("domain")]
     public Domain? Domain { get; set; }
@@ -45,44 +45,52 @@ public class ProjectDto
 
 public class Domain 
 {
+    [Display("Domain Name")]
     public string name { get; set; }
 
-    public string id { get; set; }
+    //public string id { get; set; }
 
-    public string uid { get; set; }
+    //public string uid { get; set; }
 }
 
 public class subDomain
 {
+    [Display("Subdomain Name")]
     public string name { get; set; }
 
-    public string id { get; set; }
+    //public string id { get; set; }
 
-    public string uid { get; set; }
+    //public string uid { get; set; }
 }
 
 public class Client
 {
+    [Display("Client Name")]
     public string name { get; set; }
 
-    public string id { get; set; }
+    //public string id { get; set; }
 
-    public string uid { get; set; }
+    //public string uid { get; set; }
 }
 
 public class owner
 {
+    [Display("Owner First Name")]
     public string firstName { get; set; }
 
+    [Display("Owner Last Name")]
     public string lastName { get; set; }
 
+    [Display("Owner User Name")]
     public string userName { get; set; }
 
+    [Display("Owner Email")]
     public string email { get; set; }
 
+    [Display("Owner Role")]
     public string role { get; set; }
 
-    public string id { get; set; }
+    //public string id { get; set; }
 
-    public string uid { get; set; }
+    //public string uid { get; set; }
 }
