@@ -21,6 +21,13 @@ namespace Apps.PhraseTMS.Actions;
 [ActionList]
 public class AnalysisActions
 {
+    private readonly IFileManagementClient _fileManagementClient;
+    
+    public AnalysisActions(IFileManagementClient fileManagementClient)
+    {
+        _fileManagementClient = fileManagementClient;
+    }
+    
     [Action("List analyses", Description = "List all job's analyses")]
     public async Task<ListAnalysesResponse> ListAnalyses(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
@@ -73,7 +80,6 @@ public class AnalysisActions
     [Action("Download analysis", Description = "Download analysis")]
     public async Task<FileReference> DownloadAnalysis(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        IFileManagementClient fileManagementClient,
         [ActionParameter, Display("Analysis")] string analysisUId,
         [ActionParameter, Display("Format"), DataSource(typeof(FormatDataHandler))] string? format)
     {
@@ -89,7 +95,7 @@ public class AnalysisActions
         {
             var memoryStream = new MemoryStream(bytes);
             string fileName = $"analysis_{analysisUId}.{format}";
-            var fileReference = await fileManagementClient.UploadAsync(memoryStream, MimeTypes.GetMimeType(fileName), fileName);
+            var fileReference = await _fileManagementClient.UploadAsync(memoryStream, MimeTypes.GetMimeType(fileName), fileName);
             
             return fileReference;
         }
