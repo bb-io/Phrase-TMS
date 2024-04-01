@@ -74,13 +74,12 @@ public class AnalysisActions
     public async Task<FileReference> DownloadAnalysis(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         IFileManagementClient fileManagementClient,
-        [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] GetJobRequest jobRequest,
-        [ActionParameter] GetAnalysisRequest input,
+        [ActionParameter, Display("Analysis")] string analysisUId,
         [ActionParameter, Display("Format"), DataSource(typeof(FormatDataHandler))] string? format)
     {
+        format ??= "CSV";
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
-        var request = new PhraseTmsRequest($"/api2/v1/analyses/{input.AnalysisUId}/download?format={format}", Method.Get, authenticationCredentialsProviders);
+        var request = new PhraseTmsRequest($"/api2/v1/analyses/{analysisUId}/download?format={format}", Method.Get, authenticationCredentialsProviders);
         request.AddHeader("Accept", "application/octet-stream");
             
         var response = await client.ExecuteWithHandling(request);
@@ -89,7 +88,7 @@ public class AnalysisActions
         if (bytes is not null)
         {
             var memoryStream = new MemoryStream(bytes);
-            string fileName = $"analysis_{input.AnalysisUId}.{format}";
+            string fileName = $"analysis_{analysisUId}.{format}";
             var fileReference = await fileManagementClient.UploadAsync(memoryStream, MimeTypes.GetMimeType(fileName), fileName);
             
             return fileReference;
