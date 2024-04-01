@@ -1,4 +1,5 @@
 ﻿using Apps.PhraseTMS.Constants;
+using Apps.PhraseTMS.DataSourceHandlers.EnumHandlers;
 using Apps.PhraseTMS.Dtos;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common;
@@ -11,6 +12,9 @@ using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Apps.PhraseTMS.Models.Jobs.Requests;
+using Blackbird.Applications.Sdk.Common.Dynamic;
+using Blackbird.Applications.Sdk.Common.Files;
+using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -64,5 +68,30 @@ public class AnalysisActions
             
         var asyncRequest = await client.PerformMultipleAsyncRequest(request, authenticationCredentialsProviders);
         return asyncRequest.First();
+    }
+    
+    [Action("Download analysis", Description = "Download analysis")]
+    public async Task<FileReference> DownloadAnalysis(
+        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        IFileManagementClient fileManagementClient,
+        [ActionParameter] GetAnalysisRequest input,
+        [ActionParameter, Display("Format"), DataSource(typeof(FormatDataHandler))] string? format)
+    {
+        var client = new PhraseTmsClient(authenticationCredentialsProviders);
+        var request = new PhraseTmsRequest($"/api2/v1/analyses/{input.AnalysisUId}/download?format={format}", Method.Get, authenticationCredentialsProviders);
+            
+        var response = await client.ExecuteWithHandling(request);
+        var bytes = response.RawBytes;
+        
+        if (bytes is not null)
+        {
+            var memoryStream = new MemoryStream(bytes);
+            string fileName = $"analysis_{input.AnalysisUId}.{format}";
+            var fileReference = await fileManagementClient.UploadAsync(memoryStream, MimeTypes.GetMimeType(fileName), fileName);
+            
+            return fileReference;
+        }
+        
+        throw new Exception("Failed to download analysis");
     }
 }
