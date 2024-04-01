@@ -74,11 +74,14 @@ public class AnalysisActions
     public async Task<FileReference> DownloadAnalysis(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         IFileManagementClient fileManagementClient,
+        [ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] GetJobRequest jobRequest,
         [ActionParameter] GetAnalysisRequest input,
         [ActionParameter, Display("Format"), DataSource(typeof(FormatDataHandler))] string? format)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var request = new PhraseTmsRequest($"/api2/v1/analyses/{input.AnalysisUId}/download?format={format}", Method.Get, authenticationCredentialsProviders);
+        request.AddHeader("Accept", "application/octet-stream");
             
         var response = await client.ExecuteWithHandling(request);
         var bytes = response.RawBytes;
