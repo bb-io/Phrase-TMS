@@ -77,14 +77,14 @@ public class AnalysisActions
         return asyncRequest.First();
     }
     
-    [Action("Download analysis", Description = "Download analysis")]
+    [Action("Download analysis file", Description = "Download analysis file in specified format")]
     public async Task<FileReference> DownloadAnalysis(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter, Display("Analysis")] string analysisUId,
         [ActionParameter, Display("Format"), DataSource(typeof(FormatDataHandler))] string? format)
     {
         format ??= "CSV";
-        var client = new PhraseTmsClient("https://cloud.memsource.com/web");
+        var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var request = new PhraseTmsRequest($"/api2/v1/analyses/{analysisUId}/download?format={format}", Method.Get, authenticationCredentialsProviders)
             .AddHeader("Accept", "application/octet-stream");
             
