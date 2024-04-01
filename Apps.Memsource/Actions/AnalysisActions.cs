@@ -78,9 +78,9 @@ public class AnalysisActions
         [ActionParameter, Display("Format"), DataSource(typeof(FormatDataHandler))] string? format)
     {
         format ??= "CSV";
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
-        var request = new PhraseTmsRequest($"/api2/v1/analyses/{analysisUId}/download?format={format}", Method.Get, authenticationCredentialsProviders);
-        request.AddHeader("Accept", "application/octet-stream");
+        var client = new PhraseTmsClient("https://cloud.memsource.com/web");
+        var request = new PhraseTmsRequest($"/api2/v1/analyses/{analysisUId}/download?format={format}", Method.Get, authenticationCredentialsProviders)
+            .AddHeader("Accept", "application/octet-stream");
             
         var response = await client.ExecuteWithHandling(request);
         var bytes = response.RawBytes;
