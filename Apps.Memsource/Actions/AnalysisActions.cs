@@ -80,12 +80,13 @@ public class AnalysisActions
     [Action("Download analysis file", Description = "Download analysis file in specified format")]
     public async Task<FileReference> DownloadAnalysis(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter, Display("Analysis")] string analysisUId,
-        [ActionParameter, Display("Format"), DataSource(typeof(FormatDataHandler))] string? format)
+        [ActionParameter] DownloadAnalysisRequest analysisRequest,
+        [ActionParameter, Display("Format"), DataSource(typeof(FormatDataHandler))] string? format,
+        [ActionParameter, Display("File name", Description = "File name without format. F.e.: analysis"), DataSource(typeof(FormatDataHandler))] string? fileName)
     {
         format ??= "CSV";
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
-        var request = new PhraseTmsRequest($"/api2/v1/analyses/{analysisUId}/download?format={format}", Method.Get, authenticationCredentialsProviders)
+        var request = new PhraseTmsRequest($"/api2/v1/analyses/{analysisRequest.AnalysisUId}/download?format={format}", Method.Get, authenticationCredentialsProviders)
             .AddHeader("Accept", "application/octet-stream");
             
         var response = await client.ExecuteWithHandling(request);
@@ -94,7 +95,7 @@ public class AnalysisActions
         if (bytes is not null)
         {
             var memoryStream = new MemoryStream(bytes);
-            string fileName = $"analysis_{analysisUId}.{format}";
+            fileName ??= $"analysis_{analysisRequest.AnalysisUId}.{format}";
             var fileReference = await _fileManagementClient.UploadAsync(memoryStream, MimeTypes.GetMimeType(fileName), fileName);
             
             return fileReference;
