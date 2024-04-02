@@ -6,9 +6,9 @@ public class FormatDataHandler : EnumDataHandler
 {
     protected override Dictionary<string, string> EnumValues => new()
     {
-        { "CSV", "csv" },
-        { "CSV_EXTENDED", "csv extended" },
-        { "JSON", "json" },
-        { "LOG", "log" }
+        { "CSV", "CSV" },
+        { "CSV_EXTENDED", "CSV Extended" },
+        { "JSON", "JSON" },
+        { "LOG", "LOG" }
     };
 }
