@@ -189,6 +189,8 @@ Here's an example to demonstrate this feature between the Phrase and XTRF apps:
 
 ![phrase-xtrf-2](image/README/phrase-xtrf-2.png)
 
+![phrase-xtrf-2](image/README/phrase-xtrf-3.png)
+
 ## Missing features
 
 Not all API endpoints are covered, let us know if you are missing features or if you see other improvements!
