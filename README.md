@@ -179,15 +179,17 @@ Before you can connect you need to make sure that:
 
 This example shows one of many use cases. Here, whenever an article is published we fetch the missing translations and retrieve the article as an HTML file. Then we create a new Phrase project with the missing locales as the target languages and upload the article as jobs. We link the project with the article to automatically push the new translations back when they are done in a second bird.
 
-## Analysis with others systems
+## Analysis with other systems
 
-Our app allows you to export analysis file (via **Download analysus file** action) and then use it in your bird whenewher you want. You also can specify format in which you want to download it (it can be: json, csv or log), then you can import this file in service you want to.
+Our app allows you to export an analysis file (via the **Download analysis file** action) and use it in your workflow whenever you need it. You can also specify the format in which you want to download the file (such as JSON, CSV, or log), and then import it into the service of your choice.
 
-This just a bird for demonstration this feature between Phrase and XTRF apps:
+Here's an example to demonstrate this feature between the Phrase and XTRF apps:
 
 ![phrase-xtrf-1](image/README/phrase-xtrf-1.png)
 
 ![phrase-xtrf-2](image/README/phrase-xtrf-2.png)
+
+![phrase-xtrf-2](image/README/phrase-xtrf-3.png)
 
 ## Missing features
 
