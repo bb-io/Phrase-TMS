@@ -16,6 +16,10 @@ public class PhraseTmsClient : RestClient
     {
     }
 
+    public PhraseTmsClient(string baseUrl) : base(new RestClientOptions { BaseUrl = new Uri(baseUrl) })
+    {
+    }
+
     public AsyncRequest? PerformAsyncRequest(PhraseTmsRequest request,
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
     {

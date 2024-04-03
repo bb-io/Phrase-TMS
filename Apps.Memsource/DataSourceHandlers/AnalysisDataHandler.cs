@@ -1,19 +1,10 @@
-﻿using Apps.PhraseTMS.Actions;
-using Apps.PhraseTMS.Dtos;
-using Apps.PhraseTMS.Models.Jobs.Requests;
-using Apps.PhraseTMS.Models.Projects.Requests;
+﻿using Apps.PhraseTMS.Dtos;
+using Apps.PhraseTMS.Models.Analysis.Requests;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using RestSharp;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Apps.PhraseTMS.DataSourceHandlers
 {
@@ -22,28 +13,25 @@ namespace Apps.PhraseTMS.DataSourceHandlers
         private IEnumerable<AuthenticationCredentialsProvider> Creds =>
         InvocationContext.AuthenticationCredentialsProviders;
 
-        private GetJobRequest JobRequest { get; set; }
+        private readonly string _projectUId;
 
-        private ProjectRequest ProjectRequest { get; set; }
-
-        public AnalysisDataHandler(InvocationContext invocationContext, 
-            [ActionParameter] GetJobRequest jobRequest,
-            [ActionParameter] ProjectRequest projectRequest) : base(invocationContext)
+        public AnalysisDataHandler(InvocationContext invocationContext, [ActionParameter] DownloadAnalysisRequest jobRequest) : base(invocationContext)
         {
-            ProjectRequest = projectRequest;
-            JobRequest = jobRequest;
+            _projectUId = jobRequest.ProjectId;
         }
 
         public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
         {
-            if(string.IsNullOrEmpty(JobRequest.JobUId))
+            if(string.IsNullOrEmpty(_projectUId))
             {
-                throw new ArgumentException("Please fill in job first");
+                throw new ArgumentException("Please fill in Project ID first");
             }
+            
             var client = new PhraseTmsClient(Creds);
-            var endpoint = $"/api2/v3/projects/{ProjectRequest.ProjectUId}/jobs/{JobRequest.JobUId}/analyses";
+            var endpoint = $"/api2/v3/projects/{_projectUId}/analyses";
             var request = new PhraseTmsRequest(endpoint, Method.Get, Creds);
             var analysis = await client.Paginate<AnalysisDto>(request);
+            
             return analysis
                 .Where(x => context.SearchString == null ||
                             x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))

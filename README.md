@@ -38,6 +38,7 @@ Before you can connect you need to make sure that:
 - **List analyses**
 - **Get analysis**
 - **Create analysis**
+- **Download analysis file**
 
 ### Clients
 
@@ -177,6 +178,16 @@ Before you can connect you need to make sure that:
 ![1695995715372](image/README/1695995715372.png)
 
 This example shows one of many use cases. Here, whenever an article is published we fetch the missing translations and retrieve the article as an HTML file. Then we create a new Phrase project with the missing locales as the target languages and upload the article as jobs. We link the project with the article to automatically push the new translations back when they are done in a second bird.
+
+## Analysis with others systems
+
+Our app allows you to export analysis file (via **Download analysus file** action) and then use it in your bird whenewher you want. You also can specify format in which you want to download it (it can be: json, csv or log), then you can import this file in service you want to.
+
+This just a bird for demonstration this feature between Phrase and XTRF apps:
+
+![phrase-xtrf-1](image/README/phrase-xtrf-1.png)
+
+![phrase-xtrf-2](image/README/phrase-xtrf-2.png)
 
 ## Missing features
 
