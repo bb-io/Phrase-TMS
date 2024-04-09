@@ -16,7 +16,7 @@
     <ItemGroup>
         <PackageReference Include="Blackbird.Applications.Sdk.Common" Version="2.6.0"/>
         <PackageReference Include="Blackbird.Applications.SDK.Extensions.FileManagement" Version="1.0.1"/>
-        <PackageReference Include="Blackbird.Applications.Sdk.Utils" Version="1.0.11"/>
+        <PackageReference Include="Blackbird.Applications.Sdk.Utils" Version="1.0.19"/>
         <PackageReference Include="Blackbird.Applications.Sdk.Glossaries.Utils" Version="1.0.0-alpha7" />
         <PackageReference Include="MimeTypes" Version="2.4.1">
             <PrivateAssets>all</PrivateAssets>
@@ -24,6 +24,6 @@
         </PackageReference>
     </ItemGroup>
     <ItemGroup>
-        <EmbeddedResource CopyToOutputDirectory="Always" Include="image\icon.png"></EmbeddedResource>
+        <EmbeddedResource CopyToOutputDirectory="Always" Include="image\icon.png"/>
     </ItemGroup>
 </Project>
