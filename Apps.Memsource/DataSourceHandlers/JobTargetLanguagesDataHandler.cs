@@ -1,5 +1,4 @@
 ﻿using Apps.PhraseTMS.Dtos;
-using Apps.PhraseTMS.Models.Jobs.Requests;
 using Apps.PhraseTMS.Models.Languages.Response;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.Sdk.Common;
@@ -7,11 +6,6 @@ using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using RestSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Apps.PhraseTMS.DataSourceHandlers
 {

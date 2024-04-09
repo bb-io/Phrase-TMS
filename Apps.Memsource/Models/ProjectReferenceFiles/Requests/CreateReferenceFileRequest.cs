@@ -1,5 +1,4 @@
-﻿using Apps.PhraseTMS.Models.Projects.Requests;
-using Blackbird.Applications.Sdk.Common.Files;
+﻿using Blackbird.Applications.Sdk.Common.Files;
 
 
 namespace Apps.PhraseTMS.Models.ProjectReferenceFiles.Requests;

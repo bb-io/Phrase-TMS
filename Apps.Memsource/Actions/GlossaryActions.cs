@@ -1,26 +1,15 @@
 ﻿using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Mime;
-using System.Text;
-using System.Threading.Tasks;
 using Apps.PhraseTMS.Models.Glossary.Response;
 using Apps.PhraseTMS.Models.Glossary.Requests;
 using Apps.PhraseTMS.Dtos;
-using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using RestSharp;
 using Blackbird.Applications.Sdk.Common.Invocation;
-using Blackbird.Applications.Sdk.Glossaries.Utils.Parsers;
-using Blackbird.Applications.Sdk.Glossaries.Utils.Dtos;
 using Blackbird.Applications.Sdk.Glossaries.Utils.Converters;
-using System.Net.Http.Headers;
 using Blackbird.Applications.Sdk.Utils.Extensions.Files;
-using DocumentFormat.OpenXml.Office2016.Excel;
-using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Apps.PhraseTMS.Models.Glossary.Responses;
 
