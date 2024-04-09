@@ -14,7 +14,7 @@
         <Compile Remove="Connections\ConnectionProviderFactory.cs"/>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Blackbird.Applications.Sdk.Common" Version="2.3.2-alpha1"/>
+        <PackageReference Include="Blackbird.Applications.Sdk.Common" Version="2.6.0"/>
         <PackageReference Include="Blackbird.Applications.SDK.Extensions.FileManagement" Version="1.0.1"/>
         <PackageReference Include="Blackbird.Applications.Sdk.Utils" Version="1.0.11"/>
         <PackageReference Include="MimeTypes" Version="2.4.1">

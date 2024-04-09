@@ -2,14 +2,21 @@
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication.OAuth2;
 using Blackbird.Applications.Sdk.Common.Invocation;
+using Blackbird.Applications.Sdk.Common.Metadata;
 
 namespace Apps.PhraseTMS;
 
-public class PhraseTMSApplication : BaseInvocable, IApplication
+public class PhraseTMSApplication : BaseInvocable, IApplication, ICategoryProvider
 {
     private string _name;
     private readonly Dictionary<Type, object> _typesInstances;
 
+    public IEnumerable<ApplicationCategory> Categories
+    {
+        get => [ApplicationCategory.CatAndTms];
+        set { }
+    }
+    
     public PhraseTMSApplication(InvocationContext invocationContext) : base(invocationContext)
     {
         _name = "PhraseTMS";
