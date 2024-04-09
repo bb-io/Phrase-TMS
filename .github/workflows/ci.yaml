@@ -3,13 +3,27 @@ name: Invoker
 on:
   pull_request:
     types: [closed]
+  push:
+    branches:
+      - develop
+  workflow_dispatch:
 
 jobs:
   trigger-workflow:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
     steps:
-      - name: Invoke workflow
+      - name: Invoke Dev Workflow
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/develop' || github.event.inputs.manual_trigger == 'true')
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: ${{ vars.GH_BUILD_WORKFLOW }}
+          repo: ${{ vars.GH_BUILD_REPOSITORY }}
+          token: ${{ secrets.GH_PAT_TOKEN }}
+          ref: develop
+          inputs: '{"repository_url": "${{ github.repository }}","ref":"${{ github.ref }}", "sha":"${{ github.sha }}", "commit_url" : "${{ github.event.head_commit.url }}", "commit_message" : "${{ github.event.head_commit.message }}"}'
+
+      - name: Invoke Prod Workflow
+        if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: ${{ vars.GH_BUILD_WORKFLOW }}

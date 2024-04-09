@@ -46,15 +46,15 @@ public class ProjectActions
     }
 
     [Action("Get project", Description = "Get project by UId")]
-    public Task<ProjectDto> GetProject(
+    public async Task<ProjectDto> GetProject(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] GetProjectRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Get,
             authenticationCredentialsProviders);
-
-        return client.ExecuteWithHandling<ProjectDto>(request);
+        return  client.ExecuteWithHandling<ProjectDto>(request).Result;
+    
     }
 
     [Action("Create project", Description = "Create a new project")]

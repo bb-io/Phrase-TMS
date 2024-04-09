@@ -8,7 +8,7 @@ namespace Apps.PhraseTMS.Models.Translations.Requests;
 public class TranslateMTRequest
 {
     [JsonProperty("from")]
-    [Display("Sourcce language code")]
+    [Display("Source language code")]
     [DataSource(typeof(LanguageDataHandler))]
     public string SourceLanguageCode { get; set; }
 
