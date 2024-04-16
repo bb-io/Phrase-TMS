@@ -1,6 +1,4 @@
 ﻿using Apps.PhraseTMS.DataSourceHandlers;
-using Apps.PhraseTMS.Models.Jobs.Requests;
-using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 
