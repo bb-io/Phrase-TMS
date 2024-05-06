@@ -4,9 +4,9 @@ using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.PhraseTMS.Models.Translations.Requests;
 
-public class TranslateMTProjectRequest
+public class TranslateMtProjectRequest
 {
-    [Display("Job")]
+    [Display("Job UID")]
     [DataSource(typeof(JobDataHandler))]
     public string JobUId { get; set; }
 

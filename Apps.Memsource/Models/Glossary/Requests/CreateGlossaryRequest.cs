@@ -2,15 +2,13 @@
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 
-namespace Apps.PhraseTMS.Models.Glossary.Requests
+namespace Apps.PhraseTMS.Models.Glossary.Requests;
+
+public class CreateGlossaryRequest
 {
-    public class CreateGlossaryRequest
-    {
-        public string Name { get; set; }
+    public string Name { get; set; }
 
-
-        [Display("Glossary languages")]
-        [DataSource(typeof(LanguageDataHandler))]
-        public IEnumerable<string> Languages { get; set; }
-    }
+    [Display("Glossary languages")]
+    [DataSource(typeof(LanguageDataHandler))]
+    public IEnumerable<string> Languages { get; set; }
 }

@@ -6,7 +6,7 @@ using Blackbird.Applications.Sdk.Common.Metadata;
 
 namespace Apps.PhraseTMS;
 
-public class PhraseTMSApplication : BaseInvocable, IApplication, ICategoryProvider
+public class PhraseTmsApplication : BaseInvocable, IApplication, ICategoryProvider
 {
     private string _name;
     private readonly Dictionary<Type, object> _typesInstances;
@@ -17,7 +17,7 @@ public class PhraseTMSApplication : BaseInvocable, IApplication, ICategoryProvid
         set { }
     }
     
-    public PhraseTMSApplication(InvocationContext invocationContext) : base(invocationContext)
+    public PhraseTmsApplication(InvocationContext invocationContext) : base(invocationContext)
     {
         _name = "PhraseTMS";
         _typesInstances = CreateTypesInstances();

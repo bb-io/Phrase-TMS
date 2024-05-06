@@ -2,12 +2,11 @@
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 
-namespace Apps.PhraseTMS.Models.Glossary.Requests
+namespace Apps.PhraseTMS.Models.Glossary.Requests;
+
+public class ExportGlossaryRequest
 {
-    public class ExportGlossaryRequest
-    {
-        [Display("Glossary")]
-        [DataSource(typeof(TermBaseDataHandler))]
-        public string GlossaryUId { get; set; }
-    }
+    [Display("Glossary UID")]
+    [DataSource(typeof(TermBaseDataHandler))]
+    public string GlossaryUId { get; set; }
 }

@@ -2,7 +2,7 @@
 
 namespace Apps.PhraseTMS.Models.QualityAssurance.Responses;
 
-public class ListLQAProfilesResponse
+public class ListLqaProfilesResponse
 {
-    public IEnumerable<LQAProfileDto> Profiles { get; set; }
+    public IEnumerable<LqaProfileDto> Profiles { get; set; }
 }

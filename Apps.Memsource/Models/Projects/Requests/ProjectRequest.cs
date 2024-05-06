@@ -6,7 +6,7 @@ namespace Apps.PhraseTMS.Models.Projects.Requests;
 
 public class ProjectRequest
 {
-    [Display("Project")]
+    [Display("Project UID")]
     [DataSource(typeof(ProjectDataHandler))]
     public string ProjectUId { get; set; }
 }

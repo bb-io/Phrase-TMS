@@ -12,7 +12,7 @@ using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Apps.PhraseTMS.Models.Jobs.Requests;
-using Blackbird.Applications.Sdk.Common.Dynamic;
+using Blackbird.Applications.Sdk.Common.Dictionaries;
 using Blackbird.Applications.Sdk.Common.Files;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 
@@ -54,7 +54,7 @@ public class AnalysisActions
     public Task<AnalysisDto> GetAnalysis(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] GetJobRequest jobRequest,
+        [ActionParameter] JobRequest jobRequest,
         [ActionParameter] GetAnalysisRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
@@ -81,8 +81,8 @@ public class AnalysisActions
     public async Task<FileReference> DownloadAnalysis(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] DownloadAnalysisRequest analysisRequest,
-        [ActionParameter, Display("Format"), DataSource(typeof(FormatDataHandler))] string? format,
-        [ActionParameter, Display("File name", Description = "File name without format. F.e.: analysis"), DataSource(typeof(FormatDataHandler))] string? fileName)
+        [ActionParameter, Display("Format"), StaticDataSource(typeof(FormatDataHandler))] string? format,
+        [ActionParameter, Display("File name", Description = "File name without format. F.e.: analysis"), StaticDataSource(typeof(FormatDataHandler))] string? fileName)
     {
         format ??= "CSV";
         var client = new PhraseTmsClient(authenticationCredentialsProviders);

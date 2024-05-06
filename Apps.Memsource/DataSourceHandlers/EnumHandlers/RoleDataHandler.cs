@@ -1,15 +1,15 @@
-﻿using Blackbird.Applications.Sdk.Utils.Sdk.DataSourceHandlers;
+﻿using Blackbird.Applications.Sdk.Common.Dictionaries;
 
 namespace Apps.PhraseTMS.DataSourceHandlers.EnumHandlers;
 
-public class RoleDataHandler : EnumDataHandler
+public class RoleDataHandler : IStaticDataSourceHandler
 {
-    protected override Dictionary<string, string> EnumValues => new()
+    public Dictionary<string, string> GetData() => new()
     {
-        {"ADMIN", "Admin"},
-        {"PROJECT_MANAGER", "Project manager"},
-        {"LINGUIST", "Linguist"},
-        {"GUEST", "Guest"},
-        {"SUBMITTER", "Submitter"},
+        { "ADMIN", "Admin" },
+        { "PROJECT_MANAGER", "Project manager" },
+        { "LINGUIST", "Linguist" },
+        { "GUEST", "Guest" },
+        { "SUBMITTER", "Submitter" },
     };
 }

@@ -1,7 +1,6 @@
 ﻿using Apps.PhraseTMS.Constants;
 using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Models.Jobs.Requests;
-using Apps.PhraseTms.Models.Jobs.Responses;
 using Apps.PhraseTMS.Models.Jobs.Responses;
 using Apps.PhraseTMS.Models.Responses;
 using Blackbird.Applications.Sdk.Common;
@@ -33,7 +32,7 @@ public class JobActions
     public async Task<
         ListAllJobsResponse> ListAllJobs(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] ListAllJobsPathRequest input,
+        [ActionParameter] ProjectRequest input,
         [ActionParameter] ListAllJobsQuery query)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
@@ -58,7 +57,7 @@ public class JobActions
     public async Task<JobResponse> GetJob(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] GetJobRequest input)
+        [ActionParameter] JobRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var request = new PhraseTmsRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/{input.JobUId}",
@@ -142,7 +141,7 @@ public class JobActions
     [Action("Edit job", Description = "Edit selected job")]
     public Task EditJob(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] EditJobPath input,
+        [ActionParameter] JobRequest input,
         [ActionParameter] EditJobBody body)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
@@ -157,7 +156,7 @@ public class JobActions
     public async Task<TargetFileResponse> DownloadTargetFile(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] TargetFileRequest input)
+        [ActionParameter] JobRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var requestFile = new PhraseTmsRequest(
@@ -190,7 +189,7 @@ public class JobActions
     public async Task<TargetFileResponse> DownloadOriginalFile(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] TargetFileRequest input)
+        [ActionParameter] JobRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var requestFile = new PhraseTmsRequest(
@@ -212,7 +211,7 @@ public class JobActions
     public Task UpdateTargetFile(
         IEnumerable<AuthenticationCredentialsProvider> creds,
         [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] TargetFileRequest job,
+        [ActionParameter] JobRequest job,
         [ActionParameter] UpdateTargetFileInput input)
     {
         var client = new PhraseTmsClient(creds);

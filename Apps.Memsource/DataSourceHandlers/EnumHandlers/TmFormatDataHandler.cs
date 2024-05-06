@@ -1,12 +1,12 @@
-﻿using Blackbird.Applications.Sdk.Utils.Sdk.DataSourceHandlers;
+﻿using Blackbird.Applications.Sdk.Common.Dictionaries;
 
 namespace Apps.PhraseTMS.DataSourceHandlers.EnumHandlers;
 
-public class TmFormatDataHandler : EnumDataHandler
+public class TmFormatDataHandler : IStaticDataSourceHandler
 {
-    protected override Dictionary<string, string> EnumValues => new()
+    public Dictionary<string, string> GetData() => new()
     {
-        {"TMX", "TMX"},
-        {"XLSX", "XLSX"}
+        { "TMX", "TMX" },
+        { "XLSX", "XLSX" }
     };
 }

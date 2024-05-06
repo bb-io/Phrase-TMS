@@ -1,12 +1,12 @@
-﻿using Blackbird.Applications.Sdk.Utils.Sdk.DataSourceHandlers;
+﻿using Blackbird.Applications.Sdk.Common.Dictionaries;
 
 namespace Apps.PhraseTMS.DataSourceHandlers.EnumHandlers;
 
-public class ProviderTypeDataHandler : EnumDataHandler
+public class ProviderTypeDataHandler : IStaticDataSourceHandler
 {
-    protected override Dictionary<string, string> EnumValues => new()
+    public Dictionary<string, string> GetData() => new()
     {
-        {"USER", "User"},
-        {"VENDOR", "Vendor"}
+        { "USER", "User" },
+        { "VENDOR", "Vendor" }
     };
 }

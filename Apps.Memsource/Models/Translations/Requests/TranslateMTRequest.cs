@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace Apps.PhraseTMS.Models.Translations.Requests;
 
-public class TranslateMTRequest
+public class TranslateMtRequest
 {
     [JsonProperty("from")]
     [Display("Source language code")]

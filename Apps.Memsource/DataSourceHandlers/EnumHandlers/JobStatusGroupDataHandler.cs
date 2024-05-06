@@ -1,13 +1,13 @@
-﻿using Blackbird.Applications.Sdk.Utils.Sdk.DataSourceHandlers;
+﻿using Blackbird.Applications.Sdk.Common.Dictionaries;
 
 namespace Apps.PhraseTMS.DataSourceHandlers.EnumHandlers;
 
-public class JobStatusGroupDataHandler : EnumDataHandler
+public class JobStatusGroupDataHandler : IStaticDataSourceHandler
 {
-    protected override Dictionary<string, string> EnumValues => new()
+    public Dictionary<string, string> GetData() => new()
     {
-        {"ACCEPTED", "Accepted"},
-        {"COMPLETED", "Completed"},
-        {"NEW", "New"},
+        { "ACCEPTED", "Accepted" },
+        { "COMPLETED", "Completed" },
+        { "NEW", "New" },
     };
 }

@@ -38,7 +38,7 @@ public class TranslationActions
     public Task<TranslationDto> TranslateMT(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] [Display("MT settings UID")] string mtSettingsUId,
-        [ActionParameter] TranslateMTRequest input)
+        [ActionParameter] TranslateMtRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var request = new PhraseTmsRequest($"/api2/v1/machineTranslations/{mtSettingsUId}/translate",
@@ -52,7 +52,7 @@ public class TranslationActions
     public Task<TranslationDto> TranslateMTProject(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] TranslateMTProjectRequest input)
+        [ActionParameter] TranslateMtProjectRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var request = new PhraseTmsRequest(

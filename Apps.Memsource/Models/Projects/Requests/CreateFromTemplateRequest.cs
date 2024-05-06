@@ -8,10 +8,10 @@ public class CreateFromTemplateRequest
 {
     public string Name { get; set; }
 
-    [Display("Template")]
+    [Display("Template UID")]
     [DataSource(typeof(ProjectTemplateDataHandler))]
     public string TemplateUId { get; set; }
     
-    [Display("Date due")]
+    [Display("Due date")]
     public DateTime? DateDue { get; set; }
 }

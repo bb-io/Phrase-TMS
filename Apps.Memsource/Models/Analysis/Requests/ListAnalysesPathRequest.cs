@@ -6,7 +6,7 @@ namespace Apps.PhraseTMS.Models.Analysis.Requests;
 
 public class ListAnalysesPathRequest
 {
-    [Display("Job")]
+    [Display("Job UID")]
     [DataSource(typeof(JobDataHandler))]
     public string JobUId { get; set; }
 }

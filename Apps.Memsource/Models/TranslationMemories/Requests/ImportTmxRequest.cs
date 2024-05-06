@@ -8,7 +8,7 @@ namespace Apps.PhraseTMS.Models.TranslationMemories.Requests;
 
 public class ImportTmxRequest
 {
-    [Display("Translation memory")]
+    [Display("Translation memory UID")]
     [DataSource(typeof(TmDataHandler))]
     public string TranslationMemoryUId { get; set; }
 

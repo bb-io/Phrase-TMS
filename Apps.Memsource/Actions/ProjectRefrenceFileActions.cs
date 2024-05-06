@@ -26,7 +26,7 @@ public class ProjectRefrenceFileActions
     [Action("List reference files", Description = "List all project reference files")]
     public async Task<ListReferenceFilesResponse> ListReferenceFiles(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] ListReferenceFilesRequest input,
+        [ActionParameter] ProjectRequest input,
         [ActionParameter] ListReferenceFilesQuery query)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
@@ -64,7 +64,7 @@ public class ProjectRefrenceFileActions
     public async Task<DownloadReferenceFilesResponse> DownloadReferenceFiles(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] DownloadReferenceFilesRequest input)
+        [ActionParameter] ReferenceFileRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var request = new PhraseTmsRequest(
@@ -88,7 +88,7 @@ public class ProjectRefrenceFileActions
     public Task DeleteReferenceFile(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] DeleteReferenceFileRequest input)
+        [ActionParameter] ReferenceFileRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var request = new PhraseTmsRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/references",

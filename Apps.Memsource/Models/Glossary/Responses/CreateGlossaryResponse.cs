@@ -1,10 +1,9 @@
 ﻿using Blackbird.Applications.Sdk.Common;
 
-namespace Apps.PhraseTMS.Models.Glossary.Responses
+namespace Apps.PhraseTMS.Models.Glossary.Responses;
+
+public class CreateGlossaryResponse
 {
-    public class CreateGlossaryResponse
-    {
-        [Display("Glossary ID")]
-        public string GlossaryId { get; set; }
-    }
+    [Display("Glossary ID")]
+    public string GlossaryId { get; set; }
 }

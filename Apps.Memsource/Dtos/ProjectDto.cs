@@ -5,58 +5,43 @@ namespace Apps.PhraseTMS.Dtos;
 
 public class ProjectDto
 {
-    
     public string? Name { get; set; }
 
-    [Display("UID")]
-    public string UId { get; set; }
+    [Display("UID")] public string UId { get; set; }
 
-    [Display("Creation date")]
-    public DateTime? DateCreated { get; set; }
+    [Display("Creation date")] public DateTime? DateCreated { get; set; }
 
-    [Display("Source language")]
-    public string sourceLang { get; set; }
+    [Display("Source language")] public string SourceLang { get; set; }
 
-    [Display("Target languages")]
-    public List<string> TargetLangs { get; set; }
+    [Display("Target languages")] public List<string> TargetLangs { get; set; }
 
-    [Display("Due date")]
-    public DateTime? DateDue { get; set; }
+    [Display("Due date")] public DateTime? DateDue { get; set; }
 
-    [Display("Status")]
-    public string Status { get; set; }
+    [Display("Status")] public string Status { get; set; }
 
-    [Display("Note")]
-    public string? Note { get; set; }
+    [Display("Note")] public string? Note { get; set; }
 
-    [JsonProperty("domain")]
-    public Domain? Domain { get; set; }
+    [JsonProperty("domain")] public Domain? Domain { get; set; }
 
-    [JsonProperty("client")]
-    public Client? Client { get; set; }
+    [JsonProperty("client")] public Client? Client { get; set; }
 
-    [JsonProperty("subDomain")]
-    public subDomain? SubDomain { get; set; }
+    [JsonProperty("subDomain")] public SubDomain? SubDomain { get; set; }
 
-    [JsonProperty("owner")]
-    public owner? Owner { get; set; }
-
+    [JsonProperty("owner")] public Owner? Owner { get; set; }
 }
 
-public class Domain 
+public class Domain
 {
-    [Display("Domain Name")]
-    public string name { get; set; }
+    [Display("Domain Name")] public string Name { get; set; }
 
     //public string id { get; set; }
 
     //public string uid { get; set; }
 }
 
-public class subDomain
+public class SubDomain
 {
-    [Display("Subdomain Name")]
-    public string name { get; set; }
+    [Display("Subdomain Name")] public string Name { get; set; }
 
     //public string id { get; set; }
 
@@ -65,30 +50,24 @@ public class subDomain
 
 public class Client
 {
-    [Display("Client Name")]
-    public string name { get; set; }
+    [Display("Client Name")] public string Name { get; set; }
 
     //public string id { get; set; }
 
     //public string uid { get; set; }
 }
 
-public class owner
+public class Owner
 {
-    [Display("Owner First Name")]
-    public string firstName { get; set; }
+    [Display("Owner First Name")] public string FirstName { get; set; }
 
-    [Display("Owner Last Name")]
-    public string lastName { get; set; }
+    [Display("Owner Last Name")] public string LastName { get; set; }
 
-    [Display("Owner User Name")]
-    public string userName { get; set; }
+    [Display("Owner User Name")] public string UserName { get; set; }
 
-    [Display("Owner Email")]
-    public string email { get; set; }
+    [Display("Owner Email")] public string Email { get; set; }
 
-    [Display("Owner Role")]
-    public string role { get; set; }
+    [Display("Owner Role")] public string Role { get; set; }
 
     //public string id { get; set; }
 

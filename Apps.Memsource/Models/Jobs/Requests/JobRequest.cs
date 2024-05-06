@@ -4,9 +4,9 @@ using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.PhraseTMS.Models.Jobs.Requests;
 
-public class EditJobPath
+public class JobRequest
 {
-    [Display("Job")]
-    [DataSource(typeof(JobDataHandler))]
+    [Display("Job UID")]
+    [DataSource(typeof(JobDataHandler))] 
     public string JobUId { get; set; }
 }

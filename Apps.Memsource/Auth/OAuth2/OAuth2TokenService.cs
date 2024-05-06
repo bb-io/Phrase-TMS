@@ -30,11 +30,11 @@ public class OAuth2TokenService : BaseInvocable, IOAuth2TokenService
         Dictionary<string, string> values, 
         CancellationToken cancellationToken)
     {
-        const string grant_type = "authorization_code";
+        const string grantType = "authorization_code";
 
         var bodyParameters = new Dictionary<string, string>
         {
-            { "grant_type", grant_type },
+            { "grant_type", grantType },
             { "client_id", values["client_id"] },
             { "redirect_uri", $"{InvocationContext.UriInfo.BridgeServiceUrl.ToString().TrimEnd('/')}/AuthorizationCode" },
             { "code", code }

@@ -1,6 +1,6 @@
 ﻿using Apps.PhraseTMS.DataSourceHandlers.EnumHandlers;
 using Blackbird.Applications.Sdk.Common;
-using Blackbird.Applications.Sdk.Common.Dynamic;
+using Blackbird.Applications.Sdk.Common.Dictionaries;
 
 namespace Apps.PhraseTMS.Models.Users.Requests;
 
@@ -16,10 +16,10 @@ public class AddUserRequest
     
     public string Password { get; set; }
     
-    [DataSource(typeof(RoleDataHandler))]
+    [StaticDataSource(typeof(RoleDataHandler))]
     public string Role { get; set; }
     
-    [DataSource(typeof(TimezoneDataHandler))]
+    [StaticDataSource(typeof(TimezoneDataHandler))]
     public string Timezone { get; set; }
     
     [Display("Username")]

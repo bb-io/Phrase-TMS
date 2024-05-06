@@ -1,5 +1,5 @@
 using Apps.PhraseTMS.Dtos;
-using Apps.PhraseTms.Models.Jobs.Responses;
+using Apps.PhraseTMS.Models.Jobs.Responses;
 using Apps.PhraseTMS.Webhooks.Handlers.JobHandlers;
 using Apps.PhraseTMS.Webhooks.Handlers.OtherHandlers;
 using Apps.PhraseTMS.Webhooks.Handlers.ProjectHandlers;

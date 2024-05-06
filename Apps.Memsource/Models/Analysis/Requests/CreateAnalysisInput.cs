@@ -1,59 +1,60 @@
 ﻿using Apps.PhraseTMS.DataSourceHandlers;
 using Apps.PhraseTMS.DataSourceHandlers.EnumHandlers;
 using Blackbird.Applications.Sdk.Common;
+using Blackbird.Applications.Sdk.Common.Dictionaries;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.PhraseTMS.Models.Analysis.Requests;
 
 public class CreateAnalysisInput
 {
-    [Display("Jobs")]
+    [Display("Job IDs")]
     [DataSource(typeof(JobDataHandler))]
     public IEnumerable<string> JobsUIds { get; set; }
 
     public string? Type { get; set; }
 
-    [Display("Include Fuzzy Repetitions")] public bool? IncludeFuzzyRepetitions { get; set; }
+    [Display("Include fuzzy repetitions")] public bool? IncludeFuzzyRepetitions { get; set; }
 
-    [Display("Separate Fuzzy Repetitions")]
+    [Display("Separate fuzzy repetitions")]
     public bool? SeparateFuzzyRepetitions { get; set; }
 
-    [Display("Include Confirmed Segments")]
+    [Display("Include confirmed segments")]
     public bool? IncludeConfirmedSegments { get; set; }
 
-    [Display("Include Numbers")] public bool? IncludeNumbers { get; set; }
+    [Display("Include numbers")] public bool? IncludeNumbers { get; set; }
 
-    [Display("Include Locked Segments")] public bool? IncludeLockedSegments { get; set; }
+    [Display("Include locked segments")] public bool? IncludeLockedSegments { get; set; }
 
-    [Display("Count Source Units")] public bool? CountSourceUnits { get; set; }
+    [Display("Count source units")] public bool? CountSourceUnits { get; set; }
 
-    [Display("Include Trans Memory")] public bool? IncludeTransMemory { get; set; }
+    [Display("Include trans memory")] public bool? IncludeTransMemory { get; set; }
 
-    [Display("Include Non-Translatables")] public bool? IncludeNonTranslatables { get; set; }
+    [Display("Include non-translatables")] public bool? IncludeNonTranslatables { get; set; }
 
-    [Display("Include Machine Translation Matches")]
+    [Display("Include machine translation matches")]
     public bool? IncludeMachineTranslationMatches { get; set; }
 
-    [Display("Trans Memory Post Editing")] public bool? TransMemoryPostEditing { get; set; }
+    [Display("Trans memory post editing")] public bool? TransMemoryPostEditing { get; set; }
 
-    [Display("Non-Translatable Post Editing")]
+    [Display("Non-translatable post editing")]
     public bool? NonTranslatablePostEditing { get; set; }
 
-    [Display("Machine Translate Post Editing")]
+    [Display("Machine translate post editing")]
     public bool? MachineTranslatePostEditing { get; set; }
 
     [Display("Name")] public string? Name { get; set; }
 
-    [Display("Compare Workflow Level")] public int? CompareWorkflowLevel { get; set; }
+    [Display("Compare workflow level")] public int? CompareWorkflowLevel { get; set; }
 
-    [Display("Use Project Analysis Settings")]
+    [Display("Use project analysis settings")]
     public bool? UseProjectAnalysisSettings { get; set; }
 
-    [Display("Callback Url")] public string? CallbackUrl { get; set; }
+    [Display("Callback url")] public string? CallbackUrl { get; set; }
     [Display("Net rate scheme ID")] public string? NetRateSchemeId { get; set; }
         
     [Display("Provider type")] 
-    [DataSource(typeof(ProviderTypeDataHandler))]
+    [StaticDataSource(typeof(ProviderTypeDataHandler))]
     public string? ProviderType { get; set; }
         
     [Display("Provider ID")] public string? ProviderId { get; set; }

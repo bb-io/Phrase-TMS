@@ -28,7 +28,7 @@ public class QuoteActions
     [Action("Create quote", Description = "Create a new project quote")]
     public Task<QuoteDto> CreateQuote(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] GetJobRequest jobRequest,
+        [ActionParameter] JobRequest jobRequest,
         [ActionParameter] CreateQuoteRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);

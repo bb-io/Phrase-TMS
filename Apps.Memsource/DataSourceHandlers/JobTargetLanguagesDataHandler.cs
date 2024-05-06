@@ -7,38 +7,37 @@ using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using RestSharp;
 
-namespace Apps.PhraseTMS.DataSourceHandlers
+namespace Apps.PhraseTMS.DataSourceHandlers;
+
+public class JobTargetLanguagesDataHandler : BaseInvocable, IAsyncDataSourceHandler
 {
-    public class JobTargetLanguagesDataHandler : BaseInvocable, IAsyncDataSourceHandler
-    {
-        private IEnumerable<AuthenticationCredentialsProvider> Creds =>
+    private IEnumerable<AuthenticationCredentialsProvider> Creds =>
         InvocationContext.AuthenticationCredentialsProviders;
 
-        private ProjectRequest CreateJobRequest { get; set; }
+    private ProjectRequest CreateJobRequest { get; set; }
 
-        public JobTargetLanguagesDataHandler(InvocationContext invocationContext, [ActionParameter] ProjectRequest createJobRequest) : base(invocationContext)
+    public JobTargetLanguagesDataHandler(InvocationContext invocationContext, [ActionParameter] ProjectRequest createJobRequest) : base(invocationContext)
+    {
+        CreateJobRequest = createJobRequest;
+    }
+
+    public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrEmpty(CreateJobRequest.ProjectUId))
         {
-            CreateJobRequest = createJobRequest;
+            throw new ArgumentException("Please fill in project first");
         }
+        var client = new PhraseTmsClient(Creds);
+        var projectRequest = new PhraseTmsRequest($"/api2/v1/projects/{CreateJobRequest.ProjectUId}", Method.Get, Creds);
+        var project = await client.ExecuteWithHandling<ProjectDto>(projectRequest);
 
-        public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
-        {
-            if (string.IsNullOrEmpty(CreateJobRequest.ProjectUId))
-            {
-                throw new ArgumentException("Please fill in project first");
-            }
-            var client = new PhraseTmsClient(Creds);
-            var projectRequest = new PhraseTmsRequest($"/api2/v1/projects/{CreateJobRequest.ProjectUId}", Method.Get, Creds);
-            var project = await client.ExecuteWithHandling<ProjectDto>(projectRequest);
+        var languageRequest = new PhraseTmsRequest("/api2/v1/languages", Method.Get, Creds);
+        var languages = await client.ExecuteWithHandling<LanguagesResponse>(languageRequest);
 
-            var languageRequest = new PhraseTmsRequest("/api2/v1/languages", Method.Get, Creds);
-            var languages = await client.ExecuteWithHandling<LanguagesResponse>(languageRequest);
-
-            return languages.Languages.Where(l => project.TargetLangs.Contains(l.Code))
-                .Where(x => context.SearchString == null ||
-                            x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
-                .Take(20)
-                .ToDictionary(x => x.Code, x => x.Name);
-        }
+        return languages.Languages.Where(l => project.TargetLangs.Contains(l.Code))
+            .Where(x => context.SearchString == null ||
+                        x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
+            .Take(20)
+            .ToDictionary(x => x.Code, x => x.Name);
     }
 }
