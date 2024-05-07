@@ -47,7 +47,7 @@ public class JobActions
             UId = input.ProjectUId
         });
 
-        return new ListAllJobsResponse
+        return new()
         {
             Jobs = response
         };
@@ -65,7 +65,7 @@ public class JobActions
 
         var response = await client.ExecuteWithHandling<JobDto>(request);
 
-        return new JobResponse
+        return new()
         {
             Uid = response.Uid,
             Filename = response.Filename,
@@ -164,14 +164,14 @@ public class JobActions
             Method.Put, authenticationCredentialsProviders);
         var asyncRequest = client.PerformAsyncRequest(requestFile, authenticationCredentialsProviders);
 
-        if (asyncRequest is null) throw new Exception("Failed creating asynchronous target file request");
+        if (asyncRequest is null) throw new("Failed creating asynchronous target file request");
 
         var requestDownload = new PhraseTmsRequest(
             $"/api2/v2/projects/{projectRequest.ProjectUId}/jobs/{input.JobUId}/downloadTargetFile/{asyncRequest.Id}?format={"ORIGINAL"}",
             Method.Get, authenticationCredentialsProviders);
         var responseDownload = await client.ExecuteWithHandling(requestDownload);
 
-        if (responseDownload == null) throw new Exception("Failed downloading target files");
+        if (responseDownload == null) throw new("Failed downloading target files");
 
         var fileData = responseDownload.RawBytes;
         var filenameHeader = responseDownload.ContentHeaders.First(h => h.Name == "Content-Disposition");
@@ -182,7 +182,7 @@ public class JobActions
 
         using var stream = new MemoryStream(fileData);
         var file = await _fileManagementClient.UploadAsync(stream, mimeType, filename);
-        return new TargetFileResponse { File = file };
+        return new() { File = file };
     }
 
     [Action("Download original file", Description = "Download original file of a job")]
@@ -204,7 +204,7 @@ public class JobActions
 
         using var stream = new MemoryStream(fileData);
         var file = await _fileManagementClient.UploadAsync(stream, responseDownload.ContentType, filename);
-        return new TargetFileResponse { File = file };
+        return new() { File = file };
     }
 
     [Action("Update target file", Description = "Update target file of a job")]

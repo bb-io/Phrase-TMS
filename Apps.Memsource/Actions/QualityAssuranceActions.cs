@@ -53,7 +53,7 @@ public class QualityAssuranceActions
 
         var response = await client.Paginate<LqaProfileDto>(request);
 
-        return new ListLqaProfilesResponse
+        return new()
         {
             Profiles = response
         };

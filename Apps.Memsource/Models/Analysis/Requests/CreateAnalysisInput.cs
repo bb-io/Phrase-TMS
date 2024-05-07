@@ -1,5 +1,5 @@
 ﻿using Apps.PhraseTMS.DataSourceHandlers;
-using Apps.PhraseTMS.DataSourceHandlers.EnumHandlers;
+using Apps.PhraseTMS.DataSourceHandlers.StaticHandlers;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Dictionaries;
 using Blackbird.Applications.Sdk.Common.Dynamic;
@@ -51,7 +51,10 @@ public class CreateAnalysisInput
     public bool? UseProjectAnalysisSettings { get; set; }
 
     [Display("Callback url")] public string? CallbackUrl { get; set; }
-    [Display("Net rate scheme ID")] public string? NetRateSchemeId { get; set; }
+    
+    [Display("Net rate scheme ID")] 
+    [DataSource(typeof(NetRateSchemeDataHandler))]
+    public string? NetRateSchemeId { get; set; }
         
     [Display("Provider type")] 
     [StaticDataSource(typeof(ProviderTypeDataHandler))]

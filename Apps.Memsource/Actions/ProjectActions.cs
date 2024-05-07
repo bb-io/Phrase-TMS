@@ -25,7 +25,7 @@ public class ProjectActions
 
         var response = await client.Paginate<ProjectDto>(request);
 
-        return new ListAllProjectsResponse
+        return new()
         {
             Projects = response
         };

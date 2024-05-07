@@ -36,7 +36,7 @@ public class GlossaryActions : BaseInvocable
             langs = input.Languages.ToArray(),
         });
         var glossaryDto = await client.ExecuteWithHandling<GlossaryDto>(request);
-        return new CreateGlossaryResponse()
+        return new()
         {
             GlossaryId = glossaryDto.UId
         };
@@ -58,7 +58,7 @@ public class GlossaryActions : BaseInvocable
         using var streamGlossaryData = new MemoryStream(responseGlossaryData.RawBytes);
 
         using var resultStream = await streamGlossaryData.ConvertFromTBXV2ToV3(responseGlossaryDetails.Name);
-        return new ExportGlossaryResponse() { File = await _fileManagementClient.UploadAsync(resultStream, MediaTypeNames.Application.Xml, $"{responseGlossaryDetails.Name}.tbx") };
+        return new() { File = await _fileManagementClient.UploadAsync(resultStream, MediaTypeNames.Application.Xml, $"{responseGlossaryDetails.Name}.tbx") };
     }
 
     [Action("Import glossary", Description = "Import glossary")]

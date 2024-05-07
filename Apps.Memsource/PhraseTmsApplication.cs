@@ -8,7 +8,6 @@ namespace Apps.PhraseTMS;
 
 public class PhraseTmsApplication : BaseInvocable, IApplication, ICategoryProvider
 {
-    private string _name;
     private readonly Dictionary<Type, object> _typesInstances;
 
     public IEnumerable<ApplicationCategory> Categories
@@ -16,18 +15,15 @@ public class PhraseTmsApplication : BaseInvocable, IApplication, ICategoryProvid
         get => [ApplicationCategory.CatAndTms];
         set { }
     }
-    
+
+    public string Name { get; set; }
+
     public PhraseTmsApplication(InvocationContext invocationContext) : base(invocationContext)
     {
-        _name = "PhraseTMS";
+        Name = "PhraseTMS";
         _typesInstances = CreateTypesInstances();
     }
 
-    public string Name
-    {
-        get => _name;
-        set => _name = value;
-    }
 
     public T GetInstance<T>()
     {
@@ -35,12 +31,13 @@ public class PhraseTmsApplication : BaseInvocable, IApplication, ICategoryProvid
         {
             throw new InvalidOperationException($"Instance of type '{typeof(T)}' not found");
         }
+
         return (T)value;
     }
 
     private Dictionary<Type, object> CreateTypesInstances()
     {
-        return new Dictionary<Type, object>
+        return new()
         {
             { typeof(IOAuth2AuthorizeService), new OAuth2AuthorizeService(InvocationContext) },
             { typeof(IOAuth2TokenService), new OAuth2TokenService(InvocationContext) }

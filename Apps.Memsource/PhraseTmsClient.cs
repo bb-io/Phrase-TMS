@@ -16,7 +16,7 @@ public class PhraseTmsClient : RestClient
     {
     }
 
-    public PhraseTmsClient(string baseUrl) : base(new RestClientOptions { BaseUrl = new Uri(baseUrl) })
+    public PhraseTmsClient(string baseUrl) : base(new RestClientOptions { BaseUrl = new(baseUrl) })
     {
     }
 
@@ -66,7 +66,7 @@ public class PhraseTmsClient : RestClient
     private static Uri GetUri(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
     {
         var url = authenticationCredentialsProviders.First(p => p.KeyName == "url").Value;
-        return new Uri(url.TrimEnd('/') + "/web");
+        return new(url.TrimEnd('/') + "/web");
     }
 
     public async Task<T> ExecuteWithHandling<T>(RestRequest request)

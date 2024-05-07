@@ -28,7 +28,7 @@ public class TranslationActions
 
         var response = await client.Paginate<TranslationSettingDto>(request);
 
-        return new ListTranslationSettingsResponse
+        return new()
         {
             TranslationSettings = response
         };

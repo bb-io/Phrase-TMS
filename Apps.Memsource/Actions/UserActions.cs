@@ -27,7 +27,7 @@ public class UserActions
 
         var response = await client.Paginate<UserDto>(request);
 
-        return new ListAllUsersResponse
+        return new()
         {
             Users = response
         };
