@@ -15,6 +15,7 @@ using Apps.PhraseTMS.Models;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Blackbird.Applications.Sdk.Utils.Extensions.Files;
+using System.IO;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -238,6 +239,64 @@ public class JobActions
             .AddHeader("Content-Type", "application/octet-stream")
             .AddHeader("Memsource", jsonPayload)
             .AddParameter("application/octet-stream", fileBytes, ParameterType.RequestBody);
+
+        return client.ExecuteWithHandling(request);
+    }
+
+    [Action("Download bilingual file", Description = "Download bilingual file for a job")]
+    public async Task<TargetFileResponse> DownloadBilingualFile(
+        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] JobRequest input,
+        [ActionParameter] BilingualRequest bilingualRequest)
+    {
+        var client = new PhraseTmsClient(authenticationCredentialsProviders);
+        var requestFile = new PhraseTmsRequest(
+            $"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/bilingualFile",
+            Method.Post, authenticationCredentialsProviders);
+        if (!String.IsNullOrEmpty(bilingualRequest.Format)) 
+        { requestFile.AddQueryParameter("format",bilingualRequest.Format); }
+        if (bilingualRequest.Preview != null && bilingualRequest.Preview is false)
+        { requestFile.AddQueryParameter("preview", "false"); }
+        var jsonBody = JsonConvert.SerializeObject(new
+        {
+            jobs = new[]
+                {
+                    new 
+                    {
+                        uid = input.JobUId
+                    }
+                },
+        });
+
+        requestFile.AddJsonBody(jsonBody);
+
+        var responseDownload = await client.ExecuteWithHandling(requestFile);
+
+        var fileData = responseDownload.RawBytes;
+        var filenameHeader = responseDownload.ContentHeaders.First(h => h.Name == "Content-Disposition");
+        var filename = filenameHeader.Value.ToString().Split(';')[1].Split("\'\'")[1];
+
+        using var stream = new MemoryStream(fileData);
+        var file = await _fileManagementClient.UploadAsync(stream, responseDownload.ContentType, filename);
+        return new() { File = file };
+    }
+
+    [Action("Upload bilingual file", Description = "Upload bilingual file to update job")]
+    public Task UploadBilingualFile(
+        IEnumerable<AuthenticationCredentialsProvider> creds,
+        [ActionParameter] UploadBilingualFileRequest input)
+    {
+        var client = new PhraseTmsClient(creds);
+
+        var fileBytes = _fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
+        var request = new PhraseTmsRequest($"/api2/v2/bilingualFiles", Method.Post, creds);
+        if (!String.IsNullOrEmpty(input.saveToTransMemory))
+        { request.AddQueryParameter("saveToTransMemory", input.saveToTransMemory); }
+        if (input.setCompleted != null && input.setCompleted is true)
+        { request.AddQueryParameter("setCompleted", true); }
+        request.AlwaysMultipartFormData = true;
+        request.AddFile("file", fileBytes, input.File.Name);
 
         return client.ExecuteWithHandling(request);
     }

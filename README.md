@@ -74,6 +74,8 @@ Before you can connect you need to make sure that:
 - **Get segments**
 - **Edit job**
 - **Download target file**
+- **Download bilingual file**
+- **Upload bilingual file**
 
 ### Pricelist
 
