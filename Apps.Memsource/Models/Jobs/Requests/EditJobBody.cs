@@ -1,12 +1,12 @@
-﻿using Apps.PhraseTMS.DataSourceHandlers.EnumHandlers;
+﻿using Apps.PhraseTMS.DataSourceHandlers.StaticHandlers;
 using Blackbird.Applications.Sdk.Common;
-using Blackbird.Applications.Sdk.Common.Dynamic;
+using Blackbird.Applications.Sdk.Common.Dictionaries;
 
 namespace Apps.PhraseTMS.Models.Jobs.Requests;
 
 public class EditJobBody
 {
-    [DataSource(typeof(JobStatusDataHandler))]
+    [StaticDataSource(typeof(JobStatusDataHandler))]
     public string Status { get; set; } 
     
     [Display("Due date")]

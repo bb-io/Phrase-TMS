@@ -4,9 +4,9 @@ using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.PhraseTMS.Models.QualityAssurance.Requests;
 
-public class DeleteLQAProfileRequest
+public class DeleteLqaProfileRequest
 {
-    [Display("LQA profile")]
-    [DataSource(typeof(LQAProfileDataHandler))]
-    public string LQAProfileUId { get; set; }
+    [Display("LQA profile UID")]
+    [DataSource(typeof(LqaProfileDataHandler))]
+    public string LqaProfileUId { get; set; }
 }

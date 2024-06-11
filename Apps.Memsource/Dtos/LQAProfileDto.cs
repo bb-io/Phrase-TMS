@@ -2,7 +2,7 @@
 
 namespace Apps.PhraseTMS.Dtos;
 
-public class LQAProfileDto
+public class LqaProfileDto
 {
     [Display("UID")]
     public string Uid { get; set; }

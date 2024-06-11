@@ -44,7 +44,7 @@ public class VendorActions
 
         var response = await client.ExecuteWithHandling<ResponseWrapper<List<VendorDto>>>(request);
 
-        return new ListVendorsResponse
+        return new()
         {
             Vendors = response.Content
         };

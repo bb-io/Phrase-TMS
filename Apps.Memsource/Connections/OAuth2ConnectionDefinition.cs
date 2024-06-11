@@ -37,13 +37,13 @@ public class OAuth2ConnectionDefinition : IConnectionDefinition
     public IEnumerable<AuthenticationCredentialsProvider> CreateAuthorizationCredentialsProviders(Dictionary<string, string> values)
     {
         var token = values.First(v => v.Key == "access_token");
-        yield return new AuthenticationCredentialsProvider(
+        yield return new(
             AuthenticationCredentialsRequestLocation.Header,
             "Authorization",
             $"Bearer {token.Value}"
         );
         var url = values.First(v => v.Key == "url");
-        yield return new AuthenticationCredentialsProvider(
+        yield return new(
             AuthenticationCredentialsRequestLocation.None,
             "url",
             url.Value

@@ -6,7 +6,7 @@ namespace Apps.PhraseTMS.Models.QualityAssurance.Requests;
 
 public class AddIgnoredWarningRequest
 {
-    [Display("Segment")]
+    [Display("Segment UID")]
     [DataSource(typeof(SegmentDataHandler))]
     public string SegmentUId { get; set; }
 

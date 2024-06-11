@@ -30,11 +30,11 @@ public class OAuth2TokenService : BaseInvocable, IOAuth2TokenService
         Dictionary<string, string> values, 
         CancellationToken cancellationToken)
     {
-        const string grant_type = "authorization_code";
+        const string grantType = "authorization_code";
 
         var bodyParameters = new Dictionary<string, string>
         {
-            { "grant_type", grant_type },
+            { "grant_type", grantType },
             { "client_id", values["client_id"] },
             { "redirect_uri", $"{InvocationContext.UriInfo.BridgeServiceUrl.ToString().TrimEnd('/')}/AuthorizationCode" },
             { "code", code }
@@ -51,7 +51,7 @@ public class OAuth2TokenService : BaseInvocable, IOAuth2TokenService
     private async Task<Dictionary<string, string>> RequestToken(Dictionary<string, string> bodyParameters, string url, CancellationToken cancellationToken)
     {
         var utcNow = DateTime.UtcNow;
-        using HttpClient httpClient = new HttpClient();
+        using HttpClient httpClient = new();
         using var httpContent = new FormUrlEncodedContent(bodyParameters);
         using var response = await httpClient.PostAsync(url, httpContent, cancellationToken);
         var responseContent = await response.Content.ReadAsStringAsync();

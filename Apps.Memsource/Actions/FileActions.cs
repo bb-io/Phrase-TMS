@@ -23,7 +23,6 @@ public class FileActions
         _fileManagementClient = fileManagementClient;
     }
 
-
     [Action("List all files", Description = "List all files")]
     public async Task<ListAllFilesResponse> ListAllFiles(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
@@ -36,7 +35,7 @@ public class FileActions
 
         var response = await client.Paginate<FileInfoDto>(request);
 
-        return new ListAllFilesResponse
+        return new()
         {
             Files = response
         };
@@ -54,7 +53,7 @@ public class FileActions
         var response = await client.ExecuteAsync(request);
         using var stream = new MemoryStream(response.RawBytes);
         var file = await _fileManagementClient.UploadAsync(stream, response.ContentType, input.FileUId);
-        return new GetFileResponse { File = file };
+        return new() { File = file };
     }
 
     [Action("Upload file", Description = "Upload a new file")]
@@ -69,8 +68,8 @@ public class FileActions
 
         var fileBytes = _fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
         request.AddParameter("application/octet-stream", fileBytes, ParameterType.RequestBody);
-        request.WithJsonBody(input,  JsonConfig.Settings);
-            
+        request.WithJsonBody(input, JsonConfig.Settings);
+
         return client.ExecuteWithHandling<FileInfoDto>(request);
     }
 }

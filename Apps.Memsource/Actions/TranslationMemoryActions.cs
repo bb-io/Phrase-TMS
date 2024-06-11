@@ -37,7 +37,7 @@ public class TranslationMemoryActions
 
         var response = await client.Paginate<TranslationMemoryDto>(request);
 
-        return new ListTranslationMemoriesResponse
+        return new()
         {
             Memories = response
         };
@@ -112,11 +112,11 @@ public class TranslationMemoryActions
             Method.Get, authenticationCredentialsProviders);
         var responseDownload = await client.ExecuteWithHandling(requestDownload);
 
-        if (responseDownload == null) throw new Exception("Failed downloading target files");
+        if (responseDownload == null) throw new("Failed downloading target files");
 
         using var stream = new MemoryStream(responseDownload.RawBytes);
         var file = await _fileManagementClient.UploadAsync(stream, responseDownload.ContentType, $"{input.TranslationMemoryUId}.tmx");
-        return new ExportTranslationMemoryResponse { File = file };
+        return new() { File = file };
     }
 
     [Action("Insert segment into memory", Description = "Insert a new segment into the translation memory")]

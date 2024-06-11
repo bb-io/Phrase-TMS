@@ -1,5 +1,5 @@
 using Apps.PhraseTMS.Dtos;
-using Apps.PhraseTms.Models.Jobs.Responses;
+using Apps.PhraseTMS.Models.Jobs.Responses;
 using Apps.PhraseTMS.Webhooks.Handlers.JobHandlers;
 using Apps.PhraseTMS.Webhooks.Handlers.OtherHandlers;
 using Apps.PhraseTMS.Webhooks.Handlers.ProjectHandlers;
@@ -22,7 +22,7 @@ public class WebhookList
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
-        return new WebhookResponse<ProjectDto>
+        return new()
         {
             HttpResponseMessage = null,
             Result = data.Project
@@ -37,7 +37,7 @@ public class WebhookList
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
-        return new WebhookResponse<ProjectDto>
+        return new()
         {
             HttpResponseMessage = null,
             Result = data.Project
@@ -52,7 +52,7 @@ public class WebhookList
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
-        return new WebhookResponse<ProjectDto>
+        return new()
         {
             HttpResponseMessage = null,
             Result = data.Project
@@ -67,7 +67,7 @@ public class WebhookList
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
-        return new WebhookResponse<ProjectDto>
+        return new()
         {
             HttpResponseMessage = null,
             Result = data.Project
@@ -82,7 +82,7 @@ public class WebhookList
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
-        return new WebhookResponse<ProjectDto>
+        return new()
         {
             HttpResponseMessage = null,
             Result = data.Project
@@ -97,7 +97,7 @@ public class WebhookList
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
-        return new WebhookResponse<ProjectDto>
+        return new()
         {
             HttpResponseMessage = null,
             Result = data.Project
@@ -116,10 +116,10 @@ public class WebhookList
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
-        return new WebhookResponse<JobResponse>
+        return new()
         {
             HttpResponseMessage = null,
-            Result = new JobResponse
+            Result = new()
             {
                 Uid = data.JobParts.FirstOrDefault()?.Uid,
                 Filename = data.JobParts.FirstOrDefault()?.Filename,
@@ -139,10 +139,10 @@ public class WebhookList
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
-        return new WebhookResponse<JobResponse>
+        return new()
         {
             HttpResponseMessage = null,
-            Result = new JobResponse
+            Result = new()
             {
                 Uid = data.JobParts.FirstOrDefault()?.Uid,
                 Filename = data.JobParts.FirstOrDefault()?.Filename,
@@ -162,10 +162,10 @@ public class WebhookList
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
-        return new WebhookResponse<JobResponse>
+        return new()
         {
             HttpResponseMessage = null,
-            Result = new JobResponse
+            Result = new()
             {
                 Uid = data.JobParts.FirstOrDefault()?.Uid,
                 Filename = data.JobParts.FirstOrDefault()?.Filename,
@@ -185,10 +185,10 @@ public class WebhookList
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
-        return new WebhookResponse<JobResponse>
+        return new()
         {
             HttpResponseMessage = null,
-            Result = new JobResponse
+            Result = new()
             {
                 Uid = data.JobParts.FirstOrDefault()?.Uid,
                 Filename = data.JobParts.FirstOrDefault()?.Filename,
@@ -208,10 +208,10 @@ public class WebhookList
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
-        return new WebhookResponse<JobResponse>
+        return new()
         {
             HttpResponseMessage = null,
-            Result = new JobResponse
+            Result = new()
             {
                 Uid = data.JobParts.FirstOrDefault()?.Uid,
                 Filename = data.JobParts.FirstOrDefault()?.Filename,
@@ -231,10 +231,10 @@ public class WebhookList
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
-        return new WebhookResponse<JobResponse>
+        return new()
         {
             HttpResponseMessage = null,
-            Result = new JobResponse
+            Result = new()
             {
                 Uid = data.JobParts.FirstOrDefault()?.Uid,
                 Filename = data.JobParts.FirstOrDefault()?.Filename,
@@ -254,10 +254,10 @@ public class WebhookList
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
-        return new WebhookResponse<JobResponse>
+        return new()
         {
             HttpResponseMessage = null,
-            Result = new JobResponse
+            Result = new()
             {
                 Uid = data.JobParts.FirstOrDefault()?.Uid,
                 Filename = data.JobParts.FirstOrDefault()?.Filename,
@@ -277,10 +277,10 @@ public class WebhookList
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
-        return new WebhookResponse<JobResponse>
+        return new()
         {
             HttpResponseMessage = null,
-            Result = new JobResponse
+            Result = new()
             {
                 Uid = data.JobParts.FirstOrDefault()?.Uid,
                 Filename = data.JobParts.FirstOrDefault()?.Filename,
@@ -300,10 +300,10 @@ public class WebhookList
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
-        return new WebhookResponse<JobResponse>
+        return new()
         {
             HttpResponseMessage = null,
-            Result = new JobResponse
+            Result = new()
             {
                 Uid = data.JobPart.Uid,
                 Filename = data.JobPart.Filename,
@@ -323,10 +323,10 @@ public class WebhookList
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
-        return new WebhookResponse<JobResponse>
+        return new()
         {
             HttpResponseMessage = null,
-            Result = new JobResponse
+            Result = new()
             {
                 Uid = data.JobParts.FirstOrDefault()?.Uid,
                 Filename = data.JobParts.FirstOrDefault()?.Filename,
@@ -350,7 +350,7 @@ public class WebhookList
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
-        return new WebhookResponse<ProjectTemplateDto>
+        return new()
         {
             HttpResponseMessage = null,
             Result = data.ProjectTemplate
@@ -365,7 +365,7 @@ public class WebhookList
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
-        return new WebhookResponse<ProjectTemplateDto>
+        return new()
         {
             HttpResponseMessage = null,
             Result = data.ProjectTemplate
@@ -380,7 +380,7 @@ public class WebhookList
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
-        return new WebhookResponse<ProjectTemplateDto>
+        return new()
         {
             HttpResponseMessage = null,
             Result = data.ProjectTemplate
@@ -399,7 +399,7 @@ public class WebhookList
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
-        return new WebhookResponse<AnalysisDto>
+        return new()
         {
             HttpResponseMessage = null,
             Result = data.Analyse

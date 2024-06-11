@@ -1,5 +1,5 @@
 ﻿using Apps.PhraseTMS.DataSourceHandlers;
-using Apps.PhraseTMS.DataSourceHandlers.EnumHandlers;
+using Apps.PhraseTMS.DataSourceHandlers.StaticHandlers;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 
@@ -7,7 +7,7 @@ namespace Apps.PhraseTMS.Models.TranslationMemories.Requests;
 
 public class ExportTransMemoryRequest
 {
-    [Display("Translation memory")]
+    [Display("Translation memory UID")]
     [DataSource(typeof(TmDataHandler))]
     public string TranslationMemoryUId { get; set; }
 

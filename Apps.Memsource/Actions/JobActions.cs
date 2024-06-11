@@ -1,7 +1,6 @@
 ﻿using Apps.PhraseTMS.Constants;
 using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Models.Jobs.Requests;
-using Apps.PhraseTms.Models.Jobs.Responses;
 using Apps.PhraseTMS.Models.Jobs.Responses;
 using Apps.PhraseTMS.Models.Responses;
 using Blackbird.Applications.Sdk.Common;
@@ -16,6 +15,7 @@ using Apps.PhraseTMS.Models;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Blackbird.Applications.Sdk.Utils.Extensions.Files;
+using System.IO;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -33,7 +33,7 @@ public class JobActions
     public async Task<
         ListAllJobsResponse> ListAllJobs(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] ListAllJobsPathRequest input,
+        [ActionParameter] ProjectRequest input,
         [ActionParameter] ListAllJobsQuery query)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
@@ -48,7 +48,7 @@ public class JobActions
             UId = input.ProjectUId
         });
 
-        return new ListAllJobsResponse
+        return new()
         {
             Jobs = response
         };
@@ -58,7 +58,7 @@ public class JobActions
     public async Task<JobResponse> GetJob(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] GetJobRequest input)
+        [ActionParameter] JobRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var request = new PhraseTmsRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/{input.JobUId}",
@@ -66,7 +66,7 @@ public class JobActions
 
         var response = await client.ExecuteWithHandling<JobDto>(request);
 
-        return new JobResponse
+        return new()
         {
             Uid = response.Uid,
             Filename = response.Filename,
@@ -142,7 +142,7 @@ public class JobActions
     [Action("Edit job", Description = "Edit selected job")]
     public Task EditJob(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] EditJobPath input,
+        [ActionParameter] JobRequest input,
         [ActionParameter] EditJobBody body)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
@@ -157,7 +157,7 @@ public class JobActions
     public async Task<TargetFileResponse> DownloadTargetFile(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] TargetFileRequest input)
+        [ActionParameter] JobRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var requestFile = new PhraseTmsRequest(
@@ -165,14 +165,14 @@ public class JobActions
             Method.Put, authenticationCredentialsProviders);
         var asyncRequest = client.PerformAsyncRequest(requestFile, authenticationCredentialsProviders);
 
-        if (asyncRequest is null) throw new Exception("Failed creating asynchronous target file request");
+        if (asyncRequest is null) throw new("Failed creating asynchronous target file request");
 
         var requestDownload = new PhraseTmsRequest(
             $"/api2/v2/projects/{projectRequest.ProjectUId}/jobs/{input.JobUId}/downloadTargetFile/{asyncRequest.Id}?format={"ORIGINAL"}",
             Method.Get, authenticationCredentialsProviders);
         var responseDownload = await client.ExecuteWithHandling(requestDownload);
 
-        if (responseDownload == null) throw new Exception("Failed downloading target files");
+        if (responseDownload == null) throw new("Failed downloading target files");
 
         var fileData = responseDownload.RawBytes;
         var filenameHeader = responseDownload.ContentHeaders.First(h => h.Name == "Content-Disposition");
@@ -183,14 +183,14 @@ public class JobActions
 
         using var stream = new MemoryStream(fileData);
         var file = await _fileManagementClient.UploadAsync(stream, mimeType, filename);
-        return new TargetFileResponse { File = file };
+        return new() { File = file };
     }
 
     [Action("Download original file", Description = "Download original file of a job")]
     public async Task<TargetFileResponse> DownloadOriginalFile(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] TargetFileRequest input)
+        [ActionParameter] JobRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var requestFile = new PhraseTmsRequest(
@@ -205,14 +205,14 @@ public class JobActions
 
         using var stream = new MemoryStream(fileData);
         var file = await _fileManagementClient.UploadAsync(stream, responseDownload.ContentType, filename);
-        return new TargetFileResponse { File = file };
+        return new() { File = file };
     }
 
     [Action("Update target file", Description = "Update target file of a job")]
     public Task UpdateTargetFile(
         IEnumerable<AuthenticationCredentialsProvider> creds,
         [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] TargetFileRequest job,
+        [ActionParameter] JobRequest job,
         [ActionParameter] UpdateTargetFileInput input)
     {
         var client = new PhraseTmsClient(creds);
@@ -239,6 +239,64 @@ public class JobActions
             .AddHeader("Content-Type", "application/octet-stream")
             .AddHeader("Memsource", jsonPayload)
             .AddParameter("application/octet-stream", fileBytes, ParameterType.RequestBody);
+
+        return client.ExecuteWithHandling(request);
+    }
+
+    [Action("Download bilingual file", Description = "Download bilingual file for a job")]
+    public async Task<TargetFileResponse> DownloadBilingualFile(
+        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] JobRequest input,
+        [ActionParameter] BilingualRequest bilingualRequest)
+    {
+        var client = new PhraseTmsClient(authenticationCredentialsProviders);
+        var requestFile = new PhraseTmsRequest(
+            $"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/bilingualFile",
+            Method.Post, authenticationCredentialsProviders);
+        if (!String.IsNullOrEmpty(bilingualRequest.Format)) 
+        { requestFile.AddQueryParameter("format",bilingualRequest.Format); }
+        if (bilingualRequest.Preview != null && bilingualRequest.Preview is false)
+        { requestFile.AddQueryParameter("preview", "false"); }
+        var jsonBody = JsonConvert.SerializeObject(new
+        {
+            jobs = new[]
+                {
+                    new 
+                    {
+                        uid = input.JobUId
+                    }
+                },
+        });
+
+        requestFile.AddJsonBody(jsonBody);
+
+        var responseDownload = await client.ExecuteWithHandling(requestFile);
+
+        var fileData = responseDownload.RawBytes;
+        var filenameHeader = responseDownload.ContentHeaders.First(h => h.Name == "Content-Disposition");
+        var filename = filenameHeader.Value.ToString().Split(';')[1].Split("\'\'")[1];
+
+        using var stream = new MemoryStream(fileData);
+        var file = await _fileManagementClient.UploadAsync(stream, responseDownload.ContentType, filename);
+        return new() { File = file };
+    }
+
+    [Action("Upload bilingual file", Description = "Upload bilingual file to update job")]
+    public Task UploadBilingualFile(
+        IEnumerable<AuthenticationCredentialsProvider> creds,
+        [ActionParameter] UploadBilingualFileRequest input)
+    {
+        var client = new PhraseTmsClient(creds);
+
+        var fileBytes = _fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
+        var request = new PhraseTmsRequest($"/api2/v2/bilingualFiles", Method.Post, creds);
+        if (!String.IsNullOrEmpty(input.saveToTransMemory))
+        { request.AddQueryParameter("saveToTransMemory", input.saveToTransMemory); }
+        if (input.setCompleted != null && input.setCompleted is true)
+        { request.AddQueryParameter("setCompleted", true); }
+        request.AlwaysMultipartFormData = true;
+        request.AddFile("file", fileBytes, input.File.Name);
 
         return client.ExecuteWithHandling(request);
     }

@@ -25,7 +25,7 @@ public class ProjectActions
 
         var response = await client.Paginate<ProjectDto>(request);
 
-        return new ListAllProjectsResponse
+        return new()
         {
             Projects = response
         };
@@ -48,7 +48,7 @@ public class ProjectActions
     [Action("Get project", Description = "Get project by UId")]
     public async Task<ProjectDto> GetProject(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] GetProjectRequest input)
+        [ActionParameter] ProjectRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Get,

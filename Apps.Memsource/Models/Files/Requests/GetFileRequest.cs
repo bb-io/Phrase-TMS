@@ -6,7 +6,7 @@ namespace Apps.PhraseTMS.Models.Files.Requests;
 
 public class GetFileRequest
 {
-    [Display("File")]
+    [Display("File UID")]
     [DataSource(typeof(FileDataHandler))]
     public string FileUId { get; set; }
 }

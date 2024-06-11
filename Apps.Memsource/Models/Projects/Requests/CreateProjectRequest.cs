@@ -16,6 +16,6 @@ public class CreateProjectRequest
     [DataSource(typeof(LanguageDataHandler))]
     public IEnumerable<string> TargetLanguages { get; set; }
     
-    [Display("Date due")]
+    [Display("Due date")]
     public DateTime? DateDue { get; set; }
 }

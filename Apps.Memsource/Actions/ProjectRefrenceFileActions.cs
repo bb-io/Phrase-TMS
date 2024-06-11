@@ -26,7 +26,7 @@ public class ProjectRefrenceFileActions
     [Action("List reference files", Description = "List all project reference files")]
     public async Task<ListReferenceFilesResponse> ListReferenceFiles(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] ListReferenceFilesRequest input,
+        [ActionParameter] ProjectRequest input,
         [ActionParameter] ListReferenceFilesQuery query)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
@@ -37,7 +37,7 @@ public class ProjectRefrenceFileActions
 
         var response = await client.Paginate<ReferenceFileInfoDto>(request);
 
-        return new ListReferenceFilesResponse
+        return new()
         {
             ReferenceFileInfo = response
         };
@@ -63,12 +63,11 @@ public class ProjectRefrenceFileActions
     [Action("Download reference file", Description = "Download project reference file")]
     public async Task<DownloadReferenceFilesResponse> DownloadReferenceFiles(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] DownloadReferenceFilesRequest input)
+        [ActionParameter] ReferenceFileRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var request = new PhraseTmsRequest(
-            $"/api2/v1/projects/{projectRequest.ProjectUId}/references/{input.ReferenceFileUId}",
+            $"/api2/v1/projects/{input.ProjectUId}/references/{input.ReferenceFileUId}",
             Method.Get, authenticationCredentialsProviders);
         var response = await client.ExecuteWithHandling(request);
 
@@ -81,17 +80,16 @@ public class ProjectRefrenceFileActions
 
         using var stream = new MemoryStream(response.RawBytes);
         var file = await _fileManagementClient.UploadAsync(stream, mimeType, filename);
-        return new DownloadReferenceFilesResponse{ File = file };
+        return new() { File = file };
     }
 
     [Action("Delete reference file", Description = "Delete specific project reference file")]
     public Task DeleteReferenceFile(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] DeleteReferenceFileRequest input)
+        [ActionParameter] ReferenceFileRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
-        var request = new PhraseTmsRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/references",
+        var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/references",
             Method.Delete, authenticationCredentialsProviders);
         request.WithJsonBody(new
         {

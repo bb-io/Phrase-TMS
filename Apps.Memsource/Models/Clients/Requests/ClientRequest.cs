@@ -6,7 +6,7 @@ namespace Apps.PhraseTMS.Models.Clients.Requests;
 
 public class ClientRequest
 {
-    [Display("Client")]
+    [Display("Client UID")]
     [DataSource(typeof(ClientDataHandler))]
     public string ClientUid { get; set; }
 }

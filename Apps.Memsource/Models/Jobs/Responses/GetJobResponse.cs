@@ -1,6 +1,6 @@
 ﻿using Blackbird.Applications.Sdk.Common;
 
-namespace Apps.PhraseTms.Models.Jobs.Responses;
+namespace Apps.PhraseTMS.Models.Jobs.Responses;
 
 public class JobResponse
 {

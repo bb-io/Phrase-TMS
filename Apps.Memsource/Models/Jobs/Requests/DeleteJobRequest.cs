@@ -6,7 +6,7 @@ namespace Apps.PhraseTMS.Models.Jobs.Requests;
 
 public class DeleteJobRequest
 {
-    [Display("Jobs")]
+    [Display("Job UIDs")]
     [DataSource(typeof(JobDataHandler))]
     public IEnumerable<string> JobsUIds { get; set; }
 }

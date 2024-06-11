@@ -1,11 +1,10 @@
 ﻿using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Files;
 
-namespace Apps.PhraseTMS.Models.Glossary.Response
+namespace Apps.PhraseTMS.Models.Glossary.Responses;
+
+public class ExportGlossaryResponse
 {
-    public class ExportGlossaryResponse
-    {
-        [Display("Glossary")]
-        public FileReference File { get; set; }
-    }
+    [Display("Glossary")]
+    public FileReference File { get; set; }
 }

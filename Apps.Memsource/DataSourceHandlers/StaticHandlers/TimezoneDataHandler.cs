@@ -1,10 +1,10 @@
-﻿using Blackbird.Applications.Sdk.Utils.Sdk.DataSourceHandlers;
+﻿using Blackbird.Applications.Sdk.Common.Dictionaries;
 
-namespace Apps.PhraseTMS.DataSourceHandlers.EnumHandlers;
+namespace Apps.PhraseTMS.DataSourceHandlers.StaticHandlers;
 
-public class TimezoneDataHandler : EnumDataHandler
+public class TimezoneDataHandler : IStaticDataSourceHandler
 {
-    protected override Dictionary<string, string> EnumValues => new()
+    public Dictionary<string, string> GetData() => new()
     {
         ["Africa/Abidjan"] = "Africa/Abidjan", ["Africa/Accra"] = "Africa/Accra",
         ["Africa/Addis_Ababa"] = "Africa/Addis_Ababa", ["Africa/Algiers"] = "Africa/Algiers",

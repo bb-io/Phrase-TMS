@@ -2,7 +2,7 @@
 
 namespace Apps.PhraseTMS.Models.QualityAssurance.Requests;
 
-public class ListLQAProfilesQuery
+public class ListLqaProfilesQuery
 {
     [Display("Name")] public string? Name { get; set; }
     [Display("Created by")] public string? CreatedBy { get; set; }

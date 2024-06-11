@@ -6,7 +6,7 @@ namespace Apps.PhraseTMS.Models.Analysis.Requests;
 
 public class GetAnalysisRequest
 {
-    [Display("Analysis")]
+    [Display("Analysis UID")]
     [DataSource(typeof(AnalysisDataHandler))]
     public string AnalysisUId { get; set; }
 }

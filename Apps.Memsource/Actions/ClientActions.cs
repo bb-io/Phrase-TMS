@@ -26,7 +26,7 @@ public class ClientActions
 
         var response = await client.Paginate<ClientDto>(request);
 
-        return new ListClientsResponse
+        return new()
         {
             Clients = response
         };
@@ -52,7 +52,7 @@ public class ClientActions
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var request = new PhraseTmsRequest($"/api2/v1/clients", Method.Post, authenticationCredentialsProviders);
         request.WithJsonBody(input, JsonConfig.Settings);
-            
+
         return client.ExecuteWithHandling<ClientDto>(request);
     }
 
@@ -63,9 +63,10 @@ public class ClientActions
         [ActionParameter] AddClientRequest input)
     {
         var apiClient = new PhraseTmsClient(authenticationCredentialsProviders);
-        var request = new PhraseTmsRequest($"/api2/v1/clients/{client.ClientUid}", Method.Put, authenticationCredentialsProviders);
+        var request = new PhraseTmsRequest($"/api2/v1/clients/{client.ClientUid}", Method.Put,
+            authenticationCredentialsProviders);
         request.WithJsonBody(input, JsonConfig.Settings);
-            
+
         return apiClient.ExecuteWithHandling<ClientDto>(request);
     }
 

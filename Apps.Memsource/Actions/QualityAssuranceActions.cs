@@ -19,7 +19,7 @@ public class QualityAssuranceActions
     public Task AddIgnoredWarning(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] GetJobRequest jobRequest,
+        [ActionParameter] JobRequest jobRequest,
         [ActionParameter] AddIgnoredWarningRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
@@ -41,9 +41,9 @@ public class QualityAssuranceActions
     }
 
     [Action("List LQA profiles", Description = "List all LQA profiles")]
-    public async Task<ListLQAProfilesResponse> ListLQAProfiles(
+    public async Task<ListLqaProfilesResponse> ListLqaProfiles(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] ListLQAProfilesQuery query)
+        [ActionParameter] ListLqaProfilesQuery query)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
 
@@ -51,21 +51,21 @@ public class QualityAssuranceActions
         var request =
             new PhraseTmsRequest(endpoint.WithQuery(query), Method.Get, authenticationCredentialsProviders);
 
-        var response = await client.Paginate<LQAProfileDto>(request);
+        var response = await client.Paginate<LqaProfileDto>(request);
 
-        return new ListLQAProfilesResponse
+        return new()
         {
             Profiles = response
         };
     }
 
     [Action("Delete LQA profile", Description = "Delete specific LQA profile")]
-    public Task DeleteLQAProfile(
+    public Task DeleteLqaProfile(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] DeleteLQAProfileRequest input)
+        [ActionParameter] DeleteLqaProfileRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
-        var request = new PhraseTmsRequest($"/api2/v1/lqa/profiles/{input.LQAProfileUId}", Method.Delete,
+        var request = new PhraseTmsRequest($"/api2/v1/lqa/profiles/{input.LqaProfileUId}", Method.Delete,
             authenticationCredentialsProviders);
 
         return client.ExecuteWithHandling(request);

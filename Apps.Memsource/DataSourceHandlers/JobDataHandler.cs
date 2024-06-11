@@ -6,34 +6,33 @@ using RestSharp;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Apps.PhraseTMS.Models.Projects.Requests;
 
-namespace Apps.PhraseTMS.DataSourceHandlers
+namespace Apps.PhraseTMS.DataSourceHandlers;
+
+public class JobDataHandler : BaseInvocable, IAsyncDataSourceHandler
 {
-    public class JobDataHandler : BaseInvocable, IAsyncDataSourceHandler
-    {
-        private IEnumerable<AuthenticationCredentialsProvider> Creds =>
+    private IEnumerable<AuthenticationCredentialsProvider> Creds =>
         InvocationContext.AuthenticationCredentialsProviders;
 
-        private ProjectRequest ProjectRequest { get; set; }
+    private ProjectRequest ProjectRequest { get; set; }
 
-        public JobDataHandler(InvocationContext invocationContext, [ActionParameter] ProjectRequest projectRequest) : base(invocationContext)
-        {
-            ProjectRequest = projectRequest;
-        }
+    public JobDataHandler(InvocationContext invocationContext, [ActionParameter] ProjectRequest projectRequest) : base(invocationContext)
+    {
+        ProjectRequest = projectRequest;
+    }
 
-        public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
+    public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrEmpty(ProjectRequest.ProjectUId))
         {
-            if (string.IsNullOrEmpty(ProjectRequest.ProjectUId))
-            {
-                throw new ArgumentException("Please fill in project first");
-            }
-            var client = new PhraseTmsClient(Creds);
-            var request = new PhraseTmsRequest($"/api2/v2/projects/{ProjectRequest.ProjectUId}/jobs", Method.Get, Creds);
-            var jobs = await client.Paginate<JobDto>(request);
-            return jobs
-                .Where(x => context.SearchString == null ||
-                            x.Filename.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
-                .Take(20)
-                .ToDictionary(x => x.Uid, x => $"{x.Filename} ({x.InnerId})");
+            throw new ArgumentException("Please fill in project first");
         }
+        var client = new PhraseTmsClient(Creds);
+        var request = new PhraseTmsRequest($"/api2/v2/projects/{ProjectRequest.ProjectUId}/jobs", Method.Get, Creds);
+        var jobs = await client.Paginate<JobDto>(request);
+        return jobs
+            .Where(x => context.SearchString == null ||
+                        x.Filename.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
+            .Take(20)
+            .ToDictionary(x => x.Uid, x => $"{x.Filename} ({x.InnerId})");
     }
 }
