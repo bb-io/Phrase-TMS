@@ -50,7 +50,7 @@ public class AnalysisActions
         };
     }
 
-    [Action("Get analysis", Description = "Get job's analysis")]
+    [Action("Get analysis", Description = "Get analysis")]
     public Task<AnalysisDto> GetAnalysis(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ProjectRequest projectRequest,
@@ -61,6 +61,35 @@ public class AnalysisActions
         var request = new PhraseTmsRequest($"/api2/v3/analyses/{input.AnalysisUId}", Method.Get,
             authenticationCredentialsProviders);
         return client.ExecuteWithHandling<AnalysisDto>(request);
+    }
+
+    [Action("Get job analysis", Description = "Get job's analysis details")]
+    public JobAnalysisResponse GetJobAnalysis(
+        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] JobRequest jobRequest,
+        [ActionParameter] GetAnalysisRequest input)
+    {
+        var client = new PhraseTmsClient(authenticationCredentialsProviders);
+        var request = new PhraseTmsRequest($"/api2/v1/analyses/{input.AnalysisUId}/jobs/{jobRequest.JobUId}", Method.Get,
+            authenticationCredentialsProviders);
+        var response = client.ExecuteWithHandling<JobAnalysisDto>(request).Result;
+        return new JobAnalysisResponse
+        {
+            Filename = response.FileName,
+            TotalWords = response.data.all.words,
+            Repetitions = response.data.repetitions.words,
+            MemoryMatch101 = response.data.transMemoryMatches.match101.words,
+            MemoryMatch100 = response.data.transMemoryMatches.match100.words,
+            MemoryMatch95 = response.data.transMemoryMatches.match95.words,
+            MemoryMatch85 = response.data.transMemoryMatches.match85.words,
+            MemoryMatch75 = response.data.transMemoryMatches.match75.words,
+            MemoryMatch50 = response.data.transMemoryMatches.match50.words,
+            MemoryMatch0 = response.data.transMemoryMatches.match0.words,
+            TotalInternalFuzzy = response.data.internalFuzzyMatches.match95.words + response.data.internalFuzzyMatches.match100.words + response.data.internalFuzzyMatches.match85.words + response.data.internalFuzzyMatches.match75.words + response.data.internalFuzzyMatches.match50.words + response.data.internalFuzzyMatches.match0.words,
+            TotalMT = response.data.machineTranslationMatches.match95.words + response.data.machineTranslationMatches.match100.words + response.data.machineTranslationMatches.match85.words + response.data.machineTranslationMatches.match75.words + response.data.machineTranslationMatches.match50.words + response.data.machineTranslationMatches.match0.words,
+            TotalNonTranslatable = response.data.nonTranslatablesMatches.match100.words + response.data.nonTranslatablesMatches.match99.words
+        };
     }
 
     [Action("Create analysis", Description = "Create a new analysis")]
