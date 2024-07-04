@@ -356,3 +356,4 @@ healthchecksdb
 *.env
 
 /Apps.Memsource/ApplicationConstants.cs
+/ConsoleApp1
