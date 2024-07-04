@@ -75,7 +75,7 @@ public class TranslationMemoryActions
     }
 
     [Action("Import TMX file", Description = "Import new TMX file")]
-    public AsyncRequest ImportTmx(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+    public async Task<AsyncRequest?> ImportTmx(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ImportTmxRequest input,
         [ActionParameter] ImportTmxQuery query)
     {
@@ -91,7 +91,7 @@ public class TranslationMemoryActions
         var fileBytes = _fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
         request.AddParameter("application/octet-stream", fileBytes, ParameterType.RequestBody);
 
-        return client.PerformAsyncRequest(request, authenticationCredentialsProviders);
+        return await client.PerformAsyncRequest(request, authenticationCredentialsProviders);
     }
 
     [Action("Export translation memory", Description = "Export selected translation memory")]
@@ -105,7 +105,7 @@ public class TranslationMemoryActions
             Method.Get, authenticationCredentialsProviders);
         request.WithJsonBody(body,  JsonConfig.Settings);
 
-        var asyncRequest = client.PerformAsyncRequest(request, authenticationCredentialsProviders);
+        var asyncRequest = await client.PerformAsyncRequest(request, authenticationCredentialsProviders);
 
         var requestDownload = new PhraseTmsRequest(
             $"/api2/v1/transMemories/downloadExport/{asyncRequest.Id}?format={input.FileFormat}",

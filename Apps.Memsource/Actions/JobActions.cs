@@ -163,7 +163,7 @@ public class JobActions
         var requestFile = new PhraseTmsRequest(
             $"/api2/v2/projects/{projectRequest.ProjectUId}/jobs/{input.JobUId}/targetFile",
             Method.Put, authenticationCredentialsProviders);
-        var asyncRequest = client.PerformAsyncRequest(requestFile, authenticationCredentialsProviders);
+        var asyncRequest = await client.PerformAsyncRequest(requestFile, authenticationCredentialsProviders);
 
         if (asyncRequest is null) throw new("Failed creating asynchronous target file request");
 

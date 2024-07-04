@@ -20,19 +20,19 @@ public class PhraseTmsClient : RestClient
     {
     }
 
-    public AsyncRequest? PerformAsyncRequest(PhraseTmsRequest request,
+    public async Task<AsyncRequest?> PerformAsyncRequest(PhraseTmsRequest request,
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
     {
-        var asyncRequestResponse = this.Execute<AsyncRequestResponse>(request).Data;
+        var asyncRequestResponse = await this.ExecuteWithHandling<AsyncRequestResponse>(request);
         if (asyncRequestResponse is null) return default;
         var asyncRequest = asyncRequestResponse.AsyncRequest;
 
         while (asyncRequest.AsyncResponse is null)
         {
-            Task.Delay(2000);
+            await Task.Delay(2000);
             var asyncStatusRequest = new PhraseTmsRequest($"/api2/v1/async/{asyncRequest.Id}", Method.Get,
                 authenticationCredentialsProviders);
-            asyncRequest = this.Get<AsyncRequest>(asyncStatusRequest);
+            asyncRequest = await this.ExecuteWithHandling<AsyncRequest>(asyncStatusRequest);
             if (asyncRequest is null) return default;
         }
 
