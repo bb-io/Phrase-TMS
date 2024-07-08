@@ -91,6 +91,8 @@ Before you can connect you need to make sure that:
 - **Add target language**
 - **Edit project**
 - **Delete project**
+- **Download project original files** 
+- **Download project target files**
 
 ### Project reference file
 
