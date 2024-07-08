@@ -4,7 +4,7 @@ namespace Apps.PhraseTMS.Dtos;
 
 public class JobDto
 {
-    [Display("UID")] public string Uid { get; set; }
+    [Display("ID")] public string Uid { get; set; }
 
     [Display("File name")] public string Filename { get; set; }
 

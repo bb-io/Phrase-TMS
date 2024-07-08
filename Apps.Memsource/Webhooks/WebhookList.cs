@@ -4,6 +4,7 @@ using Apps.PhraseTMS.Webhooks.Handlers.JobHandlers;
 using Apps.PhraseTMS.Webhooks.Handlers.OtherHandlers;
 using Apps.PhraseTMS.Webhooks.Handlers.ProjectHandlers;
 using Apps.PhraseTMS.Webhooks.Handlers.ProjectTemplateHandlers;
+using Apps.PhraseTMS.Webhooks.Models.Requests;
 using Blackbird.Applications.Sdk.Common.Webhooks;
 using Newtonsoft.Json;
 
@@ -90,13 +91,25 @@ public class WebhookList
     }
 
     [Webhook("On project status changed", typeof(ProjectStatusChangedHandler), Description = "On any project status changed")]
-    public async Task<WebhookResponse<ProjectDto>> ProjectStatusChanged(WebhookRequest webhookRequest)
+    public async Task<WebhookResponse<ProjectDto>> ProjectStatusChanged(WebhookRequest webhookRequest,
+        [WebhookParameter] ProjectStatusChangedRequest request)
     {
         var data = JsonConvert.DeserializeObject<ProjectWrapper>(webhookRequest.Body.ToString());
         if (data is null)
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
+        
+        if(request.Status is not null && data.Project.Status != request.Status)
+        {
+            return new()
+            {
+                HttpResponseMessage = null,
+                Result = null,
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight
+            };
+        }
+        
         return new()
         {
             HttpResponseMessage = null,
@@ -270,13 +283,25 @@ public class WebhookList
     }
 
     [Webhook("On job status changed", typeof(JobStatusChangedHandler), Description = "On any job status changed")]
-    public async Task<WebhookResponse<JobResponse>> JobStatusChanged(WebhookRequest webhookRequest)
+    public async Task<WebhookResponse<JobResponse>> JobStatusChanged(WebhookRequest webhookRequest,
+        [WebhookParameter] JobStatusChangedRequest request)
     {
         var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
         if (data is null)
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
+        
+        if(request.Status is not null && data.JobParts.FirstOrDefault()?.Status != request.Status)
+        {
+            return new()
+            {
+                HttpResponseMessage = null,
+                Result = null,
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight
+            };
+        }
+        
         return new()
         {
             HttpResponseMessage = null,
