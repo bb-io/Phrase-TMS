@@ -1,9 +1,12 @@
 ﻿using Apps.PhraseTMS.Dtos;
+using Apps.PhraseTMS.Models.Jobs.Requests;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Apps.PhraseTMS.Models.Projects.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Authentication;
+using Blackbird.Applications.Sdk.Common.Files;
+using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using RestSharp;
@@ -11,7 +14,7 @@ using RestSharp;
 namespace Apps.PhraseTMS.Actions;
 
 [ActionList]
-public class ProjectActions
+public class ProjectActions(IFileManagementClient fileManagementClient)
 {
     [Action("List projects", Description = "List all projects")]
     public async Task<ListAllProjectsResponse> ListAllProjects(
@@ -141,5 +144,43 @@ public class ProjectActions
             authenticationCredentialsProviders);
 
         return client.ExecuteWithHandling(request);
+    }
+    
+    [Action("Download project original files", Description = "Download project source files")]
+    public async Task<DownloadProjectFilesResponse> DownloadProjectOriginalFiles(
+        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] ProjectRequest input)
+    {
+        var jobActions = new JobActions(fileManagementClient);
+        var credentialsProviders = authenticationCredentialsProviders as AuthenticationCredentialsProvider[] ?? authenticationCredentialsProviders.ToArray();
+        
+        var jobs = await jobActions.ListAllJobs(credentialsProviders, input, new ListAllJobsQuery());
+        var files = new List<FileReference>();
+        foreach (var job in jobs.Jobs)
+        {
+            var file = await jobActions.DownloadOriginalFile(credentialsProviders, input, new JobRequest { JobUId = job.Uid });
+            files.Add(file.File);
+        }
+        
+        return new() { Files = files };
+    }
+    
+    [Action("Download project target files", Description = "Download project target files")]
+    public async Task<DownloadProjectFilesResponse> DownloadProjectTargetFiles(
+        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] ProjectRequest input)
+    {
+        var jobActions = new JobActions(fileManagementClient);
+        var credentialsProviders = authenticationCredentialsProviders as AuthenticationCredentialsProvider[] ?? authenticationCredentialsProviders.ToArray();
+        
+        var jobs = await jobActions.ListAllJobs(credentialsProviders, input, new ListAllJobsQuery());
+        var files = new List<FileReference>();
+        foreach (var job in jobs.Jobs)
+        {
+            var file = await jobActions.DownloadTargetFile(credentialsProviders, input, new JobRequest { JobUId = job.Uid });
+            files.Add(file.File);
+        }
+        
+        return new() { Files = files };
     }
 }

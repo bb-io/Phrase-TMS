@@ -6,18 +6,15 @@ using Blackbird.Applications.Sdk.Common.Invocation;
 
 namespace Apps.PhraseTMS.DataSourceHandlers;
 
-public class ProjectDataHandler : BaseInvocable, IAsyncDataSourceHandler
+public class ProjectDataHandler(InvocationContext invocationContext)
+    : BaseInvocable(invocationContext), IAsyncDataSourceHandler
 {
     private IEnumerable<AuthenticationCredentialsProvider> Creds =>
         InvocationContext.AuthenticationCredentialsProviders;
-    
-    public ProjectDataHandler(InvocationContext invocationContext) : base(invocationContext)
-    {
-    }
 
     public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
     {
-        var actions = new ProjectActions();
+        var actions = new ProjectActions(null!);
         var response = await actions.ListAllProjects(Creds, new());
         
         return response.Projects

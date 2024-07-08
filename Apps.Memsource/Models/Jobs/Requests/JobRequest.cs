@@ -6,7 +6,7 @@ namespace Apps.PhraseTMS.Models.Jobs.Requests;
 
 public class JobRequest
 {
-    [Display("Job UID")]
+    [Display("Job ID")]
     [DataSource(typeof(JobDataHandler))] 
     public string JobUId { get; set; }
 }
