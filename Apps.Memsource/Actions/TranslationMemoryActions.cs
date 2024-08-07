@@ -102,10 +102,10 @@ public class TranslationMemoryActions
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var request = new PhraseTmsRequest($"/api2/v2/transMemories/{input.TranslationMemoryUId}/export",
-            Method.Get, authenticationCredentialsProviders);
+            Method.Post, authenticationCredentialsProviders);
         request.WithJsonBody(body,  JsonConfig.Settings);
 
-        var asyncRequest = await client.PerformAsyncRequest(request, authenticationCredentialsProviders);
+        var asyncRequest = await client.PerformAsyncRequest(request, authenticationCredentialsProviders)!;
 
         var requestDownload = new PhraseTmsRequest(
             $"/api2/v1/transMemories/downloadExport/{asyncRequest.Id}?format={input.FileFormat}",
@@ -114,7 +114,7 @@ public class TranslationMemoryActions
 
         if (responseDownload == null) throw new("Failed downloading target files");
 
-        using var stream = new MemoryStream(responseDownload.RawBytes);
+        using var stream = new MemoryStream(responseDownload.RawBytes!);
         var file = await _fileManagementClient.UploadAsync(stream, responseDownload.ContentType, $"{input.TranslationMemoryUId}.tmx");
         return new() { File = file };
     }
