@@ -52,12 +52,17 @@ public class ProjectRefrenceFileActions
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var request = new PhraseTmsRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/references",
             Method.Post, authenticationCredentialsProviders);
-
         request.AddHeader("Content-Disposition", $"filename*=UTF-8''{input.File.Name}");
         request.AddHeader("Content-Type", "application/octet-stream");
         request.AddParameter("application/octet-stream", input.File, ParameterType.RequestBody);
-
         return client.ExecuteWithHandling<ReferenceFileInfoDto>(request);
+    }
+    
+    [Action("DEBUG: Get access token", Description = "DEBUG action, used only for testing purposes")]
+    public async Task<List<AuthenticationCredentialsProvider>> GetAccessToken(
+        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+    {
+        return authenticationCredentialsProviders.ToList();
     }
 
     [Action("Download reference file", Description = "Download project reference file")]
