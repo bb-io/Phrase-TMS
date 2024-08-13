@@ -10,6 +10,8 @@ using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using System.Net.Mime;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
+using Blackbird.Applications.Sdk.Utils.Extensions.Files;
+using Newtonsoft.Json;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -43,26 +45,43 @@ public class ProjectRefrenceFileActions
         };
     }
 
-    [Action("Create reference file", Description = "Create a new project reference file")]
-    public Task<ReferenceFileInfoDto> CreateReferenceFile(
+    [Action("Create reference files", Description = "Create a new project reference files. In case no file parts are sent, only 1 reference is created with the given note. Either at least one file must be sent or the note must be specified.")]
+    public async Task<ListReferenceFilesResponse> CreateReferenceFile(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] CreateReferenceFileRequest input)
     {
+        if (input.Files == null && string.IsNullOrEmpty(input.Note))
+        {
+            throw new ArgumentException("At least one of the inputs (Reference files or note) must be specified");
+        }
+        
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
-        var request = new PhraseTmsRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/references",
+        RestRequest request = new PhraseTmsRequest($"/api2/v2/projects/{projectRequest.ProjectUId}/references",
             Method.Post, authenticationCredentialsProviders);
-        request.AddHeader("Content-Disposition", $"filename*=UTF-8''{input.File.Name}");
-        request.AddHeader("Content-Type", "application/octet-stream");
-        request.AddParameter("application/octet-stream", input.File, ParameterType.RequestBody);
-        return client.ExecuteWithHandling<ReferenceFileInfoDto>(request);
-    }
-    
-    [Action("DEBUG: Get access token", Description = "DEBUG action, used only for testing purposes")]
-    public async Task<List<AuthenticationCredentialsProvider>> GetAccessToken(
-        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
-    {
-        return authenticationCredentialsProviders.ToList();
+        request.AlwaysMultipartFormData = true;
+        
+        if (input.Files != null)
+        {
+            foreach (var file in input.Files)
+            {
+                var fileStream = await _fileManagementClient.DownloadAsync(file);
+                var bytes = await fileStream.GetByteData();
+                request = request.AddFile("file", bytes, file.Name, file.ContentType);
+            }
+        }
+
+        if (!string.IsNullOrEmpty(input.Note))
+        {
+            var noteJson = JsonConvert.SerializeObject(new { note = input.Note });
+            request = request.AddParameter("json", noteJson, ParameterType.RequestBody);
+        }
+
+        var response = await client.ExecuteWithHandling<CreateReferenceFilesDto>(request);
+        return new()
+        {
+            ReferenceFileInfo = response.ReferenceFiles
+        };
     }
 
     [Action("Download reference file", Description = "Download project reference file")]

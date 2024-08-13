@@ -1,9 +1,14 @@
-﻿using Blackbird.Applications.Sdk.Common.Files;
+﻿using Blackbird.Applications.Sdk.Common;
+using Blackbird.Applications.Sdk.Common.Files;
 
 
 namespace Apps.PhraseTMS.Models.ProjectReferenceFiles.Requests;
 
 public class CreateReferenceFileRequest
 {
-    public FileReference File { get; set; }
+    [Display("Reference files")]
+    public IEnumerable<FileReference>? Files { get; set; }
+    
+    [Display("Note")]
+    public string? Note { get; set; }
 }
