@@ -97,7 +97,7 @@ Before you can connect you need to make sure that:
 ### Project reference file
 
 - **List reference files**
-- **Create reference file**
+- **Create reference files**
 - **Download reference file**
 - **Delete reference file**
 

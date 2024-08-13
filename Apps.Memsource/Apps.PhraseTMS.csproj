@@ -5,7 +5,7 @@
         <Nullable>enable</Nullable>
         <Product>Phrase TMS</Product>
         <Description>Previously Memsource</Description>
-        <Version>1.1.8</Version>
+        <Version>1.1.9</Version>
         <AssemblyName>Apps.PhraseTMS</AssemblyName>
     </PropertyGroup>
     <ItemGroup>
@@ -25,5 +25,10 @@
     </ItemGroup>
     <ItemGroup>
         <EmbeddedResource CopyToOutputDirectory="Always" Include="image\icon.png" />
+    </ItemGroup>
+    <ItemGroup>
+      <Content Include="..\README.md">
+        <Link>README.md</Link>
+      </Content>
     </ItemGroup>
 </Project>

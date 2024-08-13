@@ -5,10 +5,12 @@ namespace Apps.PhraseTMS.Dtos;
 public class ReferenceFileInfoDto
 {
     [Display("UID")]
-    public string UId { get; set; }
+    public string UId { get; set; } = string.Empty;
         
     [Display("File name")]
-    public string Filename { get; set; }
-    public string Note { get; set; }
-    //public string Id { get; set; }
+    public string Filename { get; set; } = string.Empty;
+    
+    public string Note { get; set; } = string.Empty;
+
+    // public string Id { get; set; }
 }
