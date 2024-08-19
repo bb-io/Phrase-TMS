@@ -17,4 +17,7 @@ public class JobDto
     public string TargetLang { get; set; }
 
     public ProjectDto Project { get; set; }
+
+    [Display("Assigned to")]
+    public IEnumerable<Assignment> AssignedTo { get; set; }
 }
