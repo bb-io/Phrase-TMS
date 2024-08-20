@@ -14,5 +14,9 @@ public class JobResponse
 
     [Display("Target language")] public string TargetLanguage { get; set; }
 
+    [Display("Source language")] public string SourceLanguage { get; set; }
+
+    [Display("Word count")] public int WordCount { get; set; }
+
     //[Display("Due date")] public string DateDue { get; set; }
 }
