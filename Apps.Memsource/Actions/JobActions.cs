@@ -72,6 +72,8 @@ public class JobActions
             TargetLanguage = response.TargetLang,
             Status = response.Status,
             ProjectUid = response.Project.UId,
+            WordCount = response.WordsCount,
+            SourceLanguage = response.SourceLang,
         };
     }
 
