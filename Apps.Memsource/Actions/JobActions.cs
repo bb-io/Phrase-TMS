@@ -16,6 +16,7 @@ using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Blackbird.Applications.Sdk.Utils.Extensions.Files;
 using System.IO;
+using Newtonsoft.Json.Serialization;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -148,7 +149,7 @@ public class JobActions
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var request = new PhraseTmsRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/{input.JobUId}",
             Method.Patch, authenticationCredentialsProviders);
-        request.WithJsonBody(body, JsonConfig.Settings);
+        request.WithJsonBody(body, JsonConfig.DateSettings);
 
         return client.ExecuteWithHandling(request);
     }
