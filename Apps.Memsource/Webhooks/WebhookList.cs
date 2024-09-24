@@ -191,13 +191,24 @@ public class WebhookList
     }
 
     [Webhook("On job assigned", typeof(JobAssignedHandler), Description = "On any job assigned")]
-    public async Task<WebhookResponse<JobResponse>> JobAssigned(WebhookRequest webhookRequest)
+    public async Task<WebhookResponse<JobResponse>> JobAssigned(WebhookRequest webhookRequest, [WebhookParameter] JobAssignedRequest request)
     {
         var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
         if (data is null)
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
+
+        if (request.UserId is not null && data.JobParts.FirstOrDefault().AssignedTo.All(x => x.Linguist.UId != request.UserId))
+        {
+            return new()
+            {
+                HttpResponseMessage = null,
+                Result = null,
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight
+            };
+        }
+
         return new()
         {
             HttpResponseMessage = null,

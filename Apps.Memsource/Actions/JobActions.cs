@@ -15,8 +15,6 @@ using Apps.PhraseTMS.Models;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Blackbird.Applications.Sdk.Utils.Extensions.Files;
-using System.IO;
-using Newtonsoft.Json.Serialization;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -74,6 +72,8 @@ public class JobActions
             TargetLanguage = response.TargetLang,
             Status = response.Status,
             ProjectUid = response.Project.UId,
+            WordCount = response.WordsCount,
+            SourceLanguage = response.SourceLang,
         };
     }
 
@@ -177,7 +177,7 @@ public class JobActions
 
         var fileData = responseDownload.RawBytes;
         var filenameHeader = responseDownload.ContentHeaders.First(h => h.Name == "Content-Disposition");
-        var filename = filenameHeader.Value.ToString().Split(';')[1].Split("\'\'")[1];
+        var filename = Uri.UnescapeDataString(filenameHeader.Value.ToString().Split(';')[1].Split("\'\'")[1]);
         string mimeType = "";
         if (MimeTypes.TryGetMimeType(filename, out mimeType))
             mimeType = MediaTypeNames.Application.Octet;
@@ -202,7 +202,7 @@ public class JobActions
 
         var fileData = responseDownload.RawBytes;
         var filenameHeader = responseDownload.ContentHeaders.First(h => h.Name == "Content-Disposition");
-        var filename = filenameHeader.Value.ToString().Split(';')[1].Split("\'\'")[1];
+        var filename = Uri.UnescapeDataString(filenameHeader.Value.ToString().Split(';')[1].Split("\'\'")[1]);
 
         using var stream = new MemoryStream(fileData);
         var file = await _fileManagementClient.UploadAsync(stream, responseDownload.ContentType, filename);
@@ -276,7 +276,7 @@ public class JobActions
 
         var fileData = responseDownload.RawBytes;
         var filenameHeader = responseDownload.ContentHeaders.First(h => h.Name == "Content-Disposition");
-        var filename = filenameHeader.Value.ToString().Split(';')[1].Split("\'\'")[1];
+        var filename = Uri.UnescapeDataString(filenameHeader.Value.ToString().Split(';')[1].Split("\'\'")[1]);
 
         using var stream = new MemoryStream(fileData);
         var file = await _fileManagementClient.UploadAsync(stream, responseDownload.ContentType, filename);

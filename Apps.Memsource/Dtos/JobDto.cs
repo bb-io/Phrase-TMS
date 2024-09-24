@@ -16,5 +16,14 @@ public class JobDto
     [Display("Target language")] 
     public string TargetLang { get; set; }
 
+    [Display("Source language")]
+    public string SourceLang { get; set; }
+
+    [Display("Word count")]
+    public int WordsCount { get; set; }
+
     public ProjectDto Project { get; set; }
+
+    [Display("Assigned to")]
+    public IEnumerable<Assignment> AssignedTo { get; set; }
 }

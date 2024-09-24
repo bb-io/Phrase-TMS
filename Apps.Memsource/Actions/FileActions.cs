@@ -46,7 +46,7 @@ public class FileActions(IFileManagementClient fileManagementClient)
         var request = new PhraseTmsRequest($"/api2/v1/files/{input.FileUId}", Method.Get,
             authenticationCredentialsProviders);
 
-        var response = await client.ExecuteAsync(request);
+        var response = await client.ExecuteWithHandling(request);
         using var stream = new MemoryStream(response.RawBytes);
         var file = await fileManagementClient.UploadAsync(stream, response.ContentType, input.FileUId);
         return new() { File = file };
