@@ -13,4 +13,15 @@ public static class JsonConfig
         },
         Formatting = Formatting.Indented
     };
+    
+    public static readonly JsonSerializerSettings DateSettings = new()
+    {
+        DateFormatHandling = DateFormatHandling.IsoDateFormat,
+        DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+        ContractResolver = new DefaultContractResolver
+        {
+            NamingStrategy = new CamelCaseNamingStrategy()
+        },
+        Formatting = Formatting.Indented
+    };
 }

@@ -10,5 +10,5 @@ public class EditJobBody
     public string Status { get; set; } 
     
     [Display("Due date")]
-    public string? DateDue { get; set; }
+    public DateTime? DateDue { get; set; }
 }
