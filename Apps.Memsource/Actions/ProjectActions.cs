@@ -1,4 +1,5 @@
-﻿using Apps.PhraseTMS.Dtos;
+﻿using Apps.PhraseTMS.Constants;
+using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Models.Jobs.Requests;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Apps.PhraseTMS.Models.Projects.Responses;
@@ -33,13 +34,13 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
             Projects = response
         };
     }
-        
+
     [Action("List project templates", Description = "List all project templates")]
     public async Task<ListAllProjectTemplatesResponse> ListAllProjectTemplates(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
-            
+
         var endpoint = "/api2/v1/projectTemplates";
         var request = new PhraseTmsRequest(endpoint, Method.Get, authenticationCredentialsProviders);
 
@@ -56,8 +57,7 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Get,
             authenticationCredentialsProviders);
-        return  client.ExecuteWithHandling<ProjectDto>(request).Result;
-    
+        return client.ExecuteWithHandling<ProjectDto>(request).Result;
     }
 
     [Action("Create project", Description = "Create a new project")]
@@ -66,14 +66,14 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
         [ActionParameter] CreateProjectRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
-        var request = new PhraseTmsRequest("/api2/v1/projects", Method.Post, authenticationCredentialsProviders);
-        request.WithJsonBody(new
-        {
-            name = input.Name,
-            sourceLang = input.SourceLanguage,
-            targetLangs = input.TargetLanguages.ToArray(),
-            dateDue = input.DateDue
-        });
+        var request = new PhraseTmsRequest("/api2/v1/projects", Method.Post, authenticationCredentialsProviders)
+            .WithJsonBody(new
+            {
+                name = input.Name,
+                sourceLang = input.SourceLanguage,
+                targetLangs = input.TargetLanguages.ToArray(),
+                dateDue = input.DateDue
+            }, JsonConfig.DateSettings);
 
         return client.ExecuteWithHandling<ProjectDto>(request);
     }
@@ -85,12 +85,12 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var request = new PhraseTmsRequest($"/api2/v1/projects/applyTemplate/{input.TemplateUId}", Method.Post,
-            authenticationCredentialsProviders);
-        request.WithJsonBody(new
-        {
-            name = input.Name,
-            dateDue = input.DateDue
-        });
+                authenticationCredentialsProviders)
+            .WithJsonBody(new
+            {
+                name = input.Name,
+                dateDue = input.DateDue
+            }, JsonConfig.DateSettings);
 
         return client.ExecuteWithHandling<ProjectDto>(request);
     }
@@ -139,48 +139,52 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
 
         if (input.Purge != null)
             endpoint += $"?purge={input.Purge}";
-            
+
         var request = new PhraseTmsRequest(endpoint, Method.Delete,
             authenticationCredentialsProviders);
 
         return client.ExecuteWithHandling(request);
     }
-    
+
     [Action("Download project original files", Description = "Download project source files")]
     public async Task<DownloadProjectFilesResponse> DownloadProjectOriginalFiles(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ProjectRequest input)
     {
         var jobActions = new JobActions(fileManagementClient);
-        var credentialsProviders = authenticationCredentialsProviders as AuthenticationCredentialsProvider[] ?? authenticationCredentialsProviders.ToArray();
-        
+        var credentialsProviders = authenticationCredentialsProviders as AuthenticationCredentialsProvider[] ??
+                                   authenticationCredentialsProviders.ToArray();
+
         var jobs = await jobActions.ListAllJobs(credentialsProviders, input, new ListAllJobsQuery());
         var files = new List<FileReference>();
         foreach (var job in jobs.Jobs)
         {
-            var file = await jobActions.DownloadOriginalFile(credentialsProviders, input, new JobRequest { JobUId = job.Uid });
+            var file = await jobActions.DownloadOriginalFile(credentialsProviders, input,
+                new JobRequest { JobUId = job.Uid });
             files.Add(file.File);
         }
-        
+
         return new() { Files = files };
     }
-    
+
     [Action("Download project target files", Description = "Download project target files")]
     public async Task<DownloadProjectFilesResponse> DownloadProjectTargetFiles(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ProjectRequest input)
     {
         var jobActions = new JobActions(fileManagementClient);
-        var credentialsProviders = authenticationCredentialsProviders as AuthenticationCredentialsProvider[] ?? authenticationCredentialsProviders.ToArray();
-        
+        var credentialsProviders = authenticationCredentialsProviders as AuthenticationCredentialsProvider[] ??
+                                   authenticationCredentialsProviders.ToArray();
+
         var jobs = await jobActions.ListAllJobs(credentialsProviders, input, new ListAllJobsQuery());
         var files = new List<FileReference>();
         foreach (var job in jobs.Jobs)
         {
-            var file = await jobActions.DownloadTargetFile(credentialsProviders, input, new JobRequest { JobUId = job.Uid });
+            var file = await jobActions.DownloadTargetFile(credentialsProviders, input,
+                new JobRequest { JobUId = job.Uid });
             files.Add(file.File);
         }
-        
+
         return new() { Files = files };
     }
 }
