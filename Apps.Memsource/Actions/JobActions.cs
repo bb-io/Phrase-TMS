@@ -148,9 +148,8 @@ public class JobActions
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var request = new PhraseTmsRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/{input.JobUId}",
-            Method.Patch, authenticationCredentialsProviders);
-        request.WithJsonBody(body, JsonConfig.DateSettings);
-
+            Method.Patch, authenticationCredentialsProviders)
+            .WithJsonBody(body, JsonConfig.DateSettings);
         return client.ExecuteWithHandling(request);
     }
 
