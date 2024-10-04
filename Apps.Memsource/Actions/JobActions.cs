@@ -141,7 +141,7 @@ public class JobActions
     }
 
     [Action("Edit job", Description = "Edit selected job")]
-    public Task EditJob(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+    public async Task<JobResponse> EditJob(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] JobRequest input,
         [ActionParameter] EditJobBody body)
@@ -150,7 +150,18 @@ public class JobActions
         var request = new PhraseTmsRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/{input.JobUId}",
             Method.Patch, authenticationCredentialsProviders)
             .WithJsonBody(body, JsonConfig.DateSettings);
-        return client.ExecuteWithHandling(request);
+        
+        var response = await client.ExecuteWithHandling<JobDto>(request);
+        return new()
+        {
+            Uid = response.Uid,
+            Filename = response.Filename,
+            TargetLanguage = response.TargetLang,
+            Status = response.Status,
+            ProjectUid = response.Project.UId,
+            WordCount = response.WordsCount,
+            SourceLanguage = response.SourceLang,
+        };
     }
 
     [Action("Download target file", Description = "Download target file of a job")]

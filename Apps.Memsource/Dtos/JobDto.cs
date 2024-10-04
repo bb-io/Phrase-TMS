@@ -1,4 +1,5 @@
 ﻿using Blackbird.Applications.Sdk.Common;
+using Newtonsoft.Json;
 
 namespace Apps.PhraseTMS.Dtos;
 
@@ -26,4 +27,21 @@ public class JobDto
 
     [Display("Assigned to")]
     public IEnumerable<Assignment> AssignedTo { get; set; }
+
+    [Display("Workflow step"), JsonProperty("workflowStep")]
+    public WorkflowStep WorkflowStep { get; set; }
+}
+
+public class WorkflowStep
+{
+    [Display("Workflow step name")]
+    public string Name { get; set; }
+    
+    [Display("Workflow step ID")]
+    public string Id { get; set; }
+    
+    public int Order { get; set; }
+    
+    [Display("Workflow level")]
+    public int WorkflowLevel { get; set; }
 }
