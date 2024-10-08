@@ -123,6 +123,7 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
         {
             name = input.ProjectName,
             status = input.Status,
+            dateDue = input.DueDate
         });
 
         return client.ExecuteWithHandling(request);
