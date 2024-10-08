@@ -10,4 +10,7 @@ public class EditProjectRequest
 
     [StaticDataSource(typeof(ProjectStatusDataHandler))]
     public string Status { get; set; }
+    
+    [Display("Due date")]
+    public DateTime? DueDate { get; set; }
 }
