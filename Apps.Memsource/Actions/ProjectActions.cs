@@ -118,13 +118,13 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var request = new PhraseTmsRequest($"/api2/v1/projects/{projectRequest.ProjectUId}", Method.Patch,
-            authenticationCredentialsProviders);
-        request.WithJsonBody(new
-        {
-            name = input.ProjectName,
-            status = input.Status,
-            dateDue = input.DueDate
-        });
+                authenticationCredentialsProviders)
+            .WithJsonBody(new
+            {
+                name = input.ProjectName,
+                status = input.Status,
+                dateDue = input.DueDate
+            }, JsonConfig.DateSettings);
 
         return client.ExecuteWithHandling(request);
     }
