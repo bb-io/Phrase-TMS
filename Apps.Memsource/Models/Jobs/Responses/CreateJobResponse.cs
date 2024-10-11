@@ -4,7 +4,7 @@ namespace Apps.PhraseTMS.Models.Jobs.Responses;
 
 public class CreateJobResponse
 {
-    [Display("UID")] public string Uid { get; set; }
+    [Display("Job ID")] public string Uid { get; set; }
 
     [Display("File name")] public string Filename { get; set; }
 

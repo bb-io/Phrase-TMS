@@ -4,7 +4,7 @@ namespace Apps.PhraseTMS.Dtos;
 
 public class VendorDto
 {
-    [Display("UID")]
+    [Display("Vendor ID")]
     public string UId { get; set; }
 
     public string Name { get; set; }

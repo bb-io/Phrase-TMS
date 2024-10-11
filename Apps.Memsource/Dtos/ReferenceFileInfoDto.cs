@@ -4,7 +4,7 @@ namespace Apps.PhraseTMS.Dtos;
 
 public class ReferenceFileInfoDto
 {
-    [Display("UID")]
+    [Display("File ID")]
     public string UId { get; set; } = string.Empty;
         
     [Display("File name")]

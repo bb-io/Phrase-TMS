@@ -6,7 +6,7 @@ public class FileInfoDto
 {
     public string Name { get; set; }
 
-    [Display("UID")]
+    [Display("File ID")]
     public string UId { get; set; }
 
     public int Size { get; set; }
