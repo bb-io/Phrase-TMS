@@ -1,9 +1,9 @@
-﻿namespace Apps.PhraseTMS.Webhooks.Handlers.ProjectHandlers;
+﻿using Blackbird.Applications.Sdk.Common.Invocation;
 
-public class ProjectCreationHandler : BaseWebhookHandler
+namespace Apps.PhraseTMS.Webhooks.Handlers.ProjectHandlers;
+
+public class ProjectCreationHandler(InvocationContext invocationContext)
+    : BaseWebhookHandler(invocationContext, SubscriptionEvent)
 {
-
     const string SubscriptionEvent = "PROJECT_CREATED";
-
-    public ProjectCreationHandler() : base(SubscriptionEvent) { }
 }

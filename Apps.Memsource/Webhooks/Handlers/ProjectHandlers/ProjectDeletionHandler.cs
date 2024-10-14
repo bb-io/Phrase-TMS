@@ -1,9 +1,9 @@
-﻿namespace Apps.PhraseTMS.Webhooks.Handlers.ProjectHandlers;
+﻿using Blackbird.Applications.Sdk.Common.Invocation;
 
-public class ProjectDeletionHandler : BaseWebhookHandler
+namespace Apps.PhraseTMS.Webhooks.Handlers.ProjectHandlers;
+
+public class ProjectDeletionHandler(InvocationContext invocationContext)
+    : BaseWebhookHandler(invocationContext, SubscriptionEvent)
 {
-
     const string SubscriptionEvent = "PROJECT_DELETED";
-
-    public ProjectDeletionHandler() : base(SubscriptionEvent) { }
 }

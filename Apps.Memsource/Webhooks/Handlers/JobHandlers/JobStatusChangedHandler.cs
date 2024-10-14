@@ -13,7 +13,7 @@ public class JobStatusChangedHandler(
     [WebhookParameter] JobStatusChangedRequest statusRequest,
     [WebhookParameter] ProjectOptionalRequest projectOptionalRequest,
     [WebhookParameter] OptionalJobRequest jobOptionalRequest)
-    : BaseWebhookHandler(SubscriptionEvent), IAfterSubscriptionWebhookEventHandler<JobResponse>
+    : BaseWebhookHandler(invocationContext, SubscriptionEvent), IAfterSubscriptionWebhookEventHandler<JobResponse>
 {
     const string SubscriptionEvent = "JOB_STATUS_CHANGED";
     
@@ -21,9 +21,9 @@ public class JobStatusChangedHandler(
     {
         if (jobOptionalRequest.JobUId != null && statusRequest.Status != null && projectOptionalRequest.ProjectUId != null)
         {
-            var client = new PhraseTmsClient(invocationContext.AuthenticationCredentialsProviders);
+            var client = new PhraseTmsClient(InvocationContext.AuthenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/projects/{projectOptionalRequest.ProjectUId}/jobs/{jobOptionalRequest.JobUId}",
-                Method.Get, invocationContext.AuthenticationCredentialsProviders);
+                Method.Get, InvocationContext.AuthenticationCredentialsProviders);
 
             var response = await client.ExecuteWithHandling<JobDto>(request);
 

@@ -1,9 +1,9 @@
-﻿namespace Apps.PhraseTMS.Webhooks.Handlers.JobHandlers;
+﻿using Blackbird.Applications.Sdk.Common.Invocation;
 
-public class JobContinuousUpdatedHandler : BaseWebhookHandler
+namespace Apps.PhraseTMS.Webhooks.Handlers.JobHandlers;
+
+public class JobContinuousUpdatedHandler(InvocationContext invocationContext)
+    : BaseWebhookHandler(invocationContext, SubscriptionEvent)
 {
-
     const string SubscriptionEvent = "CONTINUOUS_JOB_UPDATED";
-
-    public JobContinuousUpdatedHandler() : base(SubscriptionEvent) { }
 }

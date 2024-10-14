@@ -1,9 +1,9 @@
-﻿namespace Apps.PhraseTMS.Webhooks.Handlers.JobHandlers;
+﻿using Blackbird.Applications.Sdk.Common.Invocation;
 
-public class JobUnexportedHandler : BaseWebhookHandler
+namespace Apps.PhraseTMS.Webhooks.Handlers.JobHandlers;
+
+public class JobUnexportedHandler(InvocationContext invocationContext)
+    : BaseWebhookHandler(invocationContext, SubscriptionEvent)
 {
-
     const string SubscriptionEvent = "JOB_UNEXPORTED";
-
-    public JobUnexportedHandler() : base(SubscriptionEvent) { }
 }

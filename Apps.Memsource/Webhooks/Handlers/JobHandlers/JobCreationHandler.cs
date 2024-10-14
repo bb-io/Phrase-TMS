@@ -1,9 +1,9 @@
-﻿namespace Apps.PhraseTMS.Webhooks.Handlers.JobHandlers;
+﻿using Blackbird.Applications.Sdk.Common.Invocation;
 
-public class JobCreationHandler : BaseWebhookHandler
+namespace Apps.PhraseTMS.Webhooks.Handlers.JobHandlers;
+
+public class JobCreationHandler(InvocationContext invocationContext)
+    : BaseWebhookHandler(invocationContext, SubscriptionEvent)
 {
-
     const string SubscriptionEvent = "JOB_CREATED";
-
-    public JobCreationHandler() : base(SubscriptionEvent) { }
 }

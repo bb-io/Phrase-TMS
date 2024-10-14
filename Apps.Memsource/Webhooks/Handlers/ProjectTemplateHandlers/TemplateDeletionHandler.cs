@@ -1,9 +1,9 @@
-﻿namespace Apps.PhraseTMS.Webhooks.Handlers.ProjectTemplateHandlers;
+﻿using Blackbird.Applications.Sdk.Common.Invocation;
 
-public class TemplateDeletionHandler : BaseWebhookHandler
+namespace Apps.PhraseTMS.Webhooks.Handlers.ProjectTemplateHandlers;
+
+public class TemplateDeletionHandler(InvocationContext invocationContext)
+    : BaseWebhookHandler(invocationContext, SubscriptionEvent)
 {
-
     const string SubscriptionEvent = "PROJECT_TEMPLATE_DELETED";
-
-    public TemplateDeletionHandler() : base(SubscriptionEvent) { }
 }

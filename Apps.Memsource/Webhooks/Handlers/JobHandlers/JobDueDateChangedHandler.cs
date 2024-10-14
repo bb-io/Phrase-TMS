@@ -1,9 +1,9 @@
-﻿namespace Apps.PhraseTMS.Webhooks.Handlers.JobHandlers;
+﻿using Blackbird.Applications.Sdk.Common.Invocation;
 
-public class JobDueDateChangedHandler : BaseWebhookHandler
+namespace Apps.PhraseTMS.Webhooks.Handlers.JobHandlers;
+
+public class JobDueDateChangedHandler(InvocationContext invocationContext)
+    : BaseWebhookHandler(invocationContext, SubscriptionEvent)
 {
-
     const string SubscriptionEvent = "JOB_DUE_DATE_CHANGED";
-
-    public JobDueDateChangedHandler() : base(SubscriptionEvent) { }
 }
