@@ -1,8 +1,9 @@
-﻿namespace Apps.PhraseTMS.Webhooks.Handlers.ProjectHandlers;
+﻿using Blackbird.Applications.Sdk.Common.Invocation;
 
-public class ProjectSharedAssignedHandler : BaseWebhookHandler
+namespace Apps.PhraseTMS.Webhooks.Handlers.ProjectHandlers;
+
+public class ProjectSharedAssignedHandler(InvocationContext invocationContext)
+    : BaseWebhookHandler(invocationContext, SubscriptionEvent)
 {
     const string SubscriptionEvent = "SHARED_PROJECT_ASSIGNED";
-
-    public ProjectSharedAssignedHandler() : base(SubscriptionEvent) { }
 }

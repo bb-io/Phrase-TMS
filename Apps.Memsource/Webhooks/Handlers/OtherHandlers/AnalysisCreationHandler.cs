@@ -1,9 +1,9 @@
-﻿namespace Apps.PhraseTMS.Webhooks.Handlers.OtherHandlers;
+﻿using Blackbird.Applications.Sdk.Common.Invocation;
 
-public class AnalysisCreationHandler : BaseWebhookHandler
+namespace Apps.PhraseTMS.Webhooks.Handlers.OtherHandlers;
+
+public class AnalysisCreationHandler(InvocationContext invocationContext)
+    : BaseWebhookHandler(invocationContext, SubscriptionEvent)
 {
-
     const string SubscriptionEvent = "ANALYSIS_CREATED";
-
-    public AnalysisCreationHandler() : base(SubscriptionEvent) { }
 }

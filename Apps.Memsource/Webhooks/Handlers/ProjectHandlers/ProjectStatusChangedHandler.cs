@@ -11,7 +11,7 @@ public class ProjectStatusChangedHandler(
     InvocationContext invocationContext,
     [WebhookParameter] ProjectStatusChangedRequest projectStatusChangedRequest,
     [WebhookParameter] ProjectOptionalRequest projectOptionalRequest)
-    : BaseWebhookHandler(SubscriptionEvent), IAfterSubscriptionWebhookEventHandler<ProjectDto>
+    : BaseWebhookHandler(invocationContext, SubscriptionEvent), IAfterSubscriptionWebhookEventHandler<ProjectDto>
 {
     const string SubscriptionEvent = "PROJECT_STATUS_CHANGED";
 
@@ -19,9 +19,9 @@ public class ProjectStatusChangedHandler(
     {
         if (projectOptionalRequest.ProjectUId != null && projectStatusChangedRequest.Status != null)
         {
-            var client = new PhraseTmsClient(invocationContext.AuthenticationCredentialsProviders);
+            var client = new PhraseTmsClient(InvocationContext.AuthenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/projects/{projectOptionalRequest.ProjectUId}", Method.Get,
-                invocationContext.AuthenticationCredentialsProviders);
+                InvocationContext.AuthenticationCredentialsProviders);
             var project = await client.ExecuteWithHandling<ProjectDto>(request);
             
             if(project.Status == projectStatusChangedRequest.Status)

@@ -1,32 +1,27 @@
 ﻿
 using Apps.PhraseTMS.Models.Responses;
 using Apps.PhraseTMS.Webhooks.Handlers.Models;
+using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication;
+using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.Sdk.Common.Webhooks;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using RestSharp;
 
 namespace Apps.PhraseTMS.Webhooks.Handlers;
 
-public class BaseWebhookHandler : IWebhookEventHandler
+public class BaseWebhookHandler(InvocationContext invocationContext, string subEvent)
+    : BaseInvocable(invocationContext), IWebhookEventHandler
 {
-
-    private string _subscriptionEvent;
-
-    public BaseWebhookHandler(string subEvent)
-    {
-        _subscriptionEvent = subEvent;
-    }
-
     public Task SubscribeAsync(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProvider, Dictionary<string, string> values)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProvider);
         var request = new PhraseTmsRequest($"/api2/v2/webhooks", Method.Post, authenticationCredentialsProvider);
         request.WithJsonBody(new
         {
-            events = new[] { _subscriptionEvent },
+            events = new[] { subEvent },
             url = values["payloadUrl"],
-            name = _subscriptionEvent
+            name = subEvent
         });
             
         return client.ExecuteWithHandling(request);
@@ -35,7 +30,7 @@ public class BaseWebhookHandler : IWebhookEventHandler
     public async Task UnsubscribeAsync(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProvider, Dictionary<string, string> values)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProvider);
-        var getRequest = new PhraseTmsRequest($"/api2/v2/webhooks?name={_subscriptionEvent}&url={values["payloadUrl"]}", Method.Get, authenticationCredentialsProvider);
+        var getRequest = new PhraseTmsRequest($"/api2/v2/webhooks?name={subEvent}&url={values["payloadUrl"]}", Method.Get, authenticationCredentialsProvider);
         var webhooks = await client.ExecuteWithHandling<ResponseWrapper<List<WebhookDto>>>(getRequest);
         var webhookUId = webhooks?.Content.FirstOrDefault()?.UId;
 

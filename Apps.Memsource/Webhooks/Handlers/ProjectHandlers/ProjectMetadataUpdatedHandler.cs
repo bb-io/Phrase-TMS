@@ -1,8 +1,9 @@
-﻿namespace Apps.PhraseTMS.Webhooks.Handlers.ProjectHandlers;
+﻿using Blackbird.Applications.Sdk.Common.Invocation;
 
-public class ProjectMetadataUpdatedHandler : BaseWebhookHandler
+namespace Apps.PhraseTMS.Webhooks.Handlers.ProjectHandlers;
+
+public class ProjectMetadataUpdatedHandler(InvocationContext invocationContext)
+    : BaseWebhookHandler(invocationContext, SubscriptionEvent)
 {
     const string SubscriptionEvent = "PROJECT_METADATA_UPDATED";
-
-    public ProjectMetadataUpdatedHandler() : base(SubscriptionEvent) { }
 }

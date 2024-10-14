@@ -1,9 +1,9 @@
-﻿namespace Apps.PhraseTMS.Webhooks.Handlers.ProjectTemplateHandlers;
+﻿using Blackbird.Applications.Sdk.Common.Invocation;
 
-public class TemplateUpdatedHandler : BaseWebhookHandler
+namespace Apps.PhraseTMS.Webhooks.Handlers.ProjectTemplateHandlers;
+
+public class TemplateUpdatedHandler(InvocationContext invocationContext)
+    : BaseWebhookHandler(invocationContext, SubscriptionEvent)
 {
-
     const string SubscriptionEvent = "PROJECT_TEMPLATE_UPDATED";
-
-    public TemplateUpdatedHandler() : base(SubscriptionEvent) { }
 }
