@@ -397,7 +397,9 @@ public class WebhookList
 
     [Webhook("On job status changed", typeof(JobStatusChangedHandler), Description = "On any job status changed")]
     public async Task<WebhookResponse<JobResponse>> JobStatusChanged(WebhookRequest webhookRequest,
-        [WebhookParameter] JobStatusChangedRequest request, [WebhookParameter] OptionalJobRequest job)
+        [WebhookParameter] JobStatusChangedRequest request, 
+        [WebhookParameter] ProjectOptionalRequest projectOptionalRequest,
+        [WebhookParameter] OptionalJobRequest job)
     {
         var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
         if (data is null)
