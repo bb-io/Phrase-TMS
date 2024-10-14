@@ -31,16 +31,8 @@ public class ProjectStatusChangedHandler(
                     Result = project
                 };
             }
-            
-            return new AfterSubscriptionEventResponse<ProjectDto>()
-            {
-                Result = null
-            };
         }
 
-        return new AfterSubscriptionEventResponse<ProjectDto>()
-        {
-            Result = null
-        };
+        return null;
     }
 }
