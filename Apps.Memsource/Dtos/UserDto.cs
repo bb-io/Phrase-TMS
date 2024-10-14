@@ -11,7 +11,7 @@ public class UserDto
     public bool Active { get; set; }
     [Display("User name")] public string UserName { get; set; }
     public bool Terminologist { get; set; }
-    [Display("UID")] public string UId { get; set; }
+    [Display("User ID")] public string UId { get; set; }
     public string Note { get; set; }
     [Display("Last name")] public string LastName { get; set; }
     public string Timezone { get; set; }

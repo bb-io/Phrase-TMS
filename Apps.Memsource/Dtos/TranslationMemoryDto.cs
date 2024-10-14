@@ -6,7 +6,7 @@ namespace Apps.PhraseTMS.Dtos;
 
 public class TranslationMemoryDto
 {
-    [Display("UID")]
+    [Display("TM ID")]
     public string UId { get; set; }
 
     public string Name { get; set; }

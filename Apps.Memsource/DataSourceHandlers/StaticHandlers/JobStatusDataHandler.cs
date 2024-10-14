@@ -9,6 +9,7 @@ public class JobStatusDataHandler : IStaticDataSourceHandler
         { "ACCEPTED", "Accepted" },
         { "CANCELLED", "Cancelled" },
         { "COMPLETED", "Completed" },
+        { "COMPLETED_BY_LINGUIST", "Completed by linguist" },
         { "DECLINED", "Declined" },
         { "DELIVERED", "Delivered" },
         { "EMAILED", "Emailed" },

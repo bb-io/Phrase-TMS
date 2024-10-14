@@ -9,7 +9,7 @@ public class TranslationSettingDto
     [Display("Is pay for MT possible")] public bool PayForMtPossible { get; set; }
     public string Type { get; set; }
 
-    [Display("UID")] public string UId { get; set; }
+    [Display("Settings ID")] public string UId { get; set; }
 
     //public string Id { get; set; }
     [Display("Is pay for MT active")] public bool PayForMtActive { get; set; }

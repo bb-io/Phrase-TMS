@@ -6,7 +6,7 @@ public class ClientDto
 {
     public string Name { get; set; }
 
-    [Display("UID")]
+    [Display("Client ID")]
     public string UId { get; set; }
         
     [Display("External ID")]
