@@ -9,10 +9,10 @@ using RestSharp;
 namespace Apps.PhraseTMS.Webhooks.Handlers.JobHandlers;
 
 public class JobStatusChangedHandler(
+    InvocationContext invocationContext,
     [WebhookParameter] JobStatusChangedRequest statusRequest,
     [WebhookParameter] ProjectOptionalRequest projectOptionalRequest,
-    [WebhookParameter] OptionalJobRequest jobOptionalRequest,
-    InvocationContext invocationContext)
+    [WebhookParameter] OptionalJobRequest jobOptionalRequest)
     : BaseWebhookHandler(SubscriptionEvent), IAfterSubscriptionWebhookEventHandler<JobResponse>
 {
     const string SubscriptionEvent = "JOB_STATUS_CHANGED";

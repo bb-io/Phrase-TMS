@@ -8,9 +8,9 @@ using RestSharp;
 namespace Apps.PhraseTMS.Webhooks.Handlers.ProjectHandlers;
 
 public class ProjectStatusChangedHandler(
+    InvocationContext invocationContext,
     [WebhookParameter] ProjectStatusChangedRequest projectStatusChangedRequest,
-    [WebhookParameter] ProjectOptionalRequest projectOptionalRequest,
-    InvocationContext invocationContext)
+    [WebhookParameter] ProjectOptionalRequest projectOptionalRequest)
     : BaseWebhookHandler(SubscriptionEvent), IAfterSubscriptionWebhookEventHandler<ProjectDto>
 {
     const string SubscriptionEvent = "PROJECT_STATUS_CHANGED";
