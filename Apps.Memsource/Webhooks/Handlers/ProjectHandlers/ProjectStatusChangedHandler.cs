@@ -7,32 +7,24 @@ using RestSharp;
 
 namespace Apps.PhraseTMS.Webhooks.Handlers.ProjectHandlers;
 
-public class ProjectStatusChangedHandler : BaseWebhookHandler, IAfterSubscriptionWebhookEventHandler<ProjectDto>
+public class ProjectStatusChangedHandler(
+    [WebhookParameter] ProjectStatusChangedRequest projectStatusChangedRequest,
+    [WebhookParameter] ProjectOptionalRequest projectOptionalRequest,
+    InvocationContext invocationContext)
+    : BaseWebhookHandler(SubscriptionEvent), IAfterSubscriptionWebhookEventHandler<ProjectDto>
 {
     const string SubscriptionEvent = "PROJECT_STATUS_CHANGED";
-    private readonly ProjectOptionalRequest _projectOptionalRequest;
-    private readonly ProjectStatusChangedRequest _projectStatusChangedRequest;
-    private readonly InvocationContext _invocationContext;
-    
-    public ProjectStatusChangedHandler([WebhookParameter] ProjectStatusChangedRequest request, 
-        [WebhookParameter] ProjectOptionalRequest project,
-        InvocationContext invocationContext) : base(SubscriptionEvent)
-    {
-        _projectOptionalRequest = project;
-        _projectStatusChangedRequest = request;
-        _invocationContext = invocationContext;
-    }
-    
+
     public async Task<AfterSubscriptionEventResponse<ProjectDto>> OnWebhookSubscribedAsync()
     {
-        if (_projectOptionalRequest.ProjectUId != null && _projectStatusChangedRequest.Status != null)
+        if (projectOptionalRequest.ProjectUId != null && projectStatusChangedRequest.Status != null)
         {
-            var client = new PhraseTmsClient(_invocationContext.AuthenticationCredentialsProviders);
-            var request = new PhraseTmsRequest($"/api2/v1/projects/{_projectOptionalRequest.ProjectUId}", Method.Get,
-                _invocationContext.AuthenticationCredentialsProviders);
+            var client = new PhraseTmsClient(invocationContext.AuthenticationCredentialsProviders);
+            var request = new PhraseTmsRequest($"/api2/v1/projects/{projectOptionalRequest.ProjectUId}", Method.Get,
+                invocationContext.AuthenticationCredentialsProviders);
             var project = await client.ExecuteWithHandling<ProjectDto>(request);
             
-            if(project.Status == _projectStatusChangedRequest.Status)
+            if(project.Status == projectStatusChangedRequest.Status)
             {
                 return new AfterSubscriptionEventResponse<ProjectDto>()
                 {
