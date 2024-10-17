@@ -34,7 +34,7 @@ public class CustomFieldsActions
     [Action("Get numeric custom field value", Description = "Gets the value of a project custom field of type number")]
     public async Task<double?> GetNumberCustomField(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders, [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] TextCustomFieldRequest input)
+        [ActionParameter] NumberCustomFieldRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/";
@@ -108,7 +108,7 @@ public class CustomFieldsActions
     [Action("Set text custom field value", Description = "Sets the text value of a project custom field")]
     public async Task SetTextCustomField(
             IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders, [ActionParameter] ProjectRequest projectRequest,
-            [ActionParameter] TextCustomFieldRequest input, [ActionParameter] string value)
+            [ActionParameter] TextCustomFieldRequest input, [ActionParameter] string Value)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var endpoint1 = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/";
@@ -120,7 +120,7 @@ public class CustomFieldsActions
             var client1 = new PhraseTmsClient(authenticationCredentialsProviders);
             var projectCustomField = projectCustomFields.First(x => x.customField.uid == input.FieldUId);
             var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/{projectCustomField.UId}";
-            var body = new { value = value };
+            var body = new { value = Value };
             var request = new PhraseTmsRequest(endpoint, Method.Put, authenticationCredentialsProviders)
                 .WithJsonBody(body, new JsonSerializerSettings
             {
