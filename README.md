@@ -53,6 +53,18 @@ Before you can connect you need to make sure that:
 - **List connector**
 - **Get connector**
 
+### Custom fields
+
+- **Get date custom field value**
+- **Get numeric custom field value**
+- **Get single select custom field value**
+- **Get multi select custom field value**
+- **Get text custom field value**
+- **Set date custom field value**
+- **Set numeric custom field value**
+- **Set single select custom field value**
+- **Set text custom field value**
+
 ### File
 
 - **List all files**
