@@ -135,7 +135,11 @@ public class CustomFieldsActions
         }
         else 
         {
-            throw new Exception("Selected custom field is not available for this project");
+            var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/";
+            var body = "{\"customFieldInstances\": [{\"customField\":{\"uid\":\"" + input.FieldUId + "\"}, \"value\": \"" + Value + "\"}]}";
+            var request = new PhraseTmsRequest(endpoint, Method.Post, authenticationCredentialsProviders);
+            request.AddStringBody(body, DataFormat.Json);
+            var response = await client.ExecuteAsync(request);
         }
 
     }
@@ -164,13 +168,17 @@ public class CustomFieldsActions
                         NamingStrategy = new SnakeCaseNamingStrategy()
                     },
                     NullValueHandling = NullValueHandling.Ignore
-                }); ;
+                }); 
 
             var response = await client1.ExecuteAsync(request);
         }
         else
         {
-            throw new Exception("Selected custom field is not available for this project");
+            var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/";
+            var body = "{\"customFieldInstances\": [{\"customField\":{\"uid\":\"" + input.FieldUId + "\"}, \"value\": " + Value + "}]}";
+            var request = new PhraseTmsRequest(endpoint, Method.Post, authenticationCredentialsProviders);
+            request.AddStringBody(body, DataFormat.Json);
+            var response = await client.ExecuteAsync(request);
         }
 
     }
@@ -192,13 +200,16 @@ public class CustomFieldsActions
             var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/{projectCustomField.UId}";
             var body = new { value = Value };
             var request = new PhraseTmsRequest(endpoint, Method.Put, authenticationCredentialsProviders)
-                .WithJsonBody(body,JsonConfig.DateSettings) ;
-
+                .WithJsonBody(body,JsonConfig.DateSettings);
             var response = await client1.ExecuteAsync(request);
         }
         else
         {
-            throw new Exception("Selected custom field is not available for this project");
+            var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/";
+            var body = "{\"customFieldInstances\": [{\"customField\":{\"uid\":\"" + input.FieldUId + "\"}, \"value\": \""+Value+"\"}]}";
+            var request = new PhraseTmsRequest(endpoint, Method.Post, authenticationCredentialsProviders)
+            .WithJsonBody(body, JsonConfig.DateSettings);
+            var response = await client.ExecuteAsync(request);
         }
 
     }
@@ -224,10 +235,15 @@ public class CustomFieldsActions
         }
         else
         {
-            throw new Exception("Selected custom field is not available for this project");
+            var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/";
+            var body = "{\"customFieldInstances\": [{\"customField\":{\"uid\":\"" + input.FieldUId + "\"}, \"selectedOptions\": [{\"uid\": \""+Value.OptionUId+"\"}]}]}";
+            var request = new PhraseTmsRequest(endpoint, Method.Post, authenticationCredentialsProviders);
+            request.AddStringBody(body, DataFormat.Json);
+            var response = await client.ExecuteAsync(request);
         }
 
     }
+
 }
 
 
