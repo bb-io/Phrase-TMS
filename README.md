@@ -65,6 +65,8 @@ Before you can connect you need to make sure that:
 - **Set single select custom field value**
 - **Set text custom field value**
 
+> If a Custom field is not present in a project, it will be added as part of the `Set` action.
+
 ### File
 
 - **List all files**
