@@ -100,9 +100,8 @@ public class PhraseTmsClient : RestClient
 
             var response = await ExecuteWithHandling<PaginationResponse<T[]>>(request);
             totalPages = response.TotalPages;
-                
+
             result.AddRange(response.Content);
-                
         } while (pageNumber < totalPages);
 
         return result;

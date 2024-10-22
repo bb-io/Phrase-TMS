@@ -111,20 +111,59 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
         return client.ExecuteWithHandling(request);
     }
 
-    [Action("Edit project", Description = "Edit selected project")]
+    [Action("Update project", Description = "Update project with specified details based on project ID")]
     public Task EditProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] EditProjectRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
+        
+        var bodyDictionary = new Dictionary<string, object>
+        {
+            { "name", input.ProjectName},
+            { "status", input.Status}
+        };
+
+        if (input.DueDate.HasValue)
+        {
+            bodyDictionary.Add("dateDue", input.DueDate);
+        }
+
+        if (input.DomainId != null)
+        {
+            bodyDictionary.Add("domain", new
+            {
+                id = input.DomainId
+            });
+        }
+        
+        if(input.SubdomainId != null)
+        {
+            bodyDictionary.Add("subDomain", new
+            {
+                id = input.SubdomainId
+            });
+        }
+        
+        if(input.ClientId != null)
+        {
+            bodyDictionary.Add("client", new
+            {
+                id = input.ClientId
+            });
+        }
+        
+        if(input.BusinessUnit != null)
+        {
+            bodyDictionary.Add("businessUnit", new
+            {
+                id = input.BusinessUnit
+            });
+        }
+        
         var request = new PhraseTmsRequest($"/api2/v1/projects/{projectRequest.ProjectUId}", Method.Patch,
                 authenticationCredentialsProviders)
-            .WithJsonBody(new
-            {
-                name = input.ProjectName,
-                status = input.Status,
-                dateDue = input.DueDate
-            }, JsonConfig.DateSettings);
+            .WithJsonBody(bodyDictionary, JsonConfig.DateSettings);
 
         return client.ExecuteWithHandling(request);
     }

@@ -8,17 +8,13 @@ using Apps.PhraseTMS.Models.Projects.Requests;
 
 namespace Apps.PhraseTMS.DataSourceHandlers;
 
-public class JobDataHandler : BaseInvocable, IAsyncDataSourceHandler
+public class JobDataHandler(InvocationContext invocationContext, [ActionParameter] ProjectRequest projectRequest)
+    : BaseInvocable(invocationContext), IAsyncDataSourceHandler
 {
     private IEnumerable<AuthenticationCredentialsProvider> Creds =>
         InvocationContext.AuthenticationCredentialsProviders;
 
-    private ProjectRequest ProjectRequest { get; set; }
-
-    public JobDataHandler(InvocationContext invocationContext, [ActionParameter] ProjectRequest projectRequest) : base(invocationContext)
-    {
-        ProjectRequest = projectRequest;
-    }
+    private ProjectRequest ProjectRequest { get; set; } = projectRequest;
 
     public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
     {
