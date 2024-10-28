@@ -3,6 +3,7 @@ using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Models.Jobs.Requests;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Apps.PhraseTMS.Models.Projects.Responses;
+using Apps.PhraseTMS.Utils;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Authentication;
@@ -25,7 +26,7 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
 
         var endpoint = "/api2/v1/projects";
-        var request = new PhraseTmsRequest(endpoint.WithQuery(query), Method.Get, authenticationCredentialsProviders);
+        var request = new PhraseTmsRequest(QueryHelper.WithQuery(endpoint, query), Method.Get, authenticationCredentialsProviders);
 
         var response = await client.Paginate<ProjectDto>(request);
 
