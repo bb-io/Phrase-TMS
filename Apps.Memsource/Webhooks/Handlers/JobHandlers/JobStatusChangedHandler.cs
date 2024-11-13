@@ -24,7 +24,6 @@ public class JobStatusChangedHandler(
             var client = new PhraseTmsClient(InvocationContext.AuthenticationCredentialsProviders);
             var request = new PhraseTmsRequest($"/api2/v1/projects/{projectOptionalRequest.ProjectUId}/jobs/{jobOptionalRequest.JobUId}",
                 Method.Get, InvocationContext.AuthenticationCredentialsProviders);
-
             var response = await client.ExecuteWithHandling<JobDto>(request);
 
             var result = new JobResponse
@@ -47,6 +46,6 @@ public class JobStatusChangedHandler(
             }
         }
 
-        return null;
+        return null!;
     }
 }
