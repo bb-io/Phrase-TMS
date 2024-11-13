@@ -7,7 +7,8 @@ public class PhraseTmsRequest : RestRequest
 {
     public PhraseTmsRequest(string endpoint, Method method, IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders) : base(endpoint, method)
     {
-        this.AddHeader("Authorization", authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value);
+        var value = authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value;
+        this.AddHeader("Authorization", value);
         this.AddHeader("accept", "*/*");
     }
 }
