@@ -13,39 +13,39 @@ public class JobStatusChangedHandler(
     [WebhookParameter] JobStatusChangedRequest statusRequest,
     [WebhookParameter] ProjectOptionalRequest projectOptionalRequest,
     [WebhookParameter] OptionalJobRequest jobOptionalRequest)
-    : BaseWebhookHandler(invocationContext, SubscriptionEvent), IAfterSubscriptionWebhookEventHandler<JobResponse>
+    : BaseWebhookHandler(invocationContext, SubscriptionEvent)//, IAfterSubscriptionWebhookEventHandler<JobResponse>
 {
     const string SubscriptionEvent = "JOB_STATUS_CHANGED";
     
-    public async Task<AfterSubscriptionEventResponse<JobResponse>> OnWebhookSubscribedAsync()
-    {
-        if (jobOptionalRequest.JobUId != null && statusRequest.Status != null && projectOptionalRequest.ProjectUId != null)
-        {
-            var client = new PhraseTmsClient(InvocationContext.AuthenticationCredentialsProviders);
-            var request = new PhraseTmsRequest($"/api2/v1/projects/{projectOptionalRequest.ProjectUId}/jobs/{jobOptionalRequest.JobUId}",
-                Method.Get, InvocationContext.AuthenticationCredentialsProviders);
-            var response = await client.ExecuteWithHandling<JobDto>(request);
+    //public async Task<AfterSubscriptionEventResponse<JobResponse>> OnWebhookSubscribedAsync()
+    //{
+    //    if (jobOptionalRequest.JobUId != null && statusRequest.Status != null && projectOptionalRequest.ProjectUId != null)
+    //    {
+    //        var client = new PhraseTmsClient(InvocationContext.AuthenticationCredentialsProviders);
+    //        var request = new PhraseTmsRequest($"/api2/v1/projects/{projectOptionalRequest.ProjectUId}/jobs/{jobOptionalRequest.JobUId}",
+    //            Method.Get, InvocationContext.AuthenticationCredentialsProviders);
+    //        var response = await client.ExecuteWithHandling<JobDto>(request);
 
-            var result = new JobResponse
-            {
-                Uid = response.Uid,
-                Filename = response.Filename,
-                TargetLanguage = response.TargetLang,
-                Status = response.Status,
-                ProjectUid = response.Project.UId,
-                WordCount = response.WordsCount,
-                SourceLanguage = response.SourceLang,
-            };
+    //        var result = new JobResponse
+    //        {
+    //            Uid = response.Uid,
+    //            Filename = response.Filename,
+    //            TargetLanguage = response.TargetLang,
+    //            Status = response.Status,
+    //            ProjectUid = response.Project.UId,
+    //            WordCount = response.WordsCount,
+    //            SourceLanguage = response.SourceLang,
+    //        };
             
-            if(result.Status == statusRequest.Status)
-            {
-                return new AfterSubscriptionEventResponse<JobResponse>
-                {
-                    Result = result
-                };
-            }
-        }
+    //        if(result.Status == statusRequest.Status)
+    //        {
+    //            return new AfterSubscriptionEventResponse<JobResponse>
+    //            {
+    //                Result = result
+    //            };
+    //        }
+    //    }
 
-        return null!;
-    }
+    //    return null!;
+    //}
 }
