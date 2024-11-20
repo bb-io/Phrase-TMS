@@ -11,28 +11,28 @@ public class ProjectStatusChangedHandler(
     InvocationContext invocationContext,
     [WebhookParameter] ProjectStatusChangedRequest projectStatusChangedRequest,
     [WebhookParameter] ProjectOptionalRequest projectOptionalRequest)
-    : BaseWebhookHandler(invocationContext, SubscriptionEvent), IAfterSubscriptionWebhookEventHandler<ProjectDto>
+    : BaseWebhookHandler(invocationContext, SubscriptionEvent)//, IAfterSubscriptionWebhookEventHandler<ProjectDto>
 {
     const string SubscriptionEvent = "PROJECT_STATUS_CHANGED";
 
-    public async Task<AfterSubscriptionEventResponse<ProjectDto>> OnWebhookSubscribedAsync()
-    {
-        if (projectOptionalRequest.ProjectUId != null && projectStatusChangedRequest.Status != null)
-        {
-            var client = new PhraseTmsClient(InvocationContext.AuthenticationCredentialsProviders);
-            var request = new PhraseTmsRequest($"/api2/v1/projects/{projectOptionalRequest.ProjectUId}", Method.Get,
-                InvocationContext.AuthenticationCredentialsProviders);
-            var project = await client.ExecuteWithHandling<ProjectDto>(request);
+    //public async Task<AfterSubscriptionEventResponse<ProjectDto>> OnWebhookSubscribedAsync()
+    //{
+    //    if (projectOptionalRequest.ProjectUId != null && projectStatusChangedRequest.Status != null)
+    //    {
+    //        var client = new PhraseTmsClient(InvocationContext.AuthenticationCredentialsProviders);
+    //        var request = new PhraseTmsRequest($"/api2/v1/projects/{projectOptionalRequest.ProjectUId}", Method.Get,
+    //            InvocationContext.AuthenticationCredentialsProviders);
+    //        var project = await client.ExecuteWithHandling<ProjectDto>(request);
             
-            if(project.Status == projectStatusChangedRequest.Status)
-            {
-                return new AfterSubscriptionEventResponse<ProjectDto>()
-                {
-                    Result = project
-                };
-            }
-        }
+    //        if(project.Status == projectStatusChangedRequest.Status)
+    //        {
+    //            return new AfterSubscriptionEventResponse<ProjectDto>()
+    //            {
+    //                Result = project
+    //            };
+    //        }
+    //    }
 
-        return null;
-    }
+    //    return null;
+    //}
 }
