@@ -147,7 +147,7 @@ public class JobActions
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] JobRequest input,
         [ActionParameter] EditJobBody body,
-        [DataSource(typeof(VendorDataHandler))] IEnumerable<string>? Vendors)
+        [ActionParameter] [DataSource(typeof(VendorDataHandler))] IEnumerable<string>? Vendors)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
 
