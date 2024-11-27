@@ -15,6 +15,8 @@ using Apps.PhraseTMS.Models;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Blackbird.Applications.Sdk.Utils.Extensions.Files;
+using Apps.PhraseTMS.DataSourceHandlers;
+using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -144,13 +146,34 @@ public class JobActions
     public async Task<JobResponse> EditJob(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] JobRequest input,
-        [ActionParameter] EditJobBody body)
+        [ActionParameter] EditJobBody body,
+        [DataSource(typeof(VendorDataHandler))] IEnumerable<string>? Vendors)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
+
+        var bodyDictionary = new Dictionary<string, object>
+        {
+            { "status", body.Status}
+        };
+        if (body.DateDue.HasValue)
+        {
+            bodyDictionary.Add("dateDue", body.DateDue);
+        }
+        if (Vendors != null && Vendors.Any())
+        {
+            bodyDictionary.Add("providers", JsonConvert.SerializeObject(Vendors.Select(x =>
+                    new
+                    {
+                        type = "VENDOR",
+                        id = x
+                    }).ToArray()));
+        }
+
         var request = new PhraseTmsRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/{input.JobUId}",
             Method.Patch, authenticationCredentialsProviders)
-            .WithJsonBody(body, JsonConfig.DateSettings);
-        
+            .WithJsonBody(bodyDictionary, JsonConfig.DateSettings);
+
+
         var response = await client.ExecuteWithHandling<JobDto>(request);
         return new()
         {
@@ -163,6 +186,7 @@ public class JobActions
             SourceLanguage = response.SourceLang,
         };
     }
+
 
     [Action("Download target file", Description = "Download target file of a job")]
     public async Task<TargetFileResponse> DownloadTargetFile(

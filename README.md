@@ -107,6 +107,7 @@ Before you can connect you need to make sure that:
 - **Delete project**
 - **Download project original files** 
 - **Download project target files**
+- **Assign providers from template**
 
 ### Project reference file
 

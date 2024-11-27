@@ -12,6 +12,9 @@ using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using RestSharp;
+using Newtonsoft.Json;
+using System.Text.Json.Nodes;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -227,5 +230,38 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
         }
 
         return new() { Files = files };
+    }
+
+    [Action("Assign providers from template", Description = "Assig providers to project or specific jobs from a template")]
+    public async Task AssignFromTemplate(
+        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] AssignFromTemplateRequest input)
+    {
+
+        var client = new PhraseTmsClient(authenticationCredentialsProviders);
+
+        if (input.JobsUIds is not null && input.JobsUIds.Any())
+        {
+            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/applyTemplate/{input.TemplateUId}/assignProviders/forJobParts", Method.Post,
+                authenticationCredentialsProviders);
+            request.WithJsonBody(JsonConvert.SerializeObject(new
+             {
+                 jobs =
+                    input.JobsUIds.Select(x =>
+                    new
+                    {
+                        uid = x
+                    }).ToArray()
+                ,
+             }));
+            await client.ExecuteAsync(request);
+        }
+        else 
+        {
+            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/applyTemplate/{input.TemplateUId}/assignProviders", Method.Post,
+                authenticationCredentialsProviders);
+
+            await client.ExecuteAsync(request);
+        }
     }
 }
