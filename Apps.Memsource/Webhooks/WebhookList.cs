@@ -407,7 +407,7 @@ public class WebhookList
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
         
-        if(request.Status is not null && data.JobParts.FirstOrDefault()?.Status != request.Status)
+        if(request.Status is not null && !data.JobParts.FirstOrDefault()?.Status.Contains(request.Status))
         {
             return new()
             {
