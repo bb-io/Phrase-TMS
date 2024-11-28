@@ -6,14 +6,12 @@ public class JobStatusDataHandler : IStaticDataSourceHandler
 {
     public Dictionary<string, string> GetData() => new()
     {
-        { "ACCEPTED", "Accepted" },
-        { "CANCELLED", "Cancelled" },
-        { "COMPLETED", "Completed" },
-        { "COMPLETED_BY_LINGUIST", "Completed by linguist" },
-        { "DECLINED", "Declined" },
-        { "DELIVERED", "Delivered" },
-        { "EMAILED", "Emailed" },
         { "NEW", "New" },
-        { "REJECTED", "Rejected" },
+        { "EMAILED", "Emailed to provider" },
+        { "ASSIGNED", "Accepted by proivder" },
+        { "DECLINED_BY_LINGUIST", "Declined by provider" },
+        { "COMPLETED_BY_LINGUIST", "Completed by provider" },
+        { "COMPLETED", "Delivered" },
+        { "CANCELLED", "Cancelled" },
     };
 }
