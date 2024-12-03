@@ -147,7 +147,8 @@ public class JobActions
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] JobRequest input,
         [ActionParameter] EditJobBody body,
-        [ActionParameter] [DataSource(typeof(VendorDataHandler))] IEnumerable<string>? Vendors)
+        [ActionParameter] [DataSource(typeof(VendorDataHandler))] IEnumerable<string>? Vendors,
+        [ActionParameter] [DataSource(typeof(UserDataHandler))] IEnumerable<string>? Users)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
 
@@ -165,6 +166,16 @@ public class JobActions
                     new
                     {
                         type = "VENDOR",
+                        id = x
+                    }).ToArray()));
+        }
+
+        if (Users != null && Users.Any())
+        {
+            bodyDictionary.Add("providers", JsonConvert.SerializeObject(Users.Select(x =>
+                    new
+                    {
+                        type = "USER",
                         id = x
                     }).ToArray()));
         }
