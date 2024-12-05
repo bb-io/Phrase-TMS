@@ -159,7 +159,7 @@ public class JobActions
                 {
                     new
                     {
-                        Uid = input.JobUId
+                        uid = input.JobUId
                     }
                 })
             }
