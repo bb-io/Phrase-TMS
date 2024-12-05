@@ -145,6 +145,7 @@ public class JobActions
 
     [Action("Edit job", Description = "Edit selected job")]
     public async Task<JobResponse> EditJob(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] JobRequest input,
         [ActionParameter] EditJobBody body,
         [ActionParameter] [DataSource(typeof(VendorDataHandler))] IEnumerable<string>? Vendors,
