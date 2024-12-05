@@ -164,7 +164,15 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
                 id = input.BusinessUnit
             });
         }
-        
+
+        if (input.OwnerId != null)
+        {
+            bodyDictionary.Add("owner", new
+            {
+                id = input.OwnerId
+            });
+        }
+
         var request = new PhraseTmsRequest($"/api2/v1/projects/{projectRequest.ProjectUId}", Method.Patch,
                 authenticationCredentialsProviders)
             .WithJsonBody(bodyDictionary, JsonConfig.DateSettings);

@@ -17,6 +17,7 @@ using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Blackbird.Applications.Sdk.Utils.Extensions.Files;
 using Apps.PhraseTMS.DataSourceHandlers;
 using Blackbird.Applications.Sdk.Common.Dynamic;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -148,20 +149,34 @@ public class JobActions
         [ActionParameter] JobRequest input,
         [ActionParameter] EditJobBody body,
         [ActionParameter] [DataSource(typeof(VendorDataHandler))] IEnumerable<string>? Vendors,
-        [ActionParameter] [DataSource(typeof(UserDataHandler))] IEnumerable<string>? Users)
+        [ActionParameter] [DataSource(typeof(LinguistDataHandler))] IEnumerable<string>? Linguists)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
 
         var bodyDictionary = new Dictionary<string, object>
         {
-            { "status", body.Status}
+            { "jobs", JsonConvert.SerializeObject(new[]
+                {
+                    new
+                    {
+                        uid = input.JobUId
+                    }
+                })
+            }
         };
+
+        if (body.Status != null)
+        {
+            bodyDictionary.Add("status", body.Status);
+        }
+
         if (body.DateDue.HasValue)
         {
             bodyDictionary.Add("dateDue", body.DateDue);
         }
         if (Vendors != null && Vendors.Any())
         {
+
             bodyDictionary.Add("providers", JsonConvert.SerializeObject(Vendors.Select(x =>
                     new
                     {
@@ -170,9 +185,9 @@ public class JobActions
                     }).ToArray()));
         }
 
-        if (Users != null && Users.Any())
+        if (Linguists != null && Linguists.Any())
         {
-            bodyDictionary.Add("providers", JsonConvert.SerializeObject(Users.Select(x =>
+            bodyDictionary.Add("providers", JsonConvert.SerializeObject(Linguists.Select(x =>
                     new
                     {
                         type = "USER",
@@ -180,7 +195,7 @@ public class JobActions
                     }).ToArray()));
         }
 
-        var request = new PhraseTmsRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/{input.JobUId}",
+        var request = new PhraseTmsRequest($"/api2/v3/jobs",
             Method.Patch, authenticationCredentialsProviders)
             .WithJsonBody(bodyDictionary, JsonConfig.DateSettings);
 
