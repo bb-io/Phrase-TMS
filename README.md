@@ -148,6 +148,7 @@ Before you can connect you need to make sure that:
 
 - **List users**
 - **Get user**
+- **Find user**
 - **Add user**
 - **Update user**
 - **Delete user**
