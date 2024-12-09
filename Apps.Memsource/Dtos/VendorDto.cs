@@ -11,4 +11,6 @@ public class VendorDto
 
     [Display("Vendor token")]
     public string VendorToken { get; set; }
+
+    [Display("Short ID")] public string Id { get; set; }
 }

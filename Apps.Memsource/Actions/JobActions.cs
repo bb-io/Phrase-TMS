@@ -18,6 +18,7 @@ using Blackbird.Applications.Sdk.Utils.Extensions.Files;
 using Apps.PhraseTMS.DataSourceHandlers;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Drawing;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -144,24 +145,19 @@ public class JobActions
     }
 
     [Action("Edit job", Description = "Edit selected job")]
-    public async Task<JobResponse> EditJob(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+    public async Task EditJob(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] JobRequest input,
         [ActionParameter] EditJobBody body,
-        [ActionParameter] [DataSource(typeof(VendorDataHandler))] IEnumerable<string>? Vendors,
-        [ActionParameter] [DataSource(typeof(LinguistDataHandler))] IEnumerable<string>? Linguists)
+        [ActionParameter] [DataSource(typeof(VendorDataHandler))] string? Vendor,
+        [ActionParameter] [DataSource(typeof(UserDataHandler))] string? Linguist)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
 
         var bodyDictionary = new Dictionary<string, object>
         {
-            { "jobs", JsonConvert.SerializeObject(new[]
-                {
-                    new
-                    {
-                        uid = input.JobUId
-                    }
-                })
+            { 
+                "jobs",  new[] { new { uid = input.JobUId } }
             }
         };
 
@@ -174,25 +170,16 @@ public class JobActions
         {
             bodyDictionary.Add("dateDue", body.DateDue);
         }
-        if (Vendors != null && Vendors.Any())
+        if (Vendor != null)
         {
-
-            bodyDictionary.Add("providers", JsonConvert.SerializeObject(Vendors.Select(x =>
-                    new
-                    {
-                        type = "VENDOR",
-                        id = x
-                    }).ToArray()));
+            var vendorId = await GetVendorId(authenticationCredentialsProviders, Vendor);
+            bodyDictionary.Add("providers", new[] { new { type = "VENDOR", id = vendorId } });
         }
 
-        if (Linguists != null && Linguists.Any())
+        if (Linguist != null)
         {
-            bodyDictionary.Add("providers", JsonConvert.SerializeObject(Linguists.Select(x =>
-                    new
-                    {
-                        type = "USER",
-                        id = x
-                    }).ToArray()));
+            var userId = await GetUserId(authenticationCredentialsProviders, Linguist);
+            bodyDictionary.Add("providers", new[] { new { type = "USER", id = userId } });
         }
 
         var request = new PhraseTmsRequest($"/api2/v3/jobs",
@@ -200,18 +187,10 @@ public class JobActions
             .WithJsonBody(bodyDictionary, JsonConfig.DateSettings);
 
 
-        var response = await client.ExecuteWithHandling<JobDto>(request);
-        return new()
-        {
-            Uid = response.Uid,
-            Filename = response.Filename,
-            TargetLanguage = response.TargetLang,
-            Status = response.Status,
-            ProjectUid = response.Project.UId,
-            WordCount = response.WordsCount,
-            SourceLanguage = response.SourceLang,
-        };
+        await client.ExecuteWithHandling(request);
+        
     }
+
 
 
     [Action("Download target file", Description = "Download target file of a job")]
@@ -360,5 +339,20 @@ public class JobActions
         request.AddFile("file", fileBytes, input.File.Name);
 
         return client.ExecuteWithHandling(request);
+    }
+
+    private async Task<string> GetUserId(IEnumerable<AuthenticationCredentialsProvider> creds, string linguist)
+    {
+        var actions = new UserActions();
+        var userDetails = await actions.GetUser(creds, new Models.Users.Requests.GetUserRequest { UserUId = linguist});
+        var users = await actions.ListAllUsers(creds, new Models.Users.Requests.ListAllUsersQuery { Email = userDetails.Email});
+        return users.Users.First(x => x.Email == userDetails.Email).Id;
+    }
+
+    private async Task<string> GetVendorId(IEnumerable<AuthenticationCredentialsProvider> creds, string vendor)
+    {
+        var actions = new VendorActions();
+        var userDetails = await actions.GetVendor(creds, new Models.Vendors.Requests.GetVendorRequest { VendorId = vendor});
+        return userDetails.Id;
     }
 }
