@@ -150,7 +150,7 @@ public class JobActions
         [ActionParameter] JobRequest input,
         [ActionParameter] EditJobBody body,
         [ActionParameter] [DataSource(typeof(VendorDataHandler))] string? Vendor,
-        [ActionParameter] [DataSource(typeof(UserDataHandler))] string? Linguist)
+        [ActionParameter] [DataSource(typeof(UserDataHandler))] string? User)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
 
@@ -176,9 +176,9 @@ public class JobActions
             bodyDictionary.Add("providers", new[] { new { type = "VENDOR", id = vendorId } });
         }
 
-        if (Linguist != null)
+        if (User != null)
         {
-            var userId = await GetUserId(authenticationCredentialsProviders, Linguist);
+            var userId = await GetUserId(authenticationCredentialsProviders, User);
             bodyDictionary.Add("providers", new[] { new { type = "USER", id = userId } });
         }
 
@@ -345,8 +345,8 @@ public class JobActions
     {
         var actions = new UserActions();
         var userDetails = await actions.GetUser(creds, new Models.Users.Requests.GetUserRequest { UserUId = linguist});
-        var users = await actions.ListAllUsers(creds, new Models.Users.Requests.ListAllUsersQuery { Email = userDetails.Email});
-        return users.Users.First(x => x.Email == userDetails.Email).Id;
+        var user = await actions.FindUser(creds, new Models.Users.Requests.ListAllUsersQuery { email = userDetails.Email});
+        return user.Id;
     }
 
     private async Task<string> GetVendorId(IEnumerable<AuthenticationCredentialsProvider> creds, string vendor)
