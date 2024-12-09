@@ -169,6 +169,7 @@ Before you can connect you need to make sure that:
 - **On project metadata updated**
 - **On shared project assigned**
 - **On project status changed**
+- **Find project termbase** get the termbase linked to a project based on optional filters
 
 ### Job
 
