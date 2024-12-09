@@ -273,7 +273,7 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
         }
     }
 
-    [Action("Find project termbase", Description = "Get the first termbase linked to a project based on optional filters")]
+    [Action("Find project termbase", Description = "Get the termbase linked to a project based on optional filters")]
     public async Task<TermbaseDto> FindProjectTermbase(
     IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
     [ActionParameter] FindProjectTermbaseRequest request)
