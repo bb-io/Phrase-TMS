@@ -272,4 +272,37 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
             await client.ExecuteAsync(request);
         }
     }
+
+    [Action("Find project termbase", Description = "Get the first termbase linked to a project based on optional filters")]
+    public async Task<TermbaseDto> FindProjectTermbase(
+    IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+    [ActionParameter] FindProjectTermbaseRequest request)
+    {
+        var client = new PhraseTmsClient(authenticationCredentialsProviders);
+        var endpoint = $"/api2/v1/projects/{request.ProjectUId}/termBases";
+
+        var apiRequest = new PhraseTmsRequest(endpoint, Method.Get, authenticationCredentialsProviders);
+        var response = await client.ExecuteWithHandling<TermbaseResponse>(apiRequest);
+
+        var termbases = response.TermBases;
+
+        if (!string.IsNullOrEmpty(request.LanguageCode))
+        {
+            termbases = termbases.Where(tb => tb.TermBase.Langs.Contains(request.LanguageCode)).ToList();
+        }
+
+        if (!string.IsNullOrEmpty(request.Name))
+        {
+            termbases = termbases.Where(tb => tb.TermBase.Name.Equals(request.Name, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+
+        var matchingTermbase = termbases.FirstOrDefault();
+        if (matchingTermbase == null)
+        {
+            throw new Exception("No matching termbase found for the given criteria.");
+        }
+
+        return matchingTermbase.TermBase;
+    }
+
 }
