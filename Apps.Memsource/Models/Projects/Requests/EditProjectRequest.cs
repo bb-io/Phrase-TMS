@@ -27,4 +27,7 @@ public class EditProjectRequest
     
     [Display("Business unit"), DataSource(typeof(BusinessUnitDataHandler))]
     public string? BusinessUnit { get; set; }
+
+    [Display("Owner ID"), DataSource(typeof(UserDataHandler))]
+    public string? OwnerId { get; set; }
 }

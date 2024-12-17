@@ -12,6 +12,9 @@ using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using RestSharp;
+using Newtonsoft.Json;
+using System.Text.Json.Nodes;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -161,7 +164,15 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
                 id = input.BusinessUnit
             });
         }
-        
+
+        if (input.OwnerId != null)
+        {
+            bodyDictionary.Add("owner", new
+            {
+                id = input.OwnerId
+            });
+        }
+
         var request = new PhraseTmsRequest($"/api2/v1/projects/{projectRequest.ProjectUId}", Method.Patch,
                 authenticationCredentialsProviders)
             .WithJsonBody(bodyDictionary, JsonConfig.DateSettings);
@@ -228,4 +239,70 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
 
         return new() { Files = files };
     }
+
+    [Action("Assign providers from template", Description = "Assig providers to project or specific jobs from a template")]
+    public async Task AssignFromTemplate(
+        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] AssignFromTemplateRequest input)
+    {
+
+        var client = new PhraseTmsClient(authenticationCredentialsProviders);
+
+        if (input.JobsUIds is not null && input.JobsUIds.Any())
+        {
+            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/applyTemplate/{input.TemplateUId}/assignProviders/forJobParts", Method.Post,
+                authenticationCredentialsProviders);
+            request.WithJsonBody(JsonConvert.SerializeObject(new
+             {
+                 jobs =
+                    input.JobsUIds.Select(x =>
+                    new
+                    {
+                        uid = x
+                    }).ToArray()
+                ,
+             }));
+            await client.ExecuteAsync(request);
+        }
+        else 
+        {
+            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/applyTemplate/{input.TemplateUId}/assignProviders", Method.Post,
+                authenticationCredentialsProviders);
+
+            await client.ExecuteAsync(request);
+        }
+    }
+
+    [Action("Find project termbase", Description = "Get the termbase linked to a project based on optional filters")]
+    public async Task<TermbaseDto> FindProjectTermbase(
+    IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+    [ActionParameter] FindProjectTermbaseRequest request)
+    {
+        var client = new PhraseTmsClient(authenticationCredentialsProviders);
+        var endpoint = $"/api2/v1/projects/{request.ProjectUId}/termBases";
+
+        var apiRequest = new PhraseTmsRequest(endpoint, Method.Get, authenticationCredentialsProviders);
+        var response = await client.ExecuteWithHandling<TermbaseResponse>(apiRequest);
+
+        var termbases = response.TermBases;
+
+        if (!string.IsNullOrEmpty(request.LanguageCode))
+        {
+            termbases = termbases.Where(tb => tb.TermBase.Langs.Contains(request.LanguageCode)).ToList();
+        }
+
+        if (!string.IsNullOrEmpty(request.Name))
+        {
+            termbases = termbases.Where(tb => tb.TermBase.Name.Equals(request.Name, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+
+        var matchingTermbase = termbases.FirstOrDefault();
+        if (matchingTermbase == null)
+        {
+            throw new Exception("No matching termbase found for the given criteria.");
+        }
+
+        return matchingTermbase.TermBase;
+    }
+
 }

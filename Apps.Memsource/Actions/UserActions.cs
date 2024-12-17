@@ -33,6 +33,22 @@ public class UserActions
         };
     }
 
+    [Action("Find user", Description = "Get first matching user")]
+    public async Task<UserDto> FindUser(
+        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] ListAllUsersQuery query)
+    {
+        var client = new PhraseTmsClient(authenticationCredentialsProviders);
+
+        var endpoint = "/api2/v1/users";
+        var request =
+            new PhraseTmsRequest(endpoint.WithQuery(query), Method.Get, authenticationCredentialsProviders);
+
+        var response = await client.Paginate<UserDto>(request);
+
+        return response.First();
+    }
+
     [Action("Get user", Description = "Get user by UId")]
     public Task<UserDto> GetUser(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] GetUserRequest input)

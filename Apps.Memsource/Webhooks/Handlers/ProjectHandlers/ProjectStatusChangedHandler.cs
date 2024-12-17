@@ -23,8 +23,8 @@ public class ProjectStatusChangedHandler(
             var request = new PhraseTmsRequest($"/api2/v1/projects/{projectOptionalRequest.ProjectUId}", Method.Get,
                 InvocationContext.AuthenticationCredentialsProviders);
             var project = await client.ExecuteWithHandling<ProjectDto>(request);
-            
-            if(project.Status == projectStatusChangedRequest.Status)
+
+            if (project.Status == projectStatusChangedRequest.Status)
             {
                 return new AfterSubscriptionEventResponse<ProjectDto>()
                 {

@@ -15,6 +15,10 @@ using Apps.PhraseTMS.Models;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Blackbird.Applications.Sdk.Utils.Extensions.Files;
+using Apps.PhraseTMS.DataSourceHandlers;
+using Blackbird.Applications.Sdk.Common.Dynamic;
+using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Drawing;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -141,28 +145,53 @@ public class JobActions
     }
 
     [Action("Edit job", Description = "Edit selected job")]
-    public async Task<JobResponse> EditJob(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+    public async Task EditJob(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] JobRequest input,
-        [ActionParameter] EditJobBody body)
+        [ActionParameter] EditJobBody body,
+        [ActionParameter] [DataSource(typeof(VendorDataHandler))] string? Vendor,
+        [ActionParameter] [DataSource(typeof(UserDataHandler))] string? User)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
-        var request = new PhraseTmsRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/{input.JobUId}",
-            Method.Patch, authenticationCredentialsProviders)
-            .WithJsonBody(body, JsonConfig.DateSettings);
-        
-        var response = await client.ExecuteWithHandling<JobDto>(request);
-        return new()
+
+        var bodyDictionary = new Dictionary<string, object>
         {
-            Uid = response.Uid,
-            Filename = response.Filename,
-            TargetLanguage = response.TargetLang,
-            Status = response.Status,
-            ProjectUid = response.Project.UId,
-            WordCount = response.WordsCount,
-            SourceLanguage = response.SourceLang,
+            { 
+                "jobs",  new[] { new { uid = input.JobUId } }
+            }
         };
+
+        if (body.Status != null)
+        {
+            bodyDictionary.Add("status", body.Status);
+        }
+
+        if (body.DateDue.HasValue)
+        {
+            bodyDictionary.Add("dateDue", body.DateDue);
+        }
+        if (Vendor != null)
+        {
+            var vendorId = await GetVendorId(authenticationCredentialsProviders, Vendor);
+            bodyDictionary.Add("providers", new[] { new { type = "VENDOR", id = vendorId } });
+        }
+
+        if (User != null)
+        {
+            var userId = await GetUserId(authenticationCredentialsProviders, User);
+            bodyDictionary.Add("providers", new[] { new { type = "USER", id = userId } });
+        }
+
+        var request = new PhraseTmsRequest($"/api2/v3/jobs",
+            Method.Patch, authenticationCredentialsProviders)
+            .WithJsonBody(bodyDictionary, JsonConfig.DateSettings);
+
+
+        await client.ExecuteWithHandling(request);
+        
     }
+
+
 
     [Action("Download target file", Description = "Download target file of a job")]
     public async Task<TargetFileResponse> DownloadTargetFile(
@@ -310,5 +339,20 @@ public class JobActions
         request.AddFile("file", fileBytes, input.File.Name);
 
         return client.ExecuteWithHandling(request);
+    }
+
+    private async Task<string> GetUserId(IEnumerable<AuthenticationCredentialsProvider> creds, string linguist)
+    {
+        var actions = new UserActions();
+        var userDetails = await actions.GetUser(creds, new Models.Users.Requests.GetUserRequest { UserUId = linguist});
+        var user = await actions.FindUser(creds, new Models.Users.Requests.ListAllUsersQuery { email = userDetails.Email});
+        return user.Id;
+    }
+
+    private async Task<string> GetVendorId(IEnumerable<AuthenticationCredentialsProvider> creds, string vendor)
+    {
+        var actions = new VendorActions();
+        var userDetails = await actions.GetVendor(creds, new Models.Vendors.Requests.GetVendorRequest { VendorId = vendor});
+        return userDetails.Id;
     }
 }
