@@ -9,8 +9,8 @@ namespace Apps.PhraseTMS.Polling.Models.Requests;
 
 public class OnAllJobsInWorkflowStepReachedStatusRequest : ProjectRequest
 {
-    [Display("Workflow step UID"), DataSource(typeof(WorkflowStepDataHandler))]
-    public string WorkflowStepUid { get; set; } = string.Empty;
+    [Display("Workflow step ID"), DataSource(typeof(WorkflowStepDataHandler))]
+    public string WorkflowStepId { get; set; } = string.Empty;
 
     [Display("Job status"), StaticDataSource(typeof(JobStatusDataHandler))]
     public string JobStatus { get; set; } = string.Empty;

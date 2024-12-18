@@ -29,6 +29,6 @@ public class WorkflowStepDataHandler(InvocationContext invocationContext)
         var response = await client.Paginate<WorkflowStepDto>(request);
 
         return response
-            .Select(x => new DataSourceItem(x.Uid,  x.Name));
+            .Select(x => new DataSourceItem(x.Id,  x.Name));
     }
 }

@@ -4,8 +4,8 @@ namespace Apps.PhraseTMS.Models.WorkflowSteps.Response;
     
 public class WorkflowStepDto
 {
-    [Display("Workflow step UID")]
-    public string Uid { get; set; } = string.Empty;
+    [Display("Workflow step ID")]
+    public string Id { get; set; } = string.Empty;
 
     [Display("Lqa enabled")]
     public bool LqaEnabled { get; set; }

@@ -39,9 +39,6 @@ public class WorkflowStep
     
     [Display("Workflow step ID")]
     public string Id { get; set; } = string.Empty;
-
-    [Display("Workflow step UID")]
-    public string Uid { get; set; } = string.Empty;
     
     public int Order { get; set; }
     
