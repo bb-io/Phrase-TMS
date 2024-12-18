@@ -19,13 +19,23 @@ public class WebhookList
     #region ProjectWebhooks
 
     [Webhook("On project created", typeof(ProjectCreationHandler), Description = "On a new project created")]
-    public async Task<WebhookResponse<ProjectDto>> ProjectCreation(WebhookRequest webhookRequest)
+    public async Task<WebhookResponse<ProjectDto>> ProjectCreation(WebhookRequest webhookRequest,
+        [WebhookParameter] ProjectCreatedRequest projectCreatedRequest)
     {
-        var data = JsonConvert.DeserializeObject<ProjectWrapper>(webhookRequest.Body.ToString());
+        var data = JsonConvert.DeserializeObject<ProjectWrapper>(webhookRequest.Body.ToString()!);
         if(data is null)
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
+
+        if (!string.IsNullOrEmpty(projectCreatedRequest.ProjectNameContains) && !data.Project.Name!.Contains(projectCreatedRequest.ProjectNameContains))
+        {
+            return new()
+            {
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight
+            };
+        }
+        
         return new()
         {
             HttpResponseMessage = null,

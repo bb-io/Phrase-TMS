@@ -248,7 +248,7 @@ public class JobActions
         return new() { File = file };
     }
 
-    [Action("Update target file", Description = "Update target file of a job")]
+    [Action("Update job target file", Description = "Update target file of a job")]
     public Task UpdateTargetFile(
         IEnumerable<AuthenticationCredentialsProvider> creds,
         [ActionParameter] ProjectRequest projectRequest,
