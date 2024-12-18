@@ -43,7 +43,7 @@ public class JobPollingList(InvocationContext invocationContext) : BaseInvocable
         });
         
         var relevantJobs = response
-            .Where(x => x.WorkflowStep?.Uid == onAllJobsInWorkflowRequest.WorkflowStepUid)
+            .Where(x => x.WorkflowStep?.Id == onAllJobsInWorkflowRequest.WorkflowStepId)
             .ToList();
 
         if (!relevantJobs.Any())
@@ -83,6 +83,5 @@ public class JobPollingList(InvocationContext invocationContext) : BaseInvocable
                 Triggered = triggered
             }
         };
-
     }
 }
