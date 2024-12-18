@@ -183,6 +183,7 @@ Before you can connect you need to make sure that:
 - **On job status changed** If you are using checkpoints, please fill all optional inputs (including Project ID). It will work even without a specified Project ID, but using it will allow us to check if the job already has the specified status. The status "Completed by linguist" will also trigger the event if the optional status "Completed" is set.
 - **On job target updated**
 - **On job unexported**
+- **On all jobs in workflow step reached status** (Polling event) Triggered when all jobs in a specific workflow step reach a status
 
 ### Template
 
