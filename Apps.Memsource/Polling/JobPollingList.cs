@@ -13,7 +13,7 @@ namespace Apps.PhraseTMS.Polling;
 [PollingEventList]
 public class JobPollingList(InvocationContext invocationContext) : BaseInvocable(invocationContext)
 {
-    [PollingEvent("On all jobs in workflow step reached status", "Triggered when when all jobs in a specific workflow step reach a status")]
+    [PollingEvent("On all jobs in workflow step reached status", "Triggered when all jobs in a specific workflow step reach a status")]
     public async Task<PollingEventResponse<PollingMemory, JobsResponse>> OnAllJobsInWorkflowStepReachedStatus(
         PollingEventRequest<PollingMemory> request,
         [PollingEventParameter] OnAllJobsInWorkflowStepReachedStatusRequest onAllJobsInWorkflowRequest)
@@ -42,17 +42,31 @@ public class JobPollingList(InvocationContext invocationContext) : BaseInvocable
             UId = onAllJobsInWorkflowRequest.ProjectUId
         });
         
-        var allJobsReachedRequiredWorkflowStepAndStatus = response.All(x =>
-            x.Status == onAllJobsInWorkflowRequest.JobStatus ||
-            x.WorkflowStep.Uid == onAllJobsInWorkflowRequest.WorkflowStepUid);
-        
+        var relevantJobs = response
+            .Where(x => x.WorkflowStep?.Uid == onAllJobsInWorkflowRequest.WorkflowStepUid)
+            .ToList();
+
+        if (!relevantJobs.Any())
+        {
+            return new()
+            {
+                FlyBird = false,
+                Memory = new()
+                {
+                    LastPollingTime = DateTime.UtcNow,
+                    Triggered = false
+                }
+            };
+        }
+
+        var allJobsReachedRequiredWorkflowStepAndStatus = relevantJobs.All(x => x.Status == onAllJobsInWorkflowRequest.JobStatus);
         var triggered = allJobsReachedRequiredWorkflowStepAndStatus && !request.Memory.Triggered;
         return new()
         {
             FlyBird = triggered,
             Result = new()
             {
-                Jobs = response.Select(x => new JobResponse
+                Jobs = relevantJobs.Select(x => new JobResponse
                 {
                     Uid = x.Uid,
                     ProjectUid = x.Project.UId,
@@ -69,5 +83,6 @@ public class JobPollingList(InvocationContext invocationContext) : BaseInvocable
                 Triggered = triggered
             }
         };
+
     }
 }
