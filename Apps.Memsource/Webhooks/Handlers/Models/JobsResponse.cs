@@ -1,6 +1,6 @@
 ﻿using Apps.PhraseTMS.Models.Jobs.Responses;
 
-namespace Apps.PhraseTMS.Polling.Models.Responses;
+namespace Apps.PhraseTMS.Webhooks.Handlers.Models;
 
 public class JobsResponse
 {

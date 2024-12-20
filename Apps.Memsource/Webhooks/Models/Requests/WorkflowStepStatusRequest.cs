@@ -5,9 +5,9 @@ using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Dictionaries;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 
-namespace Apps.PhraseTMS.Polling.Models.Requests;
+namespace Apps.PhraseTMS.Webhooks.Models.Requests;
 
-public class OnAllJobsInWorkflowStepReachedStatusRequest : ProjectRequest
+public class WorkflowStepStatusRequest : ProjectRequest
 {
     [Display("Workflow step ID"), DataSource(typeof(WorkflowStepDataHandler))]
     public string WorkflowStepId { get; set; } = string.Empty;
