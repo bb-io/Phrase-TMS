@@ -8,5 +8,5 @@ public class ProjectRequest
 {
     [Display("Project ID")]
     [DataSource(typeof(ProjectDataHandler))]
-    public string ProjectUId { get; set; }
+    public string ProjectUId { get; set; } = string.Empty;
 }
