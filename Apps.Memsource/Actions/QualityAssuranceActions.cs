@@ -9,6 +9,7 @@ using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using Apps.PhraseTMS.Models.Jobs.Requests;
 using Apps.PhraseTMS.Models.Projects.Requests;
+using Blackbird.Applications.Sdk.Common.Exceptions;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -68,6 +69,44 @@ public class QualityAssuranceActions
         var request = new PhraseTmsRequest($"/api2/v1/lqa/profiles/{input.LqaProfileUId}", Method.Delete,
             authenticationCredentialsProviders);
 
+        return client.ExecuteWithHandling(request);
+    }
+
+    [Action("Run auto LQA", Description = "Runs Auto LQA for specified job parts or all jobs in a given workflow step")]
+    public Task RunAutoLQA(
+       IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+       [ActionParameter] ProjectRequest projectRequest,
+       [ActionParameter] AutoLQARequest input)
+    {
+
+        if (input.JobsUIds is null && input.WorkflowLevel is null) 
+        {
+            throw new PluginMisconfigurationException("Either Job IDs or Workflow step must be filled in");
+        }
+
+        if (input.JobsUIds != null && input.JobsUIds.Any() && input.WorkflowLevel != null)
+        {
+            throw new PluginMisconfigurationException("One of the optional input values (Job IDs or Workflow step) must be filled in, not both");
+        }
+
+        var client = new PhraseTmsClient(authenticationCredentialsProviders);
+        var request = new PhraseTmsRequest(
+            $"/api2/v1/projects/{projectRequest.ProjectUId}/runAutoLqa",
+            Method.Post, authenticationCredentialsProviders);
+
+        var bodyDictionary = new Dictionary<string, object>();
+
+        if (input.JobsUIds != null && input.JobsUIds.Any())
+        {
+            bodyDictionary.Add("jobParts", new[] { input.JobsUIds.Select(u => new { uid = u }) });
+        } else 
+
+        if (input.WorkflowLevel != null)
+        {
+            bodyDictionary.Add("projectWorkflowStep", new { id = input.WorkflowLevel });
+        }
+
+        request.WithJsonBody(bodyDictionary);
         return client.ExecuteWithHandling(request);
     }
 }
