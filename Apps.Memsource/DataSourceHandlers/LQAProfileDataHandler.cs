@@ -17,7 +17,7 @@ public class LqaProfileDataHandler : BaseInvocable, IAsyncDataSourceHandler
 
     public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
     {
-        var actions = new QualityAssuranceActions();
+        var actions = new QualityAssuranceActions(null!);
         var response = await actions.ListLqaProfiles(Creds, new());
         
         return response.Profiles
