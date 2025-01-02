@@ -121,6 +121,7 @@ Before you can connect you need to make sure that:
 - **Add ignored warning**
 - **List LQA profiles**
 - **Delete LQA profile**
+- **Run auto LQA**
 
 ### Quote
 
