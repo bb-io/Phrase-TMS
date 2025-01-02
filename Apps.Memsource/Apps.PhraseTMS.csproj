@@ -18,7 +18,7 @@
         <PackageReference Include="Blackbird.Applications.SDK.Extensions.FileManagement" Version="1.0.2-alpha2" />
         <PackageReference Include="Blackbird.Applications.Sdk.Utils" Version="1.0.25" />
         <PackageReference Include="Blackbird.Applications.Sdk.Glossaries.Utils" Version="1.0.0-alpha7" />
-        <PackageReference Include="MimeTypes" Version="2.4.1">
+        <PackageReference Include="MimeTypes" Version="2.5.2">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

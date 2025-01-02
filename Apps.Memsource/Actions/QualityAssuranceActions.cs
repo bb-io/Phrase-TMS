@@ -1,4 +1,5 @@
-﻿using Apps.PhraseTMS.Dtos;
+﻿using System.Text.RegularExpressions;
+using Apps.PhraseTMS.Dtos;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using RestSharp;
@@ -10,12 +11,39 @@ using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using Apps.PhraseTMS.Models.Jobs.Requests;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.Sdk.Common.Exceptions;
+using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 
 namespace Apps.PhraseTMS.Actions;
 
 [ActionList]
-public class QualityAssuranceActions
+public class QualityAssuranceActions(IFileManagementClient fileManagementClient)
 {
+    [Action("Download LQA assessment", Description = "Downloads a single xlsx report based on specific job ID")]
+    public async Task<DownloadLqaResponse> DownloadLqaAsync(
+        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] JobRequest jobRequest)
+    {
+        var credentialsProviders = authenticationCredentialsProviders as AuthenticationCredentialsProvider[] ??
+                                   authenticationCredentialsProviders.ToArray();
+        
+        var client = new PhraseTmsClient(credentialsProviders);
+        var request = new PhraseTmsRequest("/api2/v1/lqa/assessments/reports", Method.Get, credentialsProviders)
+            .AddParameter("jobParts", jobRequest.JobUId, ParameterType.QueryString);
+
+        var response = await client.ExecuteWithHandling(request);
+        var stream = new MemoryStream(response.RawBytes!);
+        stream.Position = 0;
+
+        var fileName = GetFileNameFromResponse(response);
+        var contentType = MimeTypes.GetMimeType(fileName);
+        var fileReference = await fileManagementClient.UploadAsync(stream, contentType, fileName);
+        return new()
+        {
+            LqaReport = fileReference
+        };
+    }
+    
     [Action("Add ignored warning", Description = "Add a new ignored warning to the job segment")]
     public Task AddIgnoredWarning(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
@@ -74,19 +102,19 @@ public class QualityAssuranceActions
 
     [Action("Run auto LQA", Description = "Runs Auto LQA for specified job parts or all jobs in a given workflow step")]
     public Task RunAutoLQA(
-       IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-       [ActionParameter] ProjectRequest projectRequest,
-       [ActionParameter] AutoLQARequest input)
+        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] AutoLQARequest input)
     {
-
-        if (input.JobsUIds is null && input.WorkflowLevel is null) 
+        if (input.JobsUIds is null && input.WorkflowLevel is null)
         {
             throw new PluginMisconfigurationException("Either Job IDs or Workflow step must be filled in");
         }
 
         if (input.JobsUIds != null && input.JobsUIds.Any() && input.WorkflowLevel != null)
         {
-            throw new PluginMisconfigurationException("One of the optional input values (Job IDs or Workflow step) must be filled in, not both");
+            throw new PluginMisconfigurationException(
+                "One of the optional input values (Job IDs or Workflow step) must be filled in, not both");
         }
 
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
@@ -99,14 +127,46 @@ public class QualityAssuranceActions
         if (input.JobsUIds != null && input.JobsUIds.Any())
         {
             bodyDictionary.Add("jobParts", new[] { input.JobsUIds.Select(u => new { uid = u }) });
-        } else 
-
-        if (input.WorkflowLevel != null)
+        }
+        else if (input.WorkflowLevel != null)
         {
             bodyDictionary.Add("projectWorkflowStep", new { id = input.WorkflowLevel });
         }
 
         request.WithJsonBody(bodyDictionary);
         return client.ExecuteWithHandling(request);
+    }
+    
+    private static string GetFileNameFromResponse(RestResponse response)
+    {
+        var fileName = string.Empty;
+        var contentDispositionHeader = response.Headers!
+            .FirstOrDefault(x => x.Name?.Equals("Content-Disposition", StringComparison.OrdinalIgnoreCase) ?? false)
+            ?.Value?.ToString();
+        
+        if (!string.IsNullOrWhiteSpace(contentDispositionHeader))
+        {
+            var fileNameStarMatch = Regex.Match(contentDispositionHeader, @"filename\*=UTF-8''(?<filename>[^;]+)");
+            if (fileNameStarMatch.Success)
+            {
+                fileName = fileNameStarMatch.Groups["filename"].Value;
+                fileName = Uri.UnescapeDataString(fileName);
+            }
+            else
+            {
+                var fileNameMatch = Regex.Match(contentDispositionHeader, @"filename=""?(?<filename>[^"";]+)""?");
+                if (fileNameMatch.Success)
+                {
+                    fileName = fileNameMatch.Groups["filename"].Value;
+                }
+            }
+        }
+
+        if (string.IsNullOrWhiteSpace(fileName))
+        {
+            fileName = $"Report_{DateTime.UtcNow:yyyyMMdd_HHmmss}.xlsx";
+        }
+
+        return fileName;
     }
 }

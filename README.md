@@ -122,6 +122,7 @@ Before you can connect you need to make sure that:
 - **List LQA profiles**
 - **Delete LQA profile**
 - **Run auto LQA**
+- **Download LQA assessment**
 
 ### Quote
 
