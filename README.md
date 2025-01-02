@@ -196,6 +196,10 @@ Before you can connect you need to make sure that:
 
 - **On analysis created**
 
+### Quality assurance
+
+- **On LQA reports created** (Polling event)
+
 ## Example
 
 ![1695995715372](image/README/1695995715372.png)
