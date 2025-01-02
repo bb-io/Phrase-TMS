@@ -121,6 +121,8 @@ Before you can connect you need to make sure that:
 - **Add ignored warning**
 - **List LQA profiles**
 - **Delete LQA profile**
+- **Run auto LQA**
+- **Download LQA assessment**
 
 ### Quote
 
@@ -194,6 +196,10 @@ Before you can connect you need to make sure that:
 ### Analysis
 
 - **On analysis created**
+
+### Quality assurance
+
+- **On LQA reports created** (Polling event)
 
 ## Example
 
