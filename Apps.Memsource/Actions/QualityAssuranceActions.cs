@@ -100,6 +100,18 @@ public class QualityAssuranceActions(IFileManagementClient fileManagementClient)
         return client.ExecuteWithHandling(request);
     }
 
+    [Action("Get LQA assessment", Description = "Delete specific LQA profile")]
+    public async Task<LQAAssessmentDto> GetLQAassessment(
+        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] JobRequest input)
+    {
+        var client = new PhraseTmsClient(authenticationCredentialsProviders);
+        var request = new PhraseTmsRequest($"/api2/v1/lqa/assessments/{input.JobUId}", Method.Get,
+            authenticationCredentialsProviders);
+
+        return await client.ExecuteWithHandling<LQAAssessmentDto>(request);
+    }
+
     [Action("Run auto LQA", Description = "Runs Auto LQA for specified job parts or all jobs in a given workflow step")]
     public Task RunAutoLQA(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
