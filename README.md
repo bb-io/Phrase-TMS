@@ -123,6 +123,7 @@ Before you can connect you need to make sure that:
 - **Delete LQA profile**
 - **Run auto LQA**
 - **Download LQA assessment**
+- **Get LQA assessment**
 
 ### Quote
 
