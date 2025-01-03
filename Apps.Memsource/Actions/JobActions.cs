@@ -93,7 +93,8 @@ public class JobActions
 
         var output = JsonConvert.SerializeObject(new
         {
-            targetLangs = input.TargetLanguages
+            targetLangs = input.TargetLanguages,
+            preTranslate = input.preTranslate ?? false 
         });
 
         var headers = new Dictionary<string, string>()
