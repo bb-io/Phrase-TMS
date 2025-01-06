@@ -8,7 +8,7 @@ namespace Apps.PhraseTMS.Dtos
     {
         [Display("Started date")]
         [JsonProperty("startedDate")]
-        public DateTime StartedDate { get; set; }
+        public DateTime? StartedDate { get; set; }
 
         [Display("Finished date")]
         [JsonProperty("finishedDate")]
