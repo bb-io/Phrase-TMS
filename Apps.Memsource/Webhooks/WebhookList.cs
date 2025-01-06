@@ -171,7 +171,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
 
-        if (request.Status is not null && data.Project.Status != request.Status)
+        if (request.Status is not null && request.Status.Contains(data.Project.Status))
         {
             return new()
             {
