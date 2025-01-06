@@ -24,7 +24,7 @@ public class ProjectStatusChangedHandler(
                 InvocationContext.AuthenticationCredentialsProviders);
             var project = await client.ExecuteWithHandling<ProjectDto>(request);
 
-            if (project.Status == projectStatusChangedRequest.Status)
+            if (projectStatusChangedRequest.Status.Contains(project.Status))
             {
                 return new AfterSubscriptionEventResponse<ProjectDto>()
                 {
