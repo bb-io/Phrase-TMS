@@ -103,6 +103,7 @@ public class QualityAssuranceActions(IFileManagementClient fileManagementClient)
     [Action("Get LQA assessment", Description = "Delete specific LQA profile")]
     public async Task<LQAAssessmentDto> GetLQAassessment(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] JobRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
