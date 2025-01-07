@@ -64,4 +64,21 @@ public class TranslationActions
         },  JsonConfig.Settings);
         return client.ExecuteWithHandling<TranslationDto>(request);
     }
+
+
+    [Action("Delete all translations", Description = "Delete all translations by prject ID")]
+    public async Task<DeleteTranslationsResponse> TranslateMTProject(
+        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] ProjectRequest projectRequest)
+    {
+        var client = new PhraseTmsClient(authenticationCredentialsProviders);
+        var request = new PhraseTmsRequest(
+            $"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/translations",
+            Method.Delete, authenticationCredentialsProviders);
+
+        var response = await client.ExecuteWithHandling<DeleteTranslationsResponse>(request);
+
+        return response;
+    }
+
 }
