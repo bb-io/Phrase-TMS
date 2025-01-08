@@ -90,6 +90,7 @@ Before you can connect you need to make sure that:
 - **Download target file**
 - **Download bilingual file**
 - **Upload bilingual file**
+- **Pre-translate job**
 
 ### Pricelist
 
@@ -136,6 +137,7 @@ Before you can connect you need to make sure that:
 - **List translation settings**
 - **Translate with MT**
 - **Translate with MT by project**
+- **Delete all translations**
 
 ### Translation memory
 

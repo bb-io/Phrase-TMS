@@ -342,6 +342,33 @@ public class JobActions
         return client.ExecuteWithHandling(request);
     }
 
+
+    [Action("Pre-translate job", Description = "Pre-translate a job in the project")]
+    public async Task<PreTranslateJobResponse> PreTranslateJob(IEnumerable<AuthenticationCredentialsProvider> creds,
+        [ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] PreTranslateJobInput input,
+        [ActionParameter] PreTranslateSettings settings)
+    {
+        var client = new PhraseTmsClient(creds);
+
+        var endpoint = $"/api2/v3/projects/{projectRequest.ProjectUId}/jobs/preTranslate";
+        var request = new PhraseTmsRequest(endpoint, Method.Post, creds);
+
+        var body = new
+        {
+            jobs = input.Jobs.Select(uid => new { uid }),
+            segmentFilters = input.SegmentFilters,
+            useProjectPreTranslateSettings = input.UseProjectPreTranslateSettings,
+            callbackUrl = input.CallbackUrl,
+            preTranslateSettings = settings
+        };
+
+        request.WithJsonBody(body, JsonConfig.Settings);
+
+        var response = await client.ExecuteWithHandling<PreTranslateJobResponse>(request);
+        return response;
+    }
+
     private async Task<string> GetUserId(IEnumerable<AuthenticationCredentialsProvider> creds, string linguist)
     {
         var actions = new UserActions();

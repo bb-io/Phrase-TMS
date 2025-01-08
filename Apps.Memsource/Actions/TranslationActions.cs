@@ -9,6 +9,7 @@ using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using Apps.PhraseTMS.Models.Projects.Requests;
+using Apps.PhraseTMS.Models.Jobs.Requests;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -67,17 +68,24 @@ public class TranslationActions
 
 
     [Action("Delete all translations", Description = "Delete all translations by prject ID")]
-    public async Task<DeleteTranslationsResponse> TranslateMTProject(
+    public async Task<DeleteTranslationsResponse> DeleteAllTranslations(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] ProjectRequest projectRequest)
+        [ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] JobsInputRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var request = new PhraseTmsRequest(
             $"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/translations",
             Method.Delete, authenticationCredentialsProviders);
 
-        var response = await client.ExecuteWithHandling<DeleteTranslationsResponse>(request);
+        var body = new
+        {
+            jobs = input.Jobs.Select(jobUid => new { uid = jobUid })
+        };
 
+        request.WithJsonBody(body, JsonConfig.Settings);
+
+        var response = await client.ExecuteWithHandling<DeleteTranslationsResponse>(request);
         return response;
     }
 
