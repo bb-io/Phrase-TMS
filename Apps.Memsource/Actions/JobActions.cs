@@ -357,9 +357,9 @@ public class JobActions
         var body = new
         {
             jobs = input.Jobs.Select(uid => new { uid }),
-            segmentFilters = input.SegmentFilters,
-            useProjectPreTranslateSettings = input.UseProjectPreTranslateSettings,
-            callbackUrl = input.CallbackUrl,
+            segmentFilters = input.SegmentFilters?.Any() == true ? input.SegmentFilters : new[] { "NOT_LOCKED" },
+            useProjectPreTranslateSettings = input.UseProjectPreTranslateSettings ?? false,
+            callbackUrl = input.CallbackUrl ?? "",
             preTranslateSettings = settings
         };
 
