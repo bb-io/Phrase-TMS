@@ -430,7 +430,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
 
-        if (request.Status is not null && data.JobParts.FirstOrDefault()?.Status != request.Status)
+        if (request.Status is not null && !request.Status.Contains(data.JobParts.FirstOrDefault()?.Status))
         {
             return new()
             {

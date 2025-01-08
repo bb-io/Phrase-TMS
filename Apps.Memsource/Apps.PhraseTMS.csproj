@@ -5,7 +5,7 @@
         <Nullable>enable</Nullable>
         <Product>Phrase TMS</Product>
         <Description>Previously Memsource</Description>
-        <Version>1.2.35</Version>
+        <Version>1.2.36</Version>
         <AssemblyName>Apps.PhraseTMS</AssemblyName>
     </PropertyGroup>
     <ItemGroup>
