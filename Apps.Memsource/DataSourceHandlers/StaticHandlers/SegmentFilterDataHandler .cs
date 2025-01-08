@@ -10,9 +10,9 @@ namespace Apps.PhraseTMS.DataSourceHandlers.StaticHandlers
     public class SegmentFilterDataHandler : IStaticDataSourceHandler
     {
         public Dictionary<string, string> GetData() => new()
-    {
+        {
         { "LOCKED", "Locked segments" },
         { "NOT_LOCKED", "Not locked segments" }
-    };
+        };
     }
 }
