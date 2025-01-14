@@ -59,9 +59,9 @@ public class JobActions
             };
         } catch (Exception e) 
         {
-            if (e.Message.Contains("wasnt found.; Invalid parameters")) 
+            if (e.Message.Contains("Invalid parameters")) 
             {
-                throw new PluginMisconfigurationException(e.Message);
+                throw new PluginMisconfigurationException(e.Message + "Make sure that the input values are correct.");
             } else 
             {
                 throw new PluginApplicationException(e.Message);
