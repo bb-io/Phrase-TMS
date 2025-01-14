@@ -19,6 +19,7 @@ using Apps.PhraseTMS.DataSourceHandlers;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Drawing;
+using Blackbird.Applications.Sdk.Common.Exceptions;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -44,17 +45,29 @@ public class JobActions
         var endpoint = $"/api2/v2/projects/{input.ProjectUId}/jobs";
         var request = new PhraseTmsRequest(endpoint.WithQuery(query), Method.Get,
             authenticationCredentialsProviders);
-
-        var response = await client.Paginate<JobDto>(request);
-        response.ForEach(x => x.Project = new()
+        try 
         {
-            UId = input.ProjectUId
-        });
+            var response = await client.Paginate<JobDto>(request);
+            response.ForEach(x => x.Project = new()
+            {
+                UId = input.ProjectUId
+            });
 
-        return new()
+            return new()
+            {
+                Jobs = response
+            };
+        } catch (Exception e) 
         {
-            Jobs = response
-        };
+            if (e.Message.Contains("wasnt found.; Invalid parameters")) 
+            {
+                throw new PluginMisconfigurationException(e.Message);
+            } else 
+            {
+                throw new PluginApplicationException(e.Message);
+            }
+        }
+       
     }
 
     [Action("Get job", Description = "Get job by UId")]
