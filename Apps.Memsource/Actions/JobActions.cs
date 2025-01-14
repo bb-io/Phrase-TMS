@@ -59,7 +59,7 @@ public class JobActions
             };
         } catch (Exception e) 
         {
-            if (e.Message.Contains("Invalid parameters")) 
+            if (e.Message.Contains("Invalid parameters") || e.Message.Contains("The object referenced by the field") || e.Message.Contains("unsupported locale")) 
             {
                 throw new PluginMisconfigurationException(e.Message + "Make sure that the input values are correct.");
             } else 

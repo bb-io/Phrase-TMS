@@ -2,6 +2,7 @@
 using Apps.PhraseTMS.Models.Async;
 using Apps.PhraseTMS.Models.Responses;
 using Blackbird.Applications.Sdk.Common.Authentication;
+using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using Newtonsoft.Json;
 using RestSharp;
@@ -82,6 +83,9 @@ public class PhraseTmsClient : RestClient
 
         if (response.IsSuccessful)
             return response;
+
+        if (!String.IsNullOrEmpty(response.ErrorMessage) && response.ErrorMessage.Contains("User account inactive"))
+            throw new PluginMisconfigurationException(response.ErrorMessage + "Please check your connection");
 
         throw ConfigureErrorException(response.Content);
     }
