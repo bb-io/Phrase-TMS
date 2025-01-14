@@ -15,6 +15,7 @@ using RestSharp;
 using Newtonsoft.Json;
 using System.Text.Json.Nodes;
 using DocumentFormat.OpenXml.Drawing.Diagrams;
+using Blackbird.Applications.Sdk.Common.Exceptions;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -299,7 +300,7 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
         var matchingTermbase = termbases.FirstOrDefault();
         if (matchingTermbase == null)
         {
-            throw new Exception("No matching termbase found for the given criteria.");
+            throw new PluginMisconfigurationException("No matching termbase found for the given criteria.");
         }
 
         return matchingTermbase.TermBase;
