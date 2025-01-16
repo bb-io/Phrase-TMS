@@ -84,8 +84,16 @@ public class PhraseTmsClient : RestClient
         if (response.IsSuccessful)
             return response;
 
-        if (!String.IsNullOrEmpty(response.ErrorMessage) && response.ErrorMessage.Contains("User account inactive"))
-            throw new PluginMisconfigurationException(response.ErrorMessage + "Please check your connection");
+        if (!string.IsNullOrEmpty(response.ErrorMessage))
+        {
+            if (response.ErrorMessage.Contains("User account inactive"))
+                throw new PluginMisconfigurationException(response.ErrorMessage + "Please check your connection");
+
+            if (response.ErrorMessage.Contains("JobCountLimit"))
+                throw new PluginMisconfigurationException("You have reached your job count limit. Please remove some jobs or increase your limit by upgrading your Phrase plan.")
+
+            throw new PluginApplicationException(response.ErrorMessage);
+        }
 
         throw ConfigureErrorException(response.Content);
     }
