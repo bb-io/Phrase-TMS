@@ -90,7 +90,7 @@ public class PhraseTmsClient : RestClient
                 throw new PluginMisconfigurationException(response.ErrorMessage + "Please check your connection");
 
             if (response.ErrorMessage.Contains("JobCountLimit"))
-                throw new PluginMisconfigurationException("You have reached your job count limit. Please remove some jobs or increase your limit by upgrading your Phrase plan.")
+                throw new PluginMisconfigurationException("You have reached your job count limit. Please remove some jobs or increase your limit by upgrading your Phrase plan.");
 
             throw new PluginApplicationException(response.ErrorMessage);
         }
