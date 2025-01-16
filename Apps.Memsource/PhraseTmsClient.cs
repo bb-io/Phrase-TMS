@@ -124,7 +124,7 @@ public class PhraseTmsClient : RestClient
             throw new PluginMisconfigurationException("You have reached your job count limit. Please remove some jobs or increase your limit by upgrading your Phrase plan.");
 
         if (error.ErrorDescription.Contains("targetLangs must match project"))
-            throw new PluginMisconfigurationException("The target languages do not match the project. Please make sure the target languages in this action match the target languages of the project.").
+            throw new PluginMisconfigurationException("The target languages do not match the project. Please make sure the target languages in this action match the target languages of the project.");
 
         throw new PluginApplicationException(error.ErrorDescription);
     }
