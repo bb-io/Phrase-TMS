@@ -84,8 +84,13 @@ public class PhraseTmsClient : RestClient
         if (response.IsSuccessful)
             return response;
 
-        if (!String.IsNullOrEmpty(response.ErrorMessage) && response.ErrorMessage.Contains("User account inactive"))
-            throw new PluginMisconfigurationException(response.ErrorMessage + "Please check your connection");
+        if (!string.IsNullOrEmpty(response.ErrorMessage))
+        {
+            if (response.ErrorMessage.Contains("User account inactive"))
+                throw new PluginMisconfigurationException(response.ErrorMessage + "Please check your connection");
+
+            throw new PluginApplicationException(response.ErrorMessage);
+        }
 
         if (!String.IsNullOrEmpty(response.ErrorMessage) && response.ErrorMessage.Contains("wasnt found"))
             throw new PluginMisconfigurationException(response.ErrorMessage + "Please check the inputs for this action");
@@ -118,6 +123,12 @@ public class PhraseTmsClient : RestClient
     {
         var error = JsonConvert.DeserializeObject<Error>(responseContent);
 
-        return new($"{error.ErrorDescription}; {error.ErrorCode}");
+        if (error.ErrorDescription.Contains("JobCountLimit"))
+            throw new PluginMisconfigurationException("You have reached your job count limit. Please remove some jobs or increase your limit by upgrading your Phrase plan.");
+
+        if (error.ErrorDescription.Contains("targetLangs must match project"))
+            throw new PluginMisconfigurationException("The target languages do not match the project. Please make sure the target languages in this action match the target languages of the project.");
+
+        throw new PluginApplicationException(error.ErrorDescription);
     }
 }
