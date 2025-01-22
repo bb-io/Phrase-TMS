@@ -430,7 +430,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
 
-        if (request.Status is not null && !request.Status.Contains(data.JobParts.FirstOrDefault()?.Status))
+        if (job.JobUId != null && !data.JobParts.Any(x => x.Uid == job.JobUId))
         {
             return new()
             {
@@ -440,7 +440,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
             };
         }
 
-        if (job.JobUId != null && data.JobParts.FirstOrDefault()?.Uid != job.JobUId)
+        if (request.Status is not null && !request.Status.Contains(data.JobParts.FirstOrDefault(x => x.Uid == job.JobUId)?.Status))
         {
             return new()
             {
@@ -455,10 +455,10 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
             HttpResponseMessage = null,
             Result = new()
             {
-                Uid = data.JobParts.FirstOrDefault()?.Uid,
+                Uid = job.JobUId ?? data.JobParts.FirstOrDefault()?.Uid,
                 Filename = data.JobParts.FirstOrDefault()?.Filename,
                 TargetLanguage = data.JobParts.FirstOrDefault()?.TargetLang,
-                Status = data.JobParts.FirstOrDefault()?.Status,
+                Status = job.JobUId is null || data.JobParts.Count == 1 ? data.JobParts.FirstOrDefault()?.Status : data.JobParts.FirstOrDefault(x => x.Uid == job.JobUId)?.Status,
                 ProjectUid = data.JobParts.FirstOrDefault()?.Project.UId,
                 //DateDue = response.DateDue
             }
