@@ -92,7 +92,10 @@ public class PhraseTmsClient : RestClient
             throw new PluginApplicationException(response.ErrorMessage);
         }
 
-        throw ConfigureErrorException(response.Content);
+        if (!String.IsNullOrEmpty(response.ErrorMessage) && response.ErrorMessage.Contains("wasnt found"))
+            throw new PluginMisconfigurationException(response.ErrorMessage + "Please check the inputs for this action");
+
+        throw new PluginApplicationException(response.Content);
     }
         
     public async Task<List<T>> Paginate<T>(RestRequest request)
