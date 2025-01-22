@@ -430,7 +430,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
 
-        if (request.Status is not null && !request.Status.Contains(data.JobParts.FirstOrDefault()?.Status))
+        if (job.JobUId != null && !data.JobParts.Any(x => x.Uid == job.JobUId))
         {
             return new()
             {
@@ -440,7 +440,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
             };
         }
 
-        if (job.JobUId != null && data.JobParts.FirstOrDefault()?.Uid != job.JobUId)
+        if (request.Status is not null && !request.Status.Contains(data.JobParts.FirstOrDefault(x => x.Uid == job.JobUId)?.Status))
         {
             return new()
             {
