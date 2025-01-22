@@ -36,7 +36,7 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
 
         return new()
         {
-            Projects = response
+            Projects = response ?? new List<ProjectDto>()
         };
     }
 
