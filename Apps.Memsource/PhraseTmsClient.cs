@@ -119,12 +119,12 @@ public class PhraseTmsClient : RestClient
 
         if (error.ErrorDescription.Contains("User account inactive"))
         {
-            throw new PluginMisconfigurationException(restResponse.ErrorMessage + "Please check your connection");
+            throw new PluginMisconfigurationException(error.ErrorDescription + "Please check your connection");
         }
 
         if (error.ErrorDescription.Contains("wasnt found"))
         {
-            throw new PluginMisconfigurationException(restResponse.Content + "Please check the inputs for this action");
+            throw new PluginMisconfigurationException(error.ErrorDescription + "Please check the inputs for this action");
         }
 
 
