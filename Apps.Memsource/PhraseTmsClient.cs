@@ -84,19 +84,7 @@ public class PhraseTmsClient : RestClient
         if (response.IsSuccessful)
             return response;
 
-        if (!string.IsNullOrEmpty(response.ErrorMessage))
-        {
-            if (response.ErrorMessage.Contains("User account inactive"))
-                throw new PluginMisconfigurationException(response.ErrorMessage + "Please check your connection");
-        }
-
-        if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-        {
-            throw new PluginMisconfigurationException(response.ErrorMessage + "Please check the inputs for this action");
-
-        }
-
-        throw new PluginApplicationException(response?.ErrorMessage);
+        throw ConfigureErrorException(response);
     }
         
     public async Task<List<T>> Paginate<T>(RestRequest request)
@@ -120,9 +108,24 @@ public class PhraseTmsClient : RestClient
         return result;
     }
 
-    private Exception ConfigureErrorException(string responseContent)
+    private Exception ConfigureErrorException(RestResponse restResponse)
     {
-        var error = JsonConvert.DeserializeObject<Error>(responseContent);
+        if (string.IsNullOrEmpty(restResponse.ErrorMessage))
+        {
+            throw new PluginApplicationException("There has been an error with no error description.");
+        }
+
+        if (restResponse.ErrorMessage.Contains("User account inactive"))
+        {
+            throw new PluginMisconfigurationException(restResponse.ErrorMessage + "Please check your connection");
+        }
+
+        if (restResponse.ErrorMessage.Contains("wasnt found"))
+        {
+            throw new PluginMisconfigurationException(restResponse.Content + "Please check the inputs for this action");
+        }
+
+        var error = JsonConvert.DeserializeObject<Error>(restResponse.Content);
 
         if (error.ErrorDescription.Contains("JobCountLimit"))
             throw new PluginMisconfigurationException("You have reached your job count limit. Please remove some jobs or increase your limit by upgrading your Phrase plan.");
