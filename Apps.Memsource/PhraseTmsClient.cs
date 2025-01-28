@@ -6,6 +6,7 @@ using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using Newtonsoft.Json;
 using RestSharp;
+using System.Net;
 
 namespace Apps.PhraseTMS;
 
@@ -84,18 +85,7 @@ public class PhraseTmsClient : RestClient
         if (response.IsSuccessful)
             return response;
 
-        if (!string.IsNullOrEmpty(response.ErrorMessage))
-        {
-            if (response.ErrorMessage.Contains("User account inactive"))
-                throw new PluginMisconfigurationException(response.ErrorMessage + "Please check your connection");
-
-            throw new PluginApplicationException(response.ErrorMessage);
-        }
-
-        if (!String.IsNullOrEmpty(response.ErrorMessage) && response.ErrorMessage.Contains("wasnt found"))
-            throw new PluginMisconfigurationException(response.ErrorMessage + "Please check the inputs for this action");
-
-        throw new PluginApplicationException(response.Content);
+        throw ConfigureErrorException(response);
     }
         
     public async Task<List<T>> Paginate<T>(RestRequest request)
@@ -119,9 +109,26 @@ public class PhraseTmsClient : RestClient
         return result;
     }
 
-    private Exception ConfigureErrorException(string responseContent)
+    private Exception ConfigureErrorException(RestResponse restResponse)
     {
-        var error = JsonConvert.DeserializeObject<Error>(responseContent);
+        
+        var error = JsonConvert.DeserializeObject<Error>(restResponse.Content);
+
+        if (string.IsNullOrEmpty(error.ErrorDescription))
+        {
+            throw new PluginApplicationException("There has been an error with no error description.");
+        }
+
+        if (restResponse.StatusCode.Equals(HttpStatusCode.Unauthorized))
+        {
+            throw new PluginMisconfigurationException("Please check your connection authorization to app.");
+        }
+
+        if (restResponse.StatusCode.Equals(HttpStatusCode.NotFound))
+        {
+            throw new PluginMisconfigurationException(error.ErrorDescription + " Please check the inputs for this action");
+        }
+
 
         if (error.ErrorDescription.Contains("JobCountLimit"))
             throw new PluginMisconfigurationException("You have reached your job count limit. Please remove some jobs or increase your limit by upgrading your Phrase plan.");
