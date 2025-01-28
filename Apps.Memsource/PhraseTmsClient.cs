@@ -6,6 +6,7 @@ using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using Newtonsoft.Json;
 using RestSharp;
+using System.Net;
 
 namespace Apps.PhraseTMS;
 
@@ -110,6 +111,7 @@ public class PhraseTmsClient : RestClient
 
     private Exception ConfigureErrorException(RestResponse restResponse)
     {
+        
         var error = JsonConvert.DeserializeObject<Error>(restResponse.Content);
 
         if (string.IsNullOrEmpty(error.ErrorDescription))
@@ -117,14 +119,14 @@ public class PhraseTmsClient : RestClient
             throw new PluginApplicationException("There has been an error with no error description.");
         }
 
-        if (error.ErrorDescription.Contains("User account inactive"))
+        if (restResponse.StatusCode.Equals(HttpStatusCode.Unauthorized))
         {
-            throw new PluginMisconfigurationException(error.ErrorDescription + "Please check your connection");
+            throw new PluginMisconfigurationException("Please check your connection authorization to app.");
         }
 
-        if (error.ErrorDescription.Contains("wasnt found"))
+        if (restResponse.StatusCode.Equals(HttpStatusCode.NotFound))
         {
-            throw new PluginMisconfigurationException(error.ErrorDescription + "Please check the inputs for this action");
+            throw new PluginMisconfigurationException(error.ErrorDescription + " Please check the inputs for this action");
         }
 
 
