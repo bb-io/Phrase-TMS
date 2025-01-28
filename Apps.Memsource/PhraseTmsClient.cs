@@ -110,22 +110,23 @@ public class PhraseTmsClient : RestClient
 
     private Exception ConfigureErrorException(RestResponse restResponse)
     {
-        //if (string.IsNullOrEmpty(restResponse.ErrorMessage))
-        //{
-        //    throw new PluginApplicationException("There has been an error with no error description.");
-        //}
+        var error = JsonConvert.DeserializeObject<Error>(restResponse.Content);
 
-        if (restResponse.ErrorMessage.Contains("User account inactive"))
+        if (string.IsNullOrEmpty(error.ErrorDescription))
+        {
+            throw new PluginApplicationException("There has been an error with no error description.");
+        }
+
+        if (error.ErrorDescription.Contains("User account inactive"))
         {
             throw new PluginMisconfigurationException(restResponse.ErrorMessage + "Please check your connection");
         }
 
-        if (restResponse.ErrorMessage.Contains("wasnt found"))
+        if (error.ErrorDescription.Contains("wasnt found"))
         {
             throw new PluginMisconfigurationException(restResponse.Content + "Please check the inputs for this action");
         }
 
-        var error = JsonConvert.DeserializeObject<Error>(restResponse.Content);
 
         if (error.ErrorDescription.Contains("JobCountLimit"))
             throw new PluginMisconfigurationException("You have reached your job count limit. Please remove some jobs or increase your limit by upgrading your Phrase plan.");
