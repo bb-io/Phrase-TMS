@@ -110,10 +110,10 @@ public class PhraseTmsClient : RestClient
 
     private Exception ConfigureErrorException(RestResponse restResponse)
     {
-        if (string.IsNullOrEmpty(restResponse.ErrorMessage))
-        {
-            throw new PluginApplicationException("There has been an error with no error description.");
-        }
+        //if (string.IsNullOrEmpty(restResponse.ErrorMessage))
+        //{
+        //    throw new PluginApplicationException("There has been an error with no error description.");
+        //}
 
         if (restResponse.ErrorMessage.Contains("User account inactive"))
         {
