@@ -458,7 +458,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
             {
                 if (job.JobUId != null && data.JobParts.Any(x => x.Uid == job.JobUId && x.workflowLevel.ToString() == step))
                 {
-                    if (request.Status is not null && !request.Status.Contains(data.JobParts.FirstOrDefault(x => x.Uid == job.JobUId).Status))
+                    if (request.Status is not null && request.Status.Contains(data.JobParts.FirstOrDefault(x => x.Uid == job.JobUId).Status))
                     {
                         return new()
                         {
@@ -467,7 +467,9 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                             {
                                 Uid = job.JobUId,
                                 Status = data.JobParts.FirstOrDefault(x => x.Uid == job.JobUId)?.Status,
-                                ProjectUid = data.metadata.project.Uid
+                                ProjectUid = data.JobParts.First().project.Uid,
+                                Filename = data.JobParts.FirstOrDefault(x => x.Uid == job.JobUId)?.fileName,
+                                TargetLanguage = data.JobParts.FirstOrDefault(x => x.Uid == job.JobUId)?.targetLang
                             }
                         };
                     }
@@ -506,7 +508,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                                 {
                                     Uid = selectedJob.Uid,
                                     Status = selectedJob.Status,
-                                    ProjectUid = data.metadata.project.Uid
+                                    ProjectUid = data.JobParts.First().project.Uid
                                 }
                             };
                         }
@@ -521,7 +523,9 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                                 {
                                     Uid = selectedJob.Uid,
                                     Status = selectedJob.Status,
-                                    ProjectUid = data.metadata.project.Uid
+                                    ProjectUid = data.JobParts.First().project.Uid,
+                                    Filename = selectedJob.fileName,
+                                    TargetLanguage = selectedJob.targetLang
                                 }
                             };
                         }
@@ -547,7 +551,9 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                         {
                             Uid = response.job.uid,
                             Status = data.JobParts.FirstOrDefault(x => x.Uid == response.job.uid).Status,
-                            ProjectUid = response.project.uid
+                            ProjectUid = response.project.uid,
+                            Filename = data.JobParts.FirstOrDefault(x => x.Uid == response.job.uid).fileName,
+                            TargetLanguage = data.JobParts.FirstOrDefault(x => x.Uid == response.job.uid).targetLang
                         }
                     };
                 }
@@ -582,6 +588,17 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
             };
         }
 
+        if (job.JobUId is null && lastWorkflowLevel.HasValue && lastWorkflowLevel.Value && step is null)
+        {
+            if(data.JobParts.FirstOrDefault().workflowLevel != data.JobParts.FirstOrDefault().project.lastWorkflowLevel)
+                return new()
+                {
+                    HttpResponseMessage = null,
+                    Result = null,
+                    ReceivedWebhookRequestType = WebhookRequestType.Preflight
+                };
+        }
+
         if (request.Status is not null && !request.Status.Contains(data.JobParts.FirstOrDefault(x => x.Uid == job.JobUId)?.Status))
         {
             return new()
@@ -599,7 +616,9 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
             {
                 Uid = job.JobUId ?? data.JobParts.FirstOrDefault()?.Uid,
                 Status = job.JobUId is null || data.JobParts.Count == 1 ? data.JobParts.FirstOrDefault()?.Status : data.JobParts.FirstOrDefault(x => x.Uid == job.JobUId)?.Status,
-                ProjectUid = data.metadata.project.Uid
+                ProjectUid = data.JobParts.First().project.Uid,
+                Filename = data.JobParts.FirstOrDefault().fileName,
+                TargetLanguage = data.JobParts.FirstOrDefault().targetLang
                 //DateDue = response.DateDue
             }
         };
@@ -871,27 +890,26 @@ public class JobPart
     public string Uid { get; set; }
     public int workflowLevel { get; set; }
     public string Status { get; set; }
-   // public Project project { get; set; }
+    [JsonProperty("project")]
+    public _Project? project { get; set; }
+
+    public string? task { get; set; }
+    public string? fileName { get; set; }
+    public string? targetLang { get; set; }
 }
 
-public class Metadata
-{
-    public Project project { get; set; }
-}
 
-
-public class Project
+public class _Project
 {
-    public int id { get; set; }
+    [JsonProperty("uid")]
     public string Uid { get; set; }
-    public string name { get; set; }
-    public string sourceLang { get; set; }
+
+    public int? lastWorkflowLevel { get; set; }
 }
 
 public class JobStatusChangedWrapper
 {
     public List<JobPart> JobParts { get; set; }
-    public Metadata metadata { get; set; }
 }
 
 
