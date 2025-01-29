@@ -1,4 +1,5 @@
 using System.Net;
+using Apps.PhraseTMS.DataSourceHandlers;
 using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Models.Jobs.Requests;
 using Apps.PhraseTMS.Models.Jobs.Responses;
@@ -10,6 +11,8 @@ using Apps.PhraseTMS.Webhooks.Handlers.ProjectHandlers;
 using Apps.PhraseTMS.Webhooks.Handlers.ProjectTemplateHandlers;
 using Apps.PhraseTMS.Webhooks.Models.Requests;
 using Blackbird.Applications.Sdk.Common;
+using Blackbird.Applications.Sdk.Common.Authentication;
+using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.Sdk.Common.Webhooks;
 using Newtonsoft.Json;
@@ -422,12 +425,159 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
     public async Task<WebhookResponse<JobResponse>> JobStatusChanged(WebhookRequest webhookRequest,
         [WebhookParameter] JobStatusChangedRequest request,
         [WebhookParameter] ProjectOptionalRequest projectOptionalRequest,
-        [WebhookParameter] OptionalJobRequest job)
+        [WebhookParameter] OptionalJobRequest job,
+        [WebhookParameter][Display("Workflow step ID"), DataSource(typeof(WorkflowStepDataHandler))] string? step,
+        [WebhookParameter][Display("Last workflow level?")] bool? lastWorkflowLevel)
     {
         var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
         if (data is null)
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
+        }
+
+        var jobData = new JobData();
+
+        if (job.JobUId != null && projectOptionalRequest.ProjectUId != null) 
+        {
+            var client = new PhraseTmsClient(InvocationContext.AuthenticationCredentialsProviders);
+            var apirequest = new PhraseTmsRequest($"/api2/v1/projects/{projectOptionalRequest.ProjectUId}/jobs/{job.JobUId}",
+                Method.Get, InvocationContext.AuthenticationCredentialsProviders);
+            jobData = await client.ExecuteWithHandling<JobData>(apirequest);
+
+
+            if (lastWorkflowLevel.HasValue && lastWorkflowLevel.Value)
+            {
+                step = jobData.LastWorkflowLevel.ToString();
+            }
+
+        }
+
+        if (!String.IsNullOrEmpty(step)) 
+        {
+            if (data.JobParts.Any(x => x.WorkflowStep.Id == step))
+            {
+                if (job.JobUId != null && data.JobParts.Any(x => x.Uid == job.JobUId && x.WorkflowStep.Id == step))
+                {
+                    if (request.Status is not null && !request.Status.Contains(data.JobParts.FirstOrDefault(x => x.Uid == job.JobUId).Status))
+                    {
+                        return new()
+                        {
+                            HttpResponseMessage = null,
+                            Result = new()
+                            {
+                                Uid = job.JobUId,
+                                Filename = data.JobParts.FirstOrDefault(x => x.Uid == job.JobUId).Filename,
+                                TargetLanguage = data.JobParts.FirstOrDefault()?.TargetLang,
+                                Status = data.JobParts.FirstOrDefault(x => x.Uid == job.JobUId)?.Status,
+                                ProjectUid = data.JobParts.FirstOrDefault()?.Project.UId
+                            }
+                        };
+                    }
+                    else 
+                    {
+                        return new()
+                        {
+                            HttpResponseMessage = null,
+                            Result = null,
+                            ReceivedWebhookRequestType = WebhookRequestType.Preflight
+                        };
+                    }
+                    
+                }
+
+                if (job.JobUId is null)
+                {
+                    if (request.Status is not null && !data.JobParts.Any(x => request.Status.Contains(x.Status)))
+                    {
+                        return new()
+                        {
+                            HttpResponseMessage = null,
+                            Result = null,
+                            ReceivedWebhookRequestType = WebhookRequestType.Preflight
+                        };
+                    }
+                    else 
+                    {
+                        if (request.Status != null && data.JobParts.Any(x => request.Status.Contains(x.Status))) 
+                        {
+                            var selectedJob = data.JobParts.FirstOrDefault(x => x.WorkflowStep.Id == step && request.Status.Contains(x.Status));
+                            return new()
+                            {
+                                HttpResponseMessage = null,
+                                Result = new()
+                                {
+                                    Uid = selectedJob.Uid,
+                                    Filename = selectedJob.Filename,
+                                    TargetLanguage = selectedJob.TargetLang,
+                                    Status = selectedJob.Status,
+                                    ProjectUid = selectedJob.Project.UId
+                                }
+                            };
+                        }
+
+                        if (request.Status is null)
+                        {
+                            var selectedJob = data.JobParts.FirstOrDefault(x => x.WorkflowStep.Id == step);
+                            return new()
+                            {
+                                HttpResponseMessage = null,
+                                Result = new()
+                                {
+                                    Uid = selectedJob.Uid,
+                                    Filename = selectedJob.Filename,
+                                    TargetLanguage = selectedJob.TargetLang,
+                                    Status = selectedJob.Status,
+                                    ProjectUid = selectedJob.Project.UId
+                                }
+                            };
+                        }
+                    }
+                }
+
+            }
+
+            var client = new PhraseTmsClient(InvocationContext.AuthenticationCredentialsProviders);
+            var apirequest = new PhraseTmsRequest($"/api2/v1/mappings/tasks/{jobData.ServerTaskId}",
+                Method.Get, InvocationContext.AuthenticationCredentialsProviders);
+            apirequest.AddQueryParameter("workflowLevel",step);
+            var response = await client.ExecuteWithHandling<TaskData>(apirequest);
+
+            if (data.JobParts.Any(x => x.Uid == response.JobUid))
+            {
+                if (request.Status is not null && !request.Status.Contains(data.JobParts.FirstOrDefault(x => x.Uid == response.JobUid).Status))
+                {
+                    return new()
+                    {
+                        HttpResponseMessage = null,
+                        Result = new()
+                        {
+                            Uid = response.JobUid,
+                            Filename = data.JobParts.FirstOrDefault(x => x.Uid == response.JobUid).Filename,
+                            TargetLanguage = data.JobParts.FirstOrDefault()?.TargetLang,
+                            Status = data.JobParts.FirstOrDefault(x => x.Uid == response.JobUid).Status,
+                            ProjectUid = response.ProjectUid
+                        }
+                    };
+                }
+                else
+                {
+                    return new()
+                    {
+                        HttpResponseMessage = null,
+                        Result = null,
+                        ReceivedWebhookRequestType = WebhookRequestType.Preflight
+                    };
+                }
+            } 
+            else 
+            {
+                return new()
+                {
+                    HttpResponseMessage = null,
+                    Result = null,
+                    ReceivedWebhookRequestType = WebhookRequestType.Preflight
+                };
+            }
         }
 
         if (job.JobUId != null && !data.JobParts.Any(x => x.Uid == job.JobUId))
@@ -695,4 +845,18 @@ public class ProjectTemplateWrapper
 public class AnalyseWrapper
 {
     public AnalysisDto Analyse { get; set; }
+}
+
+public class JobData
+{
+    public string ServerTaskId { get; set; }
+    public int LastWorkflowLevel { get; set; }
+}
+
+public class TaskData
+{
+    public string TaskId { get; set; }
+    public string WorkflowLevel { get; set; }
+    public string ProjectUid { get; set; }
+    public string JobUid { get; set; }
 }
