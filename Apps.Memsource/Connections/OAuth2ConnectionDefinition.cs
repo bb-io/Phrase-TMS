@@ -17,7 +17,11 @@ public class OAuth2ConnectionDefinition : IConnectionDefinition
             ConnectionProperties = new List<ConnectionProperty>
             {
                 new("client_id"){DisplayName = "Client ID"},
-                new("url"){DisplayName = "URL"},
+                new("url"){DisplayName="Base Url",
+                    Description = "Select the base URL according to your Phrase data center",
+                    DataItems= [new("https://cloud.memsource.com/", "EU data center"),
+                                new("https://us.cloud.memsource.com/","US data center")]
+                }
             }
         }, 
         // Api token
