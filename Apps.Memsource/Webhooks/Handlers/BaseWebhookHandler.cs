@@ -71,12 +71,14 @@ public class BaseWebhookHandler(InvocationContext invocationContext, string subE
                 result.Content,
                 result
             });
+
+            await Task.Delay(3000);
             
             var client2 = new PhraseTmsClient(authenticationCredentialsProvider);
             var getRequest2 = new PhraseTmsRequest($"/api2/v2/webhooks?name={subEvent}&url={values["payloadUrl"]}",
                 Method.Get, authenticationCredentialsProvider);
             var webhooks2 = await client2.ExecuteWithHandling<ResponseWrapper<List<WebhookDto>>>(getRequest2);
-            var webhookUId2 = webhooks?.Content.FirstOrDefault()?.UId;
+            var webhookUId2 = webhooks2?.Content.FirstOrDefault()?.UId;
 
             await WebhookLogger.LogAsync(new
             {
