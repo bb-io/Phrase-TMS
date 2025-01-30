@@ -428,7 +428,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
         [WebhookParameter] JobStatusChangedRequest request,
         [WebhookParameter] ProjectOptionalRequest projectOptionalRequest,
         [WebhookParameter] OptionalJobRequest job,
-        [WebhookParameter][Display("Workflow step ID"), DataSource(typeof(WorkflowStepDataHandler))] string? step,
+        [WebhookParameter][Display("Workflow level (number of step)")] string? step,
         [WebhookParameter][Display("Last workflow level?")] bool? lastWorkflowLevel)
     {
         if (job != null && projectOptionalRequest == null)
@@ -442,7 +442,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
-        bool hasStatus = request.Status != null && request.Status.Count() > 0;
+        bool hasStatus = request?.Status != null && request?.Status.Count() > 0;
         bool hasJob = !string.IsNullOrEmpty(job.JobUId);
         var jobData = new JobData();
         if (!string.IsNullOrEmpty(job.JobUId) && !string.IsNullOrEmpty(projectOptionalRequest.ProjectUId))
@@ -460,7 +460,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
         }
 
         bool hasWorkflowStep = !string.IsNullOrEmpty(step);
-        bool lastStep = !lastWorkflowLevel.HasValue || lastWorkflowLevel == false;
+        bool lastStep = lastWorkflowLevel.HasValue && lastWorkflowLevel.Value;
 
         if (!hasStatus && !hasJob && !hasWorkflowStep && !lastStep)
         {
