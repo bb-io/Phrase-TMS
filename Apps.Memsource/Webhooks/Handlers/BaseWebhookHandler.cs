@@ -71,6 +71,38 @@ public class BaseWebhookHandler(InvocationContext invocationContext, string subE
                 result.Content,
                 result
             });
+            
+            var client2 = new PhraseTmsClient(authenticationCredentialsProvider);
+            var getRequest2 = new PhraseTmsRequest($"/api2/v2/webhooks?name={subEvent}&url={values["payloadUrl"]}",
+                Method.Get, authenticationCredentialsProvider);
+            var webhooks2 = await client2.ExecuteWithHandling<ResponseWrapper<List<WebhookDto>>>(getRequest2);
+            var webhookUId2 = webhooks?.Content.FirstOrDefault()?.UId;
+
+            await WebhookLogger.LogAsync(new
+            {
+                status = "After getting webhooks p2",
+                webhooks2,
+                webhookUId2
+            });
+
+            if (webhookUId2 == null)
+            {
+                await WebhookLogger.LogAsync(new
+                {
+                    status = "webhookUId2 is null",
+                });
+                return;
+            }
+
+            var deleteRequest2 = new PhraseTmsRequest($"/api2/v2/webhooks/{webhookUId}", Method.Delete,
+                authenticationCredentialsProvider);
+            var result2 = await client.ExecuteWithHandling(deleteRequest2);
+            await WebhookLogger.LogAsync(new
+            {
+                status = "successfully unsubscribed p2",
+                result2.Content,
+                result2
+            });
         }
         catch (Exception e)
         {
