@@ -68,7 +68,7 @@ public class TranslationActions
 
 
     [Action("Delete all translations", Description = "Delete all translations by prject ID")]
-    public async Task<DeleteTranslationsResponse> DeleteAllTranslations(
+    public Task DeleteAllTranslations(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] JobsInputRequest input)
@@ -85,8 +85,7 @@ public class TranslationActions
 
         request.WithJsonBody(body, JsonConfig.Settings);
 
-        var response = await client.ExecuteWithHandling<DeleteTranslationsResponse>(request);
-        return response;
+        return client.ExecuteWithHandling<DeleteTranslationsResponse>(request);
     }
 
 }

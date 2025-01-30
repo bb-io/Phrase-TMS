@@ -23,7 +23,7 @@ public class LqaResponse
 
     [Display("Started at")]
     
-    public DateTime StartedDate { get; set; }
+    public DateTime? StartedDate { get; set; }
     
     [Display("Finished at")]
     public DateTime? FinishedDate { get; set; }

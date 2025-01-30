@@ -19,6 +19,7 @@ using Apps.PhraseTMS.DataSourceHandlers;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Drawing;
+using Blackbird.Applications.Sdk.Common.Exceptions;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -44,17 +45,29 @@ public class JobActions
         var endpoint = $"/api2/v2/projects/{input.ProjectUId}/jobs";
         var request = new PhraseTmsRequest(endpoint.WithQuery(query), Method.Get,
             authenticationCredentialsProviders);
-
-        var response = await client.Paginate<JobDto>(request);
-        response.ForEach(x => x.Project = new()
+        try 
         {
-            UId = input.ProjectUId
-        });
+            var response = await client.Paginate<JobDto>(request);
+            response.ForEach(x => x.Project = new()
+            {
+                UId = input.ProjectUId
+            });
 
-        return new()
+            return new()
+            {
+                Jobs = response
+            };
+        } catch (Exception e) 
         {
-            Jobs = response
-        };
+            if (e.Message.Contains("Invalid parameters") || e.Message.Contains("The object referenced by the field") || e.Message.Contains("unsupported locale")) 
+            {
+                throw new PluginMisconfigurationException(e.Message + "Make sure that the input values are correct.");
+            } else 
+            {
+                throw new PluginApplicationException(e.Message);
+            }
+        }
+       
     }
 
     [Action("Get job", Description = "Get job by UId")]
@@ -357,9 +370,9 @@ public class JobActions
         var body = new
         {
             jobs = input.Jobs.Select(uid => new { uid }),
-            segmentFilters = input.SegmentFilters,
-            useProjectPreTranslateSettings = input.UseProjectPreTranslateSettings,
-            callbackUrl = input.CallbackUrl,
+            segmentFilters = input.SegmentFilters?.Any() == true ? input.SegmentFilters : new[] { "NOT_LOCKED" },
+            useProjectPreTranslateSettings = input.UseProjectPreTranslateSettings ?? false,
+            callbackUrl = input.CallbackUrl ?? "",
             preTranslateSettings = settings
         };
 

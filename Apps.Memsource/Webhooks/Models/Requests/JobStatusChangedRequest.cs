@@ -6,6 +6,6 @@ namespace Apps.PhraseTMS.Webhooks.Models.Requests;
 
 public class JobStatusChangedRequest
 {
-    [Display("Statuses"), StaticDataSource(typeof(JobStatusDataHandler))]
+    [Display("Statuses"), StaticDataSource(typeof(JobWebhookStatusDataHandler))]
     public IEnumerable<string>? Status { get; set; }
 }

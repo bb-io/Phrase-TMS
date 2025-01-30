@@ -24,7 +24,7 @@ Before you can connect you need to make sure that:
 2. Click _Add Connection_.
 3. Name your connection for future reference e.g. 'My Phrase connection'.
 4. Fill in the _Client ID_ that you copied from Phrase.
-5. Fill in the Base URL to the Phrase instance you want to connect to (this can be f.e. eu or us). Example: `https://us.cloud.memsource.com`
+5. Select the Base URL to the Phrase instance you want to connect to base on the location of your Phrase's data center (the same you use to login to Phrase).
 6. Click _Authorize connection_.
 7. Follow the instructions that Phrase gives you, authorizing Blackbird.io to act on your behalf.
 8. When you return to Blackbird, confirm that the connection has appeared and the status is _Connected_.
