@@ -68,7 +68,8 @@ public class BaseWebhookHandler(InvocationContext invocationContext, string subE
             await WebhookLogger.LogAsync(new
             {
                 status = "successfully unsubscribed",
-                result.Content
+                result.Content,
+                result
             });
         }
         catch (Exception e)
