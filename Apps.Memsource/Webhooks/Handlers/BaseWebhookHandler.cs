@@ -63,14 +63,12 @@ public class BaseWebhookHandler(InvocationContext invocationContext, string subE
 
             var deleteRequest = new PhraseTmsRequest($"/api2/v2/webhooks/{webhookUId}", Method.Delete,
                 authenticationCredentialsProvider);
-            await client.ExecuteWithHandling(deleteRequest);
+            var result = await client.ExecuteWithHandling(deleteRequest);
 
             await WebhookLogger.LogAsync(new
             {
                 status = "successfully unsubscribed",
-                events = new[] { subEvent },
-                url = values["payloadUrl"],
-                name = subEvent
+                result.Content
             });
         }
         catch (Exception e)
