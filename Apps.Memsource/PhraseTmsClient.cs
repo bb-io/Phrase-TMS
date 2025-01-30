@@ -2,6 +2,7 @@
 using Apps.PhraseTMS.Models.Async;
 using Apps.PhraseTMS.Models.Responses;
 using Blackbird.Applications.Sdk.Common.Authentication;
+using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using Newtonsoft.Json;
 using RestSharp;
@@ -110,7 +111,6 @@ public class PhraseTmsClient : RestClient
     private Exception ConfigureErrorException(string responseContent)
     {
         var error = JsonConvert.DeserializeObject<Error>(responseContent);
-
-        return new($"{error.ErrorDescription}; {error.ErrorCode}");
+        return new PluginApplicationException($"{error.ErrorDescription}; {error.ErrorCode}");
     }
 }
