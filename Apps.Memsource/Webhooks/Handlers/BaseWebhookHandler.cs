@@ -35,8 +35,6 @@ public class BaseWebhookHandler(InvocationContext invocationContext, string subE
         });
     }
 
-    private const int MaxRetryCount = 1;
-
     public async Task UnsubscribeAsync(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProvider,
         Dictionary<string, string> values)
     {
@@ -89,15 +87,29 @@ public class BaseWebhookHandler(InvocationContext invocationContext, string subE
         if (webhookUId == null)
             return;
 
+
+        var updateRequest = new PhraseTmsRequest($"/api2/v2/webhooks/{webhookUId}", Method.Put,
+                authenticationCredentialsProvider)
+            .WithJsonBody(new
+            {
+                events = new[] { subEvent },
+                url = values["payloadUrl"],
+                status = "DISABLED"
+            });
+        var updateResponse = await client.ExecuteWithHandling(updateRequest);
+        await WebhookLogger.LogAsync(new
+        {
+            status = $"successfully updated webhook {currentRetry}",
+            updateResponse.Content
+        });
+
         var deleteRequest = new PhraseTmsRequest($"/api2/v2/webhooks/{webhookUId}", Method.Delete,
             authenticationCredentialsProvider);
         var result = await client.ExecuteWithHandling(deleteRequest);
-
         await WebhookLogger.LogAsync(new
         {
-            status = $"successfully unsubscribed {currentRetry}",
-            result.Content,
-            result
+            status = $"successfully deleted webhook {currentRetry}",
+            result.Content
         });
     }
 }
