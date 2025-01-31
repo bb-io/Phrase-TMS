@@ -15,6 +15,11 @@ public class BaseWebhookHandler(InvocationContext invocationContext, string subE
     public async Task SubscribeAsync(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProvider,
         Dictionary<string, string> values)
     {        
+        await WebhookLogger.LogAsync(new
+        {
+            status = "Called SubscribeAsync"
+        });
+        
         var client = new PhraseTmsClient(authenticationCredentialsProvider);
         var request = new PhraseTmsRequest($"/api2/v2/webhooks", Method.Post, authenticationCredentialsProvider);
         request.WithJsonBody(new
@@ -42,8 +47,12 @@ public class BaseWebhookHandler(InvocationContext invocationContext, string subE
         {
             var currentRetry = 0;
             await UnsubscribeRecursivelyAsync(authenticationCredentialsProvider, values, currentRetry);
-
-            await Task.Delay(5000);
+            await Task.Delay(15000);
+            
+            await WebhookLogger.LogAsync(new
+            {
+                status = "delay is gone"
+            });
         }
         catch (Exception e)
         {
