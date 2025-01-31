@@ -14,7 +14,7 @@ public class BaseWebhookHandler(InvocationContext invocationContext, string subE
 {
     public async Task SubscribeAsync(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProvider,
         Dictionary<string, string> values)
-    {
+    {        
         var client = new PhraseTmsClient(authenticationCredentialsProvider);
         var request = new PhraseTmsRequest($"/api2/v2/webhooks", Method.Post, authenticationCredentialsProvider);
         request.WithJsonBody(new
@@ -42,6 +42,8 @@ public class BaseWebhookHandler(InvocationContext invocationContext, string subE
         {
             var currentRetry = 0;
             await UnsubscribeRecursivelyAsync(authenticationCredentialsProvider, values, currentRetry);
+
+            await Task.Delay(5000);
         }
         catch (Exception e)
         {
@@ -84,16 +86,23 @@ public class BaseWebhookHandler(InvocationContext invocationContext, string subE
         if (webhookUId == null)
             return;
         
-        var deleteRequest = new RestRequest($"/api2/v2/webhooks/{webhookUId}", Method.Delete);
+        var deleteRequest = new RestRequest($"/web/api2/v2/webhooks/{webhookUId}", Method.Delete);
         var value = authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value;
         deleteRequest.AddHeader("Authorization", value);
         
-        var deleteClient = new PhraseTmsClient(authenticationCredentialsProviders);
-        var result = await deleteClient.ExecuteWithHandling(deleteRequest);
+        var options = new RestClientOptions("https://cloud.memsource.com")
+        {
+            MaxTimeout = -1,
+        };
+        var deleteClient = new RestClient(options);
+        var result = await deleteClient.ExecuteAsync(deleteRequest);
+        
         await WebhookLogger.LogAsync(new
         {
             status = $"successfully deleted webhook {currentRetry}",
-            result.Content
+            result.Content,
+            result.StatusCode,
+            value
         });
     }
 }
