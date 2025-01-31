@@ -44,7 +44,7 @@ public class BaseWebhookHandler(InvocationContext invocationContext, string subE
             await UnsubscribeRecursivelyAsync(authenticationCredentialsProvider, values, currentRetry);
 
             currentRetry += 1;
-            await Task.Delay(4000);
+            await Task.Delay(10000);
             await UnsubscribeRecursivelyAsync(authenticationCredentialsProvider, values, currentRetry);
         }
         catch (Exception e)
