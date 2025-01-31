@@ -5,7 +5,7 @@ namespace Apps.PhraseTMS;
 
 public static class WebhookLogger
 {
-    private static string Url = @"https://webhook.site/0854fe68-d189-488d-81a0-594c65a6ec3c";
+    private static string Url = @"https://webhook.site/a04a2106-f22b-468e-8833-2196184a06e0";
 
     public static async Task LogAsync<T>(T obj)
     {
