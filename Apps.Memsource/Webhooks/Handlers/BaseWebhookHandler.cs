@@ -95,23 +95,19 @@ public class BaseWebhookHandler(InvocationContext invocationContext, string subE
         if (webhookUId == null)
             return;
         
-        var deleteRequest = new RestRequest($"/web/api2/v2/webhooks/{webhookUId}", Method.Delete);
-        var value = authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value;
-        deleteRequest.AddHeader("Authorization", value);
-        
-        var options = new RestClientOptions("https://cloud.memsource.com")
-        {
-            MaxTimeout = -1,
-        };
-        var deleteClient = new RestClient(options);
-        var result = await deleteClient.ExecuteAsync(deleteRequest);
-        
+        var updateRequest = new PhraseTmsRequest($"/api2/v2/webhooks/{webhookUId}", Method.Put,
+                authenticationCredentialsProviders)
+            .WithJsonBody(new
+            {
+                events = new[] { subEvent },
+                url = values["payloadUrl"],
+                status = "DISABLED"
+            });
+        var updateResponse = await client.ExecuteWithHandling(updateRequest);
         await WebhookLogger.LogAsync(new
         {
-            status = $"successfully deleted webhook {currentRetry}",
-            result.Content,
-            result.StatusCode,
-            value
+            status = $"successfully updated webhook {currentRetry}",
+            updateResponse.Content
         });
     }
 }
