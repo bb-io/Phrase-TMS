@@ -71,9 +71,10 @@ public class BaseWebhookHandler(InvocationContext invocationContext, string subE
             values
         });
 
-        var client = new PhraseTmsClient(authenticationCredentialsProvider);
+        var authenticationCredentialsProviders = authenticationCredentialsProvider as AuthenticationCredentialsProvider[] ?? authenticationCredentialsProvider.ToArray();
+        var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var getRequest = new PhraseTmsRequest($"/api2/v2/webhooks?name={subEvent}&url={values["payloadUrl"]}",
-            Method.Get, authenticationCredentialsProvider);
+            Method.Get, authenticationCredentialsProviders);
         var webhooks = await client.ExecuteWithHandling<ResponseWrapper<List<WebhookDto>>>(getRequest);
         var webhookUId = webhooks?.Content.FirstOrDefault()?.UId;
 
@@ -86,26 +87,13 @@ public class BaseWebhookHandler(InvocationContext invocationContext, string subE
 
         if (webhookUId == null)
             return;
-
-
-        var updateRequest = new PhraseTmsRequest($"/api2/v2/webhooks/{webhookUId}", Method.Put,
-                authenticationCredentialsProvider)
-            .WithJsonBody(new
-            {
-                events = new[] { subEvent },
-                url = values["payloadUrl"],
-                status = "DISABLED"
-            });
-        var updateResponse = await client.ExecuteWithHandling(updateRequest);
-        await WebhookLogger.LogAsync(new
-        {
-            status = $"successfully updated webhook {currentRetry}",
-            updateResponse.Content
-        });
-
-        var deleteRequest = new PhraseTmsRequest($"/api2/v2/webhooks/{webhookUId}", Method.Delete,
-            authenticationCredentialsProvider);
-        var result = await client.ExecuteWithHandling(deleteRequest);
+        
+        var deleteRequest = new RestRequest($"/api2/v2/webhooks/{webhookUId}", Method.Delete);
+        var value = authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value;
+        deleteRequest.AddHeader("Authorization", value);
+        
+        var deleteClient = new PhraseTmsClient(authenticationCredentialsProviders);
+        var result = await deleteClient.ExecuteWithHandling(deleteRequest);
         await WebhookLogger.LogAsync(new
         {
             status = $"successfully deleted webhook {currentRetry}",
