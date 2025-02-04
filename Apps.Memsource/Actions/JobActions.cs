@@ -386,7 +386,7 @@ public class JobActions
     {
         var actions = new UserActions();
         var userDetails = await actions.GetUser(creds, new Models.Users.Requests.GetUserRequest { UserUId = linguist});
-        var user = await actions.FindUser(creds, new Models.Users.Requests.ListAllUsersQuery { email = userDetails.Email});
+        var user = await actions.FindUser(creds, new Models.Users.Requests.ListAllUsersQuery { email = userDetails.Email.Replace("+", "%2B") });
         return user.Id;
     }
 
