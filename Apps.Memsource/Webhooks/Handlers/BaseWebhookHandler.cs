@@ -94,20 +94,14 @@ public class BaseWebhookHandler(InvocationContext invocationContext, string subE
 
         if (webhookUId == null)
             return;
-        
-        var updateRequest = new PhraseTmsRequest($"/api2/v2/webhooks/{webhookUId}", Method.Put,
-                authenticationCredentialsProviders)
-            .WithJsonBody(new
-            {
-                events = new[] { subEvent },
-                url = values["payloadUrl"],
-                status = "DISABLED"
-            });
-        var updateResponse = await client.ExecuteWithHandling(updateRequest);
+
+        var deleteRequest = new PhraseTmsRequest($"/api2/v2/webhooks/{webhookUId}", Method.Delete,
+            authenticationCredentialsProviders);
+        var deleteResponse = await client.ExecuteWithHandling(deleteRequest);
         await WebhookLogger.LogAsync(new
         {
-            status = $"successfully updated webhook {currentRetry}",
-            updateResponse.Content
+            status = $"successfully deleted webhook {currentRetry}",
+            deleteResponse.Content
         });
     }
 }

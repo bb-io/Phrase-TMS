@@ -79,13 +79,6 @@ public class PhraseTmsClient : RestClient
 
     public async Task<RestResponse> ExecuteWithHandling(RestRequest request)
     {
-        await WebhookLogger.LogAsync(new
-        {
-            resource = request.Resource,
-            method = request.Method,
-            request.Parameters
-        });
-        
         var response = await ExecuteAsync(request);
 
         if (response.IsSuccessful)
