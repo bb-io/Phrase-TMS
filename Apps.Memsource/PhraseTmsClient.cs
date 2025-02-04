@@ -74,7 +74,6 @@ public class PhraseTmsClient : RestClient
     public async Task<T> ExecuteWithHandling<T>(RestRequest request)
     {
         var response = await ExecuteWithHandling(request);
-
         return JsonConvert.DeserializeObject<T>(response.Content);
     }
 
@@ -111,7 +110,6 @@ public class PhraseTmsClient : RestClient
 
     private Exception ConfigureErrorException(RestResponse restResponse)
     {
-        
         var error = JsonConvert.DeserializeObject<Error>(restResponse.Content);
 
         if (string.IsNullOrEmpty(error.ErrorDescription))

@@ -31,7 +31,14 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
     public async Task<WebhookResponse<ProjectDto>> ProjectCreation(WebhookRequest webhookRequest,
         [WebhookParameter] ProjectCreatedRequest projectCreatedRequest)
     {
+        await WebhookLogger.LogAsync(new
+        {
+            status = "On project created called",
+            body = webhookRequest.Body
+        });
+        
         var data = JsonConvert.DeserializeObject<ProjectWrapper>(webhookRequest.Body.ToString()!);
+
         if (data is null)
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
@@ -57,6 +64,12 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
     public async Task<WebhookResponse<ProjectDto>> ProjectDeletion(WebhookRequest webhookRequest,
         [WebhookParameter] ProjectOptionalRequest request)
     {
+        await WebhookLogger.LogAsync(new
+        {
+            status = "On project deleted called",
+            body = webhookRequest.Body
+        });
+
         var data = JsonConvert.DeserializeObject<ProjectWrapper>(webhookRequest.Body.ToString());
         if (data is null)
         {
@@ -428,27 +441,36 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
         [WebhookParameter] JobStatusChangedRequest request,
         [WebhookParameter] ProjectOptionalRequest projectOptionalRequest,
         [WebhookParameter] OptionalJobRequest job,
-        [WebhookParameter][Display("Workflow level (number of step)")] string? step,
-        [WebhookParameter][Display("Last workflow level?")] bool? lastWorkflowLevel)
+        [WebhookParameter] [Display("Workflow level (number of step)")]
+        string? step,
+        [WebhookParameter] [Display("Last workflow level?")]
+        bool? lastWorkflowLevel)
     {
         if (job != null && projectOptionalRequest == null)
-        { throw new PluginMisconfigurationException("If Job ID is specified in the inputs so must be project ID"); }
+        {
+            throw new PluginMisconfigurationException("If Job ID is specified in the inputs so must be project ID");
+        }
 
         if (!String.IsNullOrEmpty(step) && lastWorkflowLevel.HasValue && lastWorkflowLevel.Value)
-        { throw new PluginMisconfigurationException("Provide either a specifc workflow step or set last workflow level as true, not both"); }
+        {
+            throw new PluginMisconfigurationException(
+                "Provide either a specifc workflow step or set last workflow level as true, not both");
+        }
 
         var data = JsonConvert.DeserializeObject<JobStatusChangedWrapper>(webhookRequest.Body.ToString());
         if (data is null)
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
+
         bool hasStatus = request?.Status != null && request?.Status.Count() > 0;
         bool hasJob = !string.IsNullOrEmpty(job.JobUId);
         var jobData = new JobData();
         if (!string.IsNullOrEmpty(job.JobUId) && !string.IsNullOrEmpty(projectOptionalRequest.ProjectUId))
         {
             var client = new PhraseTmsClient(InvocationContext.AuthenticationCredentialsProviders);
-            var apirequest = new PhraseTmsRequest($"/api2/v1/projects/{projectOptionalRequest.ProjectUId}/jobs/{job.JobUId}",
+            var apirequest = new PhraseTmsRequest(
+                $"/api2/v1/projects/{projectOptionalRequest.ProjectUId}/jobs/{job.JobUId}",
                 Method.Get, InvocationContext.AuthenticationCredentialsProviders);
             jobData = await client.ExecuteWithHandling<JobData>(apirequest);
 
@@ -483,16 +505,34 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
         switch ((hasStatus, hasJob, hasWorkflowStep, lastStep))
         {
             case (true, true, true, true):
-            case (true, true, true, false): Result = await HandleFullData(data.JobParts, request.Status, jobData, step); break; 
-            case (true, true, false, false): Result = HandleStatusJobOnly(data.JobParts,request.Status, jobData); break;  
-            case (true, false, false, true): Result = HandleStatusLastStep(data.JobParts, request.Status ); break;  
-            case (true, false, true, false): Result = HandleStatusStepOnly(data.JobParts, request.Status, step); break; 
-            case (true, false, false, false): Result = HandleStatusOnly(data.JobParts, request.Status); break;  
-            case (false, true, true, true): 
-            case (false, true, true, false): Result = await HandleJobStep(data.JobParts, jobData, step); break; 
-            case (false, true, false, false): Result = HandleJobOnly(data.JobParts, jobData); break;  
-            case (false, false, false, true): Result = HandleOnlyLastStep(data.JobParts); break;  
-            case (false, false, true, false): Result = HandleStepOnly(data.JobParts, step); break; 
+            case (true, true, true, false):
+                Result = await HandleFullData(data.JobParts, request.Status, jobData, step);
+                break;
+            case (true, true, false, false):
+                Result = HandleStatusJobOnly(data.JobParts, request.Status, jobData);
+                break;
+            case (true, false, false, true):
+                Result = HandleStatusLastStep(data.JobParts, request.Status);
+                break;
+            case (true, false, true, false):
+                Result = HandleStatusStepOnly(data.JobParts, request.Status, step);
+                break;
+            case (true, false, false, false):
+                Result = HandleStatusOnly(data.JobParts, request.Status);
+                break;
+            case (false, true, true, true):
+            case (false, true, true, false):
+                Result = await HandleJobStep(data.JobParts, jobData, step);
+                break;
+            case (false, true, false, false):
+                Result = HandleJobOnly(data.JobParts, jobData);
+                break;
+            case (false, false, false, true):
+                Result = HandleOnlyLastStep(data.JobParts);
+                break;
+            case (false, false, true, false):
+                Result = HandleStepOnly(data.JobParts, step);
+                break;
             default: throw new InvalidOperationException("Unexpected case encountered");
         }
 
@@ -500,6 +540,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
     }
 
     #region Helpers
+
     private WebhookResponse<JobResponse> HandleStepOnly(List<JobPart> jobParts, string? step)
     {
         if (jobParts.Any(x => x.workflowLevel.ToString() == step))
@@ -518,7 +559,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                 }
             };
         }
-        else 
+        else
         {
             return new()
             {
@@ -587,7 +628,8 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
         }
     }
 
-    private async Task<WebhookResponse<JobResponse>> HandleJobStep(List<JobPart> jobParts, JobData jobData, string? step)
+    private async Task<WebhookResponse<JobResponse>> HandleJobStep(List<JobPart> jobParts, JobData jobData,
+        string? step)
     {
         if (jobParts.Any(x => x.Uid == jobData.Uid && x.workflowLevel.ToString() == step))
         {
@@ -673,11 +715,13 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
         }
     }
 
-    private WebhookResponse<JobResponse> HandleStatusStepOnly(List<JobPart> jobParts, IEnumerable<string>? statuses, string? step)
+    private WebhookResponse<JobResponse> HandleStatusStepOnly(List<JobPart> jobParts, IEnumerable<string>? statuses,
+        string? step)
     {
         if (jobParts.Any(x => statuses.Contains(x.Status) && x.workflowLevel.ToString() == step))
         {
-            var selectedJob = jobParts.FirstOrDefault(x => statuses.Contains(x.Status) && x.workflowLevel.ToString() == step);
+            var selectedJob =
+                jobParts.FirstOrDefault(x => statuses.Contains(x.Status) && x.workflowLevel.ToString() == step);
             return new WebhookResponse<JobResponse>
             {
                 HttpResponseMessage = null,
@@ -706,7 +750,8 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
     {
         if (jobParts.Any(x => statuses.Contains(x.Status) && x.workflowLevel == x.project.lastWorkflowLevel))
         {
-            var selectedJob = jobParts.FirstOrDefault(x => statuses.Contains(x.Status) && x.workflowLevel == x.project.lastWorkflowLevel);
+            var selectedJob = jobParts.FirstOrDefault(x =>
+                statuses.Contains(x.Status) && x.workflowLevel == x.project.lastWorkflowLevel);
             return new WebhookResponse<JobResponse>
             {
                 HttpResponseMessage = null,
@@ -731,7 +776,8 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
         }
     }
 
-    private WebhookResponse<JobResponse> HandleStatusJobOnly(List<JobPart> jobParts, IEnumerable<string>? statuses, JobData jobData)
+    private WebhookResponse<JobResponse> HandleStatusJobOnly(List<JobPart> jobParts, IEnumerable<string>? statuses,
+        JobData jobData)
     {
         if (jobParts.Any(x => statuses.Contains(x.Status) && x.Uid == jobData.Uid))
         {
@@ -760,11 +806,14 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
         }
     }
 
-    private async Task<WebhookResponse<JobResponse>> HandleFullData(List<JobPart> jobParts, IEnumerable<string>? statuses, JobData jobData, string? step)
+    private async Task<WebhookResponse<JobResponse>> HandleFullData(List<JobPart> jobParts,
+        IEnumerable<string>? statuses, JobData jobData, string? step)
     {
-        if (jobParts.Any(x => statuses.Contains(x.Status) && x.Uid == jobData.Uid && x.workflowLevel.ToString() == step))
+        if (jobParts.Any(x =>
+                statuses.Contains(x.Status) && x.Uid == jobData.Uid && x.workflowLevel.ToString() == step))
         {
-            var selectedJob = jobParts.FirstOrDefault(x => statuses.Contains(x.Status) && x.Uid == jobData.Uid && x.workflowLevel.ToString() == step);
+            var selectedJob = jobParts.FirstOrDefault(x =>
+                statuses.Contains(x.Status) && x.Uid == jobData.Uid && x.workflowLevel.ToString() == step);
             return new WebhookResponse<JobResponse>
             {
                 HttpResponseMessage = null,
@@ -781,9 +830,11 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
         else
         {
             string jobIDforStep = await GetJobIDforSpecificStep(jobData.ServerTaskId, step);
-            if (jobParts.Any(x => statuses.Contains(x.Status) && x.Uid == jobIDforStep && x.workflowLevel.ToString() == step))
+            if (jobParts.Any(x =>
+                    statuses.Contains(x.Status) && x.Uid == jobIDforStep && x.workflowLevel.ToString() == step))
             {
-                var selectedJob = jobParts.FirstOrDefault(x => statuses.Contains(x.Status) && x.Uid == jobIDforStep && x.workflowLevel.ToString() == step);
+                var selectedJob = jobParts.FirstOrDefault(x =>
+                    statuses.Contains(x.Status) && x.Uid == jobIDforStep && x.workflowLevel.ToString() == step);
                 return new WebhookResponse<JobResponse>
                 {
                     HttpResponseMessage = null,
@@ -797,6 +848,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                     }
                 };
             }
+
             return new()
             {
                 HttpResponseMessage = null,
@@ -879,7 +931,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
             }
         };
     }
-    
+
     [Webhook("On job target updated", typeof(JobTargetUpdatedHandler), Description = "On any job target updated")]
     public async Task<WebhookResponse<JobResponse>> JobTargetUpdated(WebhookRequest webhookRequest,
         [WebhookParameter] JobOptionalRequest request)
@@ -1046,8 +1098,7 @@ public class JobData
     public string ServerTaskId { get; set; }
     public int LastWorkflowLevel { get; set; }
 
-    [JsonProperty("project")]
-    public TaskProject Project { get; set; }
+    [JsonProperty("project")] public TaskProject Project { get; set; }
 }
 
 public class TaskJob
@@ -1065,11 +1116,9 @@ public class TaskData
     public string workflowLevel { get; set; }
     public string taskId { get; set; }
 
-    [JsonProperty("Job")]
-    public TaskJob job { get; set; }
+    [JsonProperty("Job")] public TaskJob job { get; set; }
 
-    [JsonProperty("Project")]
-    public TaskProject project { get; set; }
+    [JsonProperty("Project")] public TaskProject project { get; set; }
     public string resourcePath { get; set; }
 }
 
@@ -1078,19 +1127,16 @@ public class JobPart
     public string Uid { get; set; }
     public int workflowLevel { get; set; }
     public string Status { get; set; }
-    [JsonProperty("project")]
-    public _Project? project { get; set; }
+    [JsonProperty("project")] public _Project? project { get; set; }
 
     public string? task { get; set; }
     public string? fileName { get; set; }
     public string? targetLang { get; set; }
 }
 
-
 public class _Project
 {
-    [JsonProperty("uid")]
-    public string Uid { get; set; }
+    [JsonProperty("uid")] public string Uid { get; set; }
 
     public int? lastWorkflowLevel { get; set; }
 }
@@ -1099,5 +1145,3 @@ public class JobStatusChangedWrapper
 {
     public List<JobPart> JobParts { get; set; }
 }
-
-
