@@ -17,7 +17,6 @@ using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.Sdk.Common.Webhooks;
-using DocumentFormat.OpenXml.Spreadsheet;
 using Newtonsoft.Json;
 using RestSharp;
 
@@ -434,7 +433,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
         string? step,
         [WebhookParameter] [Display("Last workflow level?")]
         bool? lastWorkflowLevel,
-        [WebhookParameter][Display("Projecgt name contains")] string? projectNameContains)
+        [WebhookParameter][Display("Project name contains")] string? projectNameContains)
     {
         if (job != null && projectOptionalRequest == null)
         {
