@@ -30,7 +30,6 @@ public class BaseWebhookHandler(InvocationContext invocationContext, string subE
     public async Task UnsubscribeAsync(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProvider,
         Dictionary<string, string> values)
     {
-        
         var authenticationCredentialsProviders = authenticationCredentialsProvider as AuthenticationCredentialsProvider[] ?? authenticationCredentialsProvider.ToArray();
         
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
@@ -45,5 +44,7 @@ public class BaseWebhookHandler(InvocationContext invocationContext, string subE
         var deleteRequest = new PhraseTmsRequest($"/api2/v2/webhooks/{webhookUId}", Method.Delete,
             authenticationCredentialsProviders);
         await client.ExecuteWithHandling(deleteRequest);
+
+        await Task.Delay(5000);
     }
 }
