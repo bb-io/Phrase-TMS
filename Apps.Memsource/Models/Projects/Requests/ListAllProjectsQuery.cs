@@ -41,5 +41,4 @@ public class ListAllProjectsQuery
 
     [Display("Order"), StaticDataSource(typeof(OrderDataHandler)), JsonProperty("order")] public string? Order { get; set; }
 
-    [Display("Results per page"), Description("Number between 1 and 50"), JsonProperty("pageSize")] public int? PageSize { get; set; }
 }
