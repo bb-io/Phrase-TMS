@@ -17,6 +17,7 @@ using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.Sdk.Common.Webhooks;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Newtonsoft.Json;
 using RestSharp;
 
@@ -432,7 +433,8 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
         [WebhookParameter] [Display("Workflow level (number of step)")]
         string? step,
         [WebhookParameter] [Display("Last workflow level?")]
-        bool? lastWorkflowLevel)
+        bool? lastWorkflowLevel,
+        [WebhookParameter][Display("Projecgt name contains")] string? projectNameContains)
     {
         if (job != null && projectOptionalRequest == null)
         {
@@ -449,6 +451,16 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
         if (data is null)
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
+        }
+
+        if (!String.IsNullOrEmpty(projectNameContains) && !data.metadata.project.name.Contains(projectNameContains))
+        {
+            return new()
+            {
+                HttpResponseMessage = null,
+                Result = null,
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight
+            };
         }
 
         bool hasStatus = request?.Status != null && request?.Status.Count() > 0;
@@ -541,7 +553,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                 {
                     Uid = selectedJob.Uid,
                     Status = selectedJob.Status,
-                    ProjectUid = selectedJob.Uid,
+                    ProjectUid = selectedJob.project.Uid,
                     Filename = selectedJob.fileName,
                     TargetLanguage = selectedJob.targetLang
                 }
@@ -570,7 +582,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                 {
                     Uid = selectedJob.Uid,
                     Status = selectedJob.Status,
-                    ProjectUid = selectedJob.Uid,
+                    ProjectUid = selectedJob.project.Uid,
                     Filename = selectedJob.fileName,
                     TargetLanguage = selectedJob.targetLang
                 }
@@ -599,7 +611,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                 {
                     Uid = selectedJob.Uid,
                     Status = selectedJob.Status,
-                    ProjectUid = selectedJob.Uid,
+                    ProjectUid = selectedJob.project.Uid,
                     Filename = selectedJob.fileName,
                     TargetLanguage = selectedJob.targetLang
                 }
@@ -629,7 +641,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                 {
                     Uid = selectedJob.Uid,
                     Status = selectedJob.Status,
-                    ProjectUid = selectedJob.Uid,
+                    ProjectUid = selectedJob.project.Uid,
                     Filename = selectedJob.fileName,
                     TargetLanguage = selectedJob.targetLang
                 }
@@ -648,7 +660,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                     {
                         Uid = selectedJob.Uid,
                         Status = selectedJob.Status,
-                        ProjectUid = selectedJob.Uid,
+                        ProjectUid = selectedJob.project.Uid,
                         Filename = selectedJob.fileName,
                         TargetLanguage = selectedJob.targetLang
                     }
@@ -1132,4 +1144,17 @@ public class _Project
 public class JobStatusChangedWrapper
 {
     public List<JobPart> JobParts { get; set; }
+    [JsonProperty("metadata")] public projectMetadata metadata { get; set; }
+}
+
+public class projectMetadata
+{
+    public Project project { get; set; }
+}
+
+public class Project
+{
+    public string uid { get; set; }
+    public int lastWorkflowLevel { get; set; }
+    public string name { get; set; }
 }
