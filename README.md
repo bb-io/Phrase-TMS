@@ -100,6 +100,7 @@ Before you can connect you need to make sure that:
 
 - **List projects**
 - **List project templates**
+- **Find project**
 - **Get project**
 - **Create project**
 - **Create project from template**

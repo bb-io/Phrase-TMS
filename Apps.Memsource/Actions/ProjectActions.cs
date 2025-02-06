@@ -40,6 +40,21 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
         };
     }
 
+    [Action("Find project", Description = "Return first matching project")]
+    public async Task<ProjectDto> FindProject(
+        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] ListAllProjectsQuery query)
+    {
+        var client = new PhraseTmsClient(authenticationCredentialsProviders);
+
+        var endpoint = "/api2/v1/projects";
+        var request = new PhraseTmsRequest(QueryHelper.WithQuery(endpoint, query), Method.Get, authenticationCredentialsProviders);
+
+        var response = await client.Paginate<ProjectDto>(request);
+
+        return response.FirstOrDefault();
+    }
+
     [Action("List project templates", Description = "List all project templates")]
     public async Task<ListAllProjectTemplatesResponse> ListAllProjectTemplates(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
