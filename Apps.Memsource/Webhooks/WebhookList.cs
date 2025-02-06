@@ -31,12 +31,6 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
     public async Task<WebhookResponse<ProjectDto>> ProjectCreation(WebhookRequest webhookRequest,
         [WebhookParameter] ProjectCreatedRequest projectCreatedRequest)
     {
-        await WebhookLogger.LogAsync(new
-        {
-            status = "On project created called",
-            body = webhookRequest.Body
-        });
-        
         var data = JsonConvert.DeserializeObject<ProjectWrapper>(webhookRequest.Body.ToString()!);
 
         if (data is null)
@@ -64,12 +58,6 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
     public async Task<WebhookResponse<ProjectDto>> ProjectDeletion(WebhookRequest webhookRequest,
         [WebhookParameter] ProjectOptionalRequest request)
     {
-        await WebhookLogger.LogAsync(new
-        {
-            status = "On project deleted called",
-            body = webhookRequest.Body
-        });
-
         var data = JsonConvert.DeserializeObject<ProjectWrapper>(webhookRequest.Body.ToString());
         if (data is null)
         {
