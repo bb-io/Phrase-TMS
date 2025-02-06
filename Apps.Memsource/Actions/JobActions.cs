@@ -91,6 +91,7 @@ public class JobActions
             ProjectUid = response.Project.UId,
             WordCount = response.WordsCount,
             SourceLanguage = response.SourceLang,
+            AssignTo = response.AssignedTo.ToList()
         };
     }
 

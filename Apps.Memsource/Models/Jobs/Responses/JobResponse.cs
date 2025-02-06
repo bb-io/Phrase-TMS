@@ -1,4 +1,5 @@
-﻿using Blackbird.Applications.Sdk.Common;
+﻿using Apps.PhraseTMS.Dtos;
+using Blackbird.Applications.Sdk.Common;
 
 namespace Apps.PhraseTMS.Models.Jobs.Responses;
 
@@ -17,6 +18,8 @@ public class JobResponse
     [Display("Source language")] public string SourceLanguage { get; set; }
 
     [Display("Word count")] public int WordCount { get; set; }
+
+    [Display("Assigned to")] public List<Assignment> AssignTo { get; set; }
 
     //[Display("Due date")] public string DateDue { get; set; }
 }
