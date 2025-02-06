@@ -492,7 +492,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                 {
                     Uid = data.JobParts.FirstOrDefault().Uid,
                     Status = data.JobParts.FirstOrDefault().Status,
-                    ProjectUid = data.JobParts.FirstOrDefault().project.Uid,
+                    ProjectUid = data.metadata.project.uid,
                     Filename = data.JobParts.FirstOrDefault().fileName,
                     TargetLanguage = data.JobParts.FirstOrDefault().targetLang
                 }
@@ -697,7 +697,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                 {
                     Uid = selectedJob.Uid,
                     Status = selectedJob.Status,
-                    ProjectUid = selectedJob.Uid,
+                    ProjectUid = selectedJob.project.Uid,
                     Filename = selectedJob.fileName,
                     TargetLanguage = selectedJob.targetLang
                 }
@@ -728,7 +728,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                 {
                     Uid = selectedJob.Uid,
                     Status = selectedJob.Status,
-                    ProjectUid = selectedJob.Uid,
+                    ProjectUid = selectedJob.project.Uid,
                     Filename = selectedJob.fileName,
                     TargetLanguage = selectedJob.targetLang
                 }
@@ -758,7 +758,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                 {
                     Uid = selectedJob.Uid,
                     Status = selectedJob.Status,
-                    ProjectUid = selectedJob.Uid,
+                    ProjectUid = selectedJob.project.Uid,
                     Filename = selectedJob.fileName,
                     TargetLanguage = selectedJob.targetLang
                 }
@@ -788,7 +788,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                 {
                     Uid = selectedJob.Uid,
                     Status = selectedJob.Status,
-                    ProjectUid = selectedJob.Uid,
+                    ProjectUid = selectedJob.project.Uid,
                     Filename = selectedJob.fileName,
                     TargetLanguage = selectedJob.targetLang
                 }
@@ -820,7 +820,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                 {
                     Uid = selectedJob.Uid,
                     Status = selectedJob.Status,
-                    ProjectUid = selectedJob.Uid,
+                    ProjectUid = selectedJob.project.Uid,
                     Filename = selectedJob.fileName,
                     TargetLanguage = selectedJob.targetLang
                 }
@@ -841,7 +841,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                     {
                         Uid = selectedJob.Uid,
                         Status = selectedJob.Status,
-                        ProjectUid = selectedJob.Uid,
+                        ProjectUid = selectedJob.project.Uid,
                         Filename = selectedJob.fileName,
                         TargetLanguage = selectedJob.targetLang
                     }
