@@ -82,6 +82,19 @@ public class JobActions
 
         var response = await client.ExecuteWithHandling<JobDto>(request);
 
+        var Linguists = new List<UserDto>();
+        if (response.providers != null)
+        {
+            foreach (var user in response.providers)
+            {
+                var request2 = new PhraseTmsRequest($"/api2/v3/users/{user.uid}",
+                    Method.Get, authenticationCredentialsProviders);
+
+               var userinfo = await client.ExecuteWithHandling<UserDto>(request2);
+                Linguists.Add(userinfo);
+            }
+        }
+
         return new()
         {
             Uid = response.Uid,
@@ -91,7 +104,7 @@ public class JobActions
             ProjectUid = response.Project.UId,
             WordCount = response.WordsCount,
             SourceLanguage = response.SourceLang,
-            AssignTo = response.AssignedTo
+            AssignedTo = Linguists
         };
     }
 
