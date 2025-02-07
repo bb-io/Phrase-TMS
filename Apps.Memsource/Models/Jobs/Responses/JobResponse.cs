@@ -19,7 +19,7 @@ public class JobResponse
 
     [Display("Word count")] public int WordCount { get; set; }
 
-    [Display("Assigned to")] public List<Assignment> AssignTo { get; set; }
+    [Display("Assigned to")] public IEnumerable<Assignment> AssignedTo { get; set; }
 
     //[Display("Due date")] public string DateDue { get; set; }
 }

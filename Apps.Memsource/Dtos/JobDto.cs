@@ -26,7 +26,7 @@ public class JobDto
     public ProjectDto Project { get; set; }
 
     [Display("Assigned to")]
-    public IEnumerable<Assignment> AssignedTo { get; set; }
+    public IEnumerable<Assignment>? AssignedTo { get; set; }
 
     [Display("Workflow step"), JsonProperty("workflowStep")]
     public WorkflowStep WorkflowStep { get; set; }
