@@ -26,7 +26,7 @@ public class JobDto
     public ProjectDto Project { get; set; }
 
     [Display("Assigned to")]
-    public IEnumerable<Assignment>? AssignedTo { get; set; }
+    public IEnumerable<Provider>? providers { get; set; }
 
     [Display("Workflow step"), JsonProperty("workflowStep")]
     public WorkflowStep WorkflowStep { get; set; }
@@ -44,4 +44,13 @@ public class WorkflowStep
     
     [Display("Workflow level")]
     public int WorkflowLevel { get; set; }
+}
+
+public class Provider 
+{
+    public string type { get; set; }
+
+    public string id { get; set; }
+
+    public string uid { get; set; }
 }

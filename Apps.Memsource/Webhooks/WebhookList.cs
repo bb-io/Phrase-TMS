@@ -299,7 +299,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
         }
 
         if (request.UserId is not null &&
-            data.JobParts.FirstOrDefault().AssignedTo.All(x => x.Linguist.UId != request.UserId))
+            data.JobParts.FirstOrDefault().providers.All(x => x.uid != request.UserId))
         {
             return new()
             {
