@@ -11,7 +11,7 @@ public class CreateJobRequest
 {
     [Display("Target languages")]
     [DataSource(typeof(LanguageDataHandler))]
-    public IEnumerable<string> TargetLanguages { get; set; }
+    public IEnumerable<string>? TargetLanguages { get; set; }
 
     [Display("File")]
     public FileReference File { get; set; }

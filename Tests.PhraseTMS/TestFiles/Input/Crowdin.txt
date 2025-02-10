@@ -1,0 +1,12 @@
+ [Action("Get file", Description = "Get specific file info")]
+ public async Task<FileEntity> GetFile(
+     [ActionParameter] ProjectRequest project,
+     [ActionParameter] FileRequest fileRequest)
+ {
+     var intProjectId = IntParser.Parse(project.ProjectId, nameof(project.ProjectId));
+     var intFileId = IntParser.Parse(fileRequest.FileId, nameof(fileRequest.FileId));
+
+     var file = await ExceptionWrapper.ExecuteWithErrorHandling(async () =>
+         await SdkClient.SourceFiles.GetFile<FileResource>(intProjectId!.Value, intFileId!.Value));
+     return new(file);
+ }

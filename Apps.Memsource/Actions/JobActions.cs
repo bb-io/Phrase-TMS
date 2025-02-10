@@ -20,6 +20,7 @@ using Blackbird.Applications.Sdk.Common.Dynamic;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Drawing;
 using Blackbird.Applications.Sdk.Common.Exceptions;
+using Blackbird.Applications.Sdk.Common.Invocation;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -124,6 +125,13 @@ public class JobActions
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] CreateJobRequest input)
     {
+        if (input.TargetLanguages == null || !input.TargetLanguages.Any())
+        {
+            var projectActions = new ProjectActions(_fileManagementClient);
+            var project = await projectActions.GetProject(authenticationCredentialsProviders, projectRequest);
+            input.TargetLanguages = project.TargetLangs;
+        }
+
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var request = new PhraseTmsRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs",
             Method.Post, authenticationCredentialsProviders);
