@@ -10,10 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{7D5AA337-BB60-4EDB-A85A-5BBAF90292AA}"
-	ProjectSection(ProjectDependencies) = postProject
-		{5537304C-9C97-4119-81FB-8F6DF232AB64} = {5537304C-9C97-4119-81FB-8F6DF232AB64}
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.PhraseTMS", "Tests.PhraseTMS\Tests.PhraseTMS.csproj", "{93A6D93D-4E57-4E0F-9987-92E0019BFC62}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,10 +22,10 @@ Global
 		{5537304C-9C97-4119-81FB-8F6DF232AB64}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5537304C-9C97-4119-81FB-8F6DF232AB64}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5537304C-9C97-4119-81FB-8F6DF232AB64}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7D5AA337-BB60-4EDB-A85A-5BBAF90292AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7D5AA337-BB60-4EDB-A85A-5BBAF90292AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7D5AA337-BB60-4EDB-A85A-5BBAF90292AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7D5AA337-BB60-4EDB-A85A-5BBAF90292AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93A6D93D-4E57-4E0F-9987-92E0019BFC62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93A6D93D-4E57-4E0F-9987-92E0019BFC62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93A6D93D-4E57-4E0F-9987-92E0019BFC62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93A6D93D-4E57-4E0F-9987-92E0019BFC62}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

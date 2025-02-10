@@ -1,0 +1,8 @@
+{
+    "ConnectionDefinition": {
+        "Authorization": "Bearer ...",
+        "client_id": "",
+        "url": ""
+    },
+    "TestFolder": "TestFiles"
+}
