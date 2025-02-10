@@ -357,3 +357,4 @@ healthchecksdb
 
 /Apps.Memsource/ApplicationConstants.cs
 /ConsoleApp1
+/Tests.PhraseTMS/appsettings.json

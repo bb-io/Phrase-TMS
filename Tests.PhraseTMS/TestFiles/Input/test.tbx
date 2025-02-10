@@ -1,0 +1,1358 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tbx type="TBX-Core" style="dca" xml:lang="en" xmlns="urn:iso:std:iso:30042:ed-2">
+  <tbxHeader>
+    <fileDesc>
+      <titleStmt>
+        <title>Astronomy</title>
+      </titleStmt>
+    </fileDesc>
+  </tbxHeader>
+  <text>
+    <body>
+      <conceptEntry id="0">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>initial mass function</term>
+            <termNote type="termId">U7BLQQX1x245YA88LCwgWXcH1</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407396</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407396</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>función inicial de masa</term>
+            <termNote type="termId">LBF5zmYqMf823X4c0e1aB7522</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407400</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407400</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+		<conceptEntry id="0">
+			<langSec xml:lang="en">
+				<termSec>
+					<term>Father</term>
+					<termNote type="termId">U7BLQQX1x245YA88LCwgWXcH1</termNote>
+					<termNote type="partOfSpeech">noun</termNote>
+					<termNote type="forbidden">false</termNote>
+					<termNote type="preferred">false</termNote>
+					<termNote type="exactMatch">false</termNote>
+					<termNote type="status">Approved</termNote>
+					<termNote type="caseSensitive">false</termNote>
+					<termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+					<termNote type="createdAt">1706108407396</termNote>
+					<termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+					<termNote type="lastModifiedAt">1706108407396</termNote>
+				</termSec>
+			</langSec>
+			<langSec xml:lang="es">
+				<termSec>
+					<term>Padre</term>
+					<termNote type="termId">LBF5zmYqMf823X4c0e1aB7522</termNote>
+					<termNote type="partOfSpeech">noun</termNote>
+					<termNote type="forbidden">false</termNote>
+					<termNote type="preferred">false</termNote>
+					<termNote type="exactMatch">false</termNote>
+					<termNote type="status">Approved</termNote>
+					<termNote type="caseSensitive">false</termNote>
+					<termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+					<termNote type="createdAt">1706108407400</termNote>
+					<termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+					<termNote type="lastModifiedAt">1706108407400</termNote>
+				</termSec>
+			</langSec>
+		</conceptEntry>
+		<conceptEntry id="0">
+			<langSec xml:lang="en">
+				<termSec>
+					<term>Mother</term>
+					<termNote type="termId">U7BLQQX1x245YA88LCwgWXcH2</termNote>
+					<termNote type="partOfSpeech">noun</termNote>
+					<termNote type="forbidden">false</termNote>
+					<termNote type="preferred">false</termNote>
+					<termNote type="exactMatch">false</termNote>
+					<termNote type="status">Approved</termNote>
+					<termNote type="caseSensitive">false</termNote>
+					<termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+					<termNote type="createdAt">1706108407396</termNote>
+					<termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+					<termNote type="lastModifiedAt">1706108407396</termNote>
+				</termSec>
+			</langSec>
+			<langSec xml:lang="es">
+				<termSec>
+					<term>Madre</term>
+					<termNote type="termId">LBF5zmYqMf823X4c0e1aB7522</termNote>
+					<termNote type="partOfSpeech">noun</termNote>
+					<termNote type="forbidden">false</termNote>
+					<termNote type="preferred">false</termNote>
+					<termNote type="exactMatch">false</termNote>
+					<termNote type="status">Approved</termNote>
+					<termNote type="caseSensitive">false</termNote>
+					<termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+					<termNote type="createdAt">1706108407400</termNote>
+					<termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+					<termNote type="lastModifiedAt">1706108407400</termNote>
+				</termSec>
+			</langSec>
+		</conceptEntry>
+      <conceptEntry id="1">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>white dwarf</term>
+            <termNote type="termId">8xLYTjGxMec26s4Ens081aet3</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407444</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407444</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>enana blanca</term>
+            <termNote type="termId">C9Bvdt7X0O84M0jgsm2n7SfF3</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407450</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407450</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="2">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>UV radiation</term>
+            <termNote type="termId">ClFQfx59Moq2iH4Meh0m65Y13</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407365</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407365</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>radiación UV</term>
+            <termNote type="termId">KJ3214xo1OQ9Eii0ex0glOaI5</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407367</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407367</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="3">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>spectral type</term>
+            <termNote type="termId">JcnN9xpO00r9U0x0s71gtQWG8</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407435</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407435</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>tipo espectral</term>
+            <termNote type="termId">RJOz6qWL0Qr4QO8Mas1sesRu0</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407441</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407441</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="4">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>red dwarf</term>
+            <termNote type="termId">MfyYV9VdwTT2pi48lj00jYLh0</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407425</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407425</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>enana roja</term>
+            <termNote type="termId">P6QGfxyv04v5Oy8wH12vnHxj2</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407430</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407430</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="5">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>reflection nebula</term>
+            <termNote type="termId">CV6hiSwMMnY2IL48GPgyUx1A1</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407499</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407499</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>nebulosa de reflexión</term>
+            <termNote type="termId">FqBgXQQ20k24uw8U0B1mYci70</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407500</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407500</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="6">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>gamma-ray burst</term>
+            <termNote type="termId">VJHa1lV9wD1844i0sZ6kkblC6</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407317</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407317</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>explosión de rayos gamma</term>
+            <termNote type="termId">fn8r10mS3iBagWjwuE22o1bm6</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407322</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407322</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="7">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>Schwarzschild radius</term>
+            <termNote type="termId">LPy0AZgdxvu4ey9MmS0iT1Xc4</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407522</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407522</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>radio de Schwarzschild</term>
+            <termNote type="termId">7uoRjlF9wlU2Dl4I2H0UpwLJ0</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407524</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407524</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="8">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>globular cluster</term>
+            <termNote type="termId">ovp4xJAaMDj2hs4c1NxTJXnK0</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407326</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407326</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>cúmulo globular</term>
+            <termNote type="termId">p3TDfp070uy80Yz008o8NtyMd</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407329</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407329</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="9">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>circumstellar accretion disk</term>
+            <termNote type="termId">BEhtwWT4wFI2R18EoJxaiuzr1</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407313</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407313</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="10">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>open cluster</term>
+            <termNote type="termId">TfEQomgRwwl2s44Qm0xhCw902</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407304</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407304</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>cúmulo abierto</term>
+            <termNote type="termId">tpLW9bnQ06i5CF80gq0umq616</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407310</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407310</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="11">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>triple-alpha process</term>
+            <termNote type="termId">vkdia0Wjwoe5i1hgo91CwvVx0</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407559</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407559</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>proceso triple-alfa</term>
+            <termNote type="termId">Ge89VICqMAC2918M1G3R2LP83</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407561</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407561</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="12">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>singularity</term>
+            <termNote type="termId">1RJz76DTwUf4ad9oyw0A5mV90</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407550</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407550</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>singularidad</term>
+            <termNote type="termId">FIJaqEKr0g34up9grZ1MCGFh3</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407552</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407552</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="13">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>nebula</term>
+            <termNote type="termId">zLL6Dh7J0qU5gW9EIs0U8Vxh0</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407483</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407483</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>nebulosa</term>
+            <termNote type="termId">Tb6n6n7j0at4sa98cj003F413</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407490</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407490</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="14">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>gravitational collapse</term>
+            <termNote type="termId">tD6MqNafwxn27m4YEaMd1rkT1</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407384</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407384</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>colapso gravitacional</term>
+            <termNote type="termId">SB7pQQe1wlZ4GU8o9X1yOHjf3</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407386</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407386</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="15">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>carbon-nitrogen cycle</term>
+            <termNote type="termId">qmSdjKHy0SE4c0jM0C0M30bgs</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407534</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407534</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>ciclo CNO</term>
+            <termNote type="termId">A0pejO9OxMl5G69MLfxZ7v351</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407536</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407536</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="16">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>magnetic field</term>
+            <termNote type="termId">i41D4dlv18Pb8Bi0Se4c97650</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407369</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407369</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>campo magnético</term>
+            <termNote type="termId">bdkXxslbwJ05y78oNNxwKCnN1</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407371</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407371</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="17">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>binary star</term>
+            <termNote type="termId">pmOciUCOgcm2AE4M2tMhGGkj</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407388</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407388</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>estrella binaria</term>
+            <termNote type="termId">8tqV6lvEwUB2Eh4ApG0e9SDq1</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407394</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407394</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="18">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>emission nebula</term>
+            <termNote type="termId">lTfIDcxf0Qn5q78Eidx0XO1W4</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407470</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407470</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>nebulosa de emisión</term>
+            <termNote type="termId">0PJ3vcDY1EKbIShgK80UQOC76</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407475</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407475</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="19">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>solar mass</term>
+            <termNote type="termId">t6Wk8N2pw4D2WK40KbxfPoVI1</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407555</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407555</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>masa solar</term>
+            <termNote type="termId">6D5V6tvpw8o2OU4Q0l02UnHT2</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407557</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407557</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="20">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>Galaxy</term>
+            <termNote type="termId">yZbkstnhwJs24f4wEGMW3E9v</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407356</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407356</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>Galaxia</term>
+            <termNote type="termId">3IeQImfMwPM2QP4wk6MW8Zy5</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407359</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407359</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="21">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>main-sequence</term>
+            <termNote type="termId">A1T9RfRo0upaM1xwtV2CcUcE3</termNote>
+            <termNote type="partOfSpeech">adjective</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407331</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407331</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>de secuencia principal</term>
+            <termNote type="termId">0tT6bldlwnt5Ct8M2Qwqpzyn1</termNote>
+            <termNote type="partOfSpeech">adjective</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407333</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407333</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="22">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>star</term>
+            <termNote type="termId">CYXiYdtM0ab5yS806f0Ii2Sz1</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407361</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407361</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>estrella</term>
+            <termNote type="termId">psK9MmW00OFbMhjwDt2t4Uom1</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407363</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407363</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="23">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>proton-proton chain reaction</term>
+            <termNote type="termId">ONYNiIO2wcQ2OV4ETHwwBjmO</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407530</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407530</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>cadena protón-protón</term>
+            <termNote type="termId">VftVP79vg3W22N4kw5gRErjt</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407531</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407531</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="24">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>supernova</term>
+            <termNote type="termId">TRrP8dgW0G34mh8EHUwTjliH0</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407403</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407403</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>supernova</term>
+            <termNote type="termId">BXg9TmPNwFM2km4wuX0Q5elV1</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407407</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407407</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="25">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>red giant</term>
+            <termNote type="termId">5SW0KCpx00Ch8Uzwvc1gBgNm5</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407414</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407414</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>gigante roja</term>
+            <termNote type="termId">zVsHvqiago42Ux4wAWwSXzZX</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407420</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407420</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="26">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>star cluster</term>
+            <termNote type="termId">CiW4hdm10cJ90ew0oTf0qQ0W8</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407346</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407346</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>cúmulo estelar</term>
+            <termNote type="termId">Z7HWndnhMSZ2am4Ub11UV6Ae0</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407352</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407352</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="27">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>electron degeneracy</term>
+            <termNote type="termId">hsOXu3Dzwry2oo4Uvtw529e7</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407546</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407546</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>degeneración de electrones</term>
+            <termNote type="termId">qgFhxORgw6o2OL4ce0wRPoK60</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407548</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407548</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="28">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>planetary nebula</term>
+            <termNote type="termId">qT6uEcc40YO4oF8UbRwFl2t70</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407457</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407457</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>nebulosa planetaria</term>
+            <termNote type="termId">YSssG4ZigKJ2vC4cd9gxa47a</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407463</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407463</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="29">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>blue straggler</term>
+            <termNote type="termId">kNHpSodGgXq2fv48X7gk0PSE1</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407374</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407374</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>estrella rezagada azul</term>
+            <termNote type="termId">6iq617u4x8O4Qd8UeD0C1Pae4</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407379</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407379</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="30">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>Chandrasekhar limit</term>
+            <termNote type="termId">Zi3hKegYMPL2GG4kBxMLT6xm</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407513</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407513</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>límite de Chandrasekhar</term>
+            <termNote type="termId">zyVHRGS3Mq15W1j08Y1wX0Kon</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407516</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407516</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="31">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>dark nebula</term>
+            <termNote type="termId">kscy0qFc10GmMmy0Wn54zOxKd</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407493</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407493</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>nebulosa oscura</term>
+            <termNote type="termId">xVbvuN0p0iMbEehg6Y0U1LZ39</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407497</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407497</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="32">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>protostar</term>
+            <termNote type="termId">GvaljZ9Zwkh2hw40a51E1gBM1</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407338</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407338</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>protoestrella</term>
+            <termNote type="termId">z1YySfFD1a0hwdwwUd6SgyAd4</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407344</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407344</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="33">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>degeneracy</term>
+            <termNote type="termId">DvXzAZxZ0M44sG90A91Im8ZQ3</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407538</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407538</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>degeneración</term>
+            <termNote type="termId">u4teqiPKw3o2jr4EuwgMu0AS1</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407542</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407542</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="34">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>event horizon</term>
+            <termNote type="termId">8oVzoKBygar2Vc48b11qiThd3</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407526</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407526</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>horizonte de sucesos</term>
+            <termNote type="termId">1qDlMCC30yi8MDiMpZ1Ytq134</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407527</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407527</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="35">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>neutron star</term>
+            <termNote type="termId">eUCTWKLW0Mp5Qk8oHM1c1WyF6</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407508</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407508</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>estrella de neutrones</term>
+            <termNote type="termId">Z0it1DiX1mTi8wAw7P2UB4YZ1</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407511</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407511</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="36">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>neutron degeneracy</term>
+            <termNote type="termId">YdRzUNMDw1K4Yt9EtcxqaMqA1</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407518</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407518</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>degeneración de neutrones</term>
+            <termNote type="termId">7bTVtUcX0419ozigDS2RCs9T1</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407519</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407519</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+      <conceptEntry id="37">
+        <langSec xml:lang="en">
+          <termSec>
+            <term>black dwarf</term>
+            <termNote type="termId">yBO7EEvzgIK2qQ489hgB2gZX</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407563</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407563</termNote>
+          </termSec>
+        </langSec>
+        <langSec xml:lang="es">
+          <termSec>
+            <term>enana negra</term>
+            <termNote type="termId">uL268QBJgGt2oE4kbjg0LyGJ1</termNote>
+            <termNote type="partOfSpeech">noun</termNote>
+            <termNote type="forbidden">false</termNote>
+            <termNote type="preferred">false</termNote>
+            <termNote type="exactMatch">false</termNote>
+            <termNote type="status">Approved</termNote>
+            <termNote type="caseSensitive">false</termNote>
+            <termNote type="createdBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="createdAt">1706108407564</termNote>
+            <termNote type="lastModifiedBy">maksym.kharchenko@blackbird.io</termNote>
+            <termNote type="lastModifiedAt">1706108407564</termNote>
+          </termSec>
+        </langSec>
+      </conceptEntry>
+    </body>
+  </text>
+</tbx>
