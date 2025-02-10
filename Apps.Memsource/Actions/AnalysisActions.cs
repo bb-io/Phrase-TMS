@@ -96,9 +96,21 @@ public class AnalysisActions
     public async Task<AsyncRequest> CreateAnalysis(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] CreateAnalysisInput input)
+        [ActionParameter] CreateAnalysisInput input,
+        [ActionParameter] ListAllJobsQuery jobquery)
     {
+
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
+        if (input.JobsUIds is null)
+        {
+            var endpoint = $"/api2/v2/projects/{projectRequest.ProjectUId}/jobs";
+            var request2 = new PhraseTmsRequest(endpoint.WithQuery(jobquery), Method.Get,
+                authenticationCredentialsProviders);
+
+            var response = await client.Paginate<JobDto>(request2);
+            input.JobsUIds = response.Select(x => x.Uid).ToList();
+        }
+
         var request = new PhraseTmsRequest($"/api2/v2/analyses", Method.Post, authenticationCredentialsProviders);
         request.WithJsonBody(new CreateAnalysisRequest(input), JsonConfig.Settings);
 

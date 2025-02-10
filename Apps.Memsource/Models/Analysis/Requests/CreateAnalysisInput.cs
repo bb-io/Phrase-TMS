@@ -10,7 +10,7 @@ public class CreateAnalysisInput
 {
     [Display("Job IDs")]
     [DataSource(typeof(JobDataHandler))]
-    public IEnumerable<string> JobsUIds { get; set; }
+    public IEnumerable<string>? JobsUIds { get; set; }
 
     public string? Type { get; set; }
 
