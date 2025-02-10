@@ -85,14 +85,24 @@ public class JobActions
         var Linguists = new List<UserDto>();
         if (response.providers != null)
         {
+            
             foreach (var user in response.providers)
             {
+                try { 
+                var client2 = new PhraseTmsClient(authenticationCredentialsProviders);
                 var request2 = new PhraseTmsRequest($"/api2/v3/users/{user.uid}",
                     Method.Get, authenticationCredentialsProviders);
 
-               var userinfo = await client.ExecuteWithHandling<UserDto>(request2);
+                var userinfo = await client2.ExecuteWithHandling<UserDto>(request2);
                 Linguists.Add(userinfo);
             }
+            catch (Exception e) 
+            {
+                Linguists.Add(new UserDto { UId = user.uid, Id = user.id });
+            }
+        }
+            
+            
         }
 
         return new()
