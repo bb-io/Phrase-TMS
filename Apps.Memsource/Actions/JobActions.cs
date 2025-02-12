@@ -20,6 +20,7 @@ using Blackbird.Applications.Sdk.Common.Dynamic;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Drawing;
 using Blackbird.Applications.Sdk.Common.Exceptions;
+using Blackbird.Applications.Sdk.Common.Invocation;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -38,7 +39,8 @@ public class JobActions
         ListAllJobsResponse> ListAllJobs(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ProjectRequest input,
-        [ActionParameter] ListAllJobsQuery query)
+        [ActionParameter] ListAllJobsQuery query,
+        [ActionParameter][Display("LQA Score null?")]bool? LQAScorenull)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
 
@@ -52,6 +54,28 @@ public class JobActions
             {
                 UId = input.ProjectUId
             });
+
+                if (LQAScorenull.HasValue && LQAScorenull.Value)
+                {
+                    var lqaEndpoint = "/api2/v1/lqa/assessments";
+                    var lqaRequest = new PhraseTmsRequest(lqaEndpoint, Method.Post,
+                authenticationCredentialsProviders);
+                    var bodyDictionary = new Dictionary<string, object>
+                    {
+                        { "jobParts",  response.Select(u => new { uid = u.Uid }) } 
+                    };
+                    lqaRequest.WithJsonBody(bodyDictionary);
+                    var result = await client.ExecuteWithHandling(lqaRequest);
+                    var data = JsonConvert.DeserializeObject<LQAAssessmentSimpleDto>(result.Content);
+                    var jobsWithoutLQA = data?.AssessmentDetails?
+                        .Where(a => a.LqaEnabled && a.AssessmentResult == null)
+                        .Select(a => a.JobPartUid)?.ToList() ?? Enumerable.Empty<string>();
+
+                    return new()
+                    {
+                        Jobs = response.Where(x => jobsWithoutLQA.Contains(x.Uid))?.ToList() ?? new List<JobDto>()
+                    };
+                }
 
             return new()
             {
@@ -124,6 +148,13 @@ public class JobActions
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] CreateJobRequest input)
     {
+        if (input.TargetLanguages == null || !input.TargetLanguages.Any())
+        {
+            var projectActions = new ProjectActions(_fileManagementClient);
+            var project = await projectActions.GetProject(authenticationCredentialsProviders, projectRequest);
+            input.TargetLanguages = project.TargetLangs;
+        }
+
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var request = new PhraseTmsRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs",
             Method.Post, authenticationCredentialsProviders);

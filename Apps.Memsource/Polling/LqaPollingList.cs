@@ -32,7 +32,7 @@ public class LqaPollingList(InvocationContext invocationContext) : BaseInvocable
 
         var jobActions = new JobActions(null!);
         var projectJobs = await jobActions.ListAllJobs(InvocationContext.AuthenticationCredentialsProviders,
-            projectRequest, new());
+            projectRequest, new(), null);
 
         var client = new PhraseTmsClient(InvocationContext.AuthenticationCredentialsProviders);
         var getBatchRequest = new PhraseTmsRequest("/api2/v1/lqa/assessments", Method.Post,

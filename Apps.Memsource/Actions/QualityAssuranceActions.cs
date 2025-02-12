@@ -100,7 +100,7 @@ public class QualityAssuranceActions(IFileManagementClient fileManagementClient)
         return client.ExecuteWithHandling(request);
     }
 
-    [Action("Get LQA assessment", Description = "Delete specific LQA profile")]
+    [Action("Get LQA assessment", Description = "Get specific LQA assessment")]
     public async Task<LQAAssessmentDto> GetLQAassessment(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ProjectRequest projectRequest,

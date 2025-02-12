@@ -18,9 +18,22 @@ namespace Tests.PhraseTMS
         {
             var action = new JobActions(FileManager);
             var input1 = new ProjectRequest { ProjectUId= "JCrGdFaiOtGk0ykN02165h" };
-            var input2 =new JobRequest { JobUId = "31qJgVWU1TBTRkX76lXu2f" };
+            var input2 =new JobRequest { JobUId = "IuZXVLF91oTOuWdhKhfay3" };
 
             var result = await action.GetJob(InvocationContext.AuthenticationCredentialsProviders, input1, input2);
+
+            Console.WriteLine(result.Uid);
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public async Task CreateJob_IsSuccess()
+        {
+            var action = new JobActions(FileManager);
+            var input1 = new ProjectRequest { ProjectUId = "JCrGdFaiOtGk0ykN02165h" };
+            var input2 = new CreateJobRequest {  File = new Blackbird.Applications.Sdk.Common.Files.FileReference { Name = "Crowdin.txt" } };
+
+            var result = await action.CreateJob(InvocationContext.AuthenticationCredentialsProviders, input1, input2);
 
             Console.WriteLine(result.Uid);
             Assert.IsNotNull(result);
