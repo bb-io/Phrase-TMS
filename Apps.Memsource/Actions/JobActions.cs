@@ -73,7 +73,7 @@ public class JobActions
 
                     return new()
                     {
-                        Jobs = response.Where(x => jobsWithoutLQA.Contains(x.Uid)).ToList() ?? new List<JobDto>()
+                        Jobs = response.Where(x => jobsWithoutLQA.Contains(x.Uid))?.ToList() ?? new List<JobDto>()
                     };
                 }
 
