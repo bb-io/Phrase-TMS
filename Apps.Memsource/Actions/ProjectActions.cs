@@ -103,6 +103,8 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] CreateFromTemplateRequest input)
     {
+        if (String.IsNullOrEmpty(input.TemplateUId))
+        { throw new PluginMisconfigurationException("Template ID cannot be empty"); }
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var request = new PhraseTmsRequest($"/api2/v1/projects/applyTemplate/{input.TemplateUId}", Method.Post,
                 authenticationCredentialsProviders)
@@ -223,7 +225,7 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
         var credentialsProviders = authenticationCredentialsProviders as AuthenticationCredentialsProvider[] ??
                                    authenticationCredentialsProviders.ToArray();
 
-        var jobs = await jobActions.ListAllJobs(credentialsProviders, input, new ListAllJobsQuery());
+        var jobs = await jobActions.ListAllJobs(credentialsProviders, input, new ListAllJobsQuery(), null);
         var files = new List<FileReference>();
         foreach (var job in jobs.Jobs)
         {
@@ -244,7 +246,7 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
         var credentialsProviders = authenticationCredentialsProviders as AuthenticationCredentialsProvider[] ??
                                    authenticationCredentialsProviders.ToArray();
 
-        var jobs = await jobActions.ListAllJobs(credentialsProviders, input, new ListAllJobsQuery());
+        var jobs = await jobActions.ListAllJobs(credentialsProviders, input, new ListAllJobsQuery(), null);
         var files = new List<FileReference>();
         foreach (var job in jobs.Jobs)
         {

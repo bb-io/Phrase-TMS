@@ -39,7 +39,8 @@ public class JobActions
         ListAllJobsResponse> ListAllJobs(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ProjectRequest input,
-        [ActionParameter] ListAllJobsQuery query)
+        [ActionParameter] ListAllJobsQuery query,
+        [ActionParameter][Display("LQA Score null?")]bool? LQAScorenull)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
 
@@ -53,6 +54,28 @@ public class JobActions
             {
                 UId = input.ProjectUId
             });
+
+                if (LQAScorenull.HasValue && LQAScorenull.Value)
+                {
+                    var lqaEndpoint = "/api2/v1/lqa/assessments";
+                    var lqaRequest = new PhraseTmsRequest(lqaEndpoint, Method.Post,
+                authenticationCredentialsProviders);
+                    var bodyDictionary = new Dictionary<string, object>
+                    {
+                        { "jobParts",  response.Select(u => new { uid = u.Uid }) } 
+                    };
+                    lqaRequest.WithJsonBody(bodyDictionary);
+                    var result = await client.ExecuteWithHandling(lqaRequest);
+                    var data = JsonConvert.DeserializeObject<LQAAssessmentSimpleDto>(result.Content);
+                    var jobsWithoutLQA = data?.AssessmentDetails?
+                        .Where(a => a.LqaEnabled && a.AssessmentResult == null)
+                        .Select(a => a.JobPartUid)?.ToList() ?? Enumerable.Empty<string>();
+
+                    return new()
+                    {
+                        Jobs = response.Where(x => jobsWithoutLQA.Contains(x.Uid)).ToList() ?? new List<JobDto>()
+                    };
+                }
 
             return new()
             {
