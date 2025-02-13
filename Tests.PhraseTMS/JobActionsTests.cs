@@ -62,5 +62,19 @@ namespace Tests.PhraseTMS
             Assert.IsNotNull(result);
             Assert.IsFalse(string.IsNullOrEmpty(result.Uid));
         }
+
+        [TestMethod]
+        public async Task UpdateSource_ValidData_Success()
+        {
+            var action = new JobActions(FileManager);
+            var input1 = new ProjectRequest { ProjectUId = "JCrGdFaiOtGk0ykN02165h" };
+            var input2 = new UpdateSourceRequest { File = new Blackbird.Applications.Sdk.Common.Files.FileReference { Name = "Crowdin.txt" } };
+
+            var result = await action.UpdateSource(InvocationContext.AuthenticationCredentialsProviders, input1, input2);
+
+            Console.WriteLine(result.Uid);
+            Assert.IsNotNull(result);
+            Assert.IsFalse(string.IsNullOrEmpty(result.Uid));
+        }
     }
 }
