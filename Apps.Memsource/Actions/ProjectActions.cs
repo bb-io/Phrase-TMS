@@ -225,7 +225,7 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
         var credentialsProviders = authenticationCredentialsProviders as AuthenticationCredentialsProvider[] ??
                                    authenticationCredentialsProviders.ToArray();
 
-        var jobs = await jobActions.ListAllJobs(credentialsProviders, input, new ListAllJobsQuery(), null);
+        var jobs = await jobActions.ListAllJobs(credentialsProviders, input, new ListAllJobsQuery(), new JobStatusesRequest(), null);
         var files = new List<FileReference>();
         foreach (var job in jobs.Jobs)
         {
@@ -246,7 +246,7 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
         var credentialsProviders = authenticationCredentialsProviders as AuthenticationCredentialsProvider[] ??
                                    authenticationCredentialsProviders.ToArray();
 
-        var jobs = await jobActions.ListAllJobs(credentialsProviders, input, new ListAllJobsQuery(), null);
+        var jobs = await jobActions.ListAllJobs(credentialsProviders, input, new ListAllJobsQuery(), new JobStatusesRequest(), null);
         var files = new List<FileReference>();
         foreach (var job in jobs.Jobs)
         {

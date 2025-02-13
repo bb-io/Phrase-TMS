@@ -44,7 +44,5 @@ public class BaseWebhookHandler(InvocationContext invocationContext, string subE
         var deleteRequest = new PhraseTmsRequest($"/api2/v2/webhooks/{webhookUId}", Method.Delete,
             authenticationCredentialsProviders);
         await client.ExecuteWithHandling(deleteRequest);
-
-        await Task.Delay(5000);
     }
 }

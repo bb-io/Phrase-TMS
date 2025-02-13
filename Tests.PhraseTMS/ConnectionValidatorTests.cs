@@ -5,24 +5,27 @@ using PhraseTMSTests.Base;
 namespace Tests.PhraseTMS
 {
     [TestClass]
-    public class Validator : TestBase
+    public class ConnectionValidatorTests : TestBase
     {
         [TestMethod]
-        public async Task ValidatesCorrectConnection()
+        public async Task ValidateConnection_ValidData_ShouldBeSuccessful()
         {
             var validator = new ConnectionValidator();
-
+            
             var result = await validator.ValidateConnection(Creds, CancellationToken.None);
+            
             Assert.IsTrue(result.IsValid);
         }
 
         [TestMethod]
-        public async Task DoesNotValidateIncorrectConnection()
+        public async Task ValidateConnection_InvalidData_ShouldFail()
         {
             var validator = new ConnectionValidator();
-
-            var newCreds = Creds.Select(x => new AuthenticationCredentialsProvider(x.KeyName, x.Value + "_incorrect"));
-            var result = await validator.ValidateConnection(newCreds, CancellationToken.None);
+            var newCredentials = Creds
+                .Select(x => new AuthenticationCredentialsProvider(x.KeyName, x.Value + "_incorrect"));
+            
+            var result = await validator.ValidateConnection(newCredentials, CancellationToken.None);
+            
             Assert.IsFalse(result.IsValid);
         }
     }
