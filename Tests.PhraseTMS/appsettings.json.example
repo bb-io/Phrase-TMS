@@ -1,8 +1,7 @@
 {
     "ConnectionDefinition": {
         "Authorization": "Bearer ...",
-        "client_id": "",
-        "url": ""
+        "url": "" /* 'https://cloud.memsource.com' or 'https://us.cloud.memsource.com' */
     },
     "TestFolder": "TestFiles"
 }

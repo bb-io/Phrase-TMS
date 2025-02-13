@@ -17,37 +17,29 @@ using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Blackbird.Applications.Sdk.Utils.Extensions.Files;
 using Apps.PhraseTMS.DataSourceHandlers;
 using Blackbird.Applications.Sdk.Common.Dynamic;
-using DocumentFormat.OpenXml.Spreadsheet;
-using DocumentFormat.OpenXml.Drawing;
 using Blackbird.Applications.Sdk.Common.Exceptions;
-using Blackbird.Applications.Sdk.Common.Invocation;
 
 namespace Apps.PhraseTMS.Actions;
 
 [ActionList]
-public class JobActions
+public class JobActions(IFileManagementClient fileManagementClient)
 {
-    private readonly IFileManagementClient _fileManagementClient;
-
-    public JobActions(IFileManagementClient fileManagementClient)
-    {
-        _fileManagementClient = fileManagementClient;
-    }
-
-    [Action("List jobs", Description = "List all jobs in the project")]
-    public async Task<
-        ListAllJobsResponse> ListAllJobs(
+    [Action("Search jobs", Description = "Returns a list of jobs in the project based on specified parameters")]
+    public async Task<ListAllJobsResponse> ListAllJobs(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ProjectRequest input,
         [ActionParameter] ListAllJobsQuery query,
-        [ActionParameter][Display("LQA Score null?")]bool? LQAScorenull)
+        [ActionParameter] JobStatusesRequest jobStatusesRequest,
+        [ActionParameter] [Display("LQA Score null?")] bool? LQAScorenull)
     {
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
+        var credentialsProviders = authenticationCredentialsProviders as AuthenticationCredentialsProvider[] ?? authenticationCredentialsProviders.ToArray();
+        
+        var client = new PhraseTmsClient(credentialsProviders);
 
         var endpoint = $"/api2/v2/projects/{input.ProjectUId}/jobs";
         var request = new PhraseTmsRequest(endpoint.WithQuery(query), Method.Get,
-            authenticationCredentialsProviders);
-        try 
+            credentialsProviders);
+        try
         {
             var response = await client.Paginate<JobDto>(request);
             response.ForEach(x => x.Project = new()
@@ -55,43 +47,49 @@ public class JobActions
                 UId = input.ProjectUId
             });
 
-                if (LQAScorenull.HasValue && LQAScorenull.Value)
+            if (LQAScorenull.HasValue && LQAScorenull.Value)
+            {
+                var lqaEndpoint = "/api2/v1/lqa/assessments";
+                var lqaRequest = new PhraseTmsRequest(lqaEndpoint, Method.Post,
+                    credentialsProviders);
+                var bodyDictionary = new Dictionary<string, object>
                 {
-                    var lqaEndpoint = "/api2/v1/lqa/assessments";
-                    var lqaRequest = new PhraseTmsRequest(lqaEndpoint, Method.Post,
-                authenticationCredentialsProviders);
-                    var bodyDictionary = new Dictionary<string, object>
-                    {
-                        { "jobParts",  response.Select(u => new { uid = u.Uid }) } 
-                    };
-                    lqaRequest.WithJsonBody(bodyDictionary);
-                    var result = await client.ExecuteWithHandling(lqaRequest);
-                    var data = JsonConvert.DeserializeObject<LQAAssessmentSimpleDto>(result.Content);
-                    var jobsWithoutLQA = data?.AssessmentDetails?
-                        .Where(a => a.LqaEnabled && a.AssessmentResult == null)
-                        .Select(a => a.JobPartUid)?.ToList() ?? Enumerable.Empty<string>();
+                    { "jobParts", response.Select(u => new { uid = u.Uid }) }
+                };
+                
+                lqaRequest.WithJsonBody(bodyDictionary);
+                var result = await client.ExecuteWithHandling(lqaRequest);
+                var data = JsonConvert.DeserializeObject<LQAAssessmentSimpleDto>(result.Content!);
+                var jobsWithoutLQA = data?.AssessmentDetails?
+                    .Where(a => a.LqaEnabled && a.AssessmentResult == null)
+                    .Select(a => a.JobPartUid)?.ToList() ?? Enumerable.Empty<string>();
 
-                    return new()
-                    {
-                        Jobs = response.Where(x => jobsWithoutLQA.Contains(x.Uid))?.ToList() ?? new List<JobDto>()
-                    };
-                }
+                return new()
+                {
+                    Jobs = response.Where(x => jobsWithoutLQA.Contains(x.Uid))?.ToList() ?? new List<JobDto>()
+                };
+            }
+
+            if (jobStatusesRequest.Statuses != null)
+            {
+                response = response.Where(x => jobStatusesRequest.Statuses.Contains(x.Status)).ToList();
+            }
 
             return new()
             {
                 Jobs = response
             };
-        } catch (Exception e) 
+        }
+        catch (Exception e)
         {
-            if (e.Message.Contains("Invalid parameters") || e.Message.Contains("The object referenced by the field") || e.Message.Contains("unsupported locale")) 
+            if (e.Message.Contains("Invalid parameters") || e.Message.Contains("The object referenced by the field") ||
+                e.Message.Contains("unsupported locale"))
             {
                 throw new PluginMisconfigurationException(e.Message + "Make sure that the input values are correct.");
-            } else 
-            {
-                throw new PluginApplicationException(e.Message);
             }
+            
+            throw new PluginApplicationException(e.Message);
         }
-       
     }
 
     [Action("Get job", Description = "Get job by UId")]
@@ -109,24 +107,22 @@ public class JobActions
         var Linguists = new List<UserDto>();
         if (response.providers != null)
         {
-            
             foreach (var user in response.providers)
             {
-                try { 
-                var client2 = new PhraseTmsClient(authenticationCredentialsProviders);
-                var request2 = new PhraseTmsRequest($"/api2/v3/users/{user.uid}",
-                    Method.Get, authenticationCredentialsProviders);
+                try
+                {
+                    var client2 = new PhraseTmsClient(authenticationCredentialsProviders);
+                    var request2 = new PhraseTmsRequest($"/api2/v3/users/{user.uid}",
+                        Method.Get, authenticationCredentialsProviders);
 
-                var userinfo = await client2.ExecuteWithHandling<UserDto>(request2);
-                Linguists.Add(userinfo);
+                    var userinfo = await client2.ExecuteWithHandling<UserDto>(request2);
+                    Linguists.Add(userinfo);
+                }
+                catch (Exception e)
+                {
+                    Linguists.Add(new UserDto { UId = user.uid, Id = user.id });
+                }
             }
-            catch (Exception e) 
-            {
-                Linguists.Add(new UserDto { UId = user.uid, Id = user.id });
-            }
-        }
-            
-            
         }
 
         return new()
@@ -150,7 +146,7 @@ public class JobActions
     {
         if (input.TargetLanguages == null || !input.TargetLanguages.Any())
         {
-            var projectActions = new ProjectActions(_fileManagementClient);
+            var projectActions = new ProjectActions(fileManagementClient);
             var project = await projectActions.GetProject(authenticationCredentialsProviders, projectRequest);
             input.TargetLanguages = project.TargetLangs;
         }
@@ -162,7 +158,7 @@ public class JobActions
         var output = JsonConvert.SerializeObject(new
         {
             targetLangs = input.TargetLanguages,
-            preTranslate = input.preTranslate ?? false 
+            preTranslate = input.preTranslate ?? false
         });
 
         var headers = new Dictionary<string, string>()
@@ -173,7 +169,7 @@ public class JobActions
         };
         headers.ToList().ForEach(x => request.AddHeader(x.Key, x.Value));
 
-        var fileBytes = _fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
+        var fileBytes = fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
         request.AddParameter("application/octet-stream", fileBytes, ParameterType.RequestBody);
 
         var response = await client.ExecuteWithHandling<JobResponseWrapper>(request);
@@ -218,15 +214,17 @@ public class JobActions
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] JobRequest input,
         [ActionParameter] EditJobBody body,
-        [ActionParameter] [DataSource(typeof(VendorDataHandler))] string? Vendor,
-        [ActionParameter] [DataSource(typeof(UserDataHandler))] string? User)
+        [ActionParameter] [DataSource(typeof(VendorDataHandler))]
+        string? Vendor,
+        [ActionParameter] [DataSource(typeof(UserDataHandler))]
+        string? User)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
 
         var bodyDictionary = new Dictionary<string, object>
         {
-            { 
-                "jobs",  new[] { new { uid = input.JobUId } }
+            {
+                "jobs", new[] { new { uid = input.JobUId } }
             }
         };
 
@@ -239,6 +237,7 @@ public class JobActions
         {
             bodyDictionary.Add("dateDue", body.DateDue);
         }
+
         if (Vendor != null)
         {
             var vendorId = await GetVendorId(authenticationCredentialsProviders, Vendor);
@@ -252,14 +251,12 @@ public class JobActions
         }
 
         var request = new PhraseTmsRequest($"/api2/v3/jobs",
-            Method.Patch, authenticationCredentialsProviders)
+                Method.Patch, authenticationCredentialsProviders)
             .WithJsonBody(bodyDictionary, JsonConfig.DateSettings);
 
 
         await client.ExecuteWithHandling(request);
-        
     }
-
 
 
     [Action("Download target file", Description = "Download target file of a job")]
@@ -291,7 +288,7 @@ public class JobActions
             mimeType = MediaTypeNames.Application.Octet;
 
         using var stream = new MemoryStream(fileData);
-        var file = await _fileManagementClient.UploadAsync(stream, mimeType, filename);
+        var file = await fileManagementClient.UploadAsync(stream, mimeType, filename);
         return new() { File = file };
     }
 
@@ -313,7 +310,7 @@ public class JobActions
         var filename = Uri.UnescapeDataString(filenameHeader.Value.ToString().Split(';')[1].Split("\'\'")[1]);
 
         using var stream = new MemoryStream(fileData);
-        var file = await _fileManagementClient.UploadAsync(stream, responseDownload.ContentType, filename);
+        var file = await fileManagementClient.UploadAsync(stream, responseDownload.ContentType, filename);
         return new() { File = file };
     }
 
@@ -342,12 +339,13 @@ public class JobActions
             .Replace("\n", string.Empty)
             .Replace(" ", string.Empty);
 
-        var fileBytes = _fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
-        var request = new PhraseTmsRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/target", Method.Post, creds)
-            .AddHeader("Content-Disposition", $"filename*=UTF-8''{input.FileName ?? input.File.Name}")
-            .AddHeader("Content-Type", "application/octet-stream")
-            .AddHeader("Memsource", jsonPayload)
-            .AddParameter("application/octet-stream", fileBytes, ParameterType.RequestBody);
+        var fileBytes = fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
+        var request =
+            new PhraseTmsRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/target", Method.Post, creds)
+                .AddHeader("Content-Disposition", $"filename*=UTF-8''{input.FileName ?? input.File.Name}")
+                .AddHeader("Content-Type", "application/octet-stream")
+                .AddHeader("Memsource", jsonPayload)
+                .AddParameter("application/octet-stream", fileBytes, ParameterType.RequestBody);
 
         return client.ExecuteWithHandling(request);
     }
@@ -363,19 +361,25 @@ public class JobActions
         var requestFile = new PhraseTmsRequest(
             $"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/bilingualFile",
             Method.Post, authenticationCredentialsProviders);
-        if (!String.IsNullOrEmpty(bilingualRequest.Format)) 
-        { requestFile.AddQueryParameter("format",bilingualRequest.Format); }
+        if (!String.IsNullOrEmpty(bilingualRequest.Format))
+        {
+            requestFile.AddQueryParameter("format", bilingualRequest.Format);
+        }
+
         if (bilingualRequest.Preview != null && bilingualRequest.Preview is false)
-        { requestFile.AddQueryParameter("preview", "false"); }
+        {
+            requestFile.AddQueryParameter("preview", "false");
+        }
+
         var jsonBody = JsonConvert.SerializeObject(new
         {
             jobs = new[]
+            {
+                new
                 {
-                    new 
-                    {
-                        uid = input.JobUId
-                    }
-                },
+                    uid = input.JobUId
+                }
+            },
         });
 
         requestFile.AddJsonBody(jsonBody);
@@ -387,7 +391,7 @@ public class JobActions
         var filename = Uri.UnescapeDataString(filenameHeader.Value.ToString().Split(';')[1].Split("\'\'")[1]);
 
         using var stream = new MemoryStream(fileData);
-        var file = await _fileManagementClient.UploadAsync(stream, responseDownload.ContentType, filename);
+        var file = await fileManagementClient.UploadAsync(stream, responseDownload.ContentType, filename);
         return new() { File = file };
     }
 
@@ -398,12 +402,18 @@ public class JobActions
     {
         var client = new PhraseTmsClient(creds);
 
-        var fileBytes = _fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
+        var fileBytes = fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
         var request = new PhraseTmsRequest($"/api2/v2/bilingualFiles", Method.Post, creds);
         if (!String.IsNullOrEmpty(input.saveToTransMemory))
-        { request.AddQueryParameter("saveToTransMemory", input.saveToTransMemory); }
+        {
+            request.AddQueryParameter("saveToTransMemory", input.saveToTransMemory);
+        }
+
         if (input.setCompleted != null && input.setCompleted is true)
-        { request.AddQueryParameter("setCompleted", true); }
+        {
+            request.AddQueryParameter("setCompleted", true);
+        }
+
         request.AlwaysMultipartFormData = true;
         request.AddFile("file", fileBytes, input.File.Name);
 
@@ -440,15 +450,17 @@ public class JobActions
     private async Task<string> GetUserId(IEnumerable<AuthenticationCredentialsProvider> creds, string linguist)
     {
         var actions = new UserActions();
-        var userDetails = await actions.GetUser(creds, new Models.Users.Requests.GetUserRequest { UserUId = linguist});
-        var user = await actions.FindUser(creds, new Models.Users.Requests.ListAllUsersQuery { email = userDetails.Email.Replace("+", "%2B") });
+        var userDetails = await actions.GetUser(creds, new Models.Users.Requests.GetUserRequest { UserUId = linguist });
+        var user = await actions.FindUser(creds,
+            new Models.Users.Requests.ListAllUsersQuery { email = userDetails.Email.Replace("+", "%2B") });
         return user.Id;
     }
 
     private async Task<string> GetVendorId(IEnumerable<AuthenticationCredentialsProvider> creds, string vendor)
     {
         var actions = new VendorActions();
-        var userDetails = await actions.GetVendor(creds, new Models.Vendors.Requests.GetVendorRequest { VendorId = vendor});
+        var userDetails =
+            await actions.GetVendor(creds, new Models.Vendors.Requests.GetVendorRequest { VendorId = vendor });
         return userDetails.Id;
     }
 }

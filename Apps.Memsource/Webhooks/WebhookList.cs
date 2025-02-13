@@ -227,6 +227,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                 TargetLanguage = data.JobParts.FirstOrDefault()?.TargetLang,
                 Status = data.JobParts.FirstOrDefault()?.Status,
                 ProjectUid = data.JobParts.FirstOrDefault()?.Project.UId,
+                ProjectName = data.JobParts.FirstOrDefault()?.Project.Name
                 //DateDue = response.DateDue
             }
         };
@@ -251,6 +252,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                 TargetLanguage = data.JobParts.FirstOrDefault()?.TargetLang,
                 Status = data.JobParts.FirstOrDefault()?.Status,
                 ProjectUid = data.JobParts.FirstOrDefault()?.Project.UId,
+                ProjectName = data.JobParts.FirstOrDefault()?.Project.Name
                 //DateDue = response.DateDue
             }
         };
@@ -274,6 +276,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
             TargetLanguage = data.JobParts.FirstOrDefault()?.TargetLang,
             Status = data.JobParts.FirstOrDefault()?.Status,
             ProjectUid = data.JobParts.FirstOrDefault()?.Project.UId,
+            ProjectName = data.JobParts.FirstOrDefault()?.Project.Name,
             //DateDue = response.DateDue
         };
 
@@ -329,6 +332,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                 TargetLanguage = data.JobParts.FirstOrDefault()?.TargetLang,
                 Status = data.JobParts.FirstOrDefault()?.Status,
                 ProjectUid = data.JobParts.FirstOrDefault()?.Project.UId,
+                ProjectName = data.JobParts.FirstOrDefault()?.Project.Name
                 //DateDue = response.DateDue
             }
         };
@@ -350,7 +354,8 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
             Filename = data.JobParts.FirstOrDefault()?.Filename,
             TargetLanguage = data.JobParts.FirstOrDefault()?.TargetLang,
             Status = data.JobParts.FirstOrDefault()?.Status,
-            ProjectUid = data.JobParts.FirstOrDefault()?.Project.UId
+            ProjectUid = data.JobParts.FirstOrDefault()?.Project.UId,
+            ProjectName = data.JobParts.FirstOrDefault()?.Project.Name
             //DateDue = response.DateDue
         };
 
@@ -381,6 +386,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
             TargetLanguage = data.JobParts.FirstOrDefault()?.TargetLang,
             Status = data.JobParts.FirstOrDefault()?.Status,
             ProjectUid = data.JobParts.FirstOrDefault()?.Project.UId,
+            ProjectName = data.JobParts.FirstOrDefault()?.Project.Name,
             //DateDue = response.DateDue
         };
 
@@ -411,6 +417,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
             TargetLanguage = data.JobParts.FirstOrDefault()?.TargetLang,
             Status = data.JobParts.FirstOrDefault()?.Status,
             ProjectUid = data.JobParts.FirstOrDefault()?.Project.UId,
+            ProjectName = data.JobParts.FirstOrDefault().Project.Name,
             //DateDue = response.DateDue
         };
 
@@ -493,6 +500,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                     Uid = data.JobParts.FirstOrDefault().Uid,
                     Status = data.JobParts.FirstOrDefault().Status,
                     ProjectUid = data.metadata.project.uid,
+                    ProjectName = data.metadata.project.name,
                     Filename = data.JobParts.FirstOrDefault().fileName,
                     TargetLanguage = data.JobParts.FirstOrDefault().targetLang
                 }
@@ -921,6 +929,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                 {
                     Uid = job.Uid,
                     ProjectUid = job.Project.UId,
+                    ProjectName = job.Project.Name,
                     Filename = job.Filename,
                     SourceLanguage = job.SourceLang,
                     Status = job.Status,
@@ -948,6 +957,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
             TargetLanguage = data.JobPart.TargetLang,
             Status = data.JobPart.Status,
             ProjectUid = data.JobPart.Project.UId,
+            ProjectName = data.JobPart.Project?.Name ?? string.Empty,
             //DateDue = response.DateDue
         };
 
@@ -978,6 +988,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
             TargetLanguage = data.JobParts.FirstOrDefault()?.TargetLang,
             Status = data.JobParts.FirstOrDefault()?.Status,
             ProjectUid = data.JobParts.FirstOrDefault()?.Project.UId,
+            ProjectName = data.JobParts.FirstOrDefault()?.Project.Name,
             //DateDue = response.DateDue
         };
 
