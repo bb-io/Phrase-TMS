@@ -144,6 +144,17 @@ public class JobActions(IFileManagementClient fileManagementClient)
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] CreateJobRequest input)
     {
+
+        if (string.IsNullOrWhiteSpace(projectRequest.ProjectUId))
+        {
+            throw new PluginMisconfigurationException("Project ID is not provided. Please specify a valid Project ID.");
+        }
+
+        if (input.File == null)
+        {
+            throw new PluginMisconfigurationException("File is not provided. Please upload a file.");
+        }
+
         if (input.TargetLanguages == null || !input.TargetLanguages.Any())
         {
             var projectActions = new ProjectActions(fileManagementClient);
@@ -169,11 +180,23 @@ public class JobActions(IFileManagementClient fileManagementClient)
         };
         headers.ToList().ForEach(x => request.AddHeader(x.Key, x.Value));
 
-        var fileBytes = fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
-        request.AddParameter("application/octet-stream", fileBytes, ParameterType.RequestBody);
+        var fileStream = await fileManagementClient.DownloadAsync(input.File);
+        using (var memoryStream = new MemoryStream())
+        {
+            await fileStream.CopyToAsync(memoryStream);
+            memoryStream.Position = 0;
+
+            if (memoryStream.ReadByte() == -1)
+            {
+                throw new PluginMisconfigurationException("The provided file is empty. Please check your file input and try again");
+            }
+
+            memoryStream.Position = 0;
+            var fileBytes = memoryStream.ToArray();
+            request.AddParameter("application/octet-stream", fileBytes, ParameterType.RequestBody);
+        }
 
         var response = await client.ExecuteWithHandling<JobResponseWrapper>(request);
-
         return response.Jobs.First();
     }
 
