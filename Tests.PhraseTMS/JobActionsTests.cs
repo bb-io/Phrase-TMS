@@ -1,4 +1,5 @@
 ﻿using Apps.PhraseTMS.Actions;
+using Apps.PhraseTMS.Models.Analysis.Requests;
 using Apps.PhraseTMS.Models.Jobs.Requests;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using PhraseTMSTests.Base;
@@ -12,7 +13,7 @@ namespace Tests.PhraseTMS
         public async Task GetJob_ValidIds_ShouldNotFailAndReturnNotEmptyResponse()
         {
             var actions = new JobActions(FileManager);
-            var projectRequest = new ProjectRequest { ProjectUId= "JCrGdFaiOtGk0ykN02165h" };
+            var projectRequest = new ProjectRequest { ProjectUId= "S7Xb0aElcmkX3qTJQ87TM1" };
             var jobRequest = new JobRequest { JobUId = "IuZXVLF91oTOuWdhKhfay3" };
 
             var result = await actions.GetJob(InvocationContext.AuthenticationCredentialsProviders, projectRequest, jobRequest);
@@ -26,7 +27,7 @@ namespace Tests.PhraseTMS
         public async Task ListAllJobs_ValidIdsWithCompletedStatus_ShouldNotFail()
         {
             var action = new JobActions(FileManager);
-            var projectRequest = new ProjectRequest { ProjectUId = "Z6WgM4mN4crBbpYTB2T3M2" };
+            var projectRequest = new ProjectRequest { ProjectUId = "S7Xb0aElcmkX3qTJQ87TM1" };
             var searchQuery = new ListAllJobsQuery
             {
                 WorkflowLevel = 3
@@ -53,8 +54,8 @@ namespace Tests.PhraseTMS
         public async Task CreateJob_ValidData_ShouldNotFailAndReturnNotEmptyResponse()
         {
             var action = new JobActions(FileManager);
-            var input1 = new ProjectRequest { ProjectUId = "JCrGdFaiOtGk0ykN02165h" };
-            var input2 = new CreateJobRequest {  File = new Blackbird.Applications.Sdk.Common.Files.FileReference { Name = "Crowdin.txt" } };
+            var input1 = new ProjectRequest { ProjectUId = "S7Xb0aElcmkX3qTJQ87TM1" };
+            var input2 = new CreateJobRequest {  File = new Blackbird.Applications.Sdk.Common.Files.FileReference { Name = "test.txt" } };
 
             var result = await action.CreateJob(InvocationContext.AuthenticationCredentialsProviders, input1, input2);
 
@@ -67,8 +68,11 @@ namespace Tests.PhraseTMS
         public async Task UpdateSource_ValidData_Success()
         {
             var action = new JobActions(FileManager);
-            var input1 = new ProjectRequest { ProjectUId = "JCrGdFaiOtGk0ykN02165h" };
-            var input2 = new UpdateSourceRequest { File = new Blackbird.Applications.Sdk.Common.Files.FileReference { Name = "Crowdin.txt" } };
+            var input1 = new ProjectRequest { ProjectUId = "S7Xb0aElcmkX3qTJQ87TM1" };
+            var jobs = new List<JobUidModel>();
+            jobs.Add(new JobUidModel("0fuHesrzBjidsi8P82LMG2"));
+
+            var input2 = new UpdateSourceRequest { File = new Blackbird.Applications.Sdk.Common.Files.FileReference { Name = "test.txt" }, Jobs =jobs };
 
             var result = await action.UpdateSource(InvocationContext.AuthenticationCredentialsProviders, input1, input2);
 
