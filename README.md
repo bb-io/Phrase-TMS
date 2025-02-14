@@ -91,6 +91,7 @@ Before you can connect you need to make sure that:
 - **Download bilingual file**
 - **Upload bilingual file**
 - **Pre-translate job**
+- **Update job source**
 
 ### Pricelist
 

@@ -447,7 +447,7 @@ public class JobActions(IFileManagementClient fileManagementClient)
         return response;
     }
 
-    [Action("Update Job source", Description = "Update the source in the project")]
+    [Action("Update job source", Description = "Update the job source in the project")]
     public async Task<UpdateSourceResponse> UpdateSource(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ProjectRequest projectRequest,
