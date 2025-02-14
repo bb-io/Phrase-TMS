@@ -54,8 +54,8 @@ namespace Tests.PhraseTMS
         public async Task CreateJob_ValidData_ShouldNotFailAndReturnNotEmptyResponse()
         {
             var action = new JobActions(FileManager);
-            var input1 = new ProjectRequest { ProjectUId = "S7Xb0aElcmkX3qTJQ87TM1" };
-            var input2 = new CreateJobRequest {  File = new Blackbird.Applications.Sdk.Common.Files.FileReference { Name = "test.txt" } };
+            var input1 = new ProjectRequest { ProjectUId = "OtTuU0CZq9jVbqf6hEPNo1" };
+            var input2 = new CreateJobRequest {  File = new Blackbird.Applications.Sdk.Common.Files.FileReference { Name = "test.html" } };
 
             var result = await action.CreateJob(InvocationContext.AuthenticationCredentialsProviders, input1, input2);
 
