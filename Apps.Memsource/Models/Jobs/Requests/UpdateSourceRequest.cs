@@ -1,4 +1,5 @@
 ﻿using Apps.PhraseTMS.DataSourceHandlers;
+using Apps.PhraseTMS.Models.Analysis.Requests;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common.Files;
@@ -7,7 +8,7 @@ namespace Apps.PhraseTMS.Models.Jobs.Requests
 {
     public class UpdateSourceRequest
     {
-        [Display("Job ID")]
+        [Display("Job UIDs")]
         [DataSource(typeof(JobDataHandler))]
         public IEnumerable<string> Jobs { get; set; }
 
