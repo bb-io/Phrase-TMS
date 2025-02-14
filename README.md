@@ -81,7 +81,7 @@ Before you can connect you need to make sure that:
 
 ### Job
 
-- **List all jobs**
+- **Search jobs**
 - **Get job**
 - **Create job**
 - **Delete job**

@@ -447,6 +447,40 @@ public class JobActions(IFileManagementClient fileManagementClient)
         return response;
     }
 
+    [Action("Update Job source", Description = "Update the source in the project")]
+    public async Task<UpdateSourceResponse> UpdateSource(
+        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] UpdateSourceRequest input)
+    {
+        //TODO: Input checking
+
+        var client = new PhraseTmsClient(authenticationCredentialsProviders);
+        var request = new PhraseTmsRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/source",
+            Method.Post, authenticationCredentialsProviders);
+        var jobs = input.Jobs.Select(u => new { uid = u });
+
+        var output = JsonConvert.SerializeObject(new
+        {
+            preTranslate = input.preTranslate ?? false,
+            jobs = jobs
+        });
+
+        var headers = new Dictionary<string, string>()
+        {
+            { "Memsource", output },
+            { "Content-Disposition", $"filename*=UTF-8''{input.File.Name}" },
+            { "Content-Type", "application/octet-stream" },
+        };
+        headers.ToList().ForEach(x => request.AddHeader(x.Key, x.Value));
+
+        var fileBytes = fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
+        request.AddParameter("application/octet-stream", fileBytes, ParameterType.RequestBody);
+
+        var response = await client.ExecuteWithHandling<ResponseWrapper<IEnumerable<UpdateSourceResponse>>>(request);
+
+        return response.Content.First();
+    }
     private async Task<string> GetUserId(IEnumerable<AuthenticationCredentialsProvider> creds, string linguist)
     {
         var actions = new UserActions();
@@ -463,4 +497,5 @@ public class JobActions(IFileManagementClient fileManagementClient)
             await actions.GetVendor(creds, new Models.Vendors.Requests.GetVendorRequest { VendorId = vendor });
         return userDetails.Id;
     }
+
 }
