@@ -458,10 +458,12 @@ public class JobActions(IFileManagementClient fileManagementClient)
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var request = new PhraseTmsRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/source",
             Method.Post, authenticationCredentialsProviders);
+        var jobs = input.Jobs.Select(u => new { uid = u });
 
         var output = JsonConvert.SerializeObject(new
         {
-            preTranslate = input.preTranslate ?? false
+            preTranslate = input.preTranslate ?? false,
+            jobs = jobs
         });
 
         var headers = new Dictionary<string, string>()

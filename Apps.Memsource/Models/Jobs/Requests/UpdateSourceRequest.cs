@@ -9,7 +9,7 @@ namespace Apps.PhraseTMS.Models.Jobs.Requests
     {
         [Display("Job ID")]
         [DataSource(typeof(JobDataHandler))]
-        public string JobUId { get; set; }
+        public IEnumerable<string> Jobs { get; set; }
 
         [Display("File")]
         public FileReference File { get; set; }
