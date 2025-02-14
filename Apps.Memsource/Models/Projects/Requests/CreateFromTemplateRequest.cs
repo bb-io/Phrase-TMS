@@ -14,4 +14,15 @@ public class CreateFromTemplateRequest
     
     [Display("Due date")]
     public DateTime? DateDue { get; set; }
+
+    //Sourcelang string
+    //TargetLangs array of string
+    //workflowSteps array of objects idreference
+    //dateDue string datetime
+    //Note string
+    //Client object idreference
+    //BusinessUnit object idreference
+    //Domain object idreference
+    //SubDomain object idreference
+    //CostCenter object idreference
 }

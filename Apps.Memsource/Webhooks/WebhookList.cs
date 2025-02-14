@@ -169,7 +169,8 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
         Description = "On any project status changed")]
     public async Task<WebhookResponse<ProjectDto>> ProjectStatusChanged(WebhookRequest webhookRequest,
         [WebhookParameter] ProjectStatusChangedRequest request,
-        [WebhookParameter] ProjectOptionalRequest project)
+        [WebhookParameter] ProjectOptionalRequest project,
+        [WebhookParameter][Display("Project name contains")] string? projectNameContains)
     {
         var data = JsonConvert.DeserializeObject<ProjectWrapper>(webhookRequest.Body.ToString());
         if (data is null)
@@ -188,6 +189,16 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
         }
 
         if (project.ProjectUId != null && data.Project.UId != project.ProjectUId)
+        {
+            return new()
+            {
+                HttpResponseMessage = null,
+                Result = null,
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight
+            };
+        }
+
+        if (!String.IsNullOrEmpty(projectNameContains) && !data.Project.Name.Contains(projectNameContains))
         {
             return new()
             {
