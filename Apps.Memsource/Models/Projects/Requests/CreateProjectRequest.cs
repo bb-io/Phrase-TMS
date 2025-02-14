@@ -18,4 +18,18 @@ public class CreateProjectRequest
     
     [Display("Due date")]
     public DateTime? DateDue { get; set; }
+
+    //Client object idreference
+    //BusinessUnit object idreference
+    //Domain object idreference
+    //SubDomain object idreference
+    //costCenter object idreference
+    //purchaseOrder string
+    //workflowSteps array of objects idreference
+    //dateDue already done
+    //note string
+    //lqaProfiles Array of objects (LqaProfilesForWsV2Dto) [ items ]
+    //customFieldsArray of objects (CustomFieldInstanceApiDto) [ items ]
+    //FileHandover bool
+    //propagateTranslationsToLowerWfDuringUpdateSource bool
 }
