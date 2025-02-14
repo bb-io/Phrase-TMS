@@ -8,7 +8,7 @@ namespace Apps.PhraseTMS.Models.Jobs.Requests
 {
     public class UpdateSourceRequest
     {
-        [Display("Job UIDs")]
+        [Display("Job IDs")]
         [DataSource(typeof(JobDataHandler))]
         public IEnumerable<string> Jobs { get; set; }
 
