@@ -92,7 +92,19 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
                 name = input.Name,
                 sourceLang = input.SourceLanguage,
                 targetLangs = input.TargetLanguages.ToArray(),
-                dateDue = input.DateDue
+                dateDue = input.DateDue,
+                clientId = input.ClientId,
+                businessUnitId = input.BusinessUnitId,
+                domainId = input.DomainId,
+                subdomainId = input.SubDomainId,
+                costCenterId = input.CostCenterId,
+                purchaseOrder = input.PurchaseOrder,
+                workflowSteps = input.WorkflowSteps?.ToArray(),
+                note = input.Note,
+                lqaProfiles = input.LqaProfiles?.ToArray(),
+                customFields = input.CustomFields?.ToArray(),
+                fileHandover = input.FileHandover,
+                propagateTranslationsToLowerWfDuringUpdateSource = input.PropagateTranslationsToLowerWfDuringUpdateSource
             }, JsonConfig.DateSettings);
 
         return client.ExecuteWithHandling<ProjectDto>(request);
@@ -111,7 +123,17 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
             .WithJsonBody(new
             {
                 name = input.Name,
-                dateDue = input.DateDue
+                dateDue = input.DateDue,
+                sourceLang = input.SourceLang,
+                targetLangs = input.TargetLanguages?.ToArray(),
+                workflowSteps = input.WorkflowSteps?.ToArray(),
+                note = input.Note,
+                clientId = input.ClientId,
+                businessUnitId = input.BusinessUnitId,
+                domainId = input.DomainId,
+                subdomainId = input.SubDomainId,
+                costCenterId = input.CostCenterId
+
             }, JsonConfig.DateSettings);
 
         return client.ExecuteWithHandling<ProjectDto>(request);
