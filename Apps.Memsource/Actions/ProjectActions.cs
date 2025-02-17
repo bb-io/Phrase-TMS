@@ -103,10 +103,10 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] CreateFromTemplateRequest input)
     {
-        if (String.IsNullOrEmpty(input.TemplateUID))
+        if (String.IsNullOrEmpty(input.TemplateUId))
         { throw new PluginMisconfigurationException("Template ID cannot be empty"); }
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
-        var request = new PhraseTmsRequest($"/api2/v2/projects/applyTemplate/{input.TemplateUID}", Method.Post,
+        var request = new PhraseTmsRequest($"/api2/v2/projects/applyTemplate/{input.TemplateUId}", Method.Post,
                 authenticationCredentialsProviders)
             .WithJsonBody(new
             {

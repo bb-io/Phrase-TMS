@@ -24,27 +24,27 @@ public class CreateProjectRequest
 
     [Display("Client ID")]
     [DataSource(typeof(ClientDataHandler))]
-    public string? ClientID { get; set; }
+    public string? ClientId { get; set; }
 
 
     [Display("Business unit ID")]
     [DataSource(typeof(BusinessUnitDataHandler))]
-    public string? BusinessUnitID { get; set; }
+    public string? BusinessUnitId { get; set; }
 
 
     [Display("Domain ID")]
     [DataSource(typeof(DomainDataHandler))]
-    public string? DomainID { get; set; }
+    public string? DomainId { get; set; }
 
 
     [Display("Sub-domain ID")]
     [DataSource(typeof(SubdomainDataHandler))]
-    public string? SubDomainID { get; set; }
+    public string? SubDomainId { get; set; }
 
 
     [DataSource(typeof(CostCenterDataHandler))]
     [Display("Cost center ID")]
-    public string? CostCenterID { get; set; }
+    public string? CostCenterId { get; set; }
 
 
     [Display("Purchase order")]
@@ -60,7 +60,7 @@ public class CreateProjectRequest
     public string? Note { get; set; }
 
 
-    [Display("Lqa profiles")]
+    [Display("LQA profiles")]
     [DataSource(typeof(LqaProfileDataHandler))]
     public IEnumerable<string>? LqaProfiles { get; set; }
 
@@ -74,6 +74,6 @@ public class CreateProjectRequest
     public bool? FileHandover { get; set; }
 
 
-    [Display("Propagate translations...")]
+    [Display("Propagate translations")]
     public bool? PropagateTranslationsToLowerWfDuringUpdateSource { get; set; }
 }

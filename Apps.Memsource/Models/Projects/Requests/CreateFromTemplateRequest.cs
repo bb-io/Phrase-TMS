@@ -8,9 +8,9 @@ public class CreateFromTemplateRequest
 {
     public string Name { get; set; }
 
-    [Display("Template UID")]
+    [Display("Template ID")]
     [DataSource(typeof(ProjectTemplateDataHandler))]
-    public string TemplateUID { get; set; }
+    public string TemplateUId { get; set; }
     
     [Display("Due date")]
     public DateTime? DateDue { get; set; }
@@ -35,25 +35,25 @@ public class CreateFromTemplateRequest
 
 
     [Display("Client ID")]
-    public string? ClientID { get; set; }
+    public string? ClientId { get; set; }
 
 
     [Display("Business unit ID")]
     [DataSource(typeof(BusinessUnitDataHandler))]
-    public string? BusinessUnitID { get; set; }
+    public string? BusinessUnitId { get; set; }
 
 
     [Display("Domain ID")]
     [DataSource(typeof(DomainDataHandler))]
-    public string? DomainID { get; set; }
+    public string? DomainId { get; set; }
 
 
     [Display("Sub-domain ID")]
     [DataSource(typeof(SubdomainDataHandler))]
-    public string? SubDomainID { get; set; }
+    public string? SubDomainId { get; set; }
 
 
     [DataSource(typeof(CostCenterDataHandler))]
     [Display("Cost center ID")]
-    public string? CostCenterID { get; set; }
+    public string? CostCenterId { get; set; }
 }
