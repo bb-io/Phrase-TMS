@@ -8,16 +8,12 @@ using RestSharp;
 
 namespace Apps.PhraseTMS.DataSourceHandlers;
 
-public class CustomFieldMultiSelectDataHandler : BaseInvocable, IAsyncDataSourceHandler
+public class CustomFieldMultiSelectDataHandler(InvocationContext invocationContext) : BaseInvocable(invocationContext), IAsyncDataSourceItemHandler
 {
     private IEnumerable<AuthenticationCredentialsProvider> Creds =>
         InvocationContext.AuthenticationCredentialsProviders;
 
-    public CustomFieldMultiSelectDataHandler(InvocationContext invocationContext) : base(invocationContext)
-    {
-    }
-
-    public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
+    async Task<IEnumerable<DataSourceItem>> IAsyncDataSourceItemHandler.GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
     {
         var client = new PhraseTmsClient(Creds);
 
@@ -29,7 +25,7 @@ public class CustomFieldMultiSelectDataHandler : BaseInvocable, IAsyncDataSource
             .Where(x => context.SearchString == null ||
                         x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
             .Take(20)
-            .ToDictionary(x => x.UId, x => x.Name);
+            .Select(x => new DataSourceItem(x.UId, x.Name));
     }
 }
 

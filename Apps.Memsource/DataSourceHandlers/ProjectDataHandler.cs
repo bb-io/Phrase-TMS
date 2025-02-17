@@ -7,18 +7,18 @@ using Blackbird.Applications.Sdk.Common.Invocation;
 namespace Apps.PhraseTMS.DataSourceHandlers;
 
 public class ProjectDataHandler(InvocationContext invocationContext)
-    : BaseInvocable(invocationContext), IAsyncDataSourceHandler
+    : BaseInvocable(invocationContext), IAsyncDataSourceItemHandler
 {
     private IEnumerable<AuthenticationCredentialsProvider> Creds =>
         InvocationContext.AuthenticationCredentialsProviders;
 
-    public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
+    async Task<IEnumerable<DataSourceItem>> IAsyncDataSourceItemHandler.GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
     {
         var actions = new ProjectActions(null!);
         var response = await actions.ListAllProjects(Creds, new() { Name = context.SearchString });
-        
+
         return response.Projects
             .OrderByDescending(x => x.DateCreated)
-            .ToDictionary(x => x.UId, x => x.Name ?? string.Empty);
+            .Select(x => new DataSourceItem(x.UId, x.Name ?? string.Empty));
     }
 }

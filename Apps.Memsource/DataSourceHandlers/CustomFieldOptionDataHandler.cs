@@ -7,10 +7,11 @@ using Blackbird.Applications.Sdk.Common;
 using RestSharp;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Apps.PhraseTMS.Models.CustomFields;
+using Blackbird.Applications.Sdk.Common.Exceptions;
 
 namespace Apps.PhraseTMS.DataSourceHandlers;
 
-public class CustomFieldOptionDataHandler : BaseInvocable, IAsyncDataSourceHandler
+public class CustomFieldOptionDataHandler : BaseInvocable, IAsyncDataSourceItemHandler
 {
     private IEnumerable<AuthenticationCredentialsProvider> Creds =>
         InvocationContext.AuthenticationCredentialsProviders;
@@ -22,11 +23,11 @@ public class CustomFieldOptionDataHandler : BaseInvocable, IAsyncDataSourceHandl
         customFieldRequest = input;
     }
 
-    public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
+    async Task<IEnumerable<DataSourceItem>> IAsyncDataSourceItemHandler.GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(customFieldRequest.FieldUId))
         {
-            throw new ArgumentException("Please fill in Custom Field ID first");
+            throw new PluginMisconfigurationException("Please fill in Custom Field ID first");
         }
         var client = new PhraseTmsClient(Creds);
 
@@ -37,7 +38,7 @@ public class CustomFieldOptionDataHandler : BaseInvocable, IAsyncDataSourceHandl
             .Where(x => context.SearchString == null ||
                         x.Value.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
             .Take(20)
-            .ToDictionary(x => x.UId, x => x.Value);
+            .Select(x => new DataSourceItem(x.UId, x.Value));
     }
 }
 

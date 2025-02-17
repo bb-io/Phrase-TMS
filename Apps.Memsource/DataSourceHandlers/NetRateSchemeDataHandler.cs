@@ -9,17 +9,12 @@ using RestSharp;
 
 namespace Apps.PhraseTMS.DataSourceHandlers;
 
-public class NetRateSchemeDataHandler : BaseInvocable, IAsyncDataSourceHandler
+public class NetRateSchemeDataHandler(InvocationContext invocationContext) : BaseInvocable(invocationContext), IAsyncDataSourceItemHandler
 {
     private IEnumerable<AuthenticationCredentialsProvider> Creds =>
         InvocationContext.AuthenticationCredentialsProviders;
 
-    public NetRateSchemeDataHandler(InvocationContext invocationContext) : base(invocationContext)
-    {
-    }
-
-    public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
-        CancellationToken cancellationToken)
+    async Task<IEnumerable<DataSourceItem>> IAsyncDataSourceItemHandler.GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
     {
         var client = new PhraseTmsClient(Creds);
         var endpoint = "/api2/v1/netRateSchemes";
@@ -33,6 +28,6 @@ public class NetRateSchemeDataHandler : BaseInvocable, IAsyncDataSourceHandler
         return response
             .OrderByDescending(x => x.DateCreated)
             .Take(20)
-            .ToDictionary(x => x.Id, x => x.Name);
+            .Select(x => new DataSourceItem(x.Id, x.Name));
     }
 }

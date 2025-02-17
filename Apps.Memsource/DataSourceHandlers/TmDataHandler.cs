@@ -6,25 +6,21 @@ using Blackbird.Applications.Sdk.Common.Invocation;
 
 namespace Apps.PhraseTMS.DataSourceHandlers;
 
-public class TmDataHandler : BaseInvocable, IAsyncDataSourceHandler
+public class TmDataHandler(InvocationContext invocationContext) : BaseInvocable(invocationContext), IAsyncDataSourceItemHandler
 {
     private IEnumerable<AuthenticationCredentialsProvider> Creds =>
         InvocationContext.AuthenticationCredentialsProviders;
-    
-    public TmDataHandler(InvocationContext invocationContext) : base(invocationContext)
-    {
-    }
 
-    public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
+    async Task<IEnumerable<DataSourceItem>> IAsyncDataSourceItemHandler.GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
     {
         var actions = new TranslationMemoryActions(null);
         var response = await actions.ListTranslationMemories(Creds, new());
-        
+
         return response.Memories
             .Where(x => context.SearchString == null ||
                         x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
             .OrderByDescending(x => x.DateCreated)
             .Take(20)
-            .ToDictionary(x => x.UId, x => x.Name);
+            .Select(x => new DataSourceItem(x.UId, x.Name));
     }
 }
