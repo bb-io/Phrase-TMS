@@ -15,14 +15,46 @@ public class CreateFromTemplateRequest
     [Display("Due date")]
     public DateTime? DateDue { get; set; }
 
-    //Sourcelang string
-    //TargetLangs array of string
-    //workflowSteps array of objects idreference
-    //dateDue string datetime
-    //Note string
-    //Client object idreference
-    //BusinessUnit object idreference
-    //Domain object idreference
-    //SubDomain object idreference
-    //CostCenter object idreference
+
+    [Display("Source language")]
+    public string? SourceLang { get; set; }
+
+
+    [Display("Target languages")]
+    [DataSource(typeof(LanguageDataHandler))]
+    public IEnumerable<string> TargetLanguages { get; set; }
+
+
+    [Display("Workflow steps")]
+    [DataSource(typeof(WorkflowStepDataHandler))]
+    public IEnumerable<string> WorkflowSteps { get; set; }
+
+
+    //TODO: Datahandler
+    [Display("Note")]
+    public string Note { get; set; }
+
+
+    [Display("Client Id")]
+    public string ClientId { get; set; }
+
+
+    [Display("Business unit Id")]
+    [DataSource(typeof(BusinessUnitDataHandler))]
+    public string BusinessUnitId { get; set; }
+
+
+    [Display("Domain Id")]
+    [DataSource(typeof(DomainDataHandler))]
+    public string DomainId { get; set; }
+
+
+    [Display("Sub-domain Id")]
+    [DataSource(typeof(SubdomainDataHandler))]
+    public string SubDomainId { get; set; }
+
+
+    //[DataSource(typeof(CostCenterDataHandler))]
+    [Display("Cost center Id")]
+    public string CostCenterId { get; set; }
 }

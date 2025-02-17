@@ -19,17 +19,51 @@ public class CreateProjectRequest
     [Display("Due date")]
     public DateTime? DateDue { get; set; }
 
-    //Client object idreference
-    //BusinessUnit object idreference
-    //Domain object idreference
-    //SubDomain object idreference
-    //costCenter object idreference
-    //purchaseOrder string
-    //workflowSteps array of objects idreference
-    //dateDue already done
-    //note string
-    //lqaProfiles Array of objects (LqaProfilesForWsV2Dto) [ items ]
-    //customFieldsArray of objects (CustomFieldInstanceApiDto) [ items ]
-    //FileHandover bool
-    //propagateTranslationsToLowerWfDuringUpdateSource bool
+    [Display("Client Id")]
+    public string ClientId { get; set; }
+
+    [Display("Business unit Id")]
+    [DataSource(typeof(BusinessUnitDataHandler))]
+    public string BusinessUnitId { get; set; }
+
+    [Display("Domain Id")]
+    [DataSource(typeof(DomainDataHandler))]
+    public string DomainId { get; set; }
+
+    [Display("Sub-domain Id")]
+    [DataSource(typeof(SubdomainDataHandler))]
+    public string SubDomainId { get; set; }
+
+
+    //[DataSource(typeof(CostCenterDataHandler))]
+    [Display("Cost center Id")]
+    public string CostCenterId { get; set; }
+
+    //[DataSource(typeof(PurchaseOrderDataHandler))]
+    [Display("Purchase order")]
+    public string PurchaseOrder { get; set; }
+
+    [Display("Workflow steps")]
+    [DataSource(typeof(WorkflowStepDataHandler))]
+    public IEnumerable<string> WorkflowSteps { get; set; }
+
+    //TODO: Datahandler
+    [Display("Note")]
+    public string Note { get; set; }
+
+    [Display("Lqa profiles")]
+    [DataSource(typeof(LqaProfileDataHandler))]
+    public IEnumerable<string> LqaProfiles { get; set; }
+
+    [Display("Custom fields")]
+    [DataSource(typeof(CustomFieldDateDataHandler))]
+    public IEnumerable<string> CustomFields { get; set; }
+
+
+    [Display("File handover")]
+    public bool FileHandover { get; set; }
+
+
+    [Display("Propagate translations...")]
+    public bool PropagateTranslationsToLowerWfDuringUpdateSource { get; set; }
 }
