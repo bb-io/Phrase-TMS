@@ -8,7 +8,7 @@ using RestSharp;
 namespace Apps.PhraseTMS.DataSourceHandlers;
 
 public class SubdomainDataHandler(InvocationContext invocationContext)
-    : BaseInvocable(invocationContext), IAsyncDataSourceHandler
+    : BaseInvocable(invocationContext), IAsyncDataSourceItemHandler
 {
     private IEnumerable<AuthenticationCredentialsProvider> Creds =>
         InvocationContext.AuthenticationCredentialsProviders;
@@ -22,5 +22,16 @@ public class SubdomainDataHandler(InvocationContext invocationContext)
             .Where(x => context.SearchString == null ||
                         x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
             .ToDictionary(x => x.Uid, x => x.Name);
+    }
+
+    async Task<IEnumerable<DataSourceItem>> IAsyncDataSourceItemHandler.GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
+    {
+        var client = new PhraseTmsClient(Creds);
+        var request = new PhraseTmsRequest($"/api2/v1/subDomains", Method.Get, Creds);
+        var subDomains = await client.Paginate<DomainDto>(request);
+        return subDomains
+            .Where(x => context.SearchString == null ||
+                        x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
+            .Select(x => new DataSourceItem(x.Uid,x.Name));
     }
 }

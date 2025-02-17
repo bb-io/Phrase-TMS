@@ -8,12 +8,12 @@ using RestSharp;
 namespace Apps.PhraseTMS.DataSourceHandlers;
 
 public class DomainDataHandler(InvocationContext invocationContext)
-    : BaseInvocable(invocationContext), IAsyncDataSourceHandler
+    : BaseInvocable(invocationContext), IAsyncDataSourceItemHandler
 {
     private IEnumerable<AuthenticationCredentialsProvider> Creds =>
         InvocationContext.AuthenticationCredentialsProviders;
 
-    public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
+    async Task<IEnumerable<DataSourceItem>> IAsyncDataSourceItemHandler.GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
     {
         var client = new PhraseTmsClient(Creds);
         var request = new PhraseTmsRequest($"/api2/v1/domains", Method.Get, Creds);
@@ -21,6 +21,6 @@ public class DomainDataHandler(InvocationContext invocationContext)
         return domains
             .Where(x => context.SearchString == null ||
                         x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
-            .ToDictionary(x => x.Uid, x => x.Name);
+            .Select(x=> new DataSourceItem(x.Uid,x.Name));
     }
 }

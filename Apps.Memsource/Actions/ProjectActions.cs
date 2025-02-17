@@ -86,7 +86,7 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
         [ActionParameter] CreateProjectRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
-        var request = new PhraseTmsRequest("/api2/v1/projects", Method.Post, authenticationCredentialsProviders)
+        var request = new PhraseTmsRequest("/api2/v3/projects", Method.Post, authenticationCredentialsProviders)
             .WithJsonBody(new
             {
                 name = input.Name,
@@ -106,7 +106,7 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
         if (String.IsNullOrEmpty(input.TemplateUId))
         { throw new PluginMisconfigurationException("Template ID cannot be empty"); }
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
-        var request = new PhraseTmsRequest($"/api2/v1/projects/applyTemplate/{input.TemplateUId}", Method.Post,
+        var request = new PhraseTmsRequest($"/api2/v2/projects/applyTemplate/{input.TemplateUId}", Method.Post,
                 authenticationCredentialsProviders)
             .WithJsonBody(new
             {
