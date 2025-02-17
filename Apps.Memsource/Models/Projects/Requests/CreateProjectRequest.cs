@@ -20,44 +20,43 @@ public class CreateProjectRequest
     public DateTime? DateDue { get; set; }
 
     [Display("Client Id")]
-    public string ClientId { get; set; }
+    public string? ClientId { get; set; }
 
     [Display("Business unit Id")]
     [DataSource(typeof(BusinessUnitDataHandler))]
-    public string BusinessUnitId { get; set; }
+    public string? BusinessUnitId { get; set; }
 
     [Display("Domain Id")]
     [DataSource(typeof(DomainDataHandler))]
-    public string DomainId { get; set; }
+    public string? DomainId { get; set; }
 
     [Display("Sub-domain Id")]
     [DataSource(typeof(SubdomainDataHandler))]
-    public string SubDomainId { get; set; }
+    public string? SubDomainId { get; set; }
 
 
     //[DataSource(typeof(CostCenterDataHandler))]
     [Display("Cost center Id")]
-    public string CostCenterId { get; set; }
+    public string? CostCenterId { get; set; }
 
     //[DataSource(typeof(PurchaseOrderDataHandler))]
     [Display("Purchase order")]
-    public string PurchaseOrder { get; set; }
+    public string? PurchaseOrder { get; set; }
 
     [Display("Workflow steps")]
     [DataSource(typeof(WorkflowStepDataHandler))]
-    public IEnumerable<string> WorkflowSteps { get; set; }
+    public IEnumerable<string>? WorkflowSteps { get; set; }
 
-    //TODO: Datahandler
     [Display("Note")]
-    public string Note { get; set; }
+    public string? Note { get; set; }
 
     [Display("Lqa profiles")]
     [DataSource(typeof(LqaProfileDataHandler))]
-    public IEnumerable<string> LqaProfiles { get; set; }
+    public IEnumerable<string>? LqaProfiles { get; set; }
 
     [Display("Custom fields")]
     [DataSource(typeof(CustomFieldDateDataHandler))]
-    public IEnumerable<string> CustomFields { get; set; }
+    public IEnumerable<string>? CustomFields { get; set; }
 
 
     [Display("File handover")]

@@ -22,39 +22,38 @@ public class CreateFromTemplateRequest
 
     [Display("Target languages")]
     [DataSource(typeof(LanguageDataHandler))]
-    public IEnumerable<string> TargetLanguages { get; set; }
+    public IEnumerable<string>? TargetLanguages { get; set; }
 
 
     [Display("Workflow steps")]
     [DataSource(typeof(WorkflowStepDataHandler))]
-    public IEnumerable<string> WorkflowSteps { get; set; }
+    public IEnumerable<string>? WorkflowSteps { get; set; }
 
 
-    //TODO: Datahandler
     [Display("Note")]
-    public string Note { get; set; }
+    public string? Note { get; set; }
 
 
     [Display("Client Id")]
-    public string ClientId { get; set; }
+    public string? ClientId { get; set; }
 
 
     [Display("Business unit Id")]
     [DataSource(typeof(BusinessUnitDataHandler))]
-    public string BusinessUnitId { get; set; }
+    public string? BusinessUnitId { get; set; }
 
 
     [Display("Domain Id")]
     [DataSource(typeof(DomainDataHandler))]
-    public string DomainId { get; set; }
+    public string? DomainId { get; set; }
 
 
     [Display("Sub-domain Id")]
     [DataSource(typeof(SubdomainDataHandler))]
-    public string SubDomainId { get; set; }
+    public string? SubDomainId { get; set; }
 
 
     //[DataSource(typeof(CostCenterDataHandler))]
     [Display("Cost center Id")]
-    public string CostCenterId { get; set; }
+    public string? CostCenterId { get; set; }
 }
