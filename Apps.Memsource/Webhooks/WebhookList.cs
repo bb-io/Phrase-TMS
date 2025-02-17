@@ -518,43 +518,48 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
             };
         }
 
-        var Result = new WebhookResponse<JobResponse>();
+        var result = new WebhookResponse<JobResponse>();
 
         switch ((hasStatus, hasJob, hasWorkflowStep, lastStep))
         {
             case (true, true, true, true):
             case (true, true, true, false):
-                Result = await HandleFullData(data.JobParts, request.Status, jobData, step);
+                result = await HandleFullData(data.JobParts, request.Status, jobData, step);
                 break;
             case (true, true, false, false):
-                Result = HandleStatusJobOnly(data.JobParts, request.Status, jobData);
+                result = HandleStatusJobOnly(data.JobParts, request.Status, jobData);
                 break;
             case (true, false, false, true):
-                Result = HandleStatusLastStep(data.JobParts, request.Status);
+                result = HandleStatusLastStep(data.JobParts, request.Status);
                 break;
             case (true, false, true, false):
-                Result = HandleStatusStepOnly(data.JobParts, request.Status, step);
+                result = HandleStatusStepOnly(data.JobParts, request.Status, step);
                 break;
             case (true, false, false, false):
-                Result = HandleStatusOnly(data.JobParts, request.Status);
+                result = HandleStatusOnly(data.JobParts, request.Status);
                 break;
             case (false, true, true, true):
             case (false, true, true, false):
-                Result = await HandleJobStep(data.JobParts, jobData, step);
+                result = await HandleJobStep(data.JobParts, jobData, step);
                 break;
             case (false, true, false, false):
-                Result = HandleJobOnly(data.JobParts, jobData);
+                result = HandleJobOnly(data.JobParts, jobData);
                 break;
             case (false, false, false, true):
-                Result = HandleOnlyLastStep(data.JobParts);
+                result = HandleOnlyLastStep(data.JobParts);
                 break;
             case (false, false, true, false):
-                Result = HandleStepOnly(data.JobParts, step);
+                result = HandleStepOnly(data.JobParts, step);
                 break;
             default: throw new InvalidOperationException("Unexpected case encountered");
         }
 
-        return Result;
+        if (result.Result != null)
+        {
+            result.Result.ProjectName = data.metadata.project.name;
+        }
+        
+        return result;
     }
 
     #region Helpers
