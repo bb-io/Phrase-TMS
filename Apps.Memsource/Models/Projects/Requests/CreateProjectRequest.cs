@@ -60,9 +60,9 @@ public class CreateProjectRequest
 
 
     [Display("File handover")]
-    public bool FileHandover { get; set; }
+    public bool? FileHandover { get; set; }
 
 
     [Display("Propagate translations...")]
-    public bool PropagateTranslationsToLowerWfDuringUpdateSource { get; set; }
+    public bool? PropagateTranslationsToLowerWfDuringUpdateSource { get; set; }
 }
