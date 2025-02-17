@@ -12,48 +12,58 @@ public class CreateProjectRequest
     [DataSource(typeof(LanguageDataHandler))]
     public string SourceLanguage { get; set; }
 
+
     [Display("Target languages")]
     [DataSource(typeof(LanguageDataHandler))]
     public IEnumerable<string> TargetLanguages { get; set; }
     
+
     [Display("Due date")]
     public DateTime? DateDue { get; set; }
 
-    [Display("Client Id")]
+
+    [Display("Client ID")]
     [DataSource(typeof(ClientDataHandler))]
-    public string? ClientId { get; set; }
+    public string? ClientID { get; set; }
 
-    [Display("Business unit Id")]
+
+    [Display("Business unit ID")]
     [DataSource(typeof(BusinessUnitDataHandler))]
-    public string? BusinessUnitId { get; set; }
+    public string? BusinessUnitID { get; set; }
 
-    [Display("Domain Id")]
+
+    [Display("Domain ID")]
     [DataSource(typeof(DomainDataHandler))]
-    public string? DomainId { get; set; }
+    public string? DomainID { get; set; }
 
-    [Display("Sub-domain Id")]
+
+    [Display("Sub-domain ID")]
     [DataSource(typeof(SubdomainDataHandler))]
-    public string? SubDomainId { get; set; }
+    public string? SubDomainID { get; set; }
 
 
     [DataSource(typeof(CostCenterDataHandler))]
-    [Display("Cost center Id")]
-    public string? CostCenterId { get; set; }
+    [Display("Cost center ID")]
+    public string? CostCenterID { get; set; }
 
-    //[DataSource(typeof(PurchaseOrderDataHandler))] TODO
+
     [Display("Purchase order")]
     public string? PurchaseOrder { get; set; }
+
 
     [Display("Workflow steps")]
     [DataSource(typeof(WorkflowStepDataHandler))]
     public IEnumerable<string>? WorkflowSteps { get; set; }
 
+
     [Display("Note")]
     public string? Note { get; set; }
+
 
     [Display("Lqa profiles")]
     [DataSource(typeof(LqaProfileDataHandler))]
     public IEnumerable<string>? LqaProfiles { get; set; }
+
 
     [Display("Custom fields")]
     [DataSource(typeof(CustomFieldDateDataHandler))]
