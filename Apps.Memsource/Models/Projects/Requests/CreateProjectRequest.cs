@@ -20,6 +20,7 @@ public class CreateProjectRequest
     public DateTime? DateDue { get; set; }
 
     [Display("Client Id")]
+    [DataSource(typeof(ClientDataHandler))]
     public string? ClientId { get; set; }
 
     [Display("Business unit Id")]
@@ -35,11 +36,11 @@ public class CreateProjectRequest
     public string? SubDomainId { get; set; }
 
 
-    //[DataSource(typeof(CostCenterDataHandler))]
+    [DataSource(typeof(CostCenterDataHandler))]
     [Display("Cost center Id")]
     public string? CostCenterId { get; set; }
 
-    //[DataSource(typeof(PurchaseOrderDataHandler))]
+    //[DataSource(typeof(PurchaseOrderDataHandler))] TODO
     [Display("Purchase order")]
     public string? PurchaseOrder { get; set; }
 

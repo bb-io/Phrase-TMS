@@ -53,7 +53,7 @@ public class CreateFromTemplateRequest
     public string? SubDomainId { get; set; }
 
 
-    //[DataSource(typeof(CostCenterDataHandler))]
+    [DataSource(typeof(CostCenterDataHandler))]
     [Display("Cost center Id")]
     public string? CostCenterId { get; set; }
 }
