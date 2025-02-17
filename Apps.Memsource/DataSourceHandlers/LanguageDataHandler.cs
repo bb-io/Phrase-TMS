@@ -7,16 +7,12 @@ using RestSharp;
 
 namespace Apps.PhraseTMS.DataSourceHandlers;
 
-public class LanguageDataHandler : BaseInvocable, IAsyncDataSourceHandler
+public class LanguageDataHandler(InvocationContext invocationContext) :  BaseInvocable(invocationContext), IAsyncDataSourceItemHandler
 {
     private IEnumerable<AuthenticationCredentialsProvider> Creds =>
         InvocationContext.AuthenticationCredentialsProviders;
-    
-    public LanguageDataHandler(InvocationContext invocationContext) : base(invocationContext)
-    {
-    }
 
-    public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
+    async Task<IEnumerable<DataSourceItem>> IAsyncDataSourceItemHandler.GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
     {
         var client = new PhraseTmsClient(Creds);
         var request = new PhraseTmsRequest("/api2/v1/languages", Method.Get, Creds);
@@ -27,6 +23,6 @@ public class LanguageDataHandler : BaseInvocable, IAsyncDataSourceHandler
             .Where(x => context.SearchString == null ||
                         x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
             .Take(20)
-            .ToDictionary(x => x.Code, x => x.Name);
+            .Select(x=> new DataSourceItem(x.Code,x.Name));
     }
 }
