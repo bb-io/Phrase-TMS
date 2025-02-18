@@ -104,6 +104,7 @@ Before you can connect you need to make sure that:
 - **Find project**
 - **Get project**
 - **Create project**
+  - **Propagate Translations: Propagate translations to lower workflows during update source**
 - **Create project from template**
 - **Add target language**
 - **Edit project**
