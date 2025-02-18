@@ -9,7 +9,7 @@ using RestSharp;
 
 namespace Apps.PhraseTMS.DataSourceHandlers;
 
-public class JobTargetLanguagesDataHandler : BaseInvocable, IAsyncDataSourceHandler
+public class JobTargetLanguagesDataHandler : BaseInvocable, IAsyncDataSourceItemHandler
 {
     private IEnumerable<AuthenticationCredentialsProvider> Creds =>
         InvocationContext.AuthenticationCredentialsProviders;
@@ -21,7 +21,7 @@ public class JobTargetLanguagesDataHandler : BaseInvocable, IAsyncDataSourceHand
         CreateJobRequest = createJobRequest;
     }
 
-    public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
+    async Task<IEnumerable<DataSourceItem>> IAsyncDataSourceItemHandler.GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(CreateJobRequest.ProjectUId))
         {
@@ -38,6 +38,6 @@ public class JobTargetLanguagesDataHandler : BaseInvocable, IAsyncDataSourceHand
             .Where(x => context.SearchString == null ||
                         x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
             .Take(20)
-            .ToDictionary(x => x.Code, x => x.Name);
+            .Select(x => new DataSourceItem(x.Code, x.Name));
     }
 }

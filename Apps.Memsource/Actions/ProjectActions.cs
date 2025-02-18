@@ -86,13 +86,23 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
         [ActionParameter] CreateProjectRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
-        var request = new PhraseTmsRequest("/api2/v1/projects", Method.Post, authenticationCredentialsProviders)
+        var request = new PhraseTmsRequest("/api2/v3/projects", Method.Post, authenticationCredentialsProviders)
             .WithJsonBody(new
             {
                 name = input.Name,
                 sourceLang = input.SourceLanguage,
                 targetLangs = input.TargetLanguages.ToArray(),
-                dateDue = input.DateDue
+                dateDue = input.DateDue,
+                client = input.ClientId != null ? new { id = input.ClientId } : null,
+                businessUnit = input.BusinessUnitId != null ? new { id = input.BusinessUnitId } : null,
+                domain = input.DomainId != null ? new { id = input.DomainId } : null,
+                subdomain = input.SubDomainId != null ? new { id = input.SubDomainId } : null,
+                costCenter = input.CostCenterId != null ? new { id = input.CostCenterId } : null,
+                purchaseOrder = input.PurchaseOrder,
+                workflowSteps = input.WorkflowSteps?.Select(x=> new {id=x}),
+                note = input.Note,
+                fileHandover = input.FileHandover,
+                propagateTranslationsToLowerWfDuringUpdateSource = input.PropagateTranslationsToLowerWfDuringUpdateSource
             }, JsonConfig.DateSettings);
 
         return client.ExecuteWithHandling<ProjectDto>(request);
@@ -106,12 +116,22 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
         if (String.IsNullOrEmpty(input.TemplateUId))
         { throw new PluginMisconfigurationException("Template ID cannot be empty"); }
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
-        var request = new PhraseTmsRequest($"/api2/v1/projects/applyTemplate/{input.TemplateUId}", Method.Post,
+        var request = new PhraseTmsRequest($"/api2/v2/projects/applyTemplate/{input.TemplateUId}", Method.Post,
                 authenticationCredentialsProviders)
             .WithJsonBody(new
             {
                 name = input.Name,
-                dateDue = input.DateDue
+                dateDue = input.DateDue,
+                sourceLang = input.SourceLanguage,
+                targetLangs = input.TargetLanguages?.ToArray(),
+                workflowSteps = input.WorkflowSteps?.Select(x => new { id = x }),
+                note = input.Note,
+                client = input.ClientId != null ? new { id = input.ClientId } : null,
+                businessUnit = input.BusinessUnitId != null ? new { id = input.BusinessUnitId } : null,
+                domain = input.DomainId != null ? new { id = input.DomainId } : null,
+                subdomain = input.SubDomainId != null ? new { id = input.SubDomainId } : null,
+                costCenter = input.CostCenterId != null ? new { id = input.CostCenterId } : null,
+
             }, JsonConfig.DateSettings);
 
         return client.ExecuteWithHandling<ProjectDto>(request);

@@ -41,7 +41,7 @@ namespace Apps.PhraseTMS.Dtos
         public string Status { get; set; }
 
         [JsonProperty("score")]
-        public int Score { get; set; }
+        public double Score { get; set; }
 
         [Display("Issue counts")]
         [JsonProperty("issueCounts")]
