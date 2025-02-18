@@ -124,7 +124,7 @@ public class PhraseTmsClient : RestClient
 
         if (restResponse.StatusCode.Equals(HttpStatusCode.NotFound))
         {
-            throw new PluginMisconfigurationException(error.ErrorDescription + " Please check the inputs for this action");
+            throw new PluginApplicationException(error.ErrorDescription + " Please check the inputs for this action");
         }
 
 
