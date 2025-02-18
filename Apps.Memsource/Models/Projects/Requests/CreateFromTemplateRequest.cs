@@ -17,7 +17,7 @@ public class CreateFromTemplateRequest
 
 
     [Display("Source language")]
-    public string? SourceLang { get; set; }
+    public string? SourceLanguage { get; set; }
 
 
     [Display("Target languages")]

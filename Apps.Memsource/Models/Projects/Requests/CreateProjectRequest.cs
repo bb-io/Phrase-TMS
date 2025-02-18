@@ -60,16 +60,6 @@ public class CreateProjectRequest
     public string? Note { get; set; }
 
 
-    [Display("LQA profiles")]
-    [DataSource(typeof(LqaProfileDataHandler))]
-    public IEnumerable<string>? LqaProfiles { get; set; }
-
-
-    [Display("Custom fields")]
-    [DataSource(typeof(CustomFieldDateDataHandler))]
-    public IEnumerable<string>? CustomFields { get; set; }
-
-
     [Display("File handover")]
     public bool? FileHandover { get; set; }
 

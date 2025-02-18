@@ -134,6 +134,8 @@ public class PhraseTmsClient : RestClient
         if (error.ErrorDescription.Contains("targetLangs must match project"))
             throw new PluginMisconfigurationException("The target languages do not match the project. Please make sure the target languages in this action match the target languages of the project.");
 
+        if (error.ErrorDescription.Contains("contains unsupported locale."))
+            throw new PluginMisconfigurationException(error.ErrorDescription);
         throw new PluginApplicationException(error.ErrorDescription);
     }
 }
