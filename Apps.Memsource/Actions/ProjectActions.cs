@@ -93,16 +93,14 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
                 sourceLang = input.SourceLanguage,
                 targetLangs = input.TargetLanguages.ToArray(),
                 dateDue = input.DateDue,
-                clientId = input.ClientId,
-                businessUnitId = input.BusinessUnitId,
-                domainId = input.DomainId,
-                subdomainId = input.SubDomainId,
-                costCenterId = input.CostCenterId,
+                client = input.ClientId != null ? new { id = input.ClientId } : null,
+                businessUnit = input.BusinessUnitId != null ? new { id = input.BusinessUnitId } : null,
+                domain = input.DomainId != null ? new { id = input.DomainId } : null,
+                subdomain = input.SubDomainId != null ? new { id = input.SubDomainId } : null,
+                costCenter = input.CostCenterId != null ? new { id = input.CostCenterId } : null,
                 purchaseOrder = input.PurchaseOrder,
-                workflowSteps = input.WorkflowSteps?.ToArray(),
+                workflowSteps = input.WorkflowSteps?.Select(x=> new {id=x}),
                 note = input.Note,
-                lqaProfiles = input.LqaProfiles?.ToArray(),
-                customFields = input.CustomFields?.ToArray(),
                 fileHandover = input.FileHandover,
                 propagateTranslationsToLowerWfDuringUpdateSource = input.PropagateTranslationsToLowerWfDuringUpdateSource
             }, JsonConfig.DateSettings);
@@ -124,15 +122,15 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
             {
                 name = input.Name,
                 dateDue = input.DateDue,
-                sourceLang = input.SourceLang,
+                sourceLang = input.SourceLanguage,
                 targetLangs = input.TargetLanguages?.ToArray(),
-                workflowSteps = input.WorkflowSteps?.ToArray(),
+                workflowSteps = input.WorkflowSteps?.Select(x => new { id = x }),
                 note = input.Note,
-                clientId = input.ClientId,
-                businessUnitId = input.BusinessUnitId,
-                domainId = input.DomainId,
-                subdomainId = input.SubDomainId,
-                costCenterId = input.CostCenterId
+                client = input.ClientId != null ? new { id = input.ClientId } : null,
+                businessUnit = input.BusinessUnitId != null ? new { id = input.BusinessUnitId } : null,
+                domain = input.DomainId != null ? new { id = input.DomainId } : null,
+                subdomain = input.SubDomainId != null ? new { id = input.SubDomainId } : null,
+                costCenter = input.CostCenterId != null ? new { id = input.CostCenterId } : null,
 
             }, JsonConfig.DateSettings);
 

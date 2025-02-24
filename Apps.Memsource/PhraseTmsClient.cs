@@ -124,7 +124,7 @@ public class PhraseTmsClient : RestClient
 
         if (restResponse.StatusCode.Equals(HttpStatusCode.NotFound))
         {
-            throw new PluginMisconfigurationException(error.ErrorDescription + " Please check the inputs for this action");
+            throw new PluginApplicationException(error.ErrorDescription + " Please check the inputs for this action");
         }
 
 
@@ -134,6 +134,8 @@ public class PhraseTmsClient : RestClient
         if (error.ErrorDescription.Contains("targetLangs must match project"))
             throw new PluginMisconfigurationException("The target languages do not match the project. Please make sure the target languages in this action match the target languages of the project.");
 
+        if (error.ErrorDescription.Contains("contains unsupported locale."))
+            throw new PluginMisconfigurationException(error.ErrorDescription);
         throw new PluginApplicationException(error.ErrorDescription);
     }
 }
