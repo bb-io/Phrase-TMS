@@ -211,7 +211,7 @@ Before you can connect you need to make sure that:
 
 ![1695995715372](image/README/1695995715372.png)
 
-This example shows one of many use cases. Here, whenever an article is published we fetch the missing translations and retrieve the article as an HTML file. Then we create a new Phrase project with the missing locales as the target languages and upload the article as jobs. We link the project with the article to automatically push the new translations back when they are done in a second bird.
+This example shows one of many use cases. Here, whenever an article is published we fetch the missing translations and retrieve the article as an HTML file. Then we create a new Phrase project with the missing locales as the target languages and upload the article as jobs. Once the project status is changed to Completed, we download the translated HTML articles and push the translations back to the CMS.
 
 ## Analysis with other systems
 
