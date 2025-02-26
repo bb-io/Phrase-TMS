@@ -169,7 +169,8 @@ public class JobActions(IFileManagementClient fileManagementClient)
         var output = JsonConvert.SerializeObject(new
         {
             targetLangs = input.TargetLanguages,
-            preTranslate = input.preTranslate ?? false
+            preTranslate = input.preTranslate ?? false,
+            useProjectFileImportSettings = input.useProjectFileImportSettings ?? true
         });
 
         var headers = new Dictionary<string, string>()
