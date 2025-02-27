@@ -19,5 +19,6 @@ public class CreateJobRequest
     [Display("Should the file be pre-translated?")]
     public bool? preTranslate { get; set; }
 
-
+    [Display("Use project file import settings?")]
+    public bool? useProjectFileImportSettings { get; set; }
 }
