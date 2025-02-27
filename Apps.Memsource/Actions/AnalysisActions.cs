@@ -64,16 +64,15 @@ public class AnalysisActions
     }
 
     [Action("Get job analysis", Description = "Get job's analysis details")]
-    public JobAnalysisResponse GetJobAnalysis(
+    public async Task<JobAnalysisResponse> GetJobAnalysis(
         IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] JobRequest jobRequest,
         [ActionParameter] GetAnalysisRequest input)
     {
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var request = new PhraseTmsRequest($"/api2/v1/analyses/{input.AnalysisUId}/jobs/{jobRequest.JobUId}", Method.Get,
             authenticationCredentialsProviders);
-        var response = client.ExecuteWithHandling<JobAnalysisDto>(request).Result;
+        var response = await client.ExecuteWithHandling<JobAnalysisDto>(request);
         return new JobAnalysisResponse
         {
             Filename = response.FileName,

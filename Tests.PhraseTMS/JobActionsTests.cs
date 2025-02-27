@@ -82,5 +82,19 @@ namespace Tests.PhraseTMS
         }
 
 
+        [TestMethod]
+        public async Task GetJobAnalysis_ValidIds_ShouldNotFailAndReturnNotEmptyResponse()
+        {
+            var actions = new AnalysisActions(FileManager);
+            var projectRequest = new ProjectRequest { ProjectUId = "r4zn9RSwyO8NbtS72vT1H7" };
+            var jobRequest = new JobRequest { JobUId = "r8yqpDhaYs84a51UZG0ORb" };
+            var analysisRequest = new GetAnalysisRequest { AnalysisUId = "1376196960" };
+
+            var result = await actions.GetJobAnalysis(InvocationContext.AuthenticationCredentialsProviders,  jobRequest, analysisRequest);
+
+            Console.WriteLine(result.TotalInternalFuzzy);
+            Assert.IsNotNull(result);
+        }
+
     }
 }

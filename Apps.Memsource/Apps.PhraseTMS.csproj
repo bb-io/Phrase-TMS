@@ -1,11 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <Product>Phrase TMS</Product>
         <Description>Previously Memsource</Description>
-        <Version>1.2.83</Version>
+        <Version>1.2.84</Version>
         <AssemblyName>Apps.PhraseTMS</AssemblyName>
     </PropertyGroup>
     <ItemGroup>
