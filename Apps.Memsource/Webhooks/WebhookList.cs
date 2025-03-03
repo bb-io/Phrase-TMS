@@ -1101,6 +1101,7 @@ public class JobPart
     [Display("Workflow level")]
     public int workflowLevel { get; set; }
 
+    [DefinitionIgnore]
     public List<Provider> assignedTo { get; set; }
 }
 

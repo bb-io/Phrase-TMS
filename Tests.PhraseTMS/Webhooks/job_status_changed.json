@@ -1,0 +1,71 @@
+{
+  "jobParts": [
+    {
+      "uid": "yBQKRcaCYpHaedC2i3jr71",
+      "workflowLevel": 1,
+      "status": "NEW",
+      "wordsCount": -1,
+      "beginIndex": 0,
+      "endIndex": -1,
+      "dateCreated": "2025-03-03T17:49:06.981Z",
+      "project": {},
+      "assignedTo": []
+    }
+  ],
+  "metadata": {
+    "project": {
+      "id": 42,
+      "uid": "string",
+      "name": "string",
+      "sourceLang": "string",
+      "createdBy": {
+        "id": 42,
+        "uid": "string",
+        "username": "string"
+      },
+      "owner": {
+        "id": 42,
+        "uid": "string",
+        "username": "string"
+      },
+      "buyerOwner": {
+        "id": 42,
+        "uid": "string",
+        "username": "string"
+      },
+      "vendorOwner": {
+        "id": 42,
+        "uid": "string",
+        "username": "string"
+      },
+      "businessUnit": {
+        "id": 42,
+        "uid": "string",
+        "name": "string"
+      },
+      "client": {
+        "id": 42,
+        "uid": "string",
+        "name": "string"
+      },
+      "costCenter": {
+        "id": 42,
+        "uid": "string",
+        "name": "string"
+      },
+      "domain": {
+        "id": 42,
+        "uid": "string",
+        "name": "string"
+      },
+      "subDomain": {
+        "id": 42,
+        "uid": "string",
+        "name": "string"
+      }
+    }
+  },
+  "event": "JOB_STATUS_CHANGED",
+  "timestamp": 1741024146,
+  "eventUid": "jjbrmMjUcepJe5WKx17fH5"
+}

@@ -51,6 +51,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Webhooks\" />
     <Folder Include="TestFiles\Input\" />
     <Folder Include="TestFiles\Output\" />
   </ItemGroup>
