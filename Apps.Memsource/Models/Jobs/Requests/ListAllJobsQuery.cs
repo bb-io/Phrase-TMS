@@ -21,12 +21,11 @@ public class ListAllJobsQuery
     [Display("Due in hours"), JsonProperty("dueInHours")]
     public int? DueInHours { get; set; }
 
-    [Display("File"), JsonProperty("filename")]
-    [DataSource(typeof(FileNameDataHandler))]
+    [Display("File name"), JsonProperty("filename")]
     public string? Filename { get; set; }
 
     [Display("Target language"), JsonProperty("targetLang")]
-    [DataSource(typeof(JobTargetLanguagesDataHandler))]
+    [DataSource(typeof(LanguageDataHandler))]
     public string? TargetLang { get; set; }
 
     [Display("Assigned vendor"), JsonProperty("assignedVendor")]

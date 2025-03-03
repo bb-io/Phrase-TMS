@@ -12,7 +12,7 @@ public class ConnectionValidator : IConnectionValidator
         try
         {
             var client = new PhraseTmsClient(authProviders);
-            var request = new PhraseTmsRequest("/api2/v1/projects", Method.Get, authProviders);
+            var request = new RestRequest("/api2/v1/projects", Method.Get);
 
             await client.ExecuteWithHandling(request);
 

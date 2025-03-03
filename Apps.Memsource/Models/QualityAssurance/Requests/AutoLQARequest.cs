@@ -12,7 +12,7 @@ namespace Apps.PhraseTMS.Models.QualityAssurance.Requests
 {
     public class AutoLQARequest
     {
-        [Display("Job UIDs")]
+        [Display("Job IDs")]
         [DataSource(typeof(JobDataHandler))]
         public IEnumerable<string>? JobsUIds { get; set; }
 

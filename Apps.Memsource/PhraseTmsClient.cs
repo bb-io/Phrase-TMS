@@ -1,5 +1,5 @@
-﻿using Apps.PhraseTMS.Models;
-using Apps.PhraseTMS.Models.Async;
+﻿using Apps.PhraseTMS.Dtos.Async;
+using Apps.PhraseTMS.Models;
 using Apps.PhraseTMS.Models.Responses;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Exceptions;
@@ -16,36 +16,31 @@ public class PhraseTmsClient : RestClient
         base(new RestClientOptions
             { BaseUrl = GetUri(authenticationCredentialsProviders) })
     {
+        var authorization = authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value;
+        this.AddDefaultHeader("Authorization", authorization);
+        this.AddDefaultHeader("accept", "*/*");
     }
 
-    public PhraseTmsClient(string baseUrl) : base(new RestClientOptions { BaseUrl = new(baseUrl) })
+    public async Task<AsyncRequest?> PerformAsyncRequest(RestRequest request)
     {
-    }
-
-    public async Task<AsyncRequest?> PerformAsyncRequest(PhraseTmsRequest request,
-        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
-    {
-        var asyncRequestResponse = await this.ExecuteWithHandling<AsyncRequestResponse>(request);
+        var asyncRequestResponse = await ExecuteWithHandling<AsyncRequestResponse>(request);
         if (asyncRequestResponse is null) return default;
         var asyncRequest = asyncRequestResponse.AsyncRequest;
 
         while (asyncRequest.AsyncResponse is null)
         {
             await Task.Delay(2000);
-            var asyncStatusRequest = new PhraseTmsRequest($"/api2/v1/async/{asyncRequest.Id}", Method.Get,
-                authenticationCredentialsProviders);
-            asyncRequest = await this.ExecuteWithHandling<AsyncRequest>(asyncStatusRequest);
+            var asyncStatusRequest = new RestRequest($"/api2/v1/async/{asyncRequest.Id}", Method.Get);
+            asyncRequest = await ExecuteWithHandling<AsyncRequest>(asyncStatusRequest);
             if (asyncRequest is null) return default;
         }
 
         return asyncRequest;
     }
 
-    public async Task<List<AsyncRequest>> PerformMultipleAsyncRequest(PhraseTmsRequest request,
-        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+    public async Task<IEnumerable<T>> PerformMultipleAsyncRequest<T>(RestRequest request) where T : AsyncRequestArrayItem
     {
-        var result = new List<AsyncRequest>();
-        var asyncRequestResponse = await ExecuteWithHandling<AsyncRequestMultipleResponse>(request);
+        var asyncRequestResponse = await ExecuteWithHandling<AsyncRequestMultipleResponse<T>>(request);
         var asyncRequests = asyncRequestResponse.AsyncRequests;
 
         foreach (var asyncRequest in asyncRequests)
@@ -54,15 +49,12 @@ public class PhraseTmsClient : RestClient
             while (asyncRequestSeparate?.AsyncResponse is null)
             {
                 await Task.Delay(2000);
-                var asyncStatusRequest = new PhraseTmsRequest($"/api2/v1/async/{asyncRequest.AsyncRequest.Id}",
-                    Method.Get, authenticationCredentialsProviders);
+                var asyncStatusRequest = new RestRequest($"/api2/v1/async/{asyncRequest.AsyncRequest.Id}", Method.Get);
                 asyncRequestSeparate = await ExecuteWithHandling<AsyncRequest>(asyncStatusRequest);
             }
-
-            result.Add(asyncRequestSeparate);
         }
 
-        return result;
+        return asyncRequests;
     }
 
     private static Uri GetUri(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
@@ -108,8 +100,17 @@ public class PhraseTmsClient : RestClient
         return result;
     }
 
+    public async Task<IEnumerable<T>> PaginateOnce<T>(RestRequest request)
+    {
+        var response = await ExecuteWithHandling<PaginationResponse<T[]>>(request);
+        return response.Content;
+    }
+
     private Exception ConfigureErrorException(RestResponse restResponse)
     {
+        if (restResponse.Content == null)
+            throw new PluginApplicationException(restResponse.ErrorMessage);
+
         var error = JsonConvert.DeserializeObject<Error>(restResponse.Content);
 
         if (string.IsNullOrEmpty(error.ErrorDescription))
@@ -119,7 +120,7 @@ public class PhraseTmsClient : RestClient
 
         if (restResponse.StatusCode.Equals(HttpStatusCode.Unauthorized))
         {
-            throw new PluginMisconfigurationException("Please check your connection authorization to app.");
+            throw new PluginMisconfigurationException("The connection is unauthorized. Please check your connection settings.");
         }
 
         if (restResponse.StatusCode.Equals(HttpStatusCode.NotFound))

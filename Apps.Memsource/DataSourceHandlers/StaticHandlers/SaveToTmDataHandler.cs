@@ -1,14 +1,15 @@
 ﻿using Blackbird.Applications.Sdk.Common.Dictionaries;
+using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.PhraseTMS.DataSourceHandlers.StaticHandlers
 {
-    public class SaveToTmDataHandler : IStaticDataSourceHandler
+    public class SaveToTmDataHandler : IStaticDataSourceItemHandler
     {
-            public Dictionary<string, string> GetData() => new()
+        public IEnumerable<DataSourceItem> GetData() => new List<DataSourceItem>()
         {
-            { "All", "All segments" },
-            { "Confirmed", "Confirmed segments" },
-            { "None", "None" }
+            new DataSourceItem("All", "All segments"),
+            new DataSourceItem("Confirmed", "Confirmed segments"),
+            new DataSourceItem("None", "None"),
         };
     }
 }

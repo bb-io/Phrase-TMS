@@ -1,14 +1,15 @@
 ﻿using Blackbird.Applications.Sdk.Common.Dictionaries;
+using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.PhraseTMS.DataSourceHandlers.StaticHandlers;
 
-public class FormatDataHandler : IStaticDataSourceHandler
+public class FormatDataHandler : IStaticDataSourceItemHandler
 {
-    public Dictionary<string, string> GetData() => new()
+    public IEnumerable<DataSourceItem> GetData() => new List<DataSourceItem>()
     {
-        { "CSV", "CSV" },
-        { "CSV_EXTENDED", "CSV Extended" },
-        { "JSON", "JSON" },
-        { "LOG", "LOG" }
+        new DataSourceItem("CSV", "CSV"),
+        new DataSourceItem("CSV_EXTENDED", "CSV Extended"),
+        new DataSourceItem("JSON", "JSON"),
+        new DataSourceItem("LOG", "LOG"),
     };
 }

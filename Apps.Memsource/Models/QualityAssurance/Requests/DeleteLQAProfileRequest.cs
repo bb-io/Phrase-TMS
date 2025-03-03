@@ -6,7 +6,7 @@ namespace Apps.PhraseTMS.Models.QualityAssurance.Requests;
 
 public class DeleteLqaProfileRequest
 {
-    [Display("LQA profile UID")]
+    [Display("LQA profile ID")]
     [DataSource(typeof(LqaProfileDataHandler))]
     public string LqaProfileUId { get; set; }
 }

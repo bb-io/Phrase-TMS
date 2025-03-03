@@ -2,6 +2,8 @@ using System.Data;
 using System.Net;
 using Apps.PhraseTMS.DataSourceHandlers;
 using Apps.PhraseTMS.Dtos;
+using Apps.PhraseTMS.Dtos.Analysis;
+using Apps.PhraseTMS.Dtos.Jobs;
 using Apps.PhraseTMS.Models.Jobs.Requests;
 using Apps.PhraseTMS.Models.Jobs.Responses;
 using Apps.PhraseTMS.Models.Projects.Requests;
@@ -23,7 +25,7 @@ using RestSharp;
 namespace Apps.PhraseTMS.Webhooks;
 
 [WebhookList]
-public class WebhookList(InvocationContext invocationContext) : BaseInvocable(invocationContext)
+public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(invocationContext)
 {
     #region ProjectWebhooks
 
@@ -234,10 +236,10 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
             Result = new()
             {
                 Uid = data.JobParts.FirstOrDefault()?.Uid,
-                Filename = data.JobParts.FirstOrDefault()?.Filename,
+                Filename = data.JobParts.FirstOrDefault()?.FileName,
                 TargetLanguage = data.JobParts.FirstOrDefault()?.TargetLang,
                 Status = data.JobParts.FirstOrDefault()?.Status,
-                ProjectUid = data.JobParts.FirstOrDefault()?.Project.UId,
+                ProjectUid = data.JobParts.FirstOrDefault()?.Project.Uid,
                 ProjectName = data.JobParts.FirstOrDefault()?.Project.Name
                 //DateDue = response.DateDue
             }
@@ -259,10 +261,10 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
             Result = new()
             {
                 Uid = data.JobParts.FirstOrDefault()?.Uid,
-                Filename = data.JobParts.FirstOrDefault()?.Filename,
+                Filename = data.JobParts.FirstOrDefault()?.FileName,
                 TargetLanguage = data.JobParts.FirstOrDefault()?.TargetLang,
                 Status = data.JobParts.FirstOrDefault()?.Status,
-                ProjectUid = data.JobParts.FirstOrDefault()?.Project.UId,
+                ProjectUid = data.JobParts.FirstOrDefault()?.Project.Uid,
                 ProjectName = data.JobParts.FirstOrDefault()?.Project.Name
                 //DateDue = response.DateDue
             }
@@ -283,10 +285,10 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
         var result = new JobResponse
         {
             Uid = data.JobParts.FirstOrDefault()?.Uid,
-            Filename = data.JobParts.FirstOrDefault()?.Filename,
+            Filename = data.JobParts.FirstOrDefault()?.FileName,
             TargetLanguage = data.JobParts.FirstOrDefault()?.TargetLang,
             Status = data.JobParts.FirstOrDefault()?.Status,
-            ProjectUid = data.JobParts.FirstOrDefault()?.Project.UId,
+            ProjectUid = data.JobParts.FirstOrDefault()?.Project.Uid,
             ProjectName = data.JobParts.FirstOrDefault()?.Project.Name,
             //DateDue = response.DateDue
         };
@@ -313,7 +315,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
         }
 
         if (request.UserId is not null &&
-            data.JobParts.FirstOrDefault().providers.All(x => x.uid != request.UserId))
+            data.JobParts.FirstOrDefault().assignedTo.All(x => x.Uid != request.UserId))
         {
             return new()
             {
@@ -339,10 +341,10 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
             Result = new()
             {
                 Uid = data.JobParts.FirstOrDefault()?.Uid,
-                Filename = data.JobParts.FirstOrDefault()?.Filename,
+                Filename = data.JobParts.FirstOrDefault()?.FileName,
                 TargetLanguage = data.JobParts.FirstOrDefault()?.TargetLang,
                 Status = data.JobParts.FirstOrDefault()?.Status,
-                ProjectUid = data.JobParts.FirstOrDefault()?.Project.UId,
+                ProjectUid = data.JobParts.FirstOrDefault()?.Project.Uid,
                 ProjectName = data.JobParts.FirstOrDefault()?.Project.Name
                 //DateDue = response.DateDue
             }
@@ -362,10 +364,10 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
         var result = new JobResponse
         {
             Uid = data.JobParts.FirstOrDefault()?.Uid,
-            Filename = data.JobParts.FirstOrDefault()?.Filename,
+            Filename = data.JobParts.FirstOrDefault()?.FileName,
             TargetLanguage = data.JobParts.FirstOrDefault()?.TargetLang,
             Status = data.JobParts.FirstOrDefault()?.Status,
-            ProjectUid = data.JobParts.FirstOrDefault()?.Project.UId,
+            ProjectUid = data.JobParts.FirstOrDefault()?.Project.Uid,
             ProjectName = data.JobParts.FirstOrDefault()?.Project.Name
             //DateDue = response.DateDue
         };
@@ -393,10 +395,10 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
         var result = new JobResponse
         {
             Uid = data.JobParts.FirstOrDefault()?.Uid,
-            Filename = data.JobParts.FirstOrDefault()?.Filename,
+            Filename = data.JobParts.FirstOrDefault()?.FileName,
             TargetLanguage = data.JobParts.FirstOrDefault()?.TargetLang,
             Status = data.JobParts.FirstOrDefault()?.Status,
-            ProjectUid = data.JobParts.FirstOrDefault()?.Project.UId,
+            ProjectUid = data.JobParts.FirstOrDefault()?.Project.Uid,
             ProjectName = data.JobParts.FirstOrDefault()?.Project.Name,
             //DateDue = response.DateDue
         };
@@ -424,10 +426,10 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
         var result = new JobResponse
         {
             Uid = data.JobParts.FirstOrDefault()?.Uid,
-            Filename = data.JobParts.FirstOrDefault()?.Filename,
+            Filename = data.JobParts.FirstOrDefault()?.FileName,
             TargetLanguage = data.JobParts.FirstOrDefault()?.TargetLang,
             Status = data.JobParts.FirstOrDefault()?.Status,
-            ProjectUid = data.JobParts.FirstOrDefault()?.Project.UId,
+            ProjectUid = data.JobParts.FirstOrDefault()?.Project.Uid,
             ProjectName = data.JobParts.FirstOrDefault().Project.Name,
             //DateDue = response.DateDue
         };
@@ -470,7 +472,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
 
-        if (!String.IsNullOrEmpty(projectNameContains) && !data.metadata.project.name.Contains(projectNameContains))
+        if (!String.IsNullOrEmpty(projectNameContains) && !data.metadata.project.Name.Contains(projectNameContains))
         {
             return new()
             {
@@ -485,11 +487,8 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
         var jobData = new JobData();
         if (!string.IsNullOrEmpty(job.JobUId) && !string.IsNullOrEmpty(projectOptionalRequest.ProjectUId))
         {
-            var client = new PhraseTmsClient(InvocationContext.AuthenticationCredentialsProviders);
-            var apirequest = new PhraseTmsRequest(
-                $"/api2/v1/projects/{projectOptionalRequest.ProjectUId}/jobs/{job.JobUId}",
-                Method.Get, InvocationContext.AuthenticationCredentialsProviders);
-            jobData = await client.ExecuteWithHandling<JobData>(apirequest);
+            var apirequest = new RestRequest($"/api2/v1/projects/{projectOptionalRequest.ProjectUId}/jobs/{job.JobUId}", Method.Get);
+            jobData = await Client.ExecuteWithHandling<JobData>(apirequest);
 
 
             if (lastWorkflowLevel.HasValue && lastWorkflowLevel.Value)
@@ -510,10 +509,10 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                 {
                     Uid = data.JobParts.FirstOrDefault().Uid,
                     Status = data.JobParts.FirstOrDefault().Status,
-                    ProjectUid = data.metadata.project.uid,
-                    ProjectName = data.metadata.project.name,
-                    Filename = data.JobParts.FirstOrDefault().fileName,
-                    TargetLanguage = data.JobParts.FirstOrDefault().targetLang
+                    ProjectUid = data.metadata.project.Uid,
+                    ProjectName = data.metadata.project.Name,
+                    Filename = data.JobParts.FirstOrDefault().FileName,
+                    TargetLanguage = data.JobParts.FirstOrDefault().TargetLang
                 }
             };
         }
@@ -556,9 +555,9 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
 
         if (result.Result != null)
         {
-            result.Result.ProjectName = data.metadata.project.name;
+            result.Result.ProjectName = data.metadata.project.Name;
         }
-        
+
         return result;
     }
 
@@ -576,9 +575,9 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                 {
                     Uid = selectedJob.Uid,
                     Status = selectedJob.Status,
-                    ProjectUid = selectedJob.project.Uid,
-                    Filename = selectedJob.fileName,
-                    TargetLanguage = selectedJob.targetLang
+                    ProjectUid = selectedJob.Project.Uid,
+                    Filename = selectedJob.FileName,
+                    TargetLanguage = selectedJob.TargetLang
                 }
             };
         }
@@ -595,9 +594,9 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
 
     private WebhookResponse<JobResponse> HandleOnlyLastStep(List<JobPart> jobParts)
     {
-        if (jobParts.Any(x => x.workflowLevel == x.project.lastWorkflowLevel))
+        if (jobParts.Any(x => x.workflowLevel == x.Project.LastWorkflowLevel))
         {
-            var selectedJob = jobParts.FirstOrDefault(x => x.workflowLevel == x.project.lastWorkflowLevel);
+            var selectedJob = jobParts.FirstOrDefault(x => x.workflowLevel == x.Project.LastWorkflowLevel);
             return new WebhookResponse<JobResponse>
             {
                 HttpResponseMessage = null,
@@ -605,9 +604,9 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                 {
                     Uid = selectedJob.Uid,
                     Status = selectedJob.Status,
-                    ProjectUid = selectedJob.project.Uid,
-                    Filename = selectedJob.fileName,
-                    TargetLanguage = selectedJob.targetLang
+                    ProjectUid = selectedJob.Project.Uid,
+                    Filename = selectedJob.FileName,
+                    TargetLanguage = selectedJob.TargetLang
                 }
             };
         }
@@ -634,9 +633,9 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                 {
                     Uid = selectedJob.Uid,
                     Status = selectedJob.Status,
-                    ProjectUid = selectedJob.project.Uid,
-                    Filename = selectedJob.fileName,
-                    TargetLanguage = selectedJob.targetLang
+                    ProjectUid = selectedJob.Project.Uid,
+                    Filename = selectedJob.FileName,
+                    TargetLanguage = selectedJob.TargetLang
                 }
             };
         }
@@ -664,9 +663,9 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                 {
                     Uid = selectedJob.Uid,
                     Status = selectedJob.Status,
-                    ProjectUid = selectedJob.project.Uid,
-                    Filename = selectedJob.fileName,
-                    TargetLanguage = selectedJob.targetLang
+                    ProjectUid = selectedJob.Project.Uid,
+                    Filename = selectedJob.FileName,
+                    TargetLanguage = selectedJob.TargetLang
                 }
             };
         }
@@ -683,9 +682,9 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                     {
                         Uid = selectedJob.Uid,
                         Status = selectedJob.Status,
-                        ProjectUid = selectedJob.project.Uid,
-                        Filename = selectedJob.fileName,
-                        TargetLanguage = selectedJob.targetLang
+                        ProjectUid = selectedJob.Project.Uid,
+                        Filename = selectedJob.FileName,
+                        TargetLanguage = selectedJob.TargetLang
                     }
                 };
             }
@@ -701,11 +700,9 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
 
     private async Task<string> GetJobIDforSpecificStep(string taskId, string? step)
     {
-        var client = new PhraseTmsClient(InvocationContext.AuthenticationCredentialsProviders);
-        var apirequest = new PhraseTmsRequest($"/api2/v1/mappings/tasks/{taskId}",
-            Method.Get, InvocationContext.AuthenticationCredentialsProviders);
+        var apirequest = new RestRequest($"/api2/v1/mappings/tasks/{taskId}", Method.Get);
         apirequest.AddQueryParameter("workflowLevel", step);
-        var response = await client.ExecuteWithHandling<TaskData>(apirequest);
+        var response = await Client.ExecuteWithHandling<TaskData>(apirequest);
         return response.job.uid;
     }
 
@@ -721,9 +718,9 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                 {
                     Uid = selectedJob.Uid,
                     Status = selectedJob.Status,
-                    ProjectUid = selectedJob.project.Uid,
-                    Filename = selectedJob.fileName,
-                    TargetLanguage = selectedJob.targetLang
+                    ProjectUid = selectedJob.Project.Uid,
+                    Filename = selectedJob.FileName,
+                    TargetLanguage = selectedJob.TargetLang
                 }
             };
         }
@@ -752,9 +749,9 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                 {
                     Uid = selectedJob.Uid,
                     Status = selectedJob.Status,
-                    ProjectUid = selectedJob.project.Uid,
-                    Filename = selectedJob.fileName,
-                    TargetLanguage = selectedJob.targetLang
+                    ProjectUid = selectedJob.Project.Uid,
+                    Filename = selectedJob.FileName,
+                    TargetLanguage = selectedJob.TargetLang
                 }
             };
         }
@@ -771,10 +768,10 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
 
     private WebhookResponse<JobResponse> HandleStatusLastStep(List<JobPart> jobParts, IEnumerable<string>? statuses)
     {
-        if (jobParts.Any(x => statuses.Contains(x.Status) && x.workflowLevel == x.project.lastWorkflowLevel))
+        if (jobParts.Any(x => statuses.Contains(x.Status) && x.workflowLevel == x.Project.LastWorkflowLevel))
         {
             var selectedJob = jobParts.FirstOrDefault(x =>
-                statuses.Contains(x.Status) && x.workflowLevel == x.project.lastWorkflowLevel);
+                statuses.Contains(x.Status) && x.workflowLevel == x.Project.LastWorkflowLevel);
             return new WebhookResponse<JobResponse>
             {
                 HttpResponseMessage = null,
@@ -782,9 +779,9 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                 {
                     Uid = selectedJob.Uid,
                     Status = selectedJob.Status,
-                    ProjectUid = selectedJob.project.Uid,
-                    Filename = selectedJob.fileName,
-                    TargetLanguage = selectedJob.targetLang
+                    ProjectUid = selectedJob.Project.Uid,
+                    Filename = selectedJob.FileName,
+                    TargetLanguage = selectedJob.TargetLang
                 }
             };
         }
@@ -812,9 +809,9 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                 {
                     Uid = selectedJob.Uid,
                     Status = selectedJob.Status,
-                    ProjectUid = selectedJob.project.Uid,
-                    Filename = selectedJob.fileName,
-                    TargetLanguage = selectedJob.targetLang
+                    ProjectUid = selectedJob.Project.Uid,
+                    Filename = selectedJob.FileName,
+                    TargetLanguage = selectedJob.TargetLang
                 }
             };
         }
@@ -844,9 +841,9 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                 {
                     Uid = selectedJob.Uid,
                     Status = selectedJob.Status,
-                    ProjectUid = selectedJob.project.Uid,
-                    Filename = selectedJob.fileName,
-                    TargetLanguage = selectedJob.targetLang
+                    ProjectUid = selectedJob.Project.Uid,
+                    Filename = selectedJob.FileName,
+                    TargetLanguage = selectedJob.TargetLang
                 }
             };
         }
@@ -865,9 +862,9 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
                     {
                         Uid = selectedJob.Uid,
                         Status = selectedJob.Status,
-                        ProjectUid = selectedJob.project.Uid,
-                        Filename = selectedJob.fileName,
-                        TargetLanguage = selectedJob.targetLang
+                        ProjectUid = selectedJob.Project.Uid,
+                        Filename = selectedJob.FileName,
+                        TargetLanguage = selectedJob.TargetLang
                     }
                 };
             }
@@ -886,7 +883,7 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
     [Webhook("On all jobs in workflow step reached status", typeof(AllJobsReachedStatusHandler),
         Description =
             "Triggered when all jobs in a specific workflow step reach a specified status. Returns only jobs in the specified workflow step")]
-    public async Task<WebhookResponse<JobsResponse>> HandleAllJobsReachedStatusAsync(WebhookRequest webhookRequest,
+    public async Task<WebhookResponse<ListAllJobsResponse>> HandleAllJobsReachedStatusAsync(WebhookRequest webhookRequest,
         [WebhookParameter] WorkflowStepStatusRequest workflowStepStatusRequest)
     {
         var requestBody = webhookRequest.Body.ToString();
@@ -904,30 +901,23 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
         var primaryJob = jobData.JobParts.FirstOrDefault();
         if (primaryJob?.Status != workflowStepStatusRequest.JobStatus)
         {
-            return new WebhookResponse<JobsResponse>
+            return new WebhookResponse<ListAllJobsResponse>
             {
                 ReceivedWebhookRequestType = WebhookRequestType.Preflight
             };
         }
 
-        var phraseTmsClient = new PhraseTmsClient(InvocationContext.AuthenticationCredentialsProviders);
         var jobsEndpoint = $"/api2/v2/projects/{workflowStepStatusRequest.ProjectUId}/jobs";
-        var apiRequest =
-            new PhraseTmsRequest(jobsEndpoint, Method.Get, InvocationContext.AuthenticationCredentialsProviders);
+        var apiRequest = new RestRequest(jobsEndpoint, Method.Get);
 
-        var allJobs = await phraseTmsClient.Paginate<JobDto>(apiRequest);
+        var allJobs = await Client.Paginate<ListJobDto>(apiRequest);
         if (allJobs.All(job => primaryJob?.Uid != job.Uid))
         {
-            return new WebhookResponse<JobsResponse>
+            return new WebhookResponse<ListAllJobsResponse>
             {
                 ReceivedWebhookRequestType = WebhookRequestType.Preflight
             };
         }
-
-        allJobs.ForEach(job => job.Project = new()
-        {
-            UId = workflowStepStatusRequest.ProjectUId
-        });
 
         var relevantJobs = allJobs
             .Where(job => job.WorkflowStep?.Id == workflowStepStatusRequest.WorkflowStepId)
@@ -936,23 +926,10 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
         var allJobsInStepMatchStatus = relevantJobs.All(job => job.Status == workflowStepStatusRequest.JobStatus);
         var triggered = allJobsInStepMatchStatus;
 
-        return new WebhookResponse<JobsResponse>
+        return new WebhookResponse<ListAllJobsResponse>
         {
             ReceivedWebhookRequestType = triggered ? WebhookRequestType.Default : WebhookRequestType.Preflight,
-            Result = new JobsResponse
-            {
-                Jobs = relevantJobs.Select(job => new JobResponse
-                {
-                    Uid = job.Uid,
-                    ProjectUid = job.Project.UId,
-                    ProjectName = job.Project.Name,
-                    Filename = job.Filename,
-                    SourceLanguage = job.SourceLang,
-                    Status = job.Status,
-                    TargetLanguage = job.TargetLang,
-                    WordCount = job.WordsCount
-                }).ToList()
-            }
+            Result = new ListAllJobsResponse { Jobs = relevantJobs },
         };
     }
 
@@ -969,10 +946,10 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
         var result = new JobResponse
         {
             Uid = data.JobPart.Uid,
-            Filename = data.JobPart.Filename,
+            Filename = data.JobPart.FileName,
             TargetLanguage = data.JobPart.TargetLang,
             Status = data.JobPart.Status,
-            ProjectUid = data.JobPart.Project.UId,
+            ProjectUid = data.JobPart.Project.Uid,
             ProjectName = data.JobPart.Project?.Name ?? string.Empty,
             //DateDue = response.DateDue
         };
@@ -1000,10 +977,10 @@ public class WebhookList(InvocationContext invocationContext) : BaseInvocable(in
         var result = new JobResponse
         {
             Uid = data.JobParts.FirstOrDefault()?.Uid,
-            Filename = data.JobParts.FirstOrDefault()?.Filename,
+            Filename = data.JobParts.FirstOrDefault()?.FileName,
             TargetLanguage = data.JobParts.FirstOrDefault()?.TargetLang,
             Status = data.JobParts.FirstOrDefault()?.Status,
-            ProjectUid = data.JobParts.FirstOrDefault()?.Project.UId,
+            ProjectUid = data.JobParts.FirstOrDefault()?.Project.Uid,
             ProjectName = data.JobParts.FirstOrDefault()?.Project.Name,
             //DateDue = response.DateDue
         };
@@ -1100,12 +1077,42 @@ public class ProjectWrapper
 
 public class JobsWrapper
 {
-    public List<JobDto> JobParts { get; set; }
+    public List<JobPart> JobParts { get; set; }
 }
 
 public class JobWrapper
 {
-    public JobDto JobPart { get; set; }
+    public JobPart JobPart { get; set; }
+}
+
+public class JobPart
+{
+    [Display("Job ID")]
+    public string Uid { get; set; }
+    public Project Project { get; set; }
+    public string Status { get; set; }
+
+    [Display("File name")]
+    public string FileName { get; set; }
+
+    [Display("Target language code")]
+    public string TargetLang { get; set; }
+
+    [Display("Workflow level")]
+    public int workflowLevel { get; set; }
+
+    public List<Provider> assignedTo { get; set; }
+}
+
+public class Provider
+{
+    public string Uid { get; set; }
+}
+
+public class Public
+{
+    public string Uid { get; set; }
+    public int LastWorkflowLevel { get; set; }
 }
 
 public class ProjectTemplateWrapper
@@ -1148,18 +1155,6 @@ public class TaskData
     public string resourcePath { get; set; }
 }
 
-public class JobPart
-{
-    public string Uid { get; set; }
-    public int workflowLevel { get; set; }
-    public string Status { get; set; }
-    [JsonProperty("project")] public _Project? project { get; set; }
-
-    public string? task { get; set; }
-    public string? fileName { get; set; }
-    public string? targetLang { get; set; }
-}
-
 public class _Project
 {
     [JsonProperty("uid")] public string Uid { get; set; }
@@ -1180,7 +1175,12 @@ public class projectMetadata
 
 public class Project
 {
-    public string uid { get; set; }
-    public int lastWorkflowLevel { get; set; }
-    public string name { get; set; }
+    [Display("Project ID")]
+    public string Uid { get; set; }
+
+    [Display("Last workflow level")]
+    public int LastWorkflowLevel { get; set; }
+
+    [Display("Name")]
+    public string Name { get; set; }
 }

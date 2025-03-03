@@ -6,8 +6,7 @@ namespace Apps.PhraseTMS.Models.Quotes.Requests;
 
 public class CreateQuoteRequest
 {
-    [Display("Analyse UID")]
-    [DataSource(typeof(AnalysisDataHandler))]
+    [Display("Analysis ID")]
     public string AnalyseUId { get; set; }
     public string Name { get; set; }
         

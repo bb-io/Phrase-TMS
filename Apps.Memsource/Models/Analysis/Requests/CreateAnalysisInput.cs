@@ -49,8 +49,6 @@ public class CreateAnalysisInput
 
     [Display("Use project analysis settings")]
     public bool? UseProjectAnalysisSettings { get; set; }
-
-    [Display("Callback url")] public string? CallbackUrl { get; set; }
     
     [Display("Net rate scheme ID")] 
     [DataSource(typeof(NetRateSchemeDataHandler))]

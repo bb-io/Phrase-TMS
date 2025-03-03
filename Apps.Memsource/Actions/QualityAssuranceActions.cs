@@ -12,26 +12,20 @@ using Apps.PhraseTMS.Models.Jobs.Requests;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
+using Blackbird.Applications.Sdk.Common.Invocation;
 
 namespace Apps.PhraseTMS.Actions;
 
 [ActionList]
-public class QualityAssuranceActions(IFileManagementClient fileManagementClient)
+public class QualityAssuranceActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : PhraseInvocable(invocationContext)
 {
     [Action("Download LQA assessment", Description = "Downloads a single xlsx report based on specific job ID")]
-    public async Task<DownloadLqaResponse> DownloadLqaAsync(
-        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] JobRequest jobRequest)
+    public async Task<DownloadLqaResponse> DownloadLqaAsync([ActionParameter] JobRequest jobRequest)
     {
-        var credentialsProviders = authenticationCredentialsProviders as AuthenticationCredentialsProvider[] ??
-                                   authenticationCredentialsProviders.ToArray();
-        
-        var client = new PhraseTmsClient(credentialsProviders);
-        var request = new PhraseTmsRequest("/api2/v1/lqa/assessments/reports", Method.Get, credentialsProviders)
+        var request = new RestRequest("/api2/v1/lqa/assessments/reports", Method.Get)
             .AddParameter("jobParts", jobRequest.JobUId, ParameterType.QueryString);
 
-        var response = await client.ExecuteWithHandling(request);
+        var response = await Client.ExecuteWithHandling(request);
         var stream = new MemoryStream(response.RawBytes!);
         stream.Position = 0;
 
@@ -43,81 +37,16 @@ public class QualityAssuranceActions(IFileManagementClient fileManagementClient)
             LqaReport = fileReference
         };
     }
-    
-    [Action("Add ignored warning", Description = "Add a new ignored warning to the job segment")]
-    public Task AddIgnoredWarning(
-        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] JobRequest jobRequest,
-        [ActionParameter] AddIgnoredWarningRequest input)
+
+    [Action("Get LQA assessment", Description = "Get a specific LQA assessment")]
+    public async Task<LQAAssessmentDto> GetLQAassessment([ActionParameter] JobRequest input)
     {
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
-        var request = new PhraseTmsRequest(
-            $"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/{jobRequest.JobUId}/qualityAssurances/ignoredWarnings",
-            Method.Post, authenticationCredentialsProviders);
-        request.WithJsonBody(new
-        {
-            segments = new[]
-            {
-                new
-                {
-                    uid = input.SegmentUId,
-                    warnings = new[] { new { id = input.WarningId } }
-                }
-            }
-        });
-        return client.ExecuteWithHandling(request);
-    }
-
-    [Action("List LQA profiles", Description = "List all LQA profiles")]
-    public async Task<ListLqaProfilesResponse> ListLqaProfiles(
-        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] ListLqaProfilesQuery query)
-    {
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
-
-        var endpoint = "/api2/v1/lqa/profiles";
-        var request =
-            new PhraseTmsRequest(endpoint.WithQuery(query), Method.Get, authenticationCredentialsProviders);
-
-        var response = await client.Paginate<LqaProfileDto>(request);
-
-        return new()
-        {
-            Profiles = response
-        };
-    }
-
-    [Action("Delete LQA profile", Description = "Delete specific LQA profile")]
-    public Task DeleteLqaProfile(
-        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] DeleteLqaProfileRequest input)
-    {
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
-        var request = new PhraseTmsRequest($"/api2/v1/lqa/profiles/{input.LqaProfileUId}", Method.Delete,
-            authenticationCredentialsProviders);
-
-        return client.ExecuteWithHandling(request);
-    }
-
-    [Action("Get LQA assessment", Description = "Get specific LQA assessment")]
-    public async Task<LQAAssessmentDto> GetLQAassessment(
-        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] JobRequest input)
-    {
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
-        var request = new PhraseTmsRequest($"/api2/v1/lqa/assessments/{input.JobUId}", Method.Get,
-            authenticationCredentialsProviders);
-
-        return await client.ExecuteWithHandling<LQAAssessmentDto>(request);
+        var request = new RestRequest($"/api2/v1/lqa/assessments/{input.JobUId}", Method.Get);
+        return await Client.ExecuteWithHandling<LQAAssessmentDto>(request);
     }
 
     [Action("Run auto LQA", Description = "Runs Auto LQA for specified job parts or all jobs in a given workflow step")]
-    public Task RunAutoLQA(
-        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] AutoLQARequest input)
+    public Task RunAutoLQA([ActionParameter] ProjectRequest projectRequest, [ActionParameter] AutoLQARequest input)
     {
         if (input.JobsUIds is null && input.WorkflowLevel is null)
         {
@@ -130,10 +59,7 @@ public class QualityAssuranceActions(IFileManagementClient fileManagementClient)
                 "One of the optional input values (Job IDs or Workflow step) must be filled in, not both");
         }
 
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
-        var request = new PhraseTmsRequest(
-            $"/api2/v1/projects/{projectRequest.ProjectUId}/runAutoLqa",
-            Method.Post, authenticationCredentialsProviders);
+        var request = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/runAutoLqa", Method.Post);
 
         var bodyDictionary = new Dictionary<string, object>();
 
@@ -147,7 +73,7 @@ public class QualityAssuranceActions(IFileManagementClient fileManagementClient)
         }
 
         request.WithJsonBody(bodyDictionary);
-        return client.ExecuteWithHandling(request);
+        return Client.ExecuteWithHandling(request);
     }
     
     private static string GetFileNameFromResponse(RestResponse response)

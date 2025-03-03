@@ -13,7 +13,6 @@ public class OAuth2ConnectionDefinition : IConnectionDefinition
         {
             Name = "OAuth2",
             AuthenticationType = ConnectionAuthenticationType.OAuth2,
-            ConnectionUsage = ConnectionUsage.Actions,
             ConnectionProperties = new List<ConnectionProperty>
             {
                 new("client_id"){DisplayName = "Client ID"},

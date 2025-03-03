@@ -20,8 +20,7 @@ public class ProjectStatusChangedHandler(
         if (projectOptionalRequest.ProjectUId != null && projectStatusChangedRequest.Status != null)
         {
             var client = new PhraseTmsClient(InvocationContext.AuthenticationCredentialsProviders);
-            var request = new PhraseTmsRequest($"/api2/v1/projects/{projectOptionalRequest.ProjectUId}", Method.Get,
-                InvocationContext.AuthenticationCredentialsProviders);
+            var request = new RestRequest($"/api2/v1/projects/{projectOptionalRequest.ProjectUId}", Method.Get);
             var project = await client.ExecuteWithHandling<ProjectDto>(request);
 
             if (projectStatusChangedRequest.Status.Contains(project.Status))

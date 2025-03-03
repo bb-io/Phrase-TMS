@@ -1,10 +1,16 @@
 ﻿using Blackbird.Applications.Sdk.Common.Dictionaries;
+using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.PhraseTMS.DataSourceHandlers.StaticHandlers;
 
-public class TimezoneDataHandler : IStaticDataSourceHandler
+public class TimezoneDataHandler : IStaticDataSourceItemHandler
 {
-    public Dictionary<string, string> GetData() => new()
+    public IEnumerable<DataSourceItem> GetData()
+    {
+        return Data.Select(x => new DataSourceItem(x.Key, x.Value));
+    }
+
+    public static Dictionary<string, string> Data => new()
     {
         ["Africa/Abidjan"] = "Africa/Abidjan", ["Africa/Accra"] = "Africa/Accra",
         ["Africa/Addis_Ababa"] = "Africa/Addis_Ababa", ["Africa/Algiers"] = "Africa/Algiers",

@@ -1,9 +1,9 @@
 ﻿using Blackbird.Applications.Sdk.Common;
 using Newtonsoft.Json;
 
-namespace Apps.PhraseTMS.Models.Async;
+namespace Apps.PhraseTMS.Dtos.Async;
 
-public class AsyncRequestResponse 
+public class AsyncRequestResponse
 {
     public AsyncRequest AsyncRequest { get; set; }
 }
@@ -22,14 +22,14 @@ public class AsyncResponse
 
 public class AsyncRequest
 {
-    [Display("ID")]
+    [Display("Request ID")]
     public string Id { get; set; } = string.Empty;
 
     public string Action { get; set; } = string.Empty;
-        
+
     [Display("Creation date")]
     public string DateCreated { get; set; } = string.Empty;
-    
+
     [Display("Async response")]
     public AsyncResponse? AsyncResponse { get; set; }
 

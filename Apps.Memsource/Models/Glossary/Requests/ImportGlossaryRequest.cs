@@ -7,7 +7,7 @@ namespace Apps.PhraseTMS.Models.Glossary.Requests;
 
 public class ImportGlossaryRequest
 {
-    [Display("Glossary UID", Description = "Existing glossary for import")]
+    [Display("Glossary ID", Description = "Existing glossary for import")]
     [DataSource(typeof(TermBaseDataHandler))]
     public string GlossaryUId { get; set; }
 

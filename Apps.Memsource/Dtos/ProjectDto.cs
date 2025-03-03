@@ -7,7 +7,7 @@ public class ProjectDto
 {
     public string? Name { get; set; }
 
-    [Display("ID")] public string UId { get; set; }
+    [Display("Project ID")] public string UId { get; set; }
 
     [Display("Creation date")] public DateTime? DateCreated { get; set; }
 

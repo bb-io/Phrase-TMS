@@ -11,11 +11,11 @@ namespace Apps.PhraseTMS.Models.Projects.Requests
 {
     public class AssignFromTemplateRequest : ProjectRequest
     {
-        [Display("Template UID")]
+        [Display("Template ID")]
         [DataSource(typeof(ProjectTemplateDataHandler))]
         public string TemplateUId { get; set; }
 
-        [Display("Job UIDs")]
+        [Display("Job IDs")]
         [DataSource(typeof(JobDataHandler))]
         public IEnumerable<string>? JobsUIds { get; set; }
     }

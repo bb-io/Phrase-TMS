@@ -10,7 +10,7 @@ namespace Apps.PhraseTMS.Models.Translations.Responses
 
     public class DeletedTranslations
     {
-        [Display("ID of deleted translations")]
+        [Display("Job ID")]
         public int Uid { get; set; }
     }
 }

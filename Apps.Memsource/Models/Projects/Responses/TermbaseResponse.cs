@@ -73,12 +73,8 @@ namespace Apps.PhraseTMS.Models.Projects.Responses
         [Display("Step mame")]
         public string Name { get; set; }
 
-        [JsonProperty("id")]
-        [Display("Step ID")]
-        public string Id { get; set; }
-
         [JsonProperty("uid")]
-        [Display("Step UID")]
+        [Display("Step ID")]
         public string Uid { get; set; }
 
         [JsonProperty("order")]

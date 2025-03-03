@@ -9,9 +9,12 @@ namespace Apps.PhraseTMS.Models.Jobs.Requests;
 
 public class CreateJobRequest
 {
-    [Display("Target languages")]
-    [DataSource(typeof(LanguageDataHandler))]
-    public IEnumerable<string>? TargetLanguages { get; set; }
+    [Display("Target language")]
+    [DataSource(typeof(ProjectLanguageDataHandler))]
+    public string TargetLanguage { get; set; }
+
+    [Display("Due date")]
+    public DateTime? DueDate { get; set; }
 
     [Display("File")]
     public FileReference File { get; set; }

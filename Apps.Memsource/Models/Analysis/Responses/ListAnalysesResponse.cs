@@ -1,8 +1,8 @@
-﻿using Apps.PhraseTMS.Dtos;
+﻿using Apps.PhraseTMS.Dtos.Analysis;
 
 namespace Apps.PhraseTMS.Models.Analysis.Responses;
 
 public class ListAnalysesResponse
 {
-    public IEnumerable<AnalysisDto> Analyses { get; set; }
+    public IEnumerable<FullAnalysisDto> Analyses { get; set; }
 }

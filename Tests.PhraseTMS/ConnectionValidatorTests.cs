@@ -13,7 +13,7 @@ namespace Tests.PhraseTMS
             var validator = new ConnectionValidator();
             
             var result = await validator.ValidateConnection(Creds, CancellationToken.None);
-            
+            Console.WriteLine(result.Message);
             Assert.IsTrue(result.IsValid);
         }
 
@@ -25,7 +25,7 @@ namespace Tests.PhraseTMS
                 .Select(x => new AuthenticationCredentialsProvider(x.KeyName, x.Value + "_incorrect"));
             
             var result = await validator.ValidateConnection(newCredentials, CancellationToken.None);
-            
+            Console.WriteLine(result.Message);
             Assert.IsFalse(result.IsValid);
         }
     }

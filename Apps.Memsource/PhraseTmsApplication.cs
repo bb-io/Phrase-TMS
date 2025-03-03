@@ -16,14 +16,10 @@ public class PhraseTmsApplication : BaseInvocable, IApplication, ICategoryProvid
         set { }
     }
 
-    public string Name { get; set; }
-
     public PhraseTmsApplication(InvocationContext invocationContext) : base(invocationContext)
     {
-        Name = "PhraseTMS";
         _typesInstances = CreateTypesInstances();
     }
-
 
     public T GetInstance<T>()
     {

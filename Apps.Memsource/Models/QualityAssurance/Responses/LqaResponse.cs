@@ -15,10 +15,10 @@ public class LqaResponse
 
     public string Availability { get; set; } = default!;
 
-    [Display("Requested job part UID")]
+    [Display("Requested job part ID")]
     public string RequestedJobPartUid { get; set; } = default!;
 
-    [Display("Assessment job part UID")]
+    [Display("Assessment job part ID")]
     public string AssessmentJobPartUid { get; set; } = default!;
 
     [Display("Started at")]

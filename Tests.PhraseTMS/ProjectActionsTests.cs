@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Apps.PhraseTMS.Actions;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.Sdk.Common.Invocation;
+using Newtonsoft.Json;
 using PhraseTMSTests.Base;
 
 namespace Tests.PhraseTMS
@@ -17,7 +18,7 @@ namespace Tests.PhraseTMS
         [TestMethod]
         public async Task CreateProject_ValidData_Success()
         {
-            var action = new ProjectActions(FileManager);
+            var actions = new ProjectActions(InvocationContext, FileManager);
 
             var targetLangs = new List<string>();
             targetLangs.Add("en");
@@ -28,9 +29,9 @@ namespace Tests.PhraseTMS
 
             var input = new CreateProjectRequest { SourceLanguage = "hu", TargetLanguages = targetLangs, Name = "this name", WorkflowSteps = workflow };
 
-            var result = await action.CreateProject(InvocationContext.AuthenticationCredentialsProviders, input);
+            var result = await actions.CreateProject(input);
 
-            Console.WriteLine(result.UId);
+            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
             Assert.IsNotNull(result);
             Assert.IsFalse(string.IsNullOrEmpty(result.UId));
         }
@@ -38,7 +39,7 @@ namespace Tests.PhraseTMS
         [TestMethod]
         public async Task CreateProjectFromTemplate_ValidData_Success()
         {
-            var action = new ProjectActions(FileManager);
+            var actions = new ProjectActions(InvocationContext, FileManager);
 
             var targetLangs = new List<string>();
             targetLangs.Add("en");
@@ -49,11 +50,22 @@ namespace Tests.PhraseTMS
 
             var input = new CreateFromTemplateRequest {SourceLanguage = "hu", TargetLanguages=targetLangs,TemplateUId= "lG56tOurwL9u21kRlsXgy3", Name="template project", WorkflowSteps = workflow };
 
-            var result = await action.CreateProjectFromTemplate(InvocationContext.AuthenticationCredentialsProviders, input);
+            var result = await actions.CreateProjectFromTemplate(input);
 
-            Console.WriteLine(result.UId);
+            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
             Assert.IsNotNull(result);
             Assert.IsFalse(string.IsNullOrEmpty(result.UId));
+        }
+
+        [TestMethod]
+        public async Task Search_projects_works()
+        {
+            var actions = new ProjectActions(InvocationContext, FileManager);
+            var result = await actions.ListAllProjects(new ListAllProjectsQuery { });
+
+            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Projects.Any());
         }
     }
 }

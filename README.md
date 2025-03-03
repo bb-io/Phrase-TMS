@@ -6,13 +6,13 @@ Blackbird is the new automation backbone for the language technology industry. B
 
 <!-- begin docs -->
 
-Phrase (previously Memsource) is a software as a service platform designed to automate and streamline translating and localizing digital products, such as web or mobile apps, websites, marketing content, etc. for international markets.
+Phrase TMS is a software as a service platform designed to automate and streamline translating and localizing digital products, such as web or mobile apps, websites, marketing content, etc. for international markets.
 
 ## Before setting up
 
 Before you can connect you need to make sure that:
 
-- You have a Phrase account on the instance you want to connect to.
+- You have a Phrase TMS account on the instance you want to connect to.
 - You have permission to create and modify Registered OAuth apps.
 - In Phrase go to Settings > Registered OAuth apps and click _New_.
 - Fill in any name and description. For Redirect URI fill in: `https://bridge.blackbird.io/api/AuthorizationCode` and click _Save_.
@@ -20,152 +20,134 @@ Before you can connect you need to make sure that:
 
 ## Connecting
 
-1. Navigate to apps and search for Phrase. If you cannot find Phrase then click _Add App_ in the top right corner, select Phrase and add the app to your Blackbird environment.
+1. Navigate to apps and search for Phrase.
 2. Click _Add Connection_.
 3. Name your connection for future reference e.g. 'My Phrase connection'.
 4. Fill in the _Client ID_ that you copied from Phrase.
-5. Select the Base URL to the Phrase instance you want to connect to base on the location of your Phrase's data center (the same you use to login to Phrase).
+5. Select the data center your Phrase instance is hosted on. You can select between the US and EU data centers.
 6. Click _Authorize connection_.
 7. Follow the instructions that Phrase gives you, authorizing Blackbird.io to act on your behalf.
 8. When you return to Blackbird, confirm that the connection has appeared and the status is _Connected_.
 
-![1695994786183](image/README/1695994786183.png)
+![1741020881890](image/README/1741020881890.png)
 
 ## Actions
 
 ### Analysis
 
-- **List analyses**
-- **Get analysis**
-- **Create analysis**
-- **Download analysis file**
+- **Search job analyses** searches through all analyses that were created for a specific job
+- **Search project analyses** searches through all analyses that were created for a specific project
+- **Get analysis data** returns the full details of a specific analysis.
+- **Create analyses** create one or multiple analyses for jobs in a given project
+- **Download analysis file** download an analysis file in specified format, you can choose from CSV, JSON and LOG
 
 ### Clients
 
-- **List clients**
-- **Get client**
-- **Add client**
-- **Update client**
-- **Delete client**
-
-### Connector
-
-- **List connector**
-- **Get connector**
+- **Search clients** searches for clients on your instance matching certain criteria
+- **Get client** get information about a single client
+- **Create client** creates a new client in your Phrase instance
+- **Update client** updates the information related to a specific client
+- **Delete client** deletes a client
 
 ### Custom fields
 
-- **Get date custom field value**
-- **Get numeric custom field value**
-- **Get single select custom field value**
-- **Get multi select custom field value**
-- **Get text custom field value**
-- **Set date custom field value**
-- **Set numeric custom field value**
-- **Set single select custom field value**
-- **Set text custom field value**
+Custom project field actions allow you to get and set the value of fields that you have created in Phrase.
+Custom fields are associated with a specific type, e.g. date, number, text, etc. In Blackbird it's important to be 'type-safe', that's why every type has its own action pair.
+
+- **Get project date custom field value**
+- **Get project numeric custom field value**
+- **Get project single select custom field value**
+- **Get project multi select custom field value**
+- **Get project text custom field value**
+- **Set project date custom field value**
+- **Set project numeric custom field value**
+- **Set project single select custom field value**
+- **Set project text custom field value**
 
 > If a Custom field is not present in a project, it will be added as part of the `Set` action.
 
-### File
-
-- **List all files**
-- **Get file**
-- **Upload file**
-
 ### Glossary
 
-- **Create new glossary**
-- **Export glossary**
-- **Import glossary**
+- **Create glossary** creates a new glossary in your Phrase instance that you can then fill manually or through the _Import glossary_ action.
+- **Export glossary** returns the glossary as a Blackbird interchangable file (standard TBX) that can be imported into any other app.
+- **Import glossary** takes a glossary from any other Blackbird app and imports it into a specific Phrase glossary.
 
 ### Job
 
-- **Search jobs**
-- **Get job**
-- **Create job**
-- **Delete job**
-- **Get segments**
-- **Edit job**
+- **Search jobs** returns a list of jobs in the project based on specified parameters
+- **Get job** get all job information for a specific job
+- **Create job** create a new job from a file upload. This action only takes a single target language and will return a single job.
+- **Create jobs** create jobs for multiple target languages. This action will return multiple jobs as its output.
+- **Delete job** deletes jobs from a project
+- **Update job** Update a job's global data
+- **Pre-translate job** pre-translate a job in the project
+
+The following actions download job files in either their original format or as a bilingual file.
 - **Download target file**
+- **Download original file**
 - **Download bilingual file**
+
+The following actions update a job's file (source or target) from their original format or from a bilingual file.
 - **Upload bilingual file**
-- **Pre-translate job**
-- **Update job source**
-
-### Pricelist
-
-- **List price lists**
+- **Update job source file**
+- **Update job target file**
 
 ### Project
 
-- **List projects**
-- **List project templates**
-- **Find project**
-- **Get project**
-- **Create project**
-  - **Propagate Translations: Propagate translations to lower workflows during update source**
-- **Create project from template**
-- **Add target language**
-- **Edit project**
-- **Delete project**
-- **Download project original files** 
-- **Download project target files**
-- **Assign providers from template**
+- **Search projects** search for projects matching the filters of the input parameters
+- **Find project** given the same parameters as _Search projects_, only returns the first matching project
+- **Get project** get global project data for a specific project
+- **Create project** Create a new project. It has the following special inputs:
+  - **Propagate Translations**: Propagate translations to lower workflows when the source updates
+- **Create project from template** same as the previous action, however in this action you can use an existing project template
+- **Add project target language** adds a target language to the project
+- **Update project** updates a project with specified details
+- **Delete project** delete the specified project
+- **Download project original files** download all the original source files (in the jobs) of a project
+- **Download project target files** download all the translated files (in the jobs) of a project
+- **Assign providers from template** assigns providers to the project or specific jobs who were predefined on a certain template
+- **Find project termbase** get the termbase linked to a project based on optional filters
 
 ### Project reference file
 
-- **List reference files**
-- **Create reference files**
-- **Download reference file**
-- **Delete reference file**
+- **Search project reference files** searches through all project reference files
+- **Create project reference files** add new project reference files. In case no file parts are sent, only 1 reference is created with the given note. Either at least one file must be sent or the note must be specified.
+- **Download project reference file** download project reference file
+- **Delete project reference file** delete a specific project reference file
 
 ### Quality assurance
 
-- **Add ignored warning**
-- **List LQA profiles**
-- **Delete LQA profile**
-- **Run auto LQA**
-- **Download LQA assessment**
-- **Get LQA assessment**
+- **Run auto LQA** runs Auto LQA for specified job parts or all jobs in a given workflow step
+- **Download LQA assessment** downloads a single xlsx report based on specific job ID
+- **Get LQA assessment** get a specific LQA assessment
 
 ### Quote
 
-- **Get quote**
-- **Create quote**
-- **Delete quote**
+- **Get quote** gets information about a quote
+- **Create quote** creates a new quote from a project
+- **Delete quote** deletes a quote
 
 ### Translation
 
-- **List translation settings**
-- **Translate with MT**
-- **Translate with MT by project**
-- **Delete all translations**
+- **Delete all translations** deletes all translations by project ID for the given jobs
 
 ### Translation memory
 
-- **List translation memories**
-- **Create translation memory**
-- **Get translation memory**
-- **Import TMX file**
-- **Export translation memory**
-- **Insert segment into memory**
-- **Delete translation memory**
+- **Create translation memory** create a new translation memory
+- **Get translation memory** get information about a specific translation memory
+- **Import TMX file** imports a new TMX file into the translation memory
+- **Export translation memory** exports the selected translation memory as either a TMX or an XLSX
+- **Insert segment into memory** insert a new segment into the translation memory
+- **Delete translation memory** deletes the entire translation memory
 
 ### User
 
-- **List users**
-- **Get user**
-- **Find user**
-- **Add user**
-- **Update user**
-- **Delete user**
-
-### Vendor
-
-- **Add vendor**
-- **List vendors**
-- **Get vendor**
+- **Search users** search through all users active on this Phrase instance
+- **Find user** given the search parameters, returns the first matching user
+- **Get user** get user information by ID
+- **Add user** adds a new user
+- **Update user** updates a specific user
+- **Delete user** deletes a specific user
 
 ## Events
 

@@ -31,4 +31,7 @@
         <Link>README.md</Link>
       </Content>
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Models\Async\" />
+    </ItemGroup>
 </Project>
