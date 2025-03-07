@@ -14,7 +14,16 @@ public class ConnectionValidator : IConnectionValidator
             var client = new PhraseTmsClient(authProviders);
             var request = new RestRequest("/api2/v1/projects", Method.Get);
 
-            await client.ExecuteWithHandling(request);
+            var response = await client.ExecuteWithHandling(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return new()
+                {
+                    IsValid = false,
+                    Message = response.ErrorMessage
+                };
+            }
 
             return new()
             {

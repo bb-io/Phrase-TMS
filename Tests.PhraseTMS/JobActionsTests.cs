@@ -10,8 +10,8 @@ namespace Tests.PhraseTMS
     [TestClass]
     public class JobActionsTests : TestBase
     {
-        public const string PROJECT_ID = "INLIOpS573UU4BbFBzs9v0";
-        public const string JOB_ID = "UkZvUPhvw1QItyADWZIPp3";
+        public const string PROJECT_ID = "hGStrg0MLYmQtG0f66mj6f";
+        public const string JOB_ID = "e9ciferOOGVn0ySv0qqav7";
 
         [TestMethod]
         public async Task GetJob_ValidIds_ShouldNotFailAndReturnNotEmptyResponse()

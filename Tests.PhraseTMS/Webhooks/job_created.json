@@ -8,7 +8,7 @@
       "fileName": "When it comes to writing an essay.docx",
       "targetLang": "de",
       "workflowLevel": 1,
-      "status": "ASSIGNED",
+      "status": "NEW",
       "wordsCount": 347,
       "beginIndex": 0,
       "endIndex": 25,
@@ -41,7 +41,7 @@
       }
     }
   },
-  "event": "JOB_STATUS_CHANGED",
-  "timestamp": 1741359288,
-  "eventUid": "BWcGqrdYq1TP4asQ6oxMa3"
+  "event": "JOB_CREATED",
+  "timestamp": 1741357466,
+  "eventUid": "8myKlrKmNE9D4ZAE1Wsb1b"
 }

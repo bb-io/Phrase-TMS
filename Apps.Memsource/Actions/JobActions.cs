@@ -262,7 +262,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
     }
 
 
-    [Action("Download target file", Description = "Download target file of a job")]
+    [Action("Download job target file", Description = "Download target file of a job")]
     public async Task<TargetFileResponse> DownloadTargetFile([ActionParameter] ProjectRequest projectRequest, [ActionParameter] JobRequest input)
     {
         var requestFile = new RestRequest($"/api2/v2/projects/{projectRequest.ProjectUId}/jobs/{input.JobUId}/targetFile", Method.Put);
@@ -283,7 +283,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         return new() { File = file };
     }
 
-    [Action("Download original file", Description = "Download original file of a job")]
+    [Action("Download job original file", Description = "Download original file of a job")]
     public async Task<TargetFileResponse> DownloadOriginalFile([ActionParameter] ProjectRequest projectRequest, [ActionParameter] JobRequest input)
     {
         var requestFile = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/{input.JobUId}/original?format=ORIGINAL", Method.Get);
@@ -299,7 +299,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         return new() { File = file };
     }
 
-    [Action("Update job target file", Description = "Update target file of a job")]
+    [Action("Upload job target file", Description = "Upload and update target file of a job")]
     public Task UpdateTargetFile([ActionParameter] ProjectRequest projectRequest, [ActionParameter] JobRequest job, [ActionParameter] UpdateTargetFileInput input)
     {
         var jsonPayload = JsonConvert.SerializeObject(new UpdateTargetFileRequest()
@@ -329,7 +329,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         return Client.ExecuteWithHandling(request);
     }
 
-    [Action("Download bilingual file", Description = "Download bilingual file for a job")]
+    [Action("Download job bilingual file", Description = "Download bilingual file for a job")]
     public async Task<TargetFileResponse> DownloadBilingualFile(
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] JobRequest input,
@@ -370,7 +370,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         return new() { File = file };
     }
 
-    [Action("Upload bilingual file", Description = "Upload bilingual file to update job")]
+    [Action("Upload job bilingual file", Description = "Upload bilingual file to update job")]
     public Task UploadBilingualFile([ActionParameter] UploadBilingualFileRequest input)
     {
         var fileBytes = fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
@@ -413,7 +413,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         await Client.PerformAsyncRequest(request);
     }
 
-    [Action("Update job source file", Description = "Update the job source file in the project")]
+    [Action("Upload job source file", Description = "Upload and update the job source file in the project")]
     public async Task<UpdateSourceResponse> UpdateSource(
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] UpdateSourceRequest input)

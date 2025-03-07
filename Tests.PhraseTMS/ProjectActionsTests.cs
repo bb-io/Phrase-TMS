@@ -14,6 +14,7 @@ namespace Tests.PhraseTMS
     [TestClass]
     public class ProjectActionsTests : TestBase
     {
+        public const string PROJECT_ID = "hGStrg0MLYmQtG0f66mj6f";
 
         [TestMethod]
         public async Task CreateProject_ValidData_Success()
@@ -66,6 +67,17 @@ namespace Tests.PhraseTMS
             Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Projects.Any());
+        }
+
+        [TestMethod]
+        public async Task Get_project_works()
+        {
+            var actions = new ProjectActions(InvocationContext, FileManager);
+            var result = await actions.GetProject(new ProjectRequest { ProjectUId = PROJECT_ID });
+
+            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Name != null);
         }
     }
 }

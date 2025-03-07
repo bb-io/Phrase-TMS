@@ -8,7 +8,7 @@ public class JobDto
     [Display("Job ID")] 
     public string Uid { get; set; }
 
-    [Display("Inner ID", Description = "InnerId is a sequential number of a job in a project.\nJobs created from the same file share the same innerId across workflow steps.")]
+    [Display("Inner ID", Description = "Inner ID is a sequential number of a job in a project.\nJobs created from the same file share the same innerId across workflow steps.")]
     public string InnerId { get; set; }
 
     public string Status { get; set; }

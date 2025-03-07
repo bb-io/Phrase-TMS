@@ -89,8 +89,8 @@ The following actions download job files in either their original format or as a
 
 The following actions update a job's file (source or target) from their original format or from a bilingual file.
 - **Upload bilingual file**
-- **Update job source file**
-- **Update job target file**
+- **Upload job source file**
+- **Upload job target file**
 
 ### Project
 
