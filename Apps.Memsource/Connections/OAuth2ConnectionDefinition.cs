@@ -22,7 +22,7 @@ public class OAuth2ConnectionDefinition : IConnectionDefinition
                     [
                         new("https://cloud.memsource.com/", "EU data center"),
                         new("https://us.cloud.memsource.com/","US data center"),
-                        new("https://cloud9.memsource.com/", "Sandbox")
+                        new("https://cloud9.memsource.com/", "Cloud 9")
                     ]
                 }
             }
