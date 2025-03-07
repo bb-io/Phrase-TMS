@@ -6,7 +6,7 @@ namespace Apps.PhraseTMS.Models.Glossary.Requests;
 
 public class ExportGlossaryRequest
 {
-    [Display("Glossary UID")]
+    [Display("Glossary ID")]
     [DataSource(typeof(TermBaseDataHandler))]
     public string GlossaryUId { get; set; }
 }

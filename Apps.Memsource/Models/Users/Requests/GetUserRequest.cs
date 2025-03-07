@@ -6,7 +6,7 @@ namespace Apps.PhraseTMS.Models.Users.Requests;
 
 public class GetUserRequest
 {
-    [Display("User UID")]
+    [Display("User ID")]
     [DataSource(typeof(UserDataHandler))]
     public string UserUId { get; set; }
 }

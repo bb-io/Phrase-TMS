@@ -6,7 +6,7 @@ namespace Apps.PhraseTMS.Models.Translations.Requests;
 
 public class TranslateMtProjectRequest
 {
-    [Display("Job UID")]
+    [Display("Job ID")]
     [DataSource(typeof(JobDataHandler))]
     public string JobUId { get; set; }
 

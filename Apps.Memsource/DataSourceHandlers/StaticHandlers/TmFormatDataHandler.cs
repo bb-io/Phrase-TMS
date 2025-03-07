@@ -1,12 +1,13 @@
 ﻿using Blackbird.Applications.Sdk.Common.Dictionaries;
+using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.PhraseTMS.DataSourceHandlers.StaticHandlers;
 
-public class TmFormatDataHandler : IStaticDataSourceHandler
+public class TmFormatDataHandler : IStaticDataSourceItemHandler
 {
-    public Dictionary<string, string> GetData() => new()
+    public IEnumerable<DataSourceItem> GetData() => new List<DataSourceItem>()
     {
-        { "TMX", "TMX" },
-        { "XLSX", "XLSX" }
+        new DataSourceItem("TMX", "TMX"),
+        new DataSourceItem("XLSX", "XLSX"),
     };
 }

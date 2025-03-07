@@ -11,7 +11,7 @@ using RestSharp;
 namespace Apps.PhraseTMS.Polling;
 
 [PollingEventList]
-public class LqaPollingList(InvocationContext invocationContext) : BaseInvocable(invocationContext)
+public class LqaPollingList(InvocationContext invocationContext) : PhraseInvocable(invocationContext)
 {
     [PollingEvent("On LQA reports created", "Triggered when new reports can be downloaded within a specific project")]
     public async Task<PollingEventResponse<PollingMemory, SearchLqaResponse>> OnLqaReportsCreated(
@@ -30,19 +30,16 @@ public class LqaPollingList(InvocationContext invocationContext) : BaseInvocable
             };
         }
 
-        var jobActions = new JobActions(null!);
-        var projectJobs = await jobActions.ListAllJobs(InvocationContext.AuthenticationCredentialsProviders,
-            projectRequest, new(), new(), null);
+        var jobActions = new JobActions(InvocationContext, null!);
+        var projectJobs = await jobActions.ListAllJobs(projectRequest, new(), new(), null);
 
-        var client = new PhraseTmsClient(InvocationContext.AuthenticationCredentialsProviders);
-        var getBatchRequest = new PhraseTmsRequest("/api2/v1/lqa/assessments", Method.Post,
-                InvocationContext.AuthenticationCredentialsProviders)
+        var getBatchRequest = new RestRequest("/api2/v1/lqa/assessments", Method.Post)
             .WithJsonBody(new
             {
                 jobParts = projectJobs.Jobs.Select(x => new { uid = x.Uid }).ToList()
             });
         
-        var dto = await client.ExecuteWithHandling<GetLqasDto>(getBatchRequest);
+        var dto = await Client.ExecuteWithHandling<GetLqasDto>(getBatchRequest);
         var createdWithTimePeriod = dto.AssessmentDetails
             .Where(x => x.FinishedDate.HasValue 
                         && x.FinishedDate.Value.ToUniversalTime() >= request.Memory.LastPollingTime 

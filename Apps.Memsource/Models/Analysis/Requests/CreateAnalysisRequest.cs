@@ -25,7 +25,6 @@ public class CreateAnalysisRequest
         Name = input.Name;
         CompareWorkflowLevel = input.CompareWorkflowLevel;
         UseProjectAnalysisSettings = input.UseProjectAnalysisSettings;
-        CallbackUrl = input.CallbackUrl;
         NetRateScheme = input.NetRateSchemeId is null ? null : new() { Id = input.NetRateSchemeId };
         Provider = input.ProviderId is null
             ? null

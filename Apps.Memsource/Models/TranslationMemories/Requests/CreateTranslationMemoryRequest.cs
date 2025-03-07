@@ -14,7 +14,7 @@ public class CreateTranslationMemoryRequest
 
     [Display("Target languages")]
     [DataSource(typeof(LanguageDataHandler))]
-    public string[] TargetLang { get; set; }
+    public IEnumerable<string> TargetLang { get; set; }
         
     public string? Note { get; set; }
 }

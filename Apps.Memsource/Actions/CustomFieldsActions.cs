@@ -3,43 +3,36 @@ using Apps.PhraseTMS.Models.CustomFields;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
-using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
-using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
 using RestSharp;
 using Apps.PhraseTMS.Constants;
+using Blackbird.Applications.Sdk.Common.Invocation;
 
 namespace Apps.PhraseTMS.Actions;
 
 [ActionList]
 
-public class CustomFieldsActions
+public class CustomFieldsActions(InvocationContext invocationContext) : PhraseInvocable(invocationContext)
 {
-    [Action("Get text custom field value", Description = "Gets the text value of a project custom field")]
-    public async Task<string> GetTextCustomField(
-        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders, [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] TextCustomFieldRequest input)
+    [Action("Get project text custom field value", Description = "Gets the text value of a project custom field")]
+    public async Task<string> GetTextCustomField([ActionParameter] ProjectRequest projectRequest,[ActionParameter] TextCustomFieldRequest input)
     {
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/";
-        var request = new PhraseTmsRequest(endpoint, Method.Get, authenticationCredentialsProviders);
-        var projectCustomFields = await client.Paginate<ProjectCustomFieldDto>(request);
+        var request = new RestRequest(endpoint, Method.Get);
+        var projectCustomFields = await Client.Paginate<ProjectCustomFieldDto>(request);
         if (projectCustomFields.Any(x => x.customField.uid == input.FieldUId))
         { return projectCustomFields.FirstOrDefault(x => x.customField.uid == input.FieldUId).Value; }
         return null;
     }
 
-    [Action("Get numeric custom field value", Description = "Gets the value of a project custom field of type number")]
-    public async Task<double?> GetNumberCustomField(
-        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders, [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] NumberCustomFieldRequest input)
+    [Action("Get project numeric custom field value", Description = "Gets the value of a project custom field of type number")]
+    public async Task<double?> GetNumberCustomField([ActionParameter] ProjectRequest projectRequest, [ActionParameter] NumberCustomFieldRequest input)
     {
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/";
-        var request = new PhraseTmsRequest(endpoint, Method.Get, authenticationCredentialsProviders);
-        var projectCustomFields = await client.Paginate<ProjectCustomFieldDto>(request);
+        var request = new RestRequest(endpoint, Method.Get);
+        var projectCustomFields = await Client.Paginate<ProjectCustomFieldDto>(request);
         if (projectCustomFields.Any(x => x.customField.uid == input.FieldUId))
         {
             var content = projectCustomFields.FirstOrDefault(x => x.customField.uid == input.FieldUId).Value;
@@ -52,15 +45,12 @@ public class CustomFieldsActions
         return null;
     }
 
-    [Action("Get date custom field value", Description = "Gets the value of a project custom field of type date")]
-    public async Task<DateTime?> GetDateCustomField(
-        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders, [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] DateCustomFieldRequest input)
+    [Action("Get project project date custom field value", Description = "Gets the value of a project custom field of type date")]
+    public async Task<DateTime?> GetDateCustomField([ActionParameter] ProjectRequest projectRequest, [ActionParameter] DateCustomFieldRequest input)
     {
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/";
-        var request = new PhraseTmsRequest(endpoint, Method.Get, authenticationCredentialsProviders);
-        var projectCustomFields = await client.Paginate<ProjectCustomFieldDto>(request);
+        var request = new RestRequest(endpoint, Method.Get);
+        var projectCustomFields = await Client.Paginate<ProjectCustomFieldDto>(request);
         if (projectCustomFields.Any(x => x.customField.uid == input.FieldUId))
         {
             var content = projectCustomFields.FirstOrDefault(x => x.customField.uid == input.FieldUId).Value;
@@ -73,15 +63,12 @@ public class CustomFieldsActions
         return null;
     }
 
-    [Action("Get single select custom field value", Description = "Gets the value of a project custom field of type single select")]
-    public async Task<string?> GetSingleSelectCustomField(
-        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders, [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] SingleSelectCustomFieldRequest input)
+    [Action("Get project single select custom field value", Description = "Gets the value of a project custom field of type single select")]
+    public async Task<string?> GetSingleSelectCustomField([ActionParameter] ProjectRequest projectRequest, [ActionParameter] SingleSelectCustomFieldRequest input)
     {
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/";
-        var request = new PhraseTmsRequest(endpoint, Method.Get, authenticationCredentialsProviders);
-        var projectCustomFields = await client.Paginate<ProjectCustomFieldDto>(request);
+        var request = new RestRequest(endpoint, Method.Get);
+        var projectCustomFields = await Client.Paginate<ProjectCustomFieldDto>(request);
         if (projectCustomFields.Any(x => x.customField.uid == input.FieldUId))
         {
             return projectCustomFields.FirstOrDefault(x => x.customField.uid == input.FieldUId).selectedOptions.First().value;
@@ -89,15 +76,12 @@ public class CustomFieldsActions
         return null;
     }
 
-    [Action("Get multi select custom field value", Description = "Gets the value of a project custom field of type multi select")]
-    public async Task<GetMultiSelectResponse> GetMultiSelectCustomField(
-        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders, [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] MultiSelectCustomFieldRequest input)
+    [Action("Get project multi select custom field value", Description = "Gets the value of a project custom field of type multi select")]
+    public async Task<GetMultiSelectResponse> GetMultiSelectCustomField([ActionParameter] ProjectRequest projectRequest, [ActionParameter] MultiSelectCustomFieldRequest input)
     {
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/";
-        var request = new PhraseTmsRequest(endpoint, Method.Get, authenticationCredentialsProviders);
-        var projectCustomFields = await client.Paginate<ProjectCustomFieldDto>(request);
+        var request = new RestRequest(endpoint, Method.Get);
+        var projectCustomFields = await Client.Paginate<ProjectCustomFieldDto>(request);
         if (projectCustomFields.Any(x => x.customField.uid == input.FieldUId))
         {
             return new GetMultiSelectResponse { Results = projectCustomFields.FirstOrDefault(x => x.customField.uid == input.FieldUId).selectedOptions.Select(x => x.value)};
@@ -105,23 +89,19 @@ public class CustomFieldsActions
         return new GetMultiSelectResponse();
     }
 
-    [Action("Set text custom field value", Description = "Sets the text value of a project custom field")]
-    public async Task SetTextCustomField(
-            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders, [ActionParameter] ProjectRequest projectRequest,
-            [ActionParameter] TextCustomFieldRequest input, [ActionParameter] string Value)
+    [Action("Set project text custom field value", Description = "Sets the text value of a project custom field")]
+    public async Task SetTextCustomField([ActionParameter] ProjectRequest projectRequest, [ActionParameter] TextCustomFieldRequest input, [ActionParameter] string Value)
     {
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var endpoint1 = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/";
-        var request1 = new PhraseTmsRequest(endpoint1, Method.Get, authenticationCredentialsProviders);
-        var projectCustomFields = await client.Paginate<ProjectCustomFieldDto>(request1);
+        var request1 = new RestRequest(endpoint1, Method.Get);
+        var projectCustomFields = await Client.Paginate<ProjectCustomFieldDto>(request1);
 
         if (projectCustomFields.Any(x => x.customField.uid == input.FieldUId))
         {
-            var client1 = new PhraseTmsClient(authenticationCredentialsProviders);
             var projectCustomField = projectCustomFields.First(x => x.customField.uid == input.FieldUId);
             var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/{projectCustomField.UId}";
             var body = new { value = Value };
-            var request = new PhraseTmsRequest(endpoint, Method.Put, authenticationCredentialsProviders)
+            var request = new RestRequest(endpoint, Method.Put)
                 .WithJsonBody(body, new JsonSerializerSettings
             {
                 ContractResolver = new DefaultContractResolver()
@@ -131,36 +111,32 @@ public class CustomFieldsActions
                 NullValueHandling = NullValueHandling.Ignore
             }); ;
             
-            var response = await client1.ExecuteAsync(request);
+            var response = await Client.ExecuteAsync(request);
         }
         else 
         {
             var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/";
             var body = "{\"customFieldInstances\": [{\"customField\":{\"uid\":\"" + input.FieldUId + "\"}, \"value\": \"" + Value + "\"}]}";
-            var request = new PhraseTmsRequest(endpoint, Method.Post, authenticationCredentialsProviders);
+            var request = new RestRequest(endpoint, Method.Post);
             request.AddStringBody(body, DataFormat.Json);
-            var response = await client.ExecuteAsync(request);
+            var response = await Client.ExecuteAsync(request);
         }
 
     }
 
-    [Action("Set numeric custom field value", Description = "Sets the number type value of a project custom field")]
-    public async Task SetNumberCustomField(
-            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders, [ActionParameter] ProjectRequest projectRequest,
-            [ActionParameter] NumberCustomFieldRequest input, [ActionParameter] double Value)
+    [Action("Set project numeric custom field value", Description = "Sets the number type value of a project custom field")]
+    public async Task SetNumberCustomField([ActionParameter] ProjectRequest projectRequest, [ActionParameter] NumberCustomFieldRequest input, [ActionParameter] double Value)
     {
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var endpoint1 = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/";
-        var request1 = new PhraseTmsRequest(endpoint1, Method.Get, authenticationCredentialsProviders);
-        var projectCustomFields = await client.Paginate<ProjectCustomFieldDto>(request1);
+        var request1 = new RestRequest(endpoint1, Method.Get);
+        var projectCustomFields = await Client.Paginate<ProjectCustomFieldDto>(request1);
 
         if (projectCustomFields.Any(x => x.customField.uid == input.FieldUId))
         {
-            var client1 = new PhraseTmsClient(authenticationCredentialsProviders);
             var projectCustomField = projectCustomFields.First(x => x.customField.uid == input.FieldUId);
             var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/{projectCustomField.UId}";
             var body = new { value = Value };
-            var request = new PhraseTmsRequest(endpoint, Method.Put, authenticationCredentialsProviders)
+            var request = new RestRequest(endpoint, Method.Put)
                 .WithJsonBody(body, new JsonSerializerSettings
                 {
                     ContractResolver = new DefaultContractResolver()
@@ -170,76 +146,69 @@ public class CustomFieldsActions
                     NullValueHandling = NullValueHandling.Ignore
                 }); 
 
-            var response = await client1.ExecuteAsync(request);
+            var response = await Client.ExecuteAsync(request);
         }
         else
         {
             var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/";
             var body = "{\"customFieldInstances\": [{\"customField\":{\"uid\":\"" + input.FieldUId + "\"}, \"value\": " + Value + "}]}";
-            var request = new PhraseTmsRequest(endpoint, Method.Post, authenticationCredentialsProviders);
+            var request = new RestRequest(endpoint, Method.Post);
             request.AddStringBody(body, DataFormat.Json);
-            var response = await client.ExecuteAsync(request);
+            var response = await Client.ExecuteAsync(request);
         }
 
     }
 
-    [Action("Set date custom field value", Description = "Sets the date type value of a project custom field")]
-    public async Task SetDateCustomField(
-            IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders, [ActionParameter] ProjectRequest projectRequest,
-            [ActionParameter] DateCustomFieldRequest input, [ActionParameter] DateTime Value)
+    [Action("Set project date custom field value", Description = "Sets the date type value of a project custom field")]
+    public async Task SetDateCustomField([ActionParameter] ProjectRequest projectRequest, [ActionParameter] DateCustomFieldRequest input, [ActionParameter] DateTime Value)
     {
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var endpoint1 = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/";
-        var request1 = new PhraseTmsRequest(endpoint1, Method.Get, authenticationCredentialsProviders);
-        var projectCustomFields = await client.Paginate<ProjectCustomFieldDto>(request1);
+        var request1 = new RestRequest(endpoint1, Method.Get);
+        var projectCustomFields = await Client.Paginate<ProjectCustomFieldDto>(request1);
 
         if (projectCustomFields.Any(x => x.customField.uid == input.FieldUId))
         {
-            var client1 = new PhraseTmsClient(authenticationCredentialsProviders);
             var projectCustomField = projectCustomFields.First(x => x.customField.uid == input.FieldUId);
             var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/{projectCustomField.UId}";
             var body = new { value = Value };
-            var request = new PhraseTmsRequest(endpoint, Method.Put, authenticationCredentialsProviders)
+            var request = new RestRequest(endpoint, Method.Put)
                 .WithJsonBody(body,JsonConfig.DateSettings);
-            var response = await client1.ExecuteAsync(request);
+            var response = await Client.ExecuteAsync(request);
         }
         else
         {
             var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/";
             var body = "{\"customFieldInstances\": [{\"customField\":{\"uid\":\"" + input.FieldUId + "\"}, \"value\": \""+Value+"\"}]}";
-            var request = new PhraseTmsRequest(endpoint, Method.Post, authenticationCredentialsProviders)
+            var request = new RestRequest(endpoint, Method.Post)
             .WithJsonBody(body, JsonConfig.DateSettings);
-            var response = await client.ExecuteAsync(request);
+            var response = await Client.ExecuteAsync(request);
         }
 
     }
 
-    [Action("Set single select custom field value", Description = "Sets the single select value of a project custom field")]
-    public async Task SetSingleSelectCustomField(
-        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders, [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] SingleSelectCustomFieldRequest input, [ActionParameter] SelectedOptionRequest Value)
+    [Action("Set project single select custom field value", Description = "Sets the single select value of a project custom field")]
+    public async Task SetSingleSelectCustomField([ActionParameter] ProjectRequest projectRequest, [ActionParameter] SingleSelectCustomFieldRequest input, [ActionParameter] SelectedOptionRequest Value)
     {
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var endpoint1 = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/";
-        var request1 = new PhraseTmsRequest(endpoint1, Method.Get, authenticationCredentialsProviders);
-        var projectCustomFields = await client.Paginate<ProjectCustomFieldDto>(request1);
+        var request1 = new RestRequest(endpoint1, Method.Get);
+        var projectCustomFields = await Client.Paginate<ProjectCustomFieldDto>(request1);
 
         if (projectCustomFields.Any(x => x.customField.uid == input.FieldUId))
         {
             var projectCustomField = projectCustomFields.First(x => x.customField.uid == input.FieldUId);
             var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/{projectCustomField.UId}";
-            var request = new PhraseTmsRequest(endpoint, Method.Put, authenticationCredentialsProviders);
+            var request = new RestRequest(endpoint, Method.Put);
             var body = "{\"selectedOptions\": [{\"uid\": \""+Value.OptionUId+"\"}]}";
             request.AddStringBody(body, DataFormat.Json); 
-            var response = await client.ExecuteAsync(request);
+            var response = await Client.ExecuteAsync(request);
         }
         else
         {
             var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/";
             var body = "{\"customFieldInstances\": [{\"customField\":{\"uid\":\"" + input.FieldUId + "\"}, \"selectedOptions\": [{\"uid\": \""+Value.OptionUId+"\"}]}]}";
-            var request = new PhraseTmsRequest(endpoint, Method.Post, authenticationCredentialsProviders);
+            var request = new RestRequest(endpoint, Method.Post);
             request.AddStringBody(body, DataFormat.Json);
-            var response = await client.ExecuteAsync(request);
+            var response = await Client.ExecuteAsync(request);
         }
 
     }

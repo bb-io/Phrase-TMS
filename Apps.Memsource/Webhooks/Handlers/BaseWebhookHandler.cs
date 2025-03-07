@@ -16,7 +16,7 @@ public class BaseWebhookHandler(InvocationContext invocationContext, string subE
         Dictionary<string, string> values)
     {    
         var client = new PhraseTmsClient(authenticationCredentialsProvider);
-        var request = new PhraseTmsRequest($"/api2/v2/webhooks", Method.Post, authenticationCredentialsProvider);
+        var request = new RestRequest($"/api2/v2/webhooks", Method.Post);
         request.WithJsonBody(new
         {
             events = new[] { subEvent },
@@ -33,16 +33,14 @@ public class BaseWebhookHandler(InvocationContext invocationContext, string subE
         var authenticationCredentialsProviders = authenticationCredentialsProvider as AuthenticationCredentialsProvider[] ?? authenticationCredentialsProvider.ToArray();
         
         var client = new PhraseTmsClient(authenticationCredentialsProviders);
-        var getRequest = new PhraseTmsRequest($"/api2/v2/webhooks?name={subEvent}&url={values["payloadUrl"]}",
-            Method.Get, authenticationCredentialsProviders);
+        var getRequest = new RestRequest($"/api2/v2/webhooks?name={subEvent}&url={values["payloadUrl"]}", Method.Get);
         var webhooks = await client.ExecuteWithHandling<ResponseWrapper<List<WebhookDto>>>(getRequest);
         var webhookUId = webhooks?.Content.FirstOrDefault()?.UId;
 
         if (webhookUId == null)
             return;
 
-        var deleteRequest = new PhraseTmsRequest($"/api2/v2/webhooks/{webhookUId}", Method.Delete,
-            authenticationCredentialsProviders);
+        var deleteRequest = new RestRequest($"/api2/v2/webhooks/{webhookUId}", Method.Delete);
         await client.ExecuteWithHandling(deleteRequest);
     }
 }

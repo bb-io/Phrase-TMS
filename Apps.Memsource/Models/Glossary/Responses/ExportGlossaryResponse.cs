@@ -5,6 +5,6 @@ namespace Apps.PhraseTMS.Models.Glossary.Responses;
 
 public class ExportGlossaryResponse
 {
-    [Display("Glossary")]
+    [Display("Glossary file")]
     public FileReference File { get; set; }
 }

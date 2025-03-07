@@ -19,8 +19,5 @@ namespace Apps.PhraseTMS.Models.Jobs.Requests
 
         [Display("Use project pre-translate settings?")]
         public bool? UseProjectPreTranslateSettings { get; set; }
-
-        [Display("Callback URL")]
-        public string? CallbackUrl { get; set; }
     }
 }

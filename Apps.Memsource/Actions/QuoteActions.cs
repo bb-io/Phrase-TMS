@@ -8,31 +8,27 @@ using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Apps.PhraseTMS.Models.Jobs.Requests;
 using Apps.PhraseTMS.Models.Projects.Requests;
+using Blackbird.Applications.Sdk.Common.Invocation;
 
 namespace Apps.PhraseTMS.Actions;
 
 [ActionList]
-public class QuoteActions
+public class QuoteActions(InvocationContext invocationContext) : PhraseInvocable(invocationContext)
 {
-    [Action("Get quote", Description = "Get quote by UID")]
-    public async Task<QuoteDto> GetQuote(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] GetQuoteRequest input)
+    [Action("Get quote", Description = "Get quote by ID")]
+    public async Task<QuoteDto> GetQuote([ActionParameter] GetQuoteRequest input)
     {
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
-        var request = new PhraseTmsRequest($"/api2/v1/quotes/{input.QuoteUId}", Method.Get, authenticationCredentialsProviders);
-        var response = await client.ExecuteWithHandling(request);
+        var request = new RestRequest($"/api2/v1/quotes/{input.QuoteUId}", Method.Get);
+        var response = await Client.ExecuteWithHandling(request);
             
         return JsonConvert.DeserializeObject<QuoteDto>(response.Content);
     }
 
+    // Todo: add more inputs
     [Action("Create quote", Description = "Create a new project quote")]
-    public Task<QuoteDto> CreateQuote(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] JobRequest jobRequest,
-        [ActionParameter] CreateQuoteRequest input)
+    public Task<QuoteDto> CreateQuote([ActionParameter] ProjectRequest projectRequest, [ActionParameter] CreateQuoteRequest input)
     {
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
-        var request = new PhraseTmsRequest($"/api2/v2/quotes", Method.Post, authenticationCredentialsProviders);
+        var request = new RestRequest($"/api2/v2/quotes", Method.Post);
         request.WithJsonBody(new
         {
             analyse = new { id = input.AnalyseUId },
@@ -40,16 +36,13 @@ public class QuoteActions
             priceList = new { id = input.PriceListUId },
             project = new { uid = projectRequest.ProjectUId }
         });
-        return client.ExecuteWithHandling<QuoteDto>(request);
+        return Client.ExecuteWithHandling<QuoteDto>(request);
     }
 
     [Action("Delete quote", Description = "Delete specific quote")]
-    public Task DeleteQuote(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] GetQuoteRequest input)
+    public Task DeleteQuote([ActionParameter] GetQuoteRequest input)
     {
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
-        var request = new PhraseTmsRequest($"/api2/v1/quotes/{input.QuoteUId}", Method.Delete, authenticationCredentialsProviders);
-            
-        return client.ExecuteWithHandling(request);       
+        var request = new RestRequest($"/api2/v1/quotes/{input.QuoteUId}", Method.Delete);            
+        return Client.ExecuteWithHandling(request);       
     }
 }

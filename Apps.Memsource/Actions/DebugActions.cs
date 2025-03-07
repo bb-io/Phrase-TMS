@@ -1,18 +1,19 @@
 ﻿using Apps.PhraseTMS.Models.Debug;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Authentication;
+using Blackbird.Applications.Sdk.Common.Invocation;
 
 namespace Apps.PhraseTMS.Actions
 {
     [ActionList]
-    public class DebugActions
+    public class DebugActions(InvocationContext invocationContext) : PhraseInvocable(invocationContext)
     {
-        [Action("Get access token", Description = "Debug action")]
-        public async Task<ResultResponse> GetAccessToken(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+        [Action("Debug", Description = "Debug action")]
+        public async Task<ResultResponse> GetAccessToken()
         {           
             return new()
             {
-                Result = authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value
+                Result = Creds.First(p => p.KeyName == "Authorization").Value
             };
         }
     }

@@ -7,69 +7,107 @@ public class ProjectDto
 {
     public string? Name { get; set; }
 
-    [Display("ID")] public string UId { get; set; }
+    [Display("Project ID")] 
+    public string UId { get; set; }
 
-    [Display("Creation date")] public DateTime? DateCreated { get; set; }
+    [Display("Creation date")] 
+    public DateTime? DateCreated { get; set; }
 
-    [Display("Source language")] public string SourceLang { get; set; }
+    [Display("Source language")] 
+    public string SourceLang { get; set; }
 
-    [Display("Target languages")] public List<string> TargetLangs { get; set; }
+    [Display("Target languages")] 
+    public List<string> TargetLangs { get; set; }
 
-    [Display("Due date")] public DateTime? DateDue { get; set; }
+    [Display("Due date")] 
+    public DateTime? DateDue { get; set; }
 
-    [Display("Status")] public string Status { get; set; }
+    [Display("Status")] 
+    public string Status { get; set; }
 
-    [Display("Note")] public string? Note { get; set; }
+    [Display("Note")] 
+    public string? Note { get; set; }
 
-    [JsonProperty("domain")] public Domain? Domain { get; set; }
+    [JsonProperty("domain")] 
+    public Domain? Domain { get; set; }
 
-    [JsonProperty("client")] public Client? Client { get; set; }
+    [JsonProperty("client")] 
+    public Client? Client { get; set; }
 
-    [JsonProperty("subDomain")] public SubDomain? SubDomain { get; set; }
+    [Display("Sub domain")]
+    [JsonProperty("subDomain")] 
+    public SubDomain? SubDomain { get; set; }
 
-    [JsonProperty("owner")] public Owner? Owner { get; set; }
+    [Display("Owner")]
+    [JsonProperty("owner")] 
+    public User? Owner { get; set; }
+
+    [Display("Created by")]
+    [JsonProperty("createdBy")]
+    public User? CreatedBy { get; set; }
+
+    [Display("Shared")]
+    public bool Shared { get; set; }
+
+    [Display("Progress")]
+    public Progress Progress { get; set; }
+
+    [Display("Puchase order")]
+    [JsonProperty("purchaseOrder")]
+    public string PurchaseOrder { get; set; }
+
+    [Display("Is published on job board?")]
+    [JsonProperty("isPublishedOnJobBoard")]
+    public string IsPublishedOnJobBoard { get; set; }
 }
 
 public class Domain
 {
-    [Display("Domain Name")] public string Name { get; set; }
-
-    //public string id { get; set; }
-
-    //public string uid { get; set; }
+    [Display("Domain Name")] 
+    public string Name { get; set; }
 }
 
 public class SubDomain
 {
-    [Display("Subdomain Name")] public string Name { get; set; }
-
-    //public string id { get; set; }
-
-    //public string uid { get; set; }
+    [Display("Subdomain Name")] 
+    public string Name { get; set; }
 }
 
 public class Client
 {
-    [Display("Client Name")] public string Name { get; set; }
-
-    //public string id { get; set; }
-
-    //public string uid { get; set; }
+    [Display("Client Name")] 
+    public string Name { get; set; }
 }
 
-public class Owner
+public class User
 {
-    [Display("Owner First Name")] public string FirstName { get; set; }
+    [Display("First Name")] 
+    public string FirstName { get; set; }
 
-    [Display("Owner Last Name")] public string LastName { get; set; }
+    [Display("Last Name")] 
+    public string LastName { get; set; }
 
-    [Display("Owner User Name")] public string UserName { get; set; }
+    [Display("Username")] 
+    public string UserName { get; set; }
 
-    [Display("Owner Email")] public string Email { get; set; }
+    [Display("Email")] 
+    public string Email { get; set; }
 
-    [Display("Owner Role")] public string Role { get; set; }
+    [Display("Role")] 
+    public string Role { get; set; }
 
-    //public string id { get; set; }
+    [Display("User ID")]
+    public string Uid { get; set; }
+}
 
-    //public string uid { get; set; }
+public class Progress
+{
+    [Display("Total count")]
+    public double TotalCount { get; set; }
+
+    [Display("Finished count")]
+    public double FinishedCount { get; set; }
+
+    [Display("Overdue count")]
+    public double OverdueCount { get; set; }
 }

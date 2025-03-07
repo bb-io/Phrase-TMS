@@ -1,15 +1,16 @@
 ﻿using Blackbird.Applications.Sdk.Common.Dictionaries;
+using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.PhraseTMS.DataSourceHandlers.StaticHandlers;
 
-public class SortDataHandler : IStaticDataSourceHandler
+public class SortDataHandler : IStaticDataSourceItemHandler
 {
-    public Dictionary<string, string> GetData() => new()
+    public IEnumerable<DataSourceItem> GetData() => new List<DataSourceItem>()
     {
-        { "DATE_ARCHIVED", "Archived date" },
-        { "DATE_CREATED", "Created date" },
-        { "INTERNAL_ID", "Internal ID" },
-        { "NAME", "Name" }
+        new DataSourceItem("DATE_ARCHIVED", "Archived date"),
+        new DataSourceItem("DATE_CREATED", "Created date"),
+        new DataSourceItem("INTERNAL_ID", "Internal ID"),
+        new DataSourceItem("NAME", "Name"),
 
     };
 }

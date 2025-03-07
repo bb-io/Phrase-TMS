@@ -9,7 +9,4 @@ public class ExportTransMemoryBody
     [Display("Export Target Languages")]
     [DataSource(typeof(LanguageDataHandler))]
     public IEnumerable<string>? ExportTargetLangs { get; set; }
-
-    [Display("Callback URL")]
-    public string? CallbackUrl { get; set; }
 }

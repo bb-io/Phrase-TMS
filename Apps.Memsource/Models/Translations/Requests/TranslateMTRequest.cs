@@ -17,8 +17,12 @@ public class TranslateMtRequest
     [DataSource(typeof(LanguageDataHandler))]
     public string TargetLanguageCode { get; set; }
 
+    [Display("Text")]
+    public string Text { get; set; }
+
     [Display("Source texts")]
-    public IEnumerable<string> SourceTexts { get; set; }
+    [DefinitionIgnore]
+    public IEnumerable<string> SourceTexts => new List<string> { Text };
         
     [Display("File name")]
     public string? Filename { get; set; }

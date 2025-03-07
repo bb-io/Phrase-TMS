@@ -1,34 +1,17 @@
 using Apps.PhraseTMS.Dtos;
-using Blackbird.Applications.Sdk.Common;
-using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common.Invocation;
-using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using RestSharp;
 
 namespace Apps.PhraseTMS.DataSourceHandlers;
 
-public class VendorDataHandler(InvocationContext invocationContext)
-    : BaseInvocable(invocationContext), IAsyncDataSourceItemHandler
+public class VendorDataHandler(InvocationContext invocationContext) : PhraseInvocable(invocationContext), IAsyncDataSourceItemHandler
 {
-    private IEnumerable<AuthenticationCredentialsProvider> Creds =>
-        InvocationContext.AuthenticationCredentialsProviders;
-
-    async Task<IEnumerable<DataSourceItem>> IAsyncDataSourceItemHandler.GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
+    public async Task<IEnumerable<DataSourceItem>> GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
     {
-        var client = new PhraseTmsClient(Creds);
-        var endpoint = "/api2/v1/vendors";
-
-        if (!string.IsNullOrWhiteSpace(context.SearchString))
-        {
-            endpoint = endpoint.SetQueryParameter("name", context.SearchString);
-        }
-
-        var request = new PhraseTmsRequest(endpoint, Method.Get, Creds);
-        var response = await client.Paginate<VendorDto>(request);
-
-        return response
-            .Take(20)
-            .Select(x => new DataSourceItem(x.UId, x.Name));
+        var request = new RestRequest($"/api2/v1/vendors", Method.Get);
+        if (context.SearchString != null) request.AddQueryParameter("name", context.SearchString);
+        var result = await Client.PaginateOnce<VendorDto>(request);
+        return result.Select(x => new DataSourceItem(x.UId, x.Name));
     }
 }

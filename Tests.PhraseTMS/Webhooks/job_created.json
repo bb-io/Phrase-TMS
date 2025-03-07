@@ -1,0 +1,47 @@
+{
+  "jobParts": [
+    {
+      "id": 2790819,
+      "uid": "WRZha0uJNtgssOTzlujHh7",
+      "internalId": "1",
+      "task": "DYUA0BGUhKcb3oVP0_dc2",
+      "fileName": "When it comes to writing an essay.docx",
+      "targetLang": "de",
+      "workflowLevel": 1,
+      "status": "NEW",
+      "wordsCount": 347,
+      "beginIndex": 0,
+      "endIndex": 25,
+      "isParentJobSplit": false,
+      "dateCreated": "2025-03-07T14:24:21Z",
+      "project": {
+        "id": 1519158,
+        "uid": "hGStrg0MLYmQtG0f66mj6f",
+        "lastWorkflowLevel": 1
+      },
+      "assignedTo": []
+    }
+  ],
+  "metadata": {
+    "project": {
+      "id": 1519158,
+      "uid": "hGStrg0MLYmQtG0f66mj6f",
+      "name": "Single document mulitple languages",
+      "sourceLang": "en",
+      "status": "NEW",
+      "createdBy": {
+        "id": 189794,
+        "uid": "KnW1n59BfQQRv2e2qtTS94",
+        "username": "mathijs.sonnemans"
+      },
+      "owner": {
+        "id": 189794,
+        "uid": "KnW1n59BfQQRv2e2qtTS94",
+        "username": "mathijs.sonnemans"
+      }
+    }
+  },
+  "event": "JOB_CREATED",
+  "timestamp": 1741357466,
+  "eventUid": "8myKlrKmNE9D4ZAE1Wsb1b"
+}

@@ -1,12 +1,13 @@
 ﻿using Blackbird.Applications.Sdk.Common.Dictionaries;
+using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.PhraseTMS.DataSourceHandlers.StaticHandlers;
 
-public class OrderDataHandler : IStaticDataSourceHandler
+public class OrderDataHandler : IStaticDataSourceItemHandler
 {
-    public Dictionary<string, string> GetData() => new()
+    public IEnumerable<DataSourceItem> GetData() => new List<DataSourceItem>()
     {
-        { "ASC", "Ascending" },
-        { "DESC", "Descending" },
+        new DataSourceItem("ASC", "Ascending"),
+        new DataSourceItem("DESC", "Descending"),
     };
 }

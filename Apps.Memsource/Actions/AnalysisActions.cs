@@ -1,151 +1,132 @@
 ﻿using Apps.PhraseTMS.Constants;
 using Apps.PhraseTMS.DataSourceHandlers.StaticHandlers;
-using Apps.PhraseTMS.Dtos;
-using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common;
 using RestSharp;
 using Apps.PhraseTMS.Models.Analysis.Requests;
 using Apps.PhraseTMS.Models.Analysis.Responses;
-using Apps.PhraseTMS.Models.Async;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Apps.PhraseTMS.Models.Jobs.Requests;
 using Blackbird.Applications.Sdk.Common.Dictionaries;
-using Blackbird.Applications.Sdk.Common.Files;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
+using Blackbird.Applications.Sdk.Common.Invocation;
+using Apps.PhraseTMS.Dtos.Analysis;
+using Apps.PhraseTMS.Dtos.Jobs;
 
 namespace Apps.PhraseTMS.Actions;
 
 [ActionList]
-public class AnalysisActions
+public class AnalysisActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient): PhraseInvocable(invocationContext)
 {
-    private readonly IFileManagementClient _fileManagementClient;
 
-    public AnalysisActions(IFileManagementClient fileManagementClient)
-    {
-        _fileManagementClient = fileManagementClient;
-    }
-
-    [Action("List analyses", Description = "List all job's analyses")]
+    [Action("Search job analyses", Description = "Search through all analyses of a specific job")]
     public async Task<ListAnalysesResponse> ListAnalyses(
-        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] ListAnalysesPathRequest path,
+        [ActionParameter] JobRequest jobRequest,
         [ActionParameter] ListAnalysesQueryRequest query)
     {
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
-
-        var endpoint = $"/api2/v3/projects/{projectRequest.ProjectUId}/jobs/{path.JobUId}/analyses"
+        var endpoint = $"/api2/v3/projects/{projectRequest.ProjectUId}/jobs/{jobRequest.JobUId}/analyses"
             .WithQuery(query);
 
-        var request = new PhraseTmsRequest(endpoint,
-            Method.Get, authenticationCredentialsProviders);
-        var response = await client.Paginate<AnalysisDto>(request);
+        var request = new RestRequest(endpoint, Method.Get);
+        var response = await Client.Paginate<AnalysisDto>(request);
 
-        return new()
+        var result = new List<FullAnalysisDto>();
+
+        foreach (var analysis in response)
         {
-            Analyses = response
-        };
+            var fullAnalysisRequest = new RestRequest($"/api2/v3/analyses/{analysis.UId}", Method.Get);
+            var analysisResult = await Client.ExecuteWithHandling<FullAnalysisDto>(fullAnalysisRequest);
+            result.Add(analysisResult);
+        }
+
+        return new ListAnalysesResponse { Analyses = result };
     }
 
-    [Action("Get analysis", Description = "Get analysis")]
-    public Task<AnalysisDto> GetAnalysis(
-        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] JobRequest jobRequest,
+    [Action("Search project analyses", Description = "Search through all analyses of a specific project")]
+    public async Task<ListAnalysesResponse> ListProjectAnalyses(
+    [ActionParameter] ProjectRequest projectRequest,
+    [ActionParameter] ListAnalysesQueryRequest query)
+    {
+        var endpoint = $"/api2/v3/projects/{projectRequest.ProjectUId}/analyses"
+            .WithQuery(query);
+
+        var request = new RestRequest(endpoint, Method.Get);
+        var response = await Client.Paginate<AnalysisDto>(request);
+
+        var result = new List<FullAnalysisDto>();
+
+        foreach (var analysis in response)
+        {
+            var fullAnalysisRequest = new RestRequest($"/api2/v3/analyses/{analysis.UId}", Method.Get);
+            var analysisResult = await Client.ExecuteWithHandling<FullAnalysisDto>(fullAnalysisRequest);
+            result.Add(analysisResult);
+        }
+
+        return new ListAnalysesResponse { Analyses = result };
+    }
+
+    [Action("Get analysis data", Description = "Returns the full details of a specific analysis")]
+    public async Task<FullAnalysisDto> GetJobAnalysis(
         [ActionParameter] GetAnalysisRequest input)
     {
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
-        var request = new PhraseTmsRequest($"/api2/v3/analyses/{input.AnalysisUId}", Method.Get,
-            authenticationCredentialsProviders);
-        return client.ExecuteWithHandling<AnalysisDto>(request);
+        var request = new RestRequest($"/api2/v3/analyses/{input.AnalysisUId}", Method.Get);
+        return await Client.ExecuteWithHandling<FullAnalysisDto>(request);
     }
 
-    [Action("Get job analysis", Description = "Get job's analysis details")]
-    public async Task<JobAnalysisResponse> GetJobAnalysis(
-        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] JobRequest jobRequest,
-        [ActionParameter] GetAnalysisRequest input)
-    {
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
-        var request = new PhraseTmsRequest($"/api2/v1/analyses/{input.AnalysisUId}/jobs/{jobRequest.JobUId}", Method.Get,
-            authenticationCredentialsProviders);
-        var response = await client.ExecuteWithHandling<JobAnalysisDto>(request);
-        return new JobAnalysisResponse
-        {
-            Filename = response.FileName,
-            TotalWords = response.data.all.words,
-            Repetitions = response.data.repetitions.words,
-            MemoryMatch101 = response.data.transMemoryMatches.match101.words,
-            MemoryMatch100 = response.data.transMemoryMatches.match100.words,
-            MemoryMatch95 = response.data.transMemoryMatches.match95.words,
-            MemoryMatch85 = response.data.transMemoryMatches.match85.words,
-            MemoryMatch75 = response.data.transMemoryMatches.match75.words,
-            MemoryMatch50 = response.data.transMemoryMatches.match50.words,
-            MemoryMatch0 = response.data.transMemoryMatches.match0.words,
-            TotalInternalFuzzy = response.data.internalFuzzyMatches.match95.words + response.data.internalFuzzyMatches.match100.words + response.data.internalFuzzyMatches.match85.words + response.data.internalFuzzyMatches.match75.words + response.data.internalFuzzyMatches.match50.words + response.data.internalFuzzyMatches.match0.words,
-            TotalMT = response.data.machineTranslationMatches.match95.words + response.data.machineTranslationMatches.match100.words + response.data.machineTranslationMatches.match85.words + response.data.machineTranslationMatches.match75.words + response.data.machineTranslationMatches.match50.words + response.data.machineTranslationMatches.match0.words,
-            TotalNonTranslatable = response.data.nonTranslatablesMatches.match100.words + response.data.nonTranslatablesMatches.match99.words
-        };
-    }
-
-    [Action("Create analysis", Description = "Create a new analysis")]
-    public async Task<AsyncRequest> CreateAnalysis(
-        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+    [Action("Create analyses", Description = "Create one or multiple analyses for jobs in a given project")]
+    public async Task<ListAnalysesResponse> CreateAnalysis(
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] CreateAnalysisInput input,
         [ActionParameter] ListAllJobsQuery jobquery)
     {
-
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
         if (input.JobsUIds is null)
         {
             var endpoint = $"/api2/v2/projects/{projectRequest.ProjectUId}/jobs";
-            var request2 = new PhraseTmsRequest(endpoint.WithQuery(jobquery), Method.Get,
-                authenticationCredentialsProviders);
+            var request2 = new RestRequest(endpoint.WithQuery(jobquery), Method.Get);
 
-            var response = await client.Paginate<JobDto>(request2);
+            var response = await Client.Paginate<ListJobDto>(request2);
             input.JobsUIds = response.Select(x => x.Uid).ToList();
         }
 
-        var request = new PhraseTmsRequest($"/api2/v2/analyses", Method.Post, authenticationCredentialsProviders);
+        var request = new RestRequest($"/api2/v2/analyses", Method.Post);
         request.WithJsonBody(new CreateAnalysisRequest(input), JsonConfig.Settings);
 
-        var asyncRequest = await client.PerformMultipleAsyncRequest(request, authenticationCredentialsProviders);
-        return asyncRequest.First();
+        var asyncResponse = await Client.PerformMultipleAsyncRequest<CreateAnalysisDto>(request);
+
+        var result = new List<FullAnalysisDto>();
+
+        foreach (var analysis in asyncResponse)
+        {
+            var fullAnalysisRequest = new RestRequest($"/api2/v3/analyses/{analysis.Analyse.Id}", Method.Get);
+            var analysisResult = await Client.ExecuteWithHandling<FullAnalysisDto>(fullAnalysisRequest);
+            result.Add(analysisResult);
+        }
+        return new ListAnalysesResponse { Analyses = result };
     }
 
     [Action("Download analysis file", Description = "Download analysis file in specified format")]
-    public async Task<FileReference> DownloadAnalysis(
-        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] DownloadAnalysisRequest analysisRequest,
+    public async Task<AnalysisFileResponse> DownloadAnalysis(
+        [ActionParameter] GetAnalysisRequest analysisRequest,
         [ActionParameter, Display("Format"), StaticDataSource(typeof(FormatDataHandler))]
         string? format,
-        [ActionParameter, Display("File name", Description = "File name without format. F.e.: analysis"),
-         StaticDataSource(typeof(FormatDataHandler))]
+        [ActionParameter, Display("File name", Description = "File name without format. F.e.: analysis")]
         string? fileName)
     {
         format ??= "CSV";
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
-        var request = new PhraseTmsRequest($"/api2/v1/analyses/{analysisRequest.AnalysisUId}/download?format={format}",
-                Method.Get, authenticationCredentialsProviders)
+        var request = new RestRequest($"/api2/v1/analyses/{analysisRequest.AnalysisUId}/download?format={format}", Method.Get)
             .AddHeader("Accept", "application/octet-stream");
 
-        var response = await client.ExecuteWithHandling(request);
+        var response = await Client.ExecuteWithHandling(request);
         var bytes = response.RawBytes;
 
-        if (bytes is not null)
-        {
-            var memoryStream = new MemoryStream(bytes);
-            fileName ??= $"analysis_{analysisRequest.AnalysisUId}.{format}";
-            var fileReference =
-                await _fileManagementClient.UploadAsync(memoryStream, MimeTypes.GetMimeType(fileName), fileName);
+        var memoryStream = new MemoryStream(bytes);
+        fileName ??= $"analysis_{analysisRequest.AnalysisUId}";
+        fileName = $"{fileName}.{format}";
+        var fileReference = await fileManagementClient.UploadAsync(memoryStream, MimeTypes.GetMimeType(fileName), fileName);
 
-            return fileReference;
-        }
-
-        throw new("Failed to download analysis");
+        return new AnalysisFileResponse { AnalysisFile = fileReference };
     }
 }

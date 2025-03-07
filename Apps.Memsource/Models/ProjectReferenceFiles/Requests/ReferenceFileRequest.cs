@@ -6,11 +6,11 @@ namespace Apps.PhraseTMS.Models.ProjectReferenceFiles.Requests;
 
 public class ReferenceFileRequest
 {
-    [Display("Project UID")]
+    [Display("Project ID")]
     [DataSource(typeof(ProjectDataHandler))]
     public string ProjectUId { get; set; }
     
-    [Display("Reference file UID")] 
+    [Display("Reference file ID")] 
     [DataSource(typeof(ReferenceFileDataHandler))]
     public string ReferenceFileUId { get; set; }
 }

@@ -4,6 +4,6 @@ namespace Apps.PhraseTMS.Models.Quotes.Requests;
 
 public class GetQuoteRequest
 {
-    [Display("Quote UID")]
+    [Display("Quote ID")]
     public string QuoteUId { get; set; }
 }

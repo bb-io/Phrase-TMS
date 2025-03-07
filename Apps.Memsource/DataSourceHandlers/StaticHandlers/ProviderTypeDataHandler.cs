@@ -1,12 +1,13 @@
 ﻿using Blackbird.Applications.Sdk.Common.Dictionaries;
+using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.PhraseTMS.DataSourceHandlers.StaticHandlers;
 
-public class ProviderTypeDataHandler : IStaticDataSourceHandler
+public class ProviderTypeDataHandler : IStaticDataSourceItemHandler
 {
-    public Dictionary<string, string> GetData() => new()
+    public IEnumerable<DataSourceItem> GetData() => new List<DataSourceItem>()
     {
-        { "USER", "User" },
-        { "VENDOR", "Vendor" }
+        new DataSourceItem("USER", "User"),
+        new DataSourceItem("VENDOR", "Vendor"),
     };
 }

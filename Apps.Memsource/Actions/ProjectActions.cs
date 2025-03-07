@@ -16,23 +16,19 @@ using Newtonsoft.Json;
 using System.Text.Json.Nodes;
 using DocumentFormat.OpenXml.Drawing.Diagrams;
 using Blackbird.Applications.Sdk.Common.Exceptions;
+using Blackbird.Applications.Sdk.Common.Invocation;
 
 namespace Apps.PhraseTMS.Actions;
 
 [ActionList]
-public class ProjectActions(IFileManagementClient fileManagementClient)
+public class ProjectActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : PhraseInvocable(invocationContext)
 {
-    [Action("List projects", Description = "List all projects")]
-    public async Task<ListAllProjectsResponse> ListAllProjects(
-        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] ListAllProjectsQuery query)
+    [Action("Seach projects", Description = "Search for projects matching the filters of the input parameters")]
+    public async Task<ListAllProjectsResponse> ListAllProjects([ActionParameter] ListAllProjectsQuery query)
     {
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
-
         var endpoint = "/api2/v1/projects";
-        var request = new PhraseTmsRequest(QueryHelper.WithQuery(endpoint, query), Method.Get, authenticationCredentialsProviders);
-
-        var response = await client.Paginate<ProjectDto>(request);
+        var request = new RestRequest(QueryHelper.WithQuery(endpoint, query), Method.Get);
+        var response = await Client.Paginate<ProjectDto>(request);
 
         return new()
         {
@@ -40,53 +36,28 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
         };
     }
 
-    [Action("Find project", Description = "Return first matching project")]
-    public async Task<ProjectDto> FindProject(
-        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] ListAllProjectsQuery query)
+    [Action("Find project", Description = "Given the same parameters as 'Search projects', only returns the first matching project")]
+    public async Task<ProjectDto> FindProject([ActionParameter] ListAllProjectsQuery query)
     {
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
-
         var endpoint = "/api2/v1/projects";
-        var request = new PhraseTmsRequest(QueryHelper.WithQuery(endpoint, query), Method.Get, authenticationCredentialsProviders);
+        var request = new RestRequest(QueryHelper.WithQuery(endpoint, query), Method.Get);
 
-        var response = await client.Paginate<ProjectDto>(request);
+        var response = await Client.Paginate<ProjectDto>(request);
 
         return response.FirstOrDefault();
     }
 
-    [Action("List project templates", Description = "List all project templates")]
-    public async Task<ListAllProjectTemplatesResponse> ListAllProjectTemplates(
-        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+    [Action("Get project", Description = "Get global project data for a specific project")]
+    public async Task<ProjectDto> GetProject([ActionParameter] ProjectRequest input)
     {
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
-
-        var endpoint = "/api2/v1/projectTemplates";
-        var request = new PhraseTmsRequest(endpoint, Method.Get, authenticationCredentialsProviders);
-
-        var response = await client.Paginate<ProjectTemplateDto>(request);
-
-        return new(response);
-    }
-
-    [Action("Get project", Description = "Get project by UId")]
-    public async Task<ProjectDto> GetProject(
-        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] ProjectRequest input)
-    {
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
-        var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Get,
-            authenticationCredentialsProviders);
-        return client.ExecuteWithHandling<ProjectDto>(request).Result;
+        var request = new RestRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Get);
+        return await Client.ExecuteWithHandling<ProjectDto>(request);
     }
 
     [Action("Create project", Description = "Create a new project")]
-    public Task<ProjectDto> CreateProject(
-        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] CreateProjectRequest input)
+    public Task<ProjectDto> CreateProject([ActionParameter] CreateProjectRequest input)
     {
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
-        var request = new PhraseTmsRequest("/api2/v3/projects", Method.Post, authenticationCredentialsProviders)
+        var request = new RestRequest("/api2/v3/projects", Method.Post)
             .WithJsonBody(new
             {
                 name = input.Name,
@@ -105,19 +76,15 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
                 propagateTranslationsToLowerWfDuringUpdateSource = input.PropagateTranslationsToLowerWfDuringUpdateSource
             }, JsonConfig.DateSettings);
 
-        return client.ExecuteWithHandling<ProjectDto>(request);
+        return Client.ExecuteWithHandling<ProjectDto>(request);
     }
 
     [Action("Create project from template", Description = "Create a new project from the specific template")]
-    public Task<ProjectDto> CreateProjectFromTemplate(
-        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] CreateFromTemplateRequest input)
+    public Task<ProjectDto> CreateProjectFromTemplate([ActionParameter] CreateFromTemplateRequest input)
     {
         if (String.IsNullOrEmpty(input.TemplateUId))
         { throw new PluginMisconfigurationException("Template ID cannot be empty"); }
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
-        var request = new PhraseTmsRequest($"/api2/v2/projects/applyTemplate/{input.TemplateUId}", Method.Post,
-                authenticationCredentialsProviders)
+        var request = new RestRequest($"/api2/v2/projects/applyTemplate/{input.TemplateUId}", Method.Post)
             .WithJsonBody(new
             {
                 name = input.Name,
@@ -134,32 +101,24 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
 
             }, JsonConfig.DateSettings);
 
-        return client.ExecuteWithHandling<ProjectDto>(request);
+        return Client.ExecuteWithHandling<ProjectDto>(request);
     }
 
-    [Action("Add target language", Description = "Add a target language to the project")]
-    public Task AddTargetLanguage(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] AddTargetLanguageRequest input)
+    [Action("Add project target language", Description = "Add a target language to the project")]
+    public Task AddTargetLanguage([ActionParameter] ProjectRequest projectRequest, [ActionParameter] AddTargetLanguageRequest input)
     {
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
-        var request = new PhraseTmsRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/targetLangs", Method.Post,
-            authenticationCredentialsProviders);
+        var request = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/targetLangs", Method.Post);
         request.WithJsonBody(new
         {
             targetLangs = input.TargetLanguages.ToArray()
         });
 
-        return client.ExecuteWithHandling(request);
+        return Client.ExecuteWithHandling(request);
     }
 
-    [Action("Update project", Description = "Update project with specified details based on project ID")]
-    public Task EditProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] EditProjectRequest input)
-    {
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
-        
+    [Action("Update project", Description = "Update project with specified details")]
+    public Task EditProject([ActionParameter] ProjectRequest projectRequest, [ActionParameter] EditProjectRequest input)
+    {        
         var bodyDictionary = new Dictionary<string, object>
         {
             { "name", input.ProjectName},
@@ -211,46 +170,33 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
             });
         }
 
-        var request = new PhraseTmsRequest($"/api2/v1/projects/{projectRequest.ProjectUId}", Method.Patch,
-                authenticationCredentialsProviders)
+        var request = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}", Method.Patch)
             .WithJsonBody(bodyDictionary, JsonConfig.DateSettings);
 
-        return client.ExecuteWithHandling(request);
+        return Client.ExecuteWithHandling(request);
     }
 
     [Action("Delete project", Description = "Delete specific project")]
-    public Task DeleteProject(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] DeleteProjectRequest input)
+    public Task DeleteProject([ActionParameter] ProjectRequest projectRequest, [ActionParameter] DeleteProjectRequest input)
     {
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
-
         var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}";
 
         if (input.Purge != null)
             endpoint += $"?purge={input.Purge}";
 
-        var request = new PhraseTmsRequest(endpoint, Method.Delete,
-            authenticationCredentialsProviders);
-
-        return client.ExecuteWithHandling(request);
+        var request = new RestRequest(endpoint, Method.Delete);
+        return Client.ExecuteWithHandling(request);
     }
 
     [Action("Download project original files", Description = "Download project source files")]
-    public async Task<DownloadProjectFilesResponse> DownloadProjectOriginalFiles(
-        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] ProjectRequest input)
+    public async Task<DownloadProjectFilesResponse> DownloadProjectOriginalFiles([ActionParameter] ProjectRequest input)
     {
-        var jobActions = new JobActions(fileManagementClient);
-        var credentialsProviders = authenticationCredentialsProviders as AuthenticationCredentialsProvider[] ??
-                                   authenticationCredentialsProviders.ToArray();
-
-        var jobs = await jobActions.ListAllJobs(credentialsProviders, input, new ListAllJobsQuery(), new JobStatusesRequest(), null);
+        var jobActions = new JobActions(InvocationContext, fileManagementClient);
+        var jobs = await jobActions.ListAllJobs(input, new ListAllJobsQuery(), new JobStatusesRequest(), null);
         var files = new List<FileReference>();
         foreach (var job in jobs.Jobs)
         {
-            var file = await jobActions.DownloadOriginalFile(credentialsProviders, input,
-                new JobRequest { JobUId = job.Uid });
+            var file = await jobActions.DownloadOriginalFile(input, new JobRequest { JobUId = job.Uid });
             files.Add(file.File);
         }
 
@@ -258,38 +204,26 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
     }
 
     [Action("Download project target files", Description = "Download project target files")]
-    public async Task<DownloadProjectFilesResponse> DownloadProjectTargetFiles(
-        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] ProjectRequest input)
+    public async Task<DownloadProjectFilesResponse> DownloadProjectTargetFiles([ActionParameter] ProjectRequest input)
     {
-        var jobActions = new JobActions(fileManagementClient);
-        var credentialsProviders = authenticationCredentialsProviders as AuthenticationCredentialsProvider[] ??
-                                   authenticationCredentialsProviders.ToArray();
-
-        var jobs = await jobActions.ListAllJobs(credentialsProviders, input, new ListAllJobsQuery(), new JobStatusesRequest(), null);
+        var jobActions = new JobActions(InvocationContext, fileManagementClient);
+        var jobs = await jobActions.ListAllJobs(input, new ListAllJobsQuery(), new JobStatusesRequest(), null);
         var files = new List<FileReference>();
         foreach (var job in jobs.Jobs)
         {
-            var file = await jobActions.DownloadTargetFile(credentialsProviders, input,
-                new JobRequest { JobUId = job.Uid });
+            var file = await jobActions.DownloadTargetFile(input, new JobRequest { JobUId = job.Uid });
             files.Add(file.File);
         }
 
         return new() { Files = files };
     }
 
-    [Action("Assign providers from template", Description = "Assig providers to project or specific jobs from a template")]
-    public async Task AssignFromTemplate(
-        IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] AssignFromTemplateRequest input)
+    [Action("Assign project providers from template", Description = "Assign providers to project or specific jobs from a template")]
+    public async Task AssignFromTemplate([ActionParameter] AssignFromTemplateRequest input)
     {
-
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
-
         if (input.JobsUIds is not null && input.JobsUIds.Any())
         {
-            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/applyTemplate/{input.TemplateUId}/assignProviders/forJobParts", Method.Post,
-                authenticationCredentialsProviders);
+            var request = new RestRequest($"/api2/v1/projects/{input.ProjectUId}/applyTemplate/{input.TemplateUId}/assignProviders/forJobParts", Method.Post);
             request.WithJsonBody(JsonConvert.SerializeObject(new
              {
                  jobs =
@@ -300,27 +234,23 @@ public class ProjectActions(IFileManagementClient fileManagementClient)
                     }).ToArray()
                 ,
              }));
-            await client.ExecuteAsync(request);
+            await Client.ExecuteAsync(request);
         }
         else 
         {
-            var request = new PhraseTmsRequest($"/api2/v1/projects/{input.ProjectUId}/applyTemplate/{input.TemplateUId}/assignProviders", Method.Post,
-                authenticationCredentialsProviders);
+            var request = new RestRequest($"/api2/v1/projects/{input.ProjectUId}/applyTemplate/{input.TemplateUId}/assignProviders", Method.Post);
 
-            await client.ExecuteAsync(request);
+            await Client.ExecuteAsync(request);
         }
     }
 
     [Action("Find project termbase", Description = "Get the termbase linked to a project based on optional filters")]
-    public async Task<TermbaseDto> FindProjectTermbase(
-    IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-    [ActionParameter] FindProjectTermbaseRequest request)
+    public async Task<TermbaseDto> FindProjectTermbase([ActionParameter] FindProjectTermbaseRequest request)
     {
-        var client = new PhraseTmsClient(authenticationCredentialsProviders);
         var endpoint = $"/api2/v1/projects/{request.ProjectUId}/termBases";
 
-        var apiRequest = new PhraseTmsRequest(endpoint, Method.Get, authenticationCredentialsProviders);
-        var response = await client.ExecuteWithHandling<TermbaseResponse>(apiRequest);
+        var apiRequest = new RestRequest(endpoint, Method.Get);
+        var response = await Client.ExecuteWithHandling<TermbaseResponse>(apiRequest);
 
         var termbases = response.TermBases;
 

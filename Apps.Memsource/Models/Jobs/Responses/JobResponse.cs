@@ -26,9 +26,4 @@ public class JobResponse
 
     [Display("Word count")] 
     public int WordCount { get; set; }
-
-    [Display("Assigned to")] 
-    public IEnumerable<UserDto> AssignedTo { get; set; } = default!;
-
-    //[Display("Due date")] public string DateDue { get; set; }
 }

@@ -1,13 +1,14 @@
 ﻿using Blackbird.Applications.Sdk.Common.Dictionaries;
+using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.PhraseTMS.DataSourceHandlers.StaticHandlers;
 
-public class JobStatusGroupDataHandler : IStaticDataSourceHandler
+public class JobStatusGroupDataHandler : IStaticDataSourceItemHandler
 {
-    public Dictionary<string, string> GetData() => new()
+    public IEnumerable<DataSourceItem> GetData() => new List<DataSourceItem>()
     {
-        { "ACCEPTED", "Accepted" },
-        { "COMPLETED", "Completed" },
-        { "NEW", "New" },
+        new DataSourceItem("ACCEPTED", "Accepted"),
+        new DataSourceItem("COMPLETED", "Completed"),
+        new DataSourceItem("NEW", "New"),
     };
 }

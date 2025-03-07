@@ -9,10 +9,4 @@ public class ListClientsQuery
 
     [Display("Created by")]
     public string? CreatedBy { get; set; }
-
-    [Display("Sort")]
-    public string? Sort { get; set; }
-
-    [Display("Order")]
-    public string? Order { get; set; }
 }

@@ -13,29 +13,20 @@ public class OAuth2ConnectionDefinition : IConnectionDefinition
         {
             Name = "OAuth2",
             AuthenticationType = ConnectionAuthenticationType.OAuth2,
-            ConnectionUsage = ConnectionUsage.Actions,
             ConnectionProperties = new List<ConnectionProperty>
             {
                 new("client_id"){DisplayName = "Client ID"},
                 new("url"){DisplayName="Base Url",
                     Description = "Select the base URL according to your Phrase data center",
-                    DataItems= [new("https://cloud.memsource.com/", "EU data center"),
-                                new("https://us.cloud.memsource.com/","US data center")]
+                    DataItems = 
+                    [
+                        new("https://cloud.memsource.com/", "EU data center"),
+                        new("https://us.cloud.memsource.com/","US data center"),
+                        new("https://cloud9.memsource.com/", "Cloud 9")
+                    ]
                 }
             }
-        }, 
-        // Api token
-        //new ConnectionPropertyGroup
-        //{
-        //    Name = "API Token",
-        //    AuthenticationType = ConnectionAuthenticationType.Undefined,
-        //    ConnectionUsage = ConnectionUsage.Actions,
-        //    ConnectionProperties = new List<ConnectionProperty>()
-        //    {
-        //        new ConnectionProperty("url"),
-        //        new ConnectionProperty(ApiKeyName)
-        //    }
-        //}
+        },
     };
 
     public IEnumerable<AuthenticationCredentialsProvider> CreateAuthorizationCredentialsProviders(Dictionary<string, string> values)
@@ -45,19 +36,5 @@ public class OAuth2ConnectionDefinition : IConnectionDefinition
         
         var url = values.First(v => v.Key == "url");
         yield return new("url", url.Value);
-        
-        // Api token
-        //var token = values.First(v => v.Key == ApiKeyName);
-        //yield return new AuthenticationCredentialsProvider(
-        //    AuthenticationCredentialsRequestLocation.Header,
-        //    "Authorization",
-        //    $"ApiToken {token.Value}"
-        //);
-        //var url = values.First(v => v.Key == "url");
-        //yield return new AuthenticationCredentialsProvider(
-        //    AuthenticationCredentialsRequestLocation.None,
-        //    url.Key,
-        //    url.Value
-        //);
     }
 }
