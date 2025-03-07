@@ -10,7 +10,7 @@ namespace Apps.PhraseTMS.Models.Jobs.Requests;
 public class CreateJobRequest
 {
     [Display("Target language")]
-    [DataSource(typeof(ProjectLanguageDataHandler))]
+    [DataSource(typeof(LanguageDataHandler))]
     public string TargetLanguage { get; set; }
 
     [Display("Due date")]

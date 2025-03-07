@@ -159,35 +159,28 @@ The following actions update a job's file (source or target) from their original
 - **On project metadata updated**
 - **On shared project assigned**
 - **On project status changed**
-- **Find project termbase** get the termbase linked to a project based on optional filters
 
 ### Job
 
-- **On job created**
-- **On job deleted**
-- **On continuous job updated**
-- **On job assigned**
-- **On job due date changed**
-- **On job exported**
-- **On job source updated**
+- **On jobs created** Triggered when new jobs are created
+- **On jobs deleted** Triggered when any jobs are deleted
+- **On continuous jobs updated** Triggered when continuous jobs are updated
+- **On jobs assigned** Triggered when any jobs are assigned
+- **On jobs due date changed** Triggered when the due date of jobs are changed
+- **On jobs exported** Triggered when any jobs are exported
+- **On jobs source updated** Triggered when the source file of the jobs are updated
 - **On job status changed** If you are using checkpoints, please fill all optional inputs (including Project ID). It will work even without a specified Project ID, but using it will allow us to check if the job already has the specified status. The status "Completed by linguist" will also trigger the event if the optional status "Completed" is set.
-- **On job target updated**
-- **On job unexported**
+- **On job target updated** Triggered when a job's target has been updated
+- **On jobs unexported** Triggered when jobs are exported
 - **On all jobs in workflow step reached status** Triggered when all jobs in a specific workflow step reach a specified status. Returns only jobs in the specified workflow step
-
-### Template
-
-- **On template created**
-- **On template deleted**
-- **On template updated**
 
 ### Analysis
 
-- **On analysis created**
+- **On analysis created** Trigered when a new analysis has been created
 
 ### Quality assurance
 
-- **On LQA reports created** (Polling event)
+- **On LQA reports created** Triggered when new reports can be downloaded within a specific project(Polling event)
 
 ## Example
 

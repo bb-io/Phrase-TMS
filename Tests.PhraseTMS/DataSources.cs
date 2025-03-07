@@ -76,9 +76,6 @@ namespace Tests.PhraseTMS
         public async Task Project_returns_values() => await Test(new ProjectDataHandler(InvocationContext));
 
         [TestMethod]
-        public async Task Project_target_languages_returns_values() => await Test(new ProjectLanguageDataHandler(InvocationContext, new ProjectRequest { ProjectUId = EMPTY_PROJECT_ID }));
-
-        [TestMethod]
         public async Task Project_with_query_returns_values() => await Test(new ProjectDataHandler(InvocationContext), "test");
 
         [TestMethod]

@@ -862,7 +862,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         };
     }
 
-    [Webhook("On job unexported", typeof(JobUnexportedHandler), Description = "Triggered when the job is exported")]
+    [Webhook("On jobs unexported", typeof(JobUnexportedHandler), Description = "Triggered when jobs are exported")]
     public async Task<WebhookResponse<MultipleJobResponse>> JobUnexported(WebhookRequest webhookRequest,
         [WebhookParameter] JobOptionalRequest request)
     {
@@ -881,7 +881,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
 
     #region OtherWebhooks
 
-    [Webhook("On analysis created", typeof(AnalysisCreationHandler), Description = "On a new analysis created")]
+    [Webhook("On analysis created", typeof(AnalysisCreationHandler), Description = "Trigered when a new analysis has been created")]
     public async Task<WebhookResponse<AnalysisDto>> AnalysisCreation(WebhookRequest webhookRequest)
     {
         var data = JsonConvert.DeserializeObject<AnalyseWrapper>(webhookRequest.Body.ToString());
