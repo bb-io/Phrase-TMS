@@ -50,6 +50,16 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             };
         }
 
+        if (!string.IsNullOrEmpty(projectCreatedRequest.CreatedByUsername) &&
+        (data.Project.CreatedBy == null ||
+         !data.Project.CreatedBy.UserName.Equals(projectCreatedRequest.CreatedByUsername, StringComparison.OrdinalIgnoreCase)))
+        {
+            return new()
+            {
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight
+            };
+        }
+
         return new()
         {
             HttpResponseMessage = null,
