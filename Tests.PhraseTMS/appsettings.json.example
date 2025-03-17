@@ -2,7 +2,7 @@
   "ConnectionDefinition": {
     "username": "",
     "password": "",
-    "url": "" /* 'https://cloud.memsource.com' or 'https://us.cloud.memsource.com' */
+    "url": "https://us.cloud.memsource.com"
   },
   "TestFolder": "TestFiles"
 }
