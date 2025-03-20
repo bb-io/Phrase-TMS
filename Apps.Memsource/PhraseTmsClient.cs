@@ -111,7 +111,16 @@ public class PhraseTmsClient : RestClient
         if (restResponse.Content == null)
             throw new PluginApplicationException(restResponse.ErrorMessage);
 
-        var error = JsonConvert.DeserializeObject<Error>(restResponse.Content);
+        Error? error;
+        try
+        {
+            error = JsonConvert.DeserializeObject<Error>(restResponse.Content);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Content: {restResponse.Content}, Exception message: {ex.Message}");
+        }
+       
 
         if (string.IsNullOrEmpty(error.ErrorDescription))
         {
