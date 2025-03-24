@@ -8,5 +8,5 @@ public class JobRequest
 {
     [Display("Job ID")]
     [DataSource(typeof(JobDataHandler))] 
-    public string JobUId { get; set; }
+    public string JobUId { get; set; } = string.Empty;
 }
