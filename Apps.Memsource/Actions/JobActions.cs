@@ -418,7 +418,14 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] UpdateSourceRequest input)
     {
-        //TODO: Input checking
+        if (input.Jobs == null)
+            throw new PluginMisconfigurationException("Job IDs is null. Please check the input and try again");
+        if (!input.Jobs.Any())
+            throw new PluginMisconfigurationException("No Job IDs provided");
+
+        if (input.File == null)
+            throw new PluginMisconfigurationException("File is null. Please check the input and try again");
+
 
         var request = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/source", Method.Post);
         var jobs = input.Jobs.Select(u => new { uid = u });
@@ -437,7 +444,12 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         };
         headers.ToList().ForEach(x => request.AddHeader(x.Key, x.Value));
 
-        var fileBytes = fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
+        var fileResult = await fileManagementClient.DownloadAsync(input.File);
+        var fileBytes = await fileResult.GetByteData();
+
+        if (fileBytes == null)
+            throw new PluginMisconfigurationException("The file is empty. Please check the input and try again");
+
         request.AddParameter("application/octet-stream", fileBytes, ParameterType.RequestBody);
 
         var response = await Client.ExecuteWithHandling<ResponseWrapper<IEnumerable<UpdateSourceResponse>>>(request);
