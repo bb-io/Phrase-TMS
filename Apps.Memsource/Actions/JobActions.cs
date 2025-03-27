@@ -97,6 +97,14 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] CreateJobRequest input)
     {
+        var fileName = input.File.Name;
+        if (!IsOnlyAscii(fileName))
+        {
+            throw new PluginMisconfigurationException(
+                $"The file name '{fileName}' contains non-ASCII characters. " +
+                "Phrase TMS API requires ASCII-only characters. Please rename the file and try again.");
+        }
+
 
         if (string.IsNullOrWhiteSpace(projectRequest.ProjectUId))
         {
@@ -455,6 +463,12 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         var response = await Client.ExecuteWithHandling<ResponseWrapper<IEnumerable<UpdateSourceResponse>>>(request);
 
         return response.Content.First();
+    }
+
+
+    public static bool IsOnlyAscii(string input)
+    {
+        return input.All(c => c <= 127);
     }
 
 }
