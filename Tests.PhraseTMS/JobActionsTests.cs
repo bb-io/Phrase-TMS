@@ -69,9 +69,9 @@ namespace Tests.PhraseTMS
         public async Task Create_job_and_delete_jobworks()
         {
             var action = new JobActions(InvocationContext, FileManager);
-            var projectRequest = new ProjectRequest { ProjectUId = PROJECT_ID };
+            var projectRequest = new ProjectRequest { ProjectUId = "01ywgyyGh5FtqAUNhQEwj8" };
             var input2 = new CreateJobRequest { 
-                File = new Blackbird.Applications.Sdk.Common.Files.FileReference { Name = "test.html" } ,
+                File = new Blackbird.Applications.Sdk.Common.Files.FileReference { Name = "[US] Toast Go® 2_en.html" } ,
                 TargetLanguage = "nl-NL",
             };
 
