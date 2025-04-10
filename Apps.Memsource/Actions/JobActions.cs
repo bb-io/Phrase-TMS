@@ -426,6 +426,9 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] UpdateSourceRequest input)
     {
+        if (string.IsNullOrWhiteSpace(projectRequest.ProjectUId))
+            throw new PluginMisconfigurationException("Project ID is null or empty. Please check the input and try again");
+
         if (input.Jobs == null)
             throw new PluginMisconfigurationException("Job IDs is null. Please check the input and try again");
         if (!input.Jobs.Any())
@@ -461,6 +464,9 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         request.AddParameter("application/octet-stream", fileBytes, ParameterType.RequestBody);
 
         var response = await Client.ExecuteWithHandling<ResponseWrapper<IEnumerable<UpdateSourceResponse>>>(request);
+
+        if (response.Content == null)
+            throw new PluginApplicationException("Response content from server is null. Please check the API response try again.");
 
         return response.Content.First();
     }

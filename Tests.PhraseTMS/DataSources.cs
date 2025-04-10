@@ -10,7 +10,7 @@ namespace Tests.PhraseTMS
     [TestClass]
     public class DataSources : TestBase
     {
-        public const string EMPTY_PROJECT_ID = "INLIOpS573UU4BbFBzs9v0";
+        public const string EMPTY_PROJECT_ID = "dmXznxlJx790symN3ig5d7";
 
         private async Task Test(IAsyncDataSourceItemHandler handler, string search = "")
         {
