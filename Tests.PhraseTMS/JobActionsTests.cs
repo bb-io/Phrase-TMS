@@ -11,7 +11,7 @@ namespace Tests.PhraseTMS
     public class JobActionsTests : TestBase
     {
         public const string PROJECT_ID = "hGStrg0MLYmQtG0f66mj6f";
-        public const string JOB_ID = "e9ciferOOGVn0ySv0qqav7";
+        public const string JOB_ID = "e9ciferOOGVn0ySv0qqa";
 
         [TestMethod]
         public async Task GetJob_ValidIds_ShouldNotFailAndReturnNotEmptyResponse()
@@ -88,11 +88,13 @@ namespace Tests.PhraseTMS
         public async Task UpdateSource_ValidData_Success()
         {
             var action = new JobActions(InvocationContext, FileManager);
-            var input1 = new ProjectRequest { ProjectUId = PROJECT_ID };
+            var input1 = new ProjectRequest { ProjectUId = "dmXznxlJx790symN3ig5d7" };
             var jobs = new List<string>();
-            jobs.Add(JOB_ID);
+            jobs.Add("4zzCMHNX49pVbdSfJXw7Q1");
 
-            var input2 = new UpdateSourceRequest { File = new Blackbird.Applications.Sdk.Common.Files.FileReference { Name = "test.txt" }, Jobs =jobs };
+            var input2 = new UpdateSourceRequest { 
+                File = new Blackbird.Applications.Sdk.Common.Files.FileReference { Name = "test.txt" }, 
+                Jobs =jobs };
 
             var result = await action.UpdateSource(input1, input2);
 
