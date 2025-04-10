@@ -465,9 +465,6 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
 
         var response = await Client.ExecuteWithHandling<ResponseWrapper<IEnumerable<UpdateSourceResponse>>>(request);
 
-        if (response.Content == null)
-            throw new PluginApplicationException("Response content from server is null. Please check the API response try again.");
-
         return response.Content.First();
     }
 

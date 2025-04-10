@@ -108,8 +108,8 @@ public class PhraseTmsClient : RestClient
 
     private Exception ConfigureErrorException(RestResponse restResponse)
     {
-        if (restResponse.Content == null)
-            throw new PluginApplicationException(restResponse.ErrorMessage);
+        if (restResponse.Content == null || !restResponse.Content.Any())
+            throw new PluginApplicationException("Response content from server is empty. Please check the API response and try again");
 
         Error? error;
         try
