@@ -459,9 +459,9 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
 
         request.AddParameter("application/octet-stream", fileBytes, ParameterType.RequestBody);
 
-        var response = await Client.ExecuteWithHandling<ResponseWrapper<IEnumerable<UpdateSourceResponse>>>(request);
+        var response = await Client.ExecuteWithHandling<UpdateSourceResponse>(request);
 
-        return response.Content.First();
+        return response.Jobs.First();
     }
 
 

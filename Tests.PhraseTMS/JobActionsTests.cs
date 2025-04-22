@@ -55,8 +55,8 @@ namespace Tests.PhraseTMS
         public async Task Create_jobs_works()
         {
             var action = new JobActions(InvocationContext, FileManager);
-            var projectRequest = new ProjectRequest { ProjectUId = PROJECT_ID };
-            var input2 = new CreateJobsRequest {  File = new Blackbird.Applications.Sdk.Common.Files.FileReference { Name = "test.html" } };
+            var projectRequest = new ProjectRequest { ProjectUId = "FwDrhxXNmSU15GNJiDVvQ7" };
+            var input2 = new CreateJobsRequest {  File = new Blackbird.Applications.Sdk.Common.Files.FileReference { Name = "Crowdin.txt" } };
 
             var result = await action.CreateJobs(projectRequest, input2);
 
@@ -71,7 +71,7 @@ namespace Tests.PhraseTMS
             var action = new JobActions(InvocationContext, FileManager);
             var projectRequest = new ProjectRequest { ProjectUId = "FwDrhxXNmSU15GNJiDVvQ7" };
             var input2 = new CreateJobRequest { 
-                File = new Blackbird.Applications.Sdk.Common.Files.FileReference { Name = "[US] Toast Go® 2_en.html" } ,
+                File = new Blackbird.Applications.Sdk.Common.Files.FileReference { Name = "Crowdin.txt" } ,
                 TargetLanguage = "de",
             };
 
@@ -88,9 +88,9 @@ namespace Tests.PhraseTMS
         public async Task UpdateSource_ValidData_Success()
         {
             var action = new JobActions(InvocationContext, FileManager);
-            var input1 = new ProjectRequest { ProjectUId = "dmXznxlJx790symN3ig5d7" };
+            var input1 = new ProjectRequest { ProjectUId = "FwDrhxXNmSU15GNJiDVvQ7" };
             var jobs = new List<string>();
-            jobs.Add("4zzCMHNX49pVbdSfJXw7Q1");
+            jobs.Add("nc6TRX9h3upSeZV0177xF5");
 
             var input2 = new UpdateSourceRequest { 
                 File = new Blackbird.Applications.Sdk.Common.Files.FileReference { Name = "test.txt" }, 
