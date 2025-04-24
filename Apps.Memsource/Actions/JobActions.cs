@@ -161,6 +161,13 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] CreateJobsRequest input)
     {
+        var fileName = input.File.Name;
+        string fileNameForHeader = fileName;
+        if (!IsOnlyAscii(fileName))
+        {
+            fileNameForHeader = Uri.EscapeDataString(fileName);
+        }
+
         if (string.IsNullOrWhiteSpace(projectRequest.ProjectUId))
         {
             throw new PluginMisconfigurationException("Project ID is not provided. Please specify a valid Project ID.");
@@ -180,21 +187,18 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
 
         var request = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs", Method.Post);
 
-        var output = JsonConvert.SerializeObject(new
+        var bodyJson = JsonConvert.SerializeObject(new
         {
             targetLangs = input.TargetLanguages,
             preTranslate = input.preTranslate ?? false,
             useProjectFileImportSettings = input.useProjectFileImportSettings ?? true,
-            due = input.DueDate ?? null,
+            due = input.DueDate
         });
 
-        var headers = new Dictionary<string, string>()
-        {
-            { "Memsource", output },
-            { "Content-Disposition", $"filename*=UTF-8''{input.File.Name}" },
-            { "Content-Type", "application/octet-stream" },
-        };
-        headers.ToList().ForEach(x => request.AddHeader(x.Key, x.Value));
+        request
+         .AddHeader("Memsource", bodyJson)
+         .AddHeader("Content-Disposition", $"filename*=UTF-8''{fileNameForHeader}")
+         .AddHeader("Content-Type", "application/octet-stream");
 
         var fileStream = await fileManagementClient.DownloadAsync(input.File);
         using (var memoryStream = new MemoryStream())
