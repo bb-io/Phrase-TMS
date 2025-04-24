@@ -423,7 +423,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
     }
 
     [Action("Upload job source file", Description = "Upload and update the job source file in the project")]
-    public async Task<UpdateSourceResponse> UpdateSource(
+    public async Task<UpdateSourceJob> UpdateSource(
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] UpdateSourceRequest input)
     {
@@ -466,7 +466,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
 
         var response = await Client.ExecuteWithHandling<UpdateSourceResponse>(request);
 
-        return response.Jobs.First();
+        return response.Jobs.FirstOrDefault();
     }
 
 
