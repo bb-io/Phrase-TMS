@@ -14,7 +14,7 @@ namespace Tests.PhraseTMS
     [TestClass]
     public class ProjectActionsTests : TestBase
     {
-        public const string PROJECT_ID = "hGStrg0MLYmQtG0f66mj6f";
+        public const string PROJECT_ID = "ayB1FFffK7hD0AXUAX9cPa";//"hGStrg0MLYmQtG0f66mj6f";
 
         [TestMethod]
         public async Task CreateProject_ValidData_Success()

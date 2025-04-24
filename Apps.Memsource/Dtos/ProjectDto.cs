@@ -59,6 +59,10 @@ public class ProjectDto
     [Display("Is published on job board?")]
     [JsonProperty("isPublishedOnJobBoard")]
     public string IsPublishedOnJobBoard { get; set; }
+
+    [DefinitionIgnore]
+    [JsonProperty("workflowSteps")]
+    public IEnumerable<WorkflowStep> WorkflowSteps { get; set; }
 }
 
 public class Domain
@@ -110,4 +114,20 @@ public class Progress
 
     [Display("Overdue count")]
     public double OverdueCount { get; set; }
+}
+
+public class WorkflowStep
+{
+    public string Name { get; set; }
+
+    [DefinitionIgnore]
+    [JsonProperty("workflowStep")]
+    public InnerWorkflowStep InnerWorkflowStep { get; set; }
+
+    public int WorkflowLevel { get; set; }
+}
+
+public class InnerWorkflowStep
+{
+    public string Id { get; set; }
 }

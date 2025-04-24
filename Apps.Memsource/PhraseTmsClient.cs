@@ -1,4 +1,5 @@
-﻿using Apps.PhraseTMS.Dtos.Async;
+﻿using Apps.PhraseTMS.Dtos;
+using Apps.PhraseTMS.Dtos.Async;
 using Apps.PhraseTMS.Models;
 using Apps.PhraseTMS.Models.Responses;
 using Blackbird.Applications.Sdk.Common.Authentication;
@@ -147,5 +148,15 @@ public class PhraseTmsClient : RestClient
         if (error.ErrorDescription.Contains("contains unsupported locale."))
             throw new PluginMisconfigurationException(error.ErrorDescription);
         throw new PluginApplicationException(error.ErrorDescription);
+    }
+
+    public async Task<int> GetWorkflowstepLevel(string projectId, string workflowStepId)
+    {
+        var request = new RestRequest($"/api2/v1/projects/{projectId}", Method.Get);
+        var response = await ExecuteWithHandling<ProjectDto>(request);
+        if (response.WorkflowSteps.Count() == 0) return 1;
+        var workflow = response.WorkflowSteps.FirstOrDefault(x => x.InnerWorkflowStep.Id == workflowStepId);
+        if (workflow == null) throw new PluginMisconfigurationException("The workflow step selected does not exist on the current project. Please select an existing workflow step or leave this input empty.");
+        return workflow.WorkflowLevel;
     }
 }

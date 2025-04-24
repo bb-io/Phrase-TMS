@@ -1,4 +1,5 @@
 using System.Data;
+using System.Linq;
 using System.Net;
 using Apps.PhraseTMS.DataSourceHandlers;
 using Apps.PhraseTMS.Dtos;
@@ -19,9 +20,12 @@ using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.Sdk.Common.Webhooks;
+using Blackbird.Applications.Sdk.Utils.Extensions.String;
+using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Newtonsoft.Json;
 using RestSharp;
+using static Apps.PhraseTMS.Webhooks.WebhookList;
 
 namespace Apps.PhraseTMS.Webhooks;
 
@@ -252,7 +256,6 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         public IEnumerable<JobDto> Jobs { get; set; }
     }
 
-
     [Webhook("On jobs created", typeof(JobCreationHandler), Description = "Triggered when new jobs are created")]
     public async Task<WebhookResponse<MultipleJobResponse>> JobCreation(WebhookRequest webhookRequest)
     {
@@ -368,24 +371,30 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
     [Webhook("On job status changed", typeof(JobStatusChangedHandler), Description = "On any job status changed")]
     public async Task<WebhookResponse<JobResponse>> JobStatusChanged(WebhookRequest webhookRequest,
         [WebhookParameter] JobStatusChangedRequest request,
-        [WebhookParameter] ProjectOptionalRequest projectOptionalRequest,
+        //[WebhookParameter] ProjectOptionalRequest projectOptionalRequest,
         [WebhookParameter] OptionalJobRequest job,
-        [WebhookParameter] [Display("Workflow level (number of step)")]
-        string? step,
-        [WebhookParameter] [Display("Last workflow level?")]
-        bool? lastWorkflowLevel,
+        [WebhookParameter] WorkflowStepOptionalRequest workflowStepRequest,
+        [WebhookParameter] OptionalSourceFileIdRequest sourceFileId,
+        [WebhookParameter] OptionalSearchJobsQuery jobsQuery,
+        //[WebhookParameter] [Display("Workflow level (number of step)")] string? step,
+        //[WebhookParameter] [Display("Last workflow level?")] bool? lastWorkflowLevel,
         [WebhookParameter][Display("Project name contains")] string? projectNameContains)
     {
-        if (job != null && projectOptionalRequest == null)
-        {
-            throw new PluginMisconfigurationException("If Job ID is specified in the inputs so must be project ID");
-        }
+        //if (job?.JobUId != null && projectOptionalRequest?.ProjectUId == null)
+        //{
+        //    throw new PluginMisconfigurationException("If Job ID is specified in the inputs you must also specify the Project ID");
+        //}
 
-        if (!String.IsNullOrEmpty(step) && lastWorkflowLevel.HasValue && lastWorkflowLevel.Value)
-        {
-            throw new PluginMisconfigurationException(
-                "Provide either a specifc workflow step or set last workflow level as true, not both");
-        }
+        //if (sourceFileId?.SourceFileId != null && projectOptionalRequest?.ProjectUId == null)
+        //{
+        //    throw new PluginMisconfigurationException("If Source file ID is specified in the inputs you must also specify the Project ID");
+        //}
+
+        //if (!String.IsNullOrEmpty(step) && lastWorkflowLevel.HasValue && lastWorkflowLevel.Value)
+        //{
+        //    throw new PluginMisconfigurationException(
+        //        "Provide either a specifc workflow step or set last workflow level as true, not both");
+        //}
 
         var data = JsonConvert.DeserializeObject<JobStatusChangedWrapper>(webhookRequest.Body.ToString());
         if (data is null)
@@ -403,76 +412,124 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             };
         }
 
-        bool hasStatus = request?.Status != null && request?.Status.Count() > 0;
-        bool hasJob = !string.IsNullOrEmpty(job.JobUId);
-        var jobData = new JobData();
-        if (!string.IsNullOrEmpty(job.JobUId) && !string.IsNullOrEmpty(projectOptionalRequest.ProjectUId))
+        var projectId = data.metadata.project.Uid;
+
+        //bool hasStatus = request?.Status != null && request?.Status.Count() > 0;
+        //bool hasJob = !string.IsNullOrEmpty(job.JobUId);
+        //var jobData = new JobData();
+        IEnumerable<JobPart> selectedJobs = data.JobParts;
+        if (!string.IsNullOrEmpty(job.JobUId) && !string.IsNullOrEmpty(projectId))
         {
-            var apirequest = new RestRequest($"/api2/v1/projects/{projectOptionalRequest.ProjectUId}/jobs/{job.JobUId}", Method.Get);
-            jobData = await Client.ExecuteWithHandling<JobData>(apirequest);
+            selectedJobs = data.JobParts.Where(x => x.Uid == job.JobUId);
 
+            //var apirequest = new RestRequest($"/api2/v1/projects/{projectOptionalRequest.ProjectUId}/jobs/{job.JobUId}", Method.Get);
+            //jobData = await Client.ExecuteWithHandling<JobData>(apirequest);
 
-            if (lastWorkflowLevel.HasValue && lastWorkflowLevel.Value)
-            {
-                step = jobData.LastWorkflowLevel.ToString();
-            }
+            //if (lastWorkflowLevel.HasValue && lastWorkflowLevel.Value)
+            //{
+            //    step = jobData.LastWorkflowLevel.ToString();
+            //}
         }
 
-        bool hasWorkflowStep = !string.IsNullOrEmpty(step);
-        bool lastStep = lastWorkflowLevel.HasValue && lastWorkflowLevel.Value;
+        if (!string.IsNullOrEmpty(sourceFileId.SourceFileId) && !string.IsNullOrEmpty(projectId))
+        {
+            if (workflowStepRequest.WorkflowStepId != null)
+            {
+                jobsQuery.WorkflowLevel = await Client.GetWorkflowstepLevel(projectId, workflowStepRequest.WorkflowStepId);
+            }
+            var endpoint = $"/api2/v2/projects/{projectId}/jobs";
+            var listJobsRequest = new RestRequest(endpoint.WithQuery(jobsQuery), Method.Get);
+            var listJobsResponse = await Client.Paginate<ListJobDto>(listJobsRequest);
+            var filteredJobIds = listJobsResponse.Where(x => x.SourceFileUid == sourceFileId.SourceFileId).Select(x => x.Uid);
+            selectedJobs = data.JobParts.IntersectBy(filteredJobIds, x => x.Uid);
+        }
 
-        if (!hasStatus && !hasJob && !hasWorkflowStep && !lastStep)
+        if (request?.Status != null && request?.Status.Count() > 0)
+        {
+            selectedJobs = selectedJobs.Where(x => request.Status.Contains(x.Status));
+        }
+
+        var selectedJob = selectedJobs.FirstOrDefault();
+
+        if (selectedJob == null)
         {
             return new()
             {
                 HttpResponseMessage = null,
-                Result = new()
-                {
-                    Uid = data.JobParts.FirstOrDefault().Uid,
-                    Status = data.JobParts.FirstOrDefault().Status,
-                    ProjectUid = data.metadata.project.Uid,
-                    ProjectName = data.metadata.project.Name,
-                    Filename = data.JobParts.FirstOrDefault().FileName,
-                    TargetLanguage = data.JobParts.FirstOrDefault().TargetLang
-                }
+                Result = null,
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight
             };
         }
 
+        return new WebhookResponse<JobResponse>
+        {
+            HttpResponseMessage = null,
+            Result = new()
+            {
+                Uid = selectedJob.Uid,
+                Status = selectedJob.Status,
+                ProjectUid = selectedJob.Project.Uid,
+                Filename = selectedJob.FileName,
+                TargetLanguage = selectedJob.TargetLang,
+                ProjectName = data.metadata.project.Name
+            }
+        };
+
+        //bool hasWorkflowStep = !string.IsNullOrEmpty(step);
+        //bool lastStep = lastWorkflowLevel.HasValue && lastWorkflowLevel.Value;
+
+        //if (!hasStatus && !hasJob && !hasWorkflowStep && !lastStep)
+        //{
+        //    return new()
+        //    {
+        //        HttpResponseMessage = null,
+        //        Result = new()
+        //        {
+        //            Uid = data.JobParts.FirstOrDefault().Uid,
+        //            Status = data.JobParts.FirstOrDefault().Status,
+        //            ProjectUid = data.metadata.project.Uid,
+        //            ProjectName = data.metadata.project.Name,
+        //            Filename = data.JobParts.FirstOrDefault().FileName,
+        //            TargetLanguage = data.JobParts.FirstOrDefault().TargetLang
+        //        }
+        //    };
+        //}
+
         var result = new WebhookResponse<JobResponse>();
 
-        switch ((hasStatus, hasJob, hasWorkflowStep, lastStep))
-        {
-            case (true, true, true, true):
-            case (true, true, true, false):
-                result = await HandleFullData(data.JobParts, request.Status, jobData, step);
-                break;
-            case (true, true, false, false):
-                result = HandleStatusJobOnly(data.JobParts, request.Status, jobData);
-                break;
-            case (true, false, false, true):
-                result = HandleStatusLastStep(data.JobParts, request.Status);
-                break;
-            case (true, false, true, false):
-                result = HandleStatusStepOnly(data.JobParts, request.Status, step);
-                break;
-            case (true, false, false, false):
-                result = HandleStatusOnly(data.JobParts, request.Status);
-                break;
-            case (false, true, true, true):
-            case (false, true, true, false):
-                result = await HandleJobStep(data.JobParts, jobData, step);
-                break;
-            case (false, true, false, false):
-                result = HandleJobOnly(data.JobParts, jobData);
-                break;
-            case (false, false, false, true):
-                result = HandleOnlyLastStep(data.JobParts);
-                break;
-            case (false, false, true, false):
-                result = HandleStepOnly(data.JobParts, step);
-                break;
-            default: throw new InvalidOperationException("Unexpected case encountered");
-        }
+        //switch ((hasStatus, hasJob, hasWorkflowStep, lastStep))
+        //{
+        //    case (true, true, true, true):
+        //    case (true, true, true, false):
+        //        result = await HandleFullData(data.JobParts, request.Status, jobData, step);
+        //        break;
+        //    case (true, true, false, false):
+        //        result = HandleStatusJobOnly(data.JobParts, request.Status, jobData);
+        //        break;
+        //    case (true, false, false, true):
+        //        result = HandleStatusLastStep(data.JobParts, request.Status);
+        //        break;
+        //    case (true, false, true, false):
+        //        result = HandleStatusStepOnly(data.JobParts, request.Status, step);
+        //        break;
+        //    case (true, false, false, false):
+        //        result = HandleStatusOnly(data.JobParts, request.Status);
+        //        break;
+        //    case (false, true, true, true):
+        //    case (false, true, true, false):
+        //        result = await HandleJobStep(data.JobParts, jobData, step);
+        //        break;
+        //    case (false, true, false, false):
+        //        result = HandleJobOnly(data.JobParts, jobData);
+        //        break;
+        //    case (false, false, false, true):
+        //        result = HandleOnlyLastStep(data.JobParts);
+        //        break;
+        //    case (false, false, true, false):
+        //        result = HandleStepOnly(data.JobParts, step);
+        //        break;
+        //    default: throw new InvalidOperationException("Unexpected case encountered");
+        //}
 
         if (result.Result != null)
         {

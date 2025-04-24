@@ -2,10 +2,10 @@
   "jobParts": [
     {
       "id": 2790819,
-      "uid": "WRZha0uJNtgssOTzlujHh7",
+      "uid": "f0SeyVX72ri5diSoDEWAg3",
       "internalId": "1",
       "task": "DYUA0BGUhKcb3oVP0_dc2",
-      "fileName": "When it comes to writing an essay.docx",
+      "fileName": "test.txt",
       "targetLang": "de",
       "workflowLevel": 1,
       "status": "ASSIGNED",
@@ -16,7 +16,7 @@
       "dateCreated": "2025-03-07T14:24:21Z",
       "project": {
         "id": 1519158,
-        "uid": "hGStrg0MLYmQtG0f66mj6f",
+        "uid": "ayB1FFffK7hD0AXUAX9cPa",
         "lastWorkflowLevel": 1
       },
       "assignedTo": []
@@ -25,7 +25,7 @@
   "metadata": {
     "project": {
       "id": 1519158,
-      "uid": "hGStrg0MLYmQtG0f66mj6f",
+      "uid": "ayB1FFffK7hD0AXUAX9cPa",
       "name": "Single document mulitple languages",
       "sourceLang": "en",
       "status": "NEW",

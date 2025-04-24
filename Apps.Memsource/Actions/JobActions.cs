@@ -31,8 +31,13 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         [ActionParameter] ProjectRequest input,
         [ActionParameter] ListAllJobsQuery query,
         [ActionParameter] JobStatusesRequest jobStatusesRequest,
+        [ActionParameter] WorkflowStepOptionalRequest workflowStepRequest,
         [ActionParameter] [Display("LQA Score null?")] bool? LQAScorenull)
     {
+        if (workflowStepRequest.WorkflowStepId != null)
+        {
+            query.WorkflowLevel = await Client.GetWorkflowstepLevel(input.ProjectUId, workflowStepRequest.WorkflowStepId);
+        }
         var endpoint = $"/api2/v2/projects/{input.ProjectUId}/jobs";
         var request = new RestRequest(endpoint.WithQuery(query), Method.Get);
         try
@@ -92,7 +97,8 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         return await Client.ExecuteWithHandling<JobDto>(request);
     }
 
-    [Action("Create job", Description = "Create a new job from a file upload")]
+    // Should be removed in a couple of updates when people adjust.
+    [Action("Create job (deprecated)", Description = "Will be removed in a future version. Use 'Upload source file (create jobs)' instead.")]
     public async Task<CreatedJobDto> CreateJob(
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] CreateJobRequest input)
@@ -154,12 +160,11 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         return jobs.Jobs.FirstOrDefault();
     }
 
-    [Action("Create jobs", Description = "Create jobs for multiple target languages")]
+    [Action("Upload source file (create jobs)", Description = "Given a new file, create jobs for the different workflow steps and target languages")]
     public async Task<JobResponseWrapper> CreateJobs(
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] CreateJobsRequest input)
     {
-
         if (string.IsNullOrWhiteSpace(projectRequest.ProjectUId))
         {
             throw new PluginMisconfigurationException("Project ID is not provided. Please specify a valid Project ID.");

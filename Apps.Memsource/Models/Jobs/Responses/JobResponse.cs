@@ -14,7 +14,8 @@ public class JobResponse
     [Display("Project name")]
     public string ProjectName { get; set; } = string.Empty;
 
-    [Display("File name")] public string Filename { get; set; }
+    [Display("File name")] 
+    public string Filename { get; set; }
 
     public string Status { get; set; } = string.Empty;
 

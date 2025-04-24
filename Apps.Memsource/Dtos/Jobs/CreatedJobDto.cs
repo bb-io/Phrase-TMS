@@ -30,10 +30,6 @@ public class CreatedJobDto
     [JsonProperty("workflowStep")]
     public WorkflowStepDto WorkflowStep { get; set; }
 
-    [Display("File name")]
-    [JsonProperty("filename")]
-    public string Filename { get; set; }
-
     [Display("Created date")]
     [JsonProperty("dateCreated")]
     public DateTime DateCreated { get; set; }
@@ -45,6 +41,10 @@ public class CreatedJobDto
     [Display("Continuous")]
     [JsonProperty("continuous")]
     public bool Continuous { get; set; }
+
+    [Display("File name")]
+    [JsonProperty("filename")]
+    public string Filename { get; set; }
 
     [Display("Source file ID")]
     [JsonProperty("sourceFileUid")]

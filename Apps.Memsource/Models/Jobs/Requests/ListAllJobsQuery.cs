@@ -9,13 +9,10 @@ namespace Apps.PhraseTMS.Models.Jobs.Requests;
 
 public class ListAllJobsQuery
 {
-    [Display("Count"), JsonProperty("count")]
-    public bool? Count { get; set; }
-
-    [Display("Workflow level"), JsonProperty("workflowLevel")]
+    [DefinitionIgnore, JsonProperty("workflowLevel")]
     public int? WorkflowLevel { get; set; }
 
-    [Display("Assigned user"), JsonProperty("assignedUser")]
+    [Display("Assigned user ID"), JsonProperty("assignedUser")]
     public int? AssignedUser { get; set; }
 
     [Display("Due in hours"), JsonProperty("dueInHours")]
@@ -28,6 +25,6 @@ public class ListAllJobsQuery
     [DataSource(typeof(LanguageDataHandler))]
     public string? TargetLang { get; set; }
 
-    [Display("Assigned vendor"), JsonProperty("assignedVendor")]
+    [Display("Assigned vendor ID"), JsonProperty("assignedVendor")]
     public int? AssignedVendor { get; set; }
 }
