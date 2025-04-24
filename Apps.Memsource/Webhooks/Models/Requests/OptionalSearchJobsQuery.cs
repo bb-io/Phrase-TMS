@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Apps.PhraseTMS.Webhooks.Models.Requests;
 public class OptionalSearchJobsQuery
 {
-    [DefinitionIgnore, JsonProperty("workflowLevel")]
+    [Display("Workflow level"), JsonProperty("workflowLevel")]
     public int? WorkflowLevel { get; set; }
 
     [Display("Target language"), JsonProperty("targetLang")]

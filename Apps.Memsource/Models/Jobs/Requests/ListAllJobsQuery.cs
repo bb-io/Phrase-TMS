@@ -9,7 +9,7 @@ namespace Apps.PhraseTMS.Models.Jobs.Requests;
 
 public class ListAllJobsQuery
 {
-    [DefinitionIgnore, JsonProperty("workflowLevel")]
+    [Display("Workflow level"), JsonProperty("workflowLevel")]
     public int? WorkflowLevel { get; set; }
 
     [Display("Assigned user ID"), JsonProperty("assignedUser")]
