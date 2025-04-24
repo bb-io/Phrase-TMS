@@ -34,12 +34,13 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         [ActionParameter] WorkflowStepOptionalRequest workflowStepRequest,
         [ActionParameter] [Display("LQA Score null?")] bool? LQAScorenull)
     {
-        if (workflowStepRequest.WorkflowStepId != null)
-        {
-            query.WorkflowLevel = await Client.GetWorkflowstepLevel(input.ProjectUId, workflowStepRequest.WorkflowStepId);
-        }
         var endpoint = $"/api2/v2/projects/{input.ProjectUId}/jobs";
         var request = new RestRequest(endpoint.WithQuery(query), Method.Get);
+        if (workflowStepRequest.WorkflowStepId != null)
+        {
+            var workflowLevel = await Client.GetWorkflowstepLevel(input.ProjectUId, workflowStepRequest.WorkflowStepId);
+            request.AddQueryParameter("workflowLevel", workflowLevel);
+        }
         try
         {
             var response = await Client.Paginate<ListJobDto>(request);
@@ -91,10 +92,46 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
     [Action("Get job", Description = "Get all job information for a specific job")]
     public async Task<JobDto> GetJob(
         [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] JobRequest input)
+        [ActionParameter] JobRequest input
+        )
     {
         var request = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/{input.JobUId}", Method.Get);
         return await Client.ExecuteWithHandling<JobDto>(request);
+    }
+
+    [Action("Find job from source file ID", Description = "Given a source file ID, a workflow step ID and a language, returns the job.")]
+    public async Task<JobDto> FindJob(
+        [ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] [Display("Source file ID")] string sourceFileId,
+        [ActionParameter] WorkflowStepRequest workflowStepRequest,
+        [ActionParameter] TargetLanguageRequest targetLanguage
+        )
+    {
+        var request = new RestRequest($"/api2/v2/projects/{projectRequest.ProjectUId}/jobs", Method.Get);
+        var workflowLevel = await Client.GetWorkflowstepLevel(projectRequest.ProjectUId, workflowStepRequest.WorkflowStepId);
+        request.AddQueryParameter("workflowLevel", workflowLevel);
+        request.AddQueryParameter("targetLang", targetLanguage.TargetLang);
+
+        try
+        {
+            var response = await Client.Paginate<ListJobDto>(request);
+            var job = response.FirstOrDefault(x => x.SourceFileUid == sourceFileId);
+            if (job == null) return new JobDto();
+
+            var jobRequest = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/{job.Uid}", Method.Get);
+
+            return await Client.ExecuteWithHandling<JobDto>(jobRequest);
+        }
+        catch (Exception e)
+        {
+            if (e.Message.Contains("Invalid parameters") || e.Message.Contains("The object referenced by the field") ||
+                e.Message.Contains("unsupported locale"))
+            {
+                throw new PluginMisconfigurationException(e.Message + "Make sure that the input values are correct.");
+            }
+
+            throw new PluginApplicationException(e.Message);
+        }        
     }
 
     // Should be removed in a couple of updates when people adjust.

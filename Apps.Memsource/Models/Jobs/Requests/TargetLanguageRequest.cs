@@ -1,6 +1,7 @@
 ﻿using Apps.PhraseTMS.DataSourceHandlers;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Dynamic;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +9,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Apps.PhraseTMS.Models.Jobs.Requests;
-public class WorkflowStepRequest
+public class TargetLanguageRequest
 {
-    [Display("Workflow step ID")]
-    [DataSource(typeof(WorkflowStepDataHandler))]
-    public string WorkflowStepId { get; set; }
+    [Display("Target language")]
+    [DataSource(typeof(LanguageDataHandler))]
+    public string TargetLang { get; set; }
 }

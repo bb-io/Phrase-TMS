@@ -2,13 +2,13 @@
   "jobParts": [
     {
       "id": 2790819,
-      "uid": "Xf4co78NfSoS0WqhM7hJO2",
+      "uid": "ZPOrUDCBjQWp3JizfMevi0",
       "internalId": "1",
       "task": "DYUA0BGUhKcb3oVP0_dc2",
       "fileName": "test.txt",
       "targetLang": "de",
       "workflowLevel": 1,
-      "status": "ASSIGNED",
+      "status": "COMPLETED",
       "wordsCount": 347,
       "beginIndex": 0,
       "endIndex": 25,

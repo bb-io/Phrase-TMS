@@ -76,8 +76,9 @@ Custom fields are associated with a specific type, e.g. date, number, text, etc.
 
 - **Search jobs** returns a list of jobs in the project based on specified parameters
 - **Get job** get all job information for a specific job
-- **Create job** create a new job from a file upload. This action only takes a single target language and will return a single job.
-- **Create jobs** create jobs for multiple target languages. This action will return multiple jobs as its output.
+- **Create job** == DEPRECATED == will be removed in a future update. Use the action below.
+- **Upload source file (create jobs)** uploads a source file to the project and creates relevant jobs for these files. This action will return multiple jobs as its output. It will also return a single Source file ID. See instructions below on how to use this in combination with 'On job status changed'.
+- **Find job from source file ID** given a source file ID, a workflow step ID and a language, returns the job.
 - **Delete job** deletes jobs from a project
 - **Update job** Update a job's global data
 - **Pre-translate job** pre-translate a job in the project
@@ -169,7 +170,7 @@ The following actions update a job's file (source or target) from their original
 - **On jobs due date changed** Triggered when the due date of jobs are changed
 - **On jobs exported** Triggered when any jobs are exported
 - **On jobs source updated** Triggered when the source file of the jobs are updated
-- **On job status changed** If you are using checkpoints, please fill all optional inputs (including Project ID). It will work even without a specified Project ID, but using it will allow us to check if the job already has the specified status. The status "Completed by linguist" will also trigger the event if the optional status "Completed" is set.
+- **On job status changed** If you are using checkpoints, please fill all optional inputs (including Project ID). It will work even without a specified Project ID, but using it will allow us to check if the job already has the specified status. The status "Completed by linguist" will also trigger the event if the optional status "Completed" is set. In a checkpoint it works with either "Job ID" or "Source file ID" in combination with the workflow step or last workflow step. For more details see below.
 - **On job target updated** Triggered when a job's target has been updated
 - **On jobs unexported** Triggered when jobs are exported
 - **On all jobs in workflow step reached status** Triggered when all jobs in a specific workflow step reach a specified status. Returns only jobs in the specified workflow step

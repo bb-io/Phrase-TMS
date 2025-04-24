@@ -159,4 +159,12 @@ public class PhraseTmsClient : RestClient
         if (workflow == null) throw new PluginMisconfigurationException("The workflow step selected does not exist on the current project. Please select an existing workflow step or leave this input empty.");
         return workflow.WorkflowLevel;
     }
+
+    public async Task<int> GetLastWorkflowstepLevel(string projectId)
+    {
+        var request = new RestRequest($"/api2/v1/projects/{projectId}", Method.Get);
+        var response = await ExecuteWithHandling<ProjectDto>(request);
+        if (response.WorkflowSteps.Count() == 0) return 1;
+        return response.WorkflowSteps.Select(x => x.WorkflowLevel).Max();
+    }
 }

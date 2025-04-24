@@ -8,9 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Apps.PhraseTMS.Models.Jobs.Requests;
-public class WorkflowStepRequest
+public class WorkflowStepOptionalRequest
 {
     [Display("Workflow step ID")]
     [DataSource(typeof(WorkflowStepDataHandler))]
-    public string WorkflowStepId { get; set; }
+    public string? WorkflowStepId { get; set; }
 }

@@ -56,6 +56,20 @@ namespace Tests.PhraseTMS
         }
 
         [TestMethod]
+        public async Task Find_job_works()
+        {
+            var action = new JobActions(InvocationContext, FileManager);
+            var projectRequest = new ProjectRequest { ProjectUId = PROJECT_ID };
+
+            var result = await action.FindJob(projectRequest, "xQ2nG9N9BfHQ9ZerhQkjv3", new WorkflowStepRequest { WorkflowStepId = "7447" }, new TargetLanguageRequest { TargetLang = "de" });
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.Uid);
+
+            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+        }
+
+        [TestMethod]
         public async Task Create_jobs_works()
         {
             var action = new JobActions(InvocationContext, FileManager);
