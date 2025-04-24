@@ -104,11 +104,10 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         [ActionParameter] CreateJobRequest input)
     {
         var fileName = input.File.Name;
+        string fileNameForHeader = fileName;
         if (!IsOnlyAscii(fileName))
         {
-            throw new PluginMisconfigurationException(
-                $"The file name '{fileName}' contains non-ASCII characters. " +
-                "Phrase TMS API requires ASCII-only characters. Please rename the file and try again.");
+            fileNameForHeader = Uri.EscapeDataString(fileName);
         }
 
 
@@ -124,21 +123,18 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
 
         var request = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs", Method.Post);
 
-        var output = JsonConvert.SerializeObject(new
+        var bodyJson = JsonConvert.SerializeObject(new
         {
             targetLangs = new List<string> { input.TargetLanguage },
             preTranslate = input.preTranslate ?? false,
             useProjectFileImportSettings = input.useProjectFileImportSettings ?? true,
-            due = input.DueDate ?? null,
+            due = input.DueDate
         });
 
-        var headers = new Dictionary<string, string>()
-        {
-            { "Memsource", output },
-            { "Content-Disposition", $"filename*=UTF-8''{input.File.Name}" },
-            { "Content-Type", "application/octet-stream" },
-        };
-        headers.ToList().ForEach(x => request.AddHeader(x.Key, x.Value));
+        request
+         .AddHeader("Memsource", bodyJson)
+         .AddHeader("Content-Disposition", $"filename*=UTF-8''{fileNameForHeader}")
+         .AddHeader("Content-Type", "application/octet-stream");
 
         var fileStream = await fileManagementClient.DownloadAsync(input.File);
         using (var memoryStream = new MemoryStream())
@@ -468,9 +464,9 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
 
         request.AddParameter("application/octet-stream", fileBytes, ParameterType.RequestBody);
 
-        var response = await Client.ExecuteWithHandling<ResponseWrapper<IEnumerable<UpdateSourceResponse>>>(request);
+        var response = await Client.ExecuteWithHandling<UpdateSourceResponse>(request);
 
-        return response.Content.First();
+        return response.Jobs.First();
     }
 
 
