@@ -120,7 +120,6 @@ public class WorkflowStep
 {
     public string Name { get; set; }
 
-    [DefinitionIgnore]
     [JsonProperty("workflowStep")]
     public InnerWorkflowStep InnerWorkflowStep { get; set; }
 

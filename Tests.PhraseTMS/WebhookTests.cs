@@ -33,6 +33,7 @@ public class WebhookTests : TestBase
         var result = await events.JobStatusChanged(
             CreateWebhookRequest("job_status_changed.json"),
             new JobStatusChangedRequest { },
+            new ProjectOptionalRequest { ProjectUId = "ayB1FFffK7hD0AXUAX9cPa" },
             new OptionalJobRequest { },
             new WorkflowStepOptionalRequest { },
             new OptionalSourceFileIdRequest { },
@@ -52,6 +53,7 @@ public class WebhookTests : TestBase
         var result = await events.JobStatusChanged(
             CreateWebhookRequest("job_status_changed.json"), 
             new JobStatusChangedRequest { },
+            new ProjectOptionalRequest { ProjectUId = "ayB1FFffK7hD0AXUAX9cPa" },
             new OptionalJobRequest { JobUId = "Xf4co78NfSoS0WqhM7hJO2" },
             new WorkflowStepOptionalRequest { },
             new OptionalSourceFileIdRequest { },
@@ -71,6 +73,7 @@ public class WebhookTests : TestBase
         var result = await events.JobStatusChanged(
             CreateWebhookRequest("job_status_changed.json"),
             new JobStatusChangedRequest { Status = new List<string> { "ASSIGNED" } },
+            new ProjectOptionalRequest { ProjectUId = "ayB1FFffK7hD0AXUAX9cPa" },
             new OptionalJobRequest { JobUId = "Xf4co78NfSoS0WqhM7hJO2" },
             new WorkflowStepOptionalRequest { },
             new OptionalSourceFileIdRequest { },
@@ -90,6 +93,7 @@ public class WebhookTests : TestBase
         var result = await events.JobStatusChanged(
             CreateWebhookRequest("job_status_changed.json"),
             new JobStatusChangedRequest { Status = new List<string> { "NEW" } },
+            new ProjectOptionalRequest { ProjectUId = "ayB1FFffK7hD0AXUAX9cPa" },
             new OptionalJobRequest { JobUId = "Xf4co78NfSoS0WqhM7hJO2" },
             new WorkflowStepOptionalRequest { },
             new OptionalSourceFileIdRequest { },
@@ -109,6 +113,7 @@ public class WebhookTests : TestBase
         var result = await events.JobStatusChanged(
             CreateWebhookRequest("job_status_changed.json"),
             new JobStatusChangedRequest { },
+            new ProjectOptionalRequest { ProjectUId = "ayB1FFffK7hD0AXUAX9cPa" },
             new OptionalJobRequest { },
             new WorkflowStepOptionalRequest { },
             new OptionalSourceFileIdRequest { SourceFileId = "FsOS4nBlkjal8tLN3EKcP1" },
@@ -128,6 +133,7 @@ public class WebhookTests : TestBase
         var result = await events.JobStatusChanged(
             CreateWebhookRequest("job_status_changed.json"),
             new JobStatusChangedRequest { },
+            new ProjectOptionalRequest { ProjectUId = "ayB1FFffK7hD0AXUAX9cPa" },
             new OptionalJobRequest { },
             new WorkflowStepOptionalRequest { },
             new OptionalSourceFileIdRequest { SourceFileId = "WRONG" },
@@ -147,6 +153,7 @@ public class WebhookTests : TestBase
         var result = await events.JobStatusChanged(
             CreateWebhookRequest("job_status_changed.json"),
             new JobStatusChangedRequest { },
+            new ProjectOptionalRequest { ProjectUId = "ayB1FFffK7hD0AXUAX9cPa" },
             new OptionalJobRequest { },
             new WorkflowStepOptionalRequest { WorkflowStepId = "7447" },
             new OptionalSourceFileIdRequest { SourceFileId = "FsOS4nBlkjal8tLN3EKcP1" },
@@ -166,6 +173,7 @@ public class WebhookTests : TestBase
         var result = await events.JobStatusChanged(
             CreateWebhookRequest("job_status_changed.json"),
             new JobStatusChangedRequest { },
+            new ProjectOptionalRequest { ProjectUId = "ayB1FFffK7hD0AXUAX9cPa" },
             new OptionalJobRequest { },
             new WorkflowStepOptionalRequest { WorkflowStepId = "7445" },
             new OptionalSourceFileIdRequest { SourceFileId = "FsOS4nBlkjal8tLN3EKcP1" },
@@ -185,6 +193,7 @@ public class WebhookTests : TestBase
         var result = await events.JobStatusChanged(
             CreateWebhookRequest("job_status_changed.json"),
             new JobStatusChangedRequest { },
+            new ProjectOptionalRequest { ProjectUId = "ayB1FFffK7hD0AXUAX9cPa" },
             new OptionalJobRequest { },
             new WorkflowStepOptionalRequest { WorkflowStepId = "7445" },
             new OptionalSourceFileIdRequest { SourceFileId = "FsOS4nBlkjal8tLN3EKcP1" },

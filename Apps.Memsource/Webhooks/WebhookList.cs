@@ -1,7 +1,4 @@
 using System.Data;
-using System.Linq;
-using System.Net;
-using Apps.PhraseTMS.DataSourceHandlers;
 using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Dtos.Analysis;
 using Apps.PhraseTMS.Dtos.Jobs;
@@ -9,23 +6,16 @@ using Apps.PhraseTMS.Models.Jobs.Requests;
 using Apps.PhraseTMS.Models.Jobs.Responses;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Apps.PhraseTMS.Webhooks.Handlers.JobHandlers;
-using Apps.PhraseTMS.Webhooks.Handlers.Models;
 using Apps.PhraseTMS.Webhooks.Handlers.OtherHandlers;
 using Apps.PhraseTMS.Webhooks.Handlers.ProjectHandlers;
-using Apps.PhraseTMS.Webhooks.Handlers.ProjectTemplateHandlers;
 using Apps.PhraseTMS.Webhooks.Models.Requests;
 using Blackbird.Applications.Sdk.Common;
-using Blackbird.Applications.Sdk.Common.Authentication;
-using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.Sdk.Common.Webhooks;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
-using DocumentFormat.OpenXml.Spreadsheet;
-using DocumentFormat.OpenXml.Wordprocessing;
 using Newtonsoft.Json;
 using RestSharp;
-using static Apps.PhraseTMS.Webhooks.WebhookList;
 
 namespace Apps.PhraseTMS.Webhooks;
 
@@ -371,7 +361,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
     [Webhook("On job status changed", typeof(JobStatusChangedHandler), Description = "On any job status changed")]
     public async Task<WebhookResponse<JobResponse>> JobStatusChanged(WebhookRequest webhookRequest,
         [WebhookParameter] JobStatusChangedRequest request,
-        //[WebhookParameter] ProjectOptionalRequest projectOptionalRequest,
+        [WebhookParameter] ProjectOptionalRequest projectOptionalRequest,
         [WebhookParameter] OptionalJobRequest job,
         [WebhookParameter] WorkflowStepOptionalRequest workflowStepRequest,
         [WebhookParameter] OptionalSourceFileIdRequest sourceFileId,
@@ -380,15 +370,15 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         //[WebhookParameter] [Display("Last workflow level?")] bool? lastWorkflowLevel,
         [WebhookParameter][Display("Project name contains")] string? projectNameContains)
     {
-        //if (job?.JobUId != null && projectOptionalRequest?.ProjectUId == null)
-        //{
-        //    throw new PluginMisconfigurationException("If Job ID is specified in the inputs you must also specify the Project ID");
-        //}
+        if (job?.JobUId != null && projectOptionalRequest?.ProjectUId == null)
+        {
+            throw new PluginMisconfigurationException("If Job ID is specified in the inputs you must also specify the Project ID");
+        }
 
-        //if (sourceFileId?.SourceFileId != null && projectOptionalRequest?.ProjectUId == null)
-        //{
-        //    throw new PluginMisconfigurationException("If Source file ID is specified in the inputs you must also specify the Project ID");
-        //}
+        if (sourceFileId?.SourceFileId != null && projectOptionalRequest?.ProjectUId == null)
+        {
+            throw new PluginMisconfigurationException("If Source file ID is specified in the inputs you must also specify the Project ID");
+        }
 
         //if (!String.IsNullOrEmpty(step) && lastWorkflowLevel.HasValue && lastWorkflowLevel.Value)
         //{
@@ -433,6 +423,10 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
 
         if (!string.IsNullOrEmpty(sourceFileId.SourceFileId) && !string.IsNullOrEmpty(projectId))
         {
+            if (!string.IsNullOrEmpty(sourceFileId.SourceFileId) && string.IsNullOrEmpty(workflowStepRequest.WorkflowStepId))
+            {
+                throw new PluginMisconfigurationException("If Source file ID is specified in the inputs you must also specify the Workflow step ID");
+            }
             if (workflowStepRequest.WorkflowStepId != null)
             {
                 jobsQuery.WorkflowLevel = await Client.GetWorkflowstepLevel(projectId, workflowStepRequest.WorkflowStepId);
