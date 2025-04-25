@@ -135,7 +135,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
     }
 
     // Should be removed in a couple of updates when people adjust.
-    [Action("Create job (deprecated)", Description = "Will be removed in a future version. Use 'Upload source file (create jobs)' instead.")]
+    [Action("Create job (use this instead: Upload source file)", Description = "Will be removed in a future version. Use 'Upload source file (create jobs)' instead.")]
     public async Task<CreatedJobDto> CreateJob(
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] CreateJobRequest input)
