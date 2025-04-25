@@ -183,13 +183,20 @@ The following actions update a job's file (source or target) from their original
 
 - **On LQA reports created** Triggered when new reports can be downloaded within a specific project(Polling event)
 
-## Example
+## Examples 
 
-![1695995715372](image/README/1695995715372.png)
+### 1.4 Upload source file (create jobs) update
+On April 25th we deployed an update that deprecated the "Create job" action in favor of the "Upload source file" action. The reason for this change was that "Create job" did not take into account the nuances of Phrase projects with workflow steps. The action "Upload source file" now always returns all the jobs that were created from the source file (multiple languages, multiple workflow steps if configured). It also returns the common denominator between these jobs namely the "Source file ID". Similar changes to the "Search jobs" action were made. This Source file ID should be used when pairing the creation of jobs with the "On job status changed" event. Example below:
 
-This example shows one of many use cases. Here, whenever an article is published we fetch the missing translations and retrieve the article as an HTML file. Then we create a new Phrase project with the missing locales as the target languages and upload the article as jobs. Once the project status is changed to Completed, we download the translated HTML articles and push the translations back to the CMS.
+![1745571660322](image/README/1745571660322.png)
 
-## Analysis with other systems
+In this Bird we opt to not create a new project for each workflow. After uploading the source file we can now configure the "On job status changed" checkpoint. Required fields are at least the Project ID and either the Job ID or the Source file ID. Since the "Upload source file" action in our case returns multiple jobs, we are going to rely on the Source file ID instead.
+
+Besides the Source file ID we can specify that we are waiting for the 'Revision' Workflow step ID to be triggered. This narrows down our jobs even further. From this dropdown you should be able to select any workflow step that you have configured in Phrase. Alternatively, you can use the input "Last workflow step?" to always wait for the last workflow step. This is handy when different project templates have different workflow steps.
+
+Finally we select the status "Completed by provider" to be the moment we want to download the job target file. We have narrowed down the job enough to point at the exact job we are looking for triggering the checkpoint on and continueing our Flight.
+
+### Analysis with other systems
 
 Our app allows you to export an analysis file (via the **Download analysis file** action) and use it in your workflow whenever you need it. You can also specify the format in which you want to download the file (such as JSON, CSV, or log), and then import it into the service of your choice.
 
