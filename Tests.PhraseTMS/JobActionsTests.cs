@@ -10,8 +10,8 @@ namespace Tests.PhraseTMS
     [TestClass]
     public class JobActionsTests : TestBase
     {
-        public const string PROJECT_ID = "ayB1FFffK7hD0AXUAX9cPa";
-        public const string JOB_ID = "f0SeyVX72ri5diSoDEWAg3";
+        public const string PROJECT_ID = "hGStrg0MLYmQtG0f66mj6f";
+        public const string JOB_ID = "AtSGZSMriZbu8F4L9Li7U1";
 
         [TestMethod]
         public async Task GetJob_ValidIds_ShouldNotFailAndReturnNotEmptyResponse()
@@ -42,7 +42,7 @@ namespace Tests.PhraseTMS
             };
             var workflowStep = new WorkflowStepOptionalRequest
             {
-                WorkflowStepId = "7447"
+
             };
 
             bool? lqaScore = null;

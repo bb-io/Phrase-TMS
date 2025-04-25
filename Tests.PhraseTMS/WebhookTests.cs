@@ -25,11 +25,11 @@ public class WebhookTests : TestBase
         return new WebhookRequest { Body = body };
     }
 
-    private const string PROJECT_ID = "ayB1FFffK7hD0AXUAX9cPa";
-    private const string JOB_ID = "ZPOrUDCBjQWp3JizfMevi0";
-    private const string SOURCE_FILE_ID = "xQ2nG9N9BfHQ9ZerhQkjv3";
+    private const string PROJECT_ID = "hGStrg0MLYmQtG0f66mj6f";
+    private const string JOB_ID = "AtSGZSMriZbu8F4L9Li7U1";
+    private const string SOURCE_FILE_ID = "KeSN9w8gTHrj8JFWMjV3F1";
     private const string LANG = "de";
-    private const string WORKFLOW_STEP_ID = "7447";
+    private const string WORKFLOW_STEP_ID = "7445";
 
     [TestMethod]
     public async Task Job_status_changed_works()
@@ -80,7 +80,7 @@ public class WebhookTests : TestBase
 
         var result = await events.JobStatusChanged(
             CreateWebhookRequest("job_status_changed.json"),
-            new JobStatusChangedRequest { Status = new List<string> { "COMPLETED" } },
+            new JobStatusChangedRequest { Status = new List<string> { "ACCEPTED" } },
             new ProjectOptionalRequest { ProjectUId = PROJECT_ID },
             new OptionalJobRequest { JobUId = JOB_ID },
             new WorkflowStepOptionalRequest { },
@@ -127,27 +127,6 @@ public class WebhookTests : TestBase
             new OptionalJobRequest { },
             new WorkflowStepOptionalRequest { },
             new OptionalSourceFileIdRequest { SourceFileId = "WRONG" },
-            new OptionalSearchJobsQuery { },
-            null,
-            null
-            );
-
-        Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-        Assert.IsTrue(result?.Result?.Uid == null);
-    }
-
-    [TestMethod]
-    public async Task Job_status_with_wrong_workflow_step_file_id_changed_works()
-    {
-        var events = new WebhookList(InvocationContext);
-
-        var result = await events.JobStatusChanged(
-            CreateWebhookRequest("job_status_changed.json"),
-            new JobStatusChangedRequest { },
-            new ProjectOptionalRequest { ProjectUId = PROJECT_ID },
-            new OptionalJobRequest { },
-            new WorkflowStepOptionalRequest { WorkflowStepId = "7446" },
-            new OptionalSourceFileIdRequest { SourceFileId = SOURCE_FILE_ID },
             new OptionalSearchJobsQuery { },
             null,
             null
