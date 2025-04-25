@@ -11,7 +11,7 @@ namespace Tests.PhraseTMS
     public class JobActionsTests : TestBase
     {
         public const string PROJECT_ID = "hGStrg0MLYmQtG0f66mj6f";
-        public const string JOB_ID = "e9ciferOOGVn0ySv0qqa";
+        public const string JOB_ID = "AtSGZSMriZbu8F4L9Li7U1";
 
         [TestMethod]
         public async Task GetJob_ValidIds_ShouldNotFailAndReturnNotEmptyResponse()
@@ -34,19 +34,37 @@ namespace Tests.PhraseTMS
             var projectRequest = new ProjectRequest { ProjectUId = PROJECT_ID };
             var searchQuery = new ListAllJobsQuery
             {
-                
+
             };
             var jobStatuses = new JobStatusesRequest
             {
                 
             };
+            var workflowStep = new WorkflowStepOptionalRequest
+            {
+
+            };
 
             bool? lqaScore = null;
 
-            var result = await action.ListAllJobs(projectRequest, searchQuery, jobStatuses, lqaScore);
+            var result = await action.ListAllJobs(projectRequest, searchQuery, jobStatuses, workflowStep, lqaScore);
 
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Jobs.Any());
+
+            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+        }
+
+        [TestMethod]
+        public async Task Find_job_works()
+        {
+            var action = new JobActions(InvocationContext, FileManager);
+            var projectRequest = new ProjectRequest { ProjectUId = PROJECT_ID };
+
+            var result = await action.FindJob(projectRequest, "xQ2nG9N9BfHQ9ZerhQkjv3", new WorkflowStepRequest { WorkflowStepId = "7447" }, new TargetLanguageRequest { TargetLang = "de" });
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.Uid);
 
             Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
         }
@@ -55,33 +73,38 @@ namespace Tests.PhraseTMS
         public async Task Create_jobs_works()
         {
             var action = new JobActions(InvocationContext, FileManager);
-            var projectRequest = new ProjectRequest { ProjectUId = "FwDrhxXNmSU15GNJiDVvQ7" };
-            var input2 = new CreateJobsRequest {  File = new Blackbird.Applications.Sdk.Common.Files.FileReference { Name = "Crowdin.txt" } };
+            var projectRequest = new ProjectRequest { ProjectUId = PROJECT_ID };
+            var input2 = new CreateJobsRequest {  File = new Blackbird.Applications.Sdk.Common.Files.FileReference { Name = "test.txt" } };
 
             var result = await action.CreateJobs(projectRequest, input2);
 
             Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Jobs.Any());
+            Assert.IsNotNull(result.SourceFileUid);
+            Assert.IsTrue(result.Jobs.Select(x => x.SourceFileUid).All(x => x == result.SourceFileUid));
         }
 
         [TestMethod]
         public async Task Create_job_and_delete_jobworks()
         {
             var action = new JobActions(InvocationContext, FileManager);
-            var projectRequest = new ProjectRequest { ProjectUId = "FwDrhxXNmSU15GNJiDVvQ7" };
-            var input2 = new CreateJobRequest { 
-                File = new Blackbird.Applications.Sdk.Common.Files.FileReference { Name = "Crowdin.txt" } ,
-                TargetLanguage = "de",
+            var projectRequest = new ProjectRequest { ProjectUId = PROJECT_ID };
+            var input2 = new CreateJobsRequest { 
+                File = new Blackbird.Applications.Sdk.Common.Files.FileReference { Name = "test_2.txt" } ,
+                TargetLanguages = new List<string> { "nl" },
             };
 
-            var result = await action.CreateJob(projectRequest, input2);
+            var result = await action.CreateJobs(projectRequest, input2);
 
             Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
             Assert.IsNotNull(result);
-            Assert.IsTrue(result.Uid != null);
 
-            await action.DeleteJob(projectRequest, new DeleteJobRequest { JobsUIds = new[] { result.Uid } });
+            foreach(var item in result.Jobs)
+            {
+                await action.DeleteJob(projectRequest, new DeleteJobRequest { JobsUIds = new[] { item.Uid } });
+            }
+            
         }
 
         [TestMethod]

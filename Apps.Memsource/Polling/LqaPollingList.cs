@@ -31,7 +31,7 @@ public class LqaPollingList(InvocationContext invocationContext) : PhraseInvocab
         }
 
         var jobActions = new JobActions(InvocationContext, null!);
-        var projectJobs = await jobActions.ListAllJobs(projectRequest, new(), new(), null);
+        var projectJobs = await jobActions.ListAllJobs(projectRequest, new(), new(), null, null);
 
         var getBatchRequest = new RestRequest("/api2/v1/lqa/assessments", Method.Post)
             .WithJsonBody(new

@@ -192,7 +192,7 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
     public async Task<DownloadProjectFilesResponse> DownloadProjectOriginalFiles([ActionParameter] ProjectRequest input)
     {
         var jobActions = new JobActions(InvocationContext, fileManagementClient);
-        var jobs = await jobActions.ListAllJobs(input, new ListAllJobsQuery(), new JobStatusesRequest(), null);
+        var jobs = await jobActions.ListAllJobs(input, new ListAllJobsQuery(), new JobStatusesRequest(), null, null);
         var files = new List<FileReference>();
         foreach (var job in jobs.Jobs)
         {
@@ -204,10 +204,10 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
     }
 
     [Action("Download project target files", Description = "Download project target files")]
-    public async Task<DownloadProjectFilesResponse> DownloadProjectTargetFiles([ActionParameter] ProjectRequest input)
+    public async Task<DownloadProjectFilesResponse> DownloadProjectTargetFiles([ActionParameter] ProjectRequest input, [ActionParameter] WorkflowStepOptionalRequest workflowStepRequest)
     {
         var jobActions = new JobActions(InvocationContext, fileManagementClient);
-        var jobs = await jobActions.ListAllJobs(input, new ListAllJobsQuery(), new JobStatusesRequest(), null);
+        var jobs = await jobActions.ListAllJobs(input, new ListAllJobsQuery(), new JobStatusesRequest(), workflowStepRequest, null);
         var files = new List<FileReference>();
         foreach (var job in jobs.Jobs)
         {

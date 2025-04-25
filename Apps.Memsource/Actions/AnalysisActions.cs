@@ -80,12 +80,18 @@ public class AnalysisActions(InvocationContext invocationContext, IFileManagemen
     public async Task<ListAnalysesResponse> CreateAnalysis(
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] CreateAnalysisInput input,
+        [ActionParameter] WorkflowStepOptionalRequest workflowStepRequest,
         [ActionParameter] ListAllJobsQuery jobquery)
     {
         if (input.JobsUIds is null)
         {
             var endpoint = $"/api2/v2/projects/{projectRequest.ProjectUId}/jobs";
             var request2 = new RestRequest(endpoint.WithQuery(jobquery), Method.Get);
+            if (workflowStepRequest.WorkflowStepId != null)
+            {
+                var workflowLevel = await Client.GetWorkflowstepLevel(projectRequest.ProjectUId, workflowStepRequest.WorkflowStepId);
+                request2.AddQueryParameter("workflowLevel", workflowLevel);
+            }
 
             var response = await Client.Paginate<ListJobDto>(request2);
             input.JobsUIds = response.Select(x => x.Uid).ToList();

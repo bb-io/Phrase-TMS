@@ -20,7 +20,7 @@ namespace Tests.PhraseTMS
             var actions = new AnalysisActions(InvocationContext, FileManager);
             var projectRequest = new ProjectRequest { ProjectUId= PROJECT_ID };
 
-            var result = await actions.CreateAnalysis(projectRequest, new CreateAnalysisInput { JobsUIds = new List<string> { JOB_ID } }, new ListAllJobsQuery { });
+            var result = await actions.CreateAnalysis(projectRequest, new CreateAnalysisInput { JobsUIds = new List<string> { JOB_ID } }, new WorkflowStepOptionalRequest { }, new ListAllJobsQuery { });
 
             Assert.IsTrue(result.Analyses.Any() && result.Analyses.All(x => x.Uid != null));
             Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));

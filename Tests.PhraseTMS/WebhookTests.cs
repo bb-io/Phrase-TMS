@@ -1,4 +1,5 @@
 ﻿using Apps.PhraseTMS.Actions;
+using Apps.PhraseTMS.Models.Jobs.Requests;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Apps.PhraseTMS.Webhooks;
 using Apps.PhraseTMS.Webhooks.Models.Requests;
@@ -24,23 +25,199 @@ public class WebhookTests : TestBase
         return new WebhookRequest { Body = body };
     }
 
+    private const string PROJECT_ID = "hGStrg0MLYmQtG0f66mj6f";
+    private const string JOB_ID = "AtSGZSMriZbu8F4L9Li7U1";
+    private const string SOURCE_FILE_ID = "KeSN9w8gTHrj8JFWMjV3F1";
+    private const string LANG = "de";
+    private const string WORKFLOW_STEP_ID = "7445";
+
     [TestMethod]
     public async Task Job_status_changed_works()
     {
         var events = new WebhookList(InvocationContext);
 
         var result = await events.JobStatusChanged(
-            CreateWebhookRequest("job_status_changed.json"), 
+            CreateWebhookRequest("job_status_changed.json"),
             new JobStatusChangedRequest { },
-            new ProjectOptionalRequest { ProjectUId = "hGStrg0MLYmQtG0f66mj6f" },
-            new OptionalJobRequest { JobUId = "WRZha0uJNtgssOTzlujHh7" },
-            null,
+            new ProjectOptionalRequest { ProjectUId = PROJECT_ID },
+            new OptionalJobRequest { },
+            new WorkflowStepOptionalRequest { },
+            new OptionalSourceFileIdRequest { },
+            new OptionalSearchJobsQuery { },
             null,
             null
             );
 
         Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-        Assert.IsTrue(result.Result.Uid != null);
+        Assert.IsTrue(result?.Result?.Uid != null);
+    }
+
+    [TestMethod]
+    public async Task Job_status_with_job_id_changed_works()
+    {
+        var events = new WebhookList(InvocationContext);
+
+        var result = await events.JobStatusChanged(
+            CreateWebhookRequest("job_status_changed.json"), 
+            new JobStatusChangedRequest { },
+            new ProjectOptionalRequest { ProjectUId = PROJECT_ID },
+            new OptionalJobRequest { JobUId = JOB_ID },
+            new WorkflowStepOptionalRequest { },
+            new OptionalSourceFileIdRequest { },
+            new OptionalSearchJobsQuery { },
+            null,
+            null
+            );
+
+        Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+        Assert.IsTrue(result?.Result?.Uid != null);
+    }
+
+    [TestMethod]
+    public async Task Job_status_with_job_id_and_status_changed_works()
+    {
+        var events = new WebhookList(InvocationContext);
+
+        var result = await events.JobStatusChanged(
+            CreateWebhookRequest("job_status_changed.json"),
+            new JobStatusChangedRequest { Status = new List<string> { "ACCEPTED" } },
+            new ProjectOptionalRequest { ProjectUId = PROJECT_ID },
+            new OptionalJobRequest { JobUId = JOB_ID },
+            new WorkflowStepOptionalRequest { },
+            new OptionalSourceFileIdRequest { },
+            new OptionalSearchJobsQuery { },
+            null,
+            null
+            );
+
+        Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+        Assert.IsTrue(result?.Result?.Uid != null);
+    }
+
+    [TestMethod]
+    public async Task Job_status_with_job_id_and_wrong_status_changed_works()
+    {
+        var events = new WebhookList(InvocationContext);
+
+        var result = await events.JobStatusChanged(
+            CreateWebhookRequest("job_status_changed.json"),
+            new JobStatusChangedRequest { Status = new List<string> { "NEW" } },
+            new ProjectOptionalRequest { ProjectUId = PROJECT_ID },
+            new OptionalJobRequest { JobUId = JOB_ID },
+            new WorkflowStepOptionalRequest { },
+            new OptionalSourceFileIdRequest { },
+            new OptionalSearchJobsQuery { },
+            null,
+            null
+            );
+
+        Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+        Assert.IsTrue(result?.Result?.Uid == null);
+    }
+
+    [TestMethod]
+    public async Task Job_status_with_wrong_source_file_id_changed_works()
+    {
+        var events = new WebhookList(InvocationContext);
+
+        var result = await events.JobStatusChanged(
+            CreateWebhookRequest("job_status_changed.json"),
+            new JobStatusChangedRequest { },
+            new ProjectOptionalRequest { ProjectUId = PROJECT_ID },
+            new OptionalJobRequest { },
+            new WorkflowStepOptionalRequest { },
+            new OptionalSourceFileIdRequest { SourceFileId = "WRONG" },
+            new OptionalSearchJobsQuery { },
+            null,
+            null
+            );
+
+        Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+        Assert.IsTrue(result?.Result?.Uid == null);
+    }
+
+    [TestMethod]
+    public async Task Job_status_with_right_workflow_step_file_id_changed_works()
+    {
+        var events = new WebhookList(InvocationContext);
+
+        var result = await events.JobStatusChanged(
+            CreateWebhookRequest("job_status_changed.json"),
+            new JobStatusChangedRequest { },
+            new ProjectOptionalRequest { ProjectUId = PROJECT_ID },
+            new OptionalJobRequest { },
+            new WorkflowStepOptionalRequest { WorkflowStepId = WORKFLOW_STEP_ID },
+            new OptionalSourceFileIdRequest { SourceFileId = SOURCE_FILE_ID },
+            new OptionalSearchJobsQuery { },
+            null,
+            null
+            );
+
+        Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+        Assert.IsTrue(result?.Result?.Uid != null);
+    }
+
+    [TestMethod]
+    public async Task Job_status_with_right_workflow_step_wrong_language_file_id_changed_works()
+    {
+        var events = new WebhookList(InvocationContext);
+
+        var result = await events.JobStatusChanged(
+            CreateWebhookRequest("job_status_changed.json"),
+            new JobStatusChangedRequest { },
+            new ProjectOptionalRequest { ProjectUId = PROJECT_ID },
+            new OptionalJobRequest { },
+            new WorkflowStepOptionalRequest { WorkflowStepId = WORKFLOW_STEP_ID },
+            new OptionalSourceFileIdRequest { SourceFileId = SOURCE_FILE_ID },
+            new OptionalSearchJobsQuery { TargetLang = "nl"  },
+            null,
+            null
+            );
+
+        Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+        Assert.IsTrue(result?.Result?.Uid == null);
+    }
+
+    [TestMethod]
+    public async Task Job_status_with_right_workflow_step_right_language_file_id_changed_works()
+    {
+        var events = new WebhookList(InvocationContext);
+
+        var result = await events.JobStatusChanged(
+            CreateWebhookRequest("job_status_changed.json"),
+            new JobStatusChangedRequest { },
+            new ProjectOptionalRequest { ProjectUId = PROJECT_ID },
+            new OptionalJobRequest { },
+            new WorkflowStepOptionalRequest { WorkflowStepId = WORKFLOW_STEP_ID },
+            new OptionalSourceFileIdRequest { SourceFileId = SOURCE_FILE_ID },
+            new OptionalSearchJobsQuery { TargetLang = LANG },
+            null,
+            null
+            );
+
+        Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+        Assert.IsTrue(result?.Result?.Uid != null);
+    }
+
+    [TestMethod]
+    public async Task Job_status_with_last_workflow_step_works()
+    {
+        var events = new WebhookList(InvocationContext);
+
+        var result = await events.JobStatusChanged(
+            CreateWebhookRequest("job_status_changed.json"),
+            new JobStatusChangedRequest { },
+            new ProjectOptionalRequest { ProjectUId = PROJECT_ID },
+            new OptionalJobRequest { },
+            new WorkflowStepOptionalRequest { },
+            new OptionalSourceFileIdRequest { SourceFileId = SOURCE_FILE_ID },
+            new OptionalSearchJobsQuery { },
+            true,
+            null
+            );
+
+        Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+        Assert.IsTrue(result?.Result?.Uid != null);
     }
 
     [TestMethod]

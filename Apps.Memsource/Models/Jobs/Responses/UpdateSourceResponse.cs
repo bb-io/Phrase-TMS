@@ -6,8 +6,12 @@ namespace Apps.PhraseTMS.Models.Jobs.Responses
     public class UpdateSourceResponse
     {
         [JsonProperty("jobs")]
-        public List<UpdateSourceResponse> Jobs { get; set; }
+        public IEnumerable<UpdateSourceJob> Jobs { get; set; }
 
+    }
+
+    public class UpdateSourceJob
+    {
         [Display("Job ID")] public string Uid { get; set; }
 
         [Display("File name")] public string Filename { get; set; }

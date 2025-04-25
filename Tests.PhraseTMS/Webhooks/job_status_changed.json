@@ -2,13 +2,13 @@
   "jobParts": [
     {
       "id": 2790819,
-      "uid": "WRZha0uJNtgssOTzlujHh7",
+      "uid": "AtSGZSMriZbu8F4L9Li7U1",
       "internalId": "1",
       "task": "DYUA0BGUhKcb3oVP0_dc2",
-      "fileName": "When it comes to writing an essay.docx",
+      "fileName": "test.txt",
       "targetLang": "de",
       "workflowLevel": 1,
-      "status": "ASSIGNED",
+      "status": "ACCEPTED",
       "wordsCount": 347,
       "beginIndex": 0,
       "endIndex": 25,

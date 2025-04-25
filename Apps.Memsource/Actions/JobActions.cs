@@ -31,10 +31,16 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         [ActionParameter] ProjectRequest input,
         [ActionParameter] ListAllJobsQuery query,
         [ActionParameter] JobStatusesRequest jobStatusesRequest,
+        [ActionParameter] WorkflowStepOptionalRequest workflowStepRequest,
         [ActionParameter] [Display("LQA Score null?")] bool? LQAScorenull)
     {
         var endpoint = $"/api2/v2/projects/{input.ProjectUId}/jobs";
         var request = new RestRequest(endpoint.WithQuery(query), Method.Get);
+        if (workflowStepRequest.WorkflowStepId != null)
+        {
+            var workflowLevel = await Client.GetWorkflowstepLevel(input.ProjectUId, workflowStepRequest.WorkflowStepId);
+            request.AddQueryParameter("workflowLevel", workflowLevel);
+        }
         try
         {
             var response = await Client.Paginate<ListJobDto>(request);
@@ -86,13 +92,50 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
     [Action("Get job", Description = "Get all job information for a specific job")]
     public async Task<JobDto> GetJob(
         [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] JobRequest input)
+        [ActionParameter] JobRequest input
+        )
     {
         var request = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/{input.JobUId}", Method.Get);
         return await Client.ExecuteWithHandling<JobDto>(request);
     }
 
-    [Action("Create job", Description = "Create a new job from a file upload")]
+    [Action("Find job from source file ID", Description = "Given a source file ID, a workflow step ID and a language, returns the job.")]
+    public async Task<JobDto> FindJob(
+        [ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] [Display("Source file ID")] string sourceFileId,
+        [ActionParameter] WorkflowStepRequest workflowStepRequest,
+        [ActionParameter] TargetLanguageRequest targetLanguage
+        )
+    {
+        var request = new RestRequest($"/api2/v2/projects/{projectRequest.ProjectUId}/jobs", Method.Get);
+        var workflowLevel = await Client.GetWorkflowstepLevel(projectRequest.ProjectUId, workflowStepRequest.WorkflowStepId);
+        request.AddQueryParameter("workflowLevel", workflowLevel);
+        request.AddQueryParameter("targetLang", targetLanguage.TargetLang);
+
+        try
+        {
+            var response = await Client.Paginate<ListJobDto>(request);
+            var job = response.FirstOrDefault(x => x.SourceFileUid == sourceFileId);
+            if (job == null) return new JobDto();
+
+            var jobRequest = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/{job.Uid}", Method.Get);
+
+            return await Client.ExecuteWithHandling<JobDto>(jobRequest);
+        }
+        catch (Exception e)
+        {
+            if (e.Message.Contains("Invalid parameters") || e.Message.Contains("The object referenced by the field") ||
+                e.Message.Contains("unsupported locale"))
+            {
+                throw new PluginMisconfigurationException(e.Message + "Make sure that the input values are correct.");
+            }
+
+            throw new PluginApplicationException(e.Message);
+        }        
+    }
+
+    // Should be removed in a couple of updates when people adjust.
+    [Action("Create job (deprecated)", Description = "Will be removed in a future version. Use 'Upload source file (create jobs)' instead.")]
     public async Task<CreatedJobDto> CreateJob(
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] CreateJobRequest input)
@@ -150,11 +193,17 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         return jobs.Jobs.FirstOrDefault();
     }
 
-    [Action("Create jobs", Description = "Create jobs for multiple target languages")]
+    [Action("Upload source file (create jobs)", Description = "Given a new file, create jobs for the different workflow steps and target languages")]
     public async Task<JobResponseWrapper> CreateJobs(
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] CreateJobsRequest input)
     {
+        var fileName = input.File.Name;
+        string fileNameForHeader = fileName;
+        if (!IsOnlyAscii(fileName))
+        {
+            fileNameForHeader = Uri.EscapeDataString(fileName);
+        }
 
         if (string.IsNullOrWhiteSpace(projectRequest.ProjectUId))
         {
@@ -175,21 +224,18 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
 
         var request = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs", Method.Post);
 
-        var output = JsonConvert.SerializeObject(new
+        var bodyJson = JsonConvert.SerializeObject(new
         {
             targetLangs = input.TargetLanguages,
             preTranslate = input.preTranslate ?? false,
             useProjectFileImportSettings = input.useProjectFileImportSettings ?? true,
-            due = input.DueDate ?? null,
+            due = input.DueDate
         });
 
-        var headers = new Dictionary<string, string>()
-        {
-            { "Memsource", output },
-            { "Content-Disposition", $"filename*=UTF-8''{input.File.Name}" },
-            { "Content-Type", "application/octet-stream" },
-        };
-        headers.ToList().ForEach(x => request.AddHeader(x.Key, x.Value));
+        request
+         .AddHeader("Memsource", bodyJson)
+         .AddHeader("Content-Disposition", $"filename*=UTF-8''{fileNameForHeader}")
+         .AddHeader("Content-Type", "application/octet-stream");
 
         var fileStream = await fileManagementClient.DownloadAsync(input.File);
         using (var memoryStream = new MemoryStream())
@@ -418,7 +464,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
     }
 
     [Action("Upload job source file", Description = "Upload and update the job source file in the project")]
-    public async Task<UpdateSourceResponse> UpdateSource(
+    public async Task<UpdateSourceJob> UpdateSource(
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] UpdateSourceRequest input)
     {
@@ -461,7 +507,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
 
         var response = await Client.ExecuteWithHandling<UpdateSourceResponse>(request);
 
-        return response.Jobs.First();
+        return response.Jobs.FirstOrDefault();
     }
 
 
