@@ -79,6 +79,7 @@ Custom fields are associated with a specific type, e.g. date, number, text, etc.
 - **Create job** == DEPRECATED == will be removed in a future update. Use the action below.
 - **Upload source file (create jobs)** uploads a source file to the project and creates relevant jobs for these files. This action will return multiple jobs as its output. It will also return a single Source file ID. See instructions below on how to use this in combination with 'On job status changed'.
 - **Find job from source file ID** given a source file ID, a workflow step ID and a language, returns the job.
+- **Find job from server task ID** given a server task ID, a workflow step ID and a project ID, returns the job.
 - **Delete job** deletes jobs from a project
 - **Update job** Update a job's global data
 - **Pre-translate job** pre-translate a job in the project
@@ -121,6 +122,7 @@ The following actions update a job's file (source or target) from their original
 - **Run auto LQA** runs Auto LQA for specified job parts or all jobs in a given workflow step
 - **Download LQA assessment** downloads a single xlsx report based on specific job ID
 - **Get LQA assessment** get a specific LQA assessment
+- **Run quality assurance** Run quality checks on job part
 
 ### Quote
 

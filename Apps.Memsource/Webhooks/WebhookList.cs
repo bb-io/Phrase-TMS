@@ -1,4 +1,5 @@
 using System.Data;
+using Apps.PhraseTMS.DataSourceHandlers;
 using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Dtos.Analysis;
 using Apps.PhraseTMS.Dtos.Jobs;
@@ -10,6 +11,7 @@ using Apps.PhraseTMS.Webhooks.Handlers.OtherHandlers;
 using Apps.PhraseTMS.Webhooks.Handlers.ProjectHandlers;
 using Apps.PhraseTMS.Webhooks.Models.Requests;
 using Blackbird.Applications.Sdk.Common;
+using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.Sdk.Common.Webhooks;
@@ -367,7 +369,8 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         [WebhookParameter] OptionalSourceFileIdRequest sourceFileId,
         [WebhookParameter] OptionalSearchJobsQuery jobsQuery,
         [WebhookParameter] [Display("Last workflow level?")] bool? lastWorkflowLevel,
-        [WebhookParameter][Display("Project name contains")] string? projectNameContains)
+        [WebhookParameter] [Display("Project name contains")] string? projectNameContains,
+        [WebhookParameter] [Display("Subdomain ID")][DataSource(typeof(SubdomainDataHandler))] string? subdomain)
     {
         if (job?.JobUId != null && projectOptionalRequest?.ProjectUId == null)
         {
@@ -386,6 +389,26 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         }
 
         if (!String.IsNullOrEmpty(projectNameContains) && !data.metadata.project.Name.Contains(projectNameContains))
+        {
+            return new()
+            {
+                HttpResponseMessage = null,
+                Result = null,
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight
+            };
+        }
+
+        if (projectOptionalRequest != null && !String.IsNullOrEmpty(projectOptionalRequest?.ProjectUId) && data.metadata.project.Uid != projectOptionalRequest.ProjectUId)
+        {
+            return new()
+            {
+                HttpResponseMessage = null,
+                Result = null,
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight
+            };
+        }
+
+        if (!String.IsNullOrEmpty(subdomain) && data.metadata.project.subDomain.subDomainUid != subdomain)
         {
             return new()
             {
@@ -664,4 +687,15 @@ public class Project
 
     [Display("Name")]
     public string Name { get; set; }
+
+    public subdomain subDomain { get; set; }
+}
+
+public class subdomain
+{
+    [Display("Subdomain name")]
+    [JsonProperty("name")] public string subDomainName { get; set; }
+
+    [Display("Subdomain Uid")]
+    [JsonProperty("Uid")] public string subDomainUid { get; set; }
 }
