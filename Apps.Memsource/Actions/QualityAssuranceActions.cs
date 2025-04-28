@@ -77,7 +77,7 @@ public class QualityAssuranceActions(InvocationContext invocationContext, IFileM
         return Client.ExecuteWithHandling(request);
     }
 
-    [Action("Run quality assurance", Description = "Run quality checks on job parts")]
+    [Action("Run quality assurance", Description = "Run quality checks on job part")]
     public async Task<RunQAResponse> RunQA([ActionParameter] ProjectRequest project,
     [ActionParameter] JobRequest job,
     [ActionParameter] QaChecksRequest qachecks,
