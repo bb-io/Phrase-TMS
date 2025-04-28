@@ -13,6 +13,7 @@ using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Blackbird.Applications.Sdk.Common.Invocation;
+using Newtonsoft.Json;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -75,7 +76,24 @@ public class QualityAssuranceActions(InvocationContext invocationContext, IFileM
         request.WithJsonBody(bodyDictionary);
         return Client.ExecuteWithHandling(request);
     }
-    
+
+    [Action("Run quality assurance", Description = "Run quality checks on job parts")]
+    public async Task<RunQAResponse> RunQA([ActionParameter] ProjectRequest project,
+    [ActionParameter] JobRequest job,
+    [ActionParameter] QaChecksRequest qachecks
+        )
+    {
+        var request = new RestRequest($"/api2/v4/projects/{project.ProjectUId}/jobs/{job.JobUId}/qualityAssurances/run", Method.Post);
+        if (qachecks != null)
+        {
+            var body = new { warningTypes = qachecks.WarningTypes.ToList() };
+            request.AddJsonBody(JsonConvert.SerializeObject(body));
+        }
+        var response = await Client.ExecuteWithHandling<RunQAResponse>(request);
+        response.OutstandingWarnings = response.SegmentWarnings != null && response.SegmentWarnings?.Count > 0;
+        return response;
+    }
+
     private static string GetFileNameFromResponse(RestResponse response)
     {
         var fileName = string.Empty;

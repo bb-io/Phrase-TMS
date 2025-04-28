@@ -398,6 +398,16 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             };
         }
 
+        if (projectOptionalRequest != null && !String.IsNullOrEmpty(projectOptionalRequest?.ProjectUId) && data.metadata.project.Uid != projectOptionalRequest.ProjectUId)
+        {
+            return new()
+            {
+                HttpResponseMessage = null,
+                Result = null,
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight
+            };
+        }
+
         if (!String.IsNullOrEmpty(subdomain) && data.metadata.project.subDomain.subDomainUid != subdomain)
         {
             return new()
