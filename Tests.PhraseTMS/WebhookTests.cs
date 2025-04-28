@@ -45,6 +45,7 @@ public class WebhookTests : TestBase
             new OptionalSourceFileIdRequest { },
             new OptionalSearchJobsQuery { },
             null,
+            null,
             null
             );
 
@@ -65,6 +66,7 @@ public class WebhookTests : TestBase
             new WorkflowStepOptionalRequest { },
             new OptionalSourceFileIdRequest { },
             new OptionalSearchJobsQuery { },
+            null,
             null,
             null
             );
@@ -87,6 +89,7 @@ public class WebhookTests : TestBase
             new OptionalSourceFileIdRequest { },
             new OptionalSearchJobsQuery { },
             null,
+            null,
             null
             );
 
@@ -107,6 +110,7 @@ public class WebhookTests : TestBase
             new WorkflowStepOptionalRequest { },
             new OptionalSourceFileIdRequest { },
             new OptionalSearchJobsQuery { },
+            null,
             null,
             null
             );
@@ -129,6 +133,7 @@ public class WebhookTests : TestBase
             new OptionalSourceFileIdRequest { SourceFileId = "WRONG" },
             new OptionalSearchJobsQuery { },
             null,
+            null,
             null
             );
 
@@ -149,6 +154,7 @@ public class WebhookTests : TestBase
             new WorkflowStepOptionalRequest { WorkflowStepId = WORKFLOW_STEP_ID },
             new OptionalSourceFileIdRequest { SourceFileId = SOURCE_FILE_ID },
             new OptionalSearchJobsQuery { },
+            null,
             null,
             null
             );
@@ -171,6 +177,7 @@ public class WebhookTests : TestBase
             new OptionalSourceFileIdRequest { SourceFileId = SOURCE_FILE_ID },
             new OptionalSearchJobsQuery { TargetLang = "nl"  },
             null,
+            null,
             null
             );
 
@@ -191,6 +198,7 @@ public class WebhookTests : TestBase
             new WorkflowStepOptionalRequest { WorkflowStepId = WORKFLOW_STEP_ID },
             new OptionalSourceFileIdRequest { SourceFileId = SOURCE_FILE_ID },
             new OptionalSearchJobsQuery { TargetLang = LANG },
+            null,
             null,
             null
             );
@@ -213,6 +221,7 @@ public class WebhookTests : TestBase
             new OptionalSourceFileIdRequest { SourceFileId = SOURCE_FILE_ID },
             new OptionalSearchJobsQuery { },
             true,
+            null,
             null
             );
 

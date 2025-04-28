@@ -7,7 +7,7 @@ namespace Apps.PhraseTMS.Models.QualityAssurance.Responses
         [Display("Segment ID")]
         public string? segmentId { get; set; }
         
-        public warning? Warnings { get; set; }
+        public List<warning>? Warnings { get; set; }
         } 
     
     public class warning

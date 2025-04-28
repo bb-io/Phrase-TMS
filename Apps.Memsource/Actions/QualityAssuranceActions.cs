@@ -80,15 +80,21 @@ public class QualityAssuranceActions(InvocationContext invocationContext, IFileM
     [Action("Run quality assurance", Description = "Run quality checks on job parts")]
     public async Task<RunQAResponse> RunQA([ActionParameter] ProjectRequest project,
     [ActionParameter] JobRequest job,
-    [ActionParameter] QaChecksRequest qachecks
-        )
+    [ActionParameter] QaChecksRequest qachecks,
+    [Display("Maximum warning count", Description = "Number between 1 and 100. Default is 100.")] double? MaxWarnings)
     {
-        var request = new RestRequest($"/api2/v4/projects/{project.ProjectUId}/jobs/{job.JobUId}/qualityAssurances/run", Method.Post);
+        var request = new RestRequest($"/api2/v3/projects/{project.ProjectUId}/jobs/{job.JobUId}/qualityAssurances/run", Method.Post);
         if (qachecks != null)
         {
-            var body = new { warningTypes = qachecks.WarningTypes.ToList() };
+            var body = new { warningTypes = qachecks.WarningTypes.ToList(), maxQaWarningsCount = MaxWarnings is null? 100 : MaxWarnings };
             request.AddJsonBody(JsonConvert.SerializeObject(body));
         }
+        else 
+        {
+            var body = new { maxQaWarningsCount = MaxWarnings is null ? 100 : MaxWarnings };
+            request.AddJsonBody(JsonConvert.SerializeObject(body));
+        }
+        
         var response = await Client.ExecuteWithHandling<RunQAResponse>(request);
         response.OutstandingWarnings = response.SegmentWarnings != null && response.SegmentWarnings?.Count > 0;
         return response;
