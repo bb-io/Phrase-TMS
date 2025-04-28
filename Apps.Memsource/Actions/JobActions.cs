@@ -272,9 +272,9 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
     public async Task EditJob(
         [ActionParameter] JobRequest input,
         [ActionParameter] EditJobBody body,
-        [ActionParameter] [DataSource(typeof(VendorDataHandler))]
+        [ActionParameter] [Display("Assignee (vendor ID)")][DataSource(typeof(VendorDataHandler))]
         string? vendorId,
-        [ActionParameter] [DataSource(typeof(UserDataHandler))]
+        [ActionParameter] [Display("Assignee (user ID)")][DataSource(typeof(UserDataHandler))]
         string? userId)
     {
         var bodyDictionary = new Dictionary<string, object>
