@@ -20,6 +20,7 @@ using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Apps.PhraseTMS.Dtos.Jobs;
+using System.Text.Json;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -132,6 +133,25 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
 
             throw new PluginApplicationException(e.Message);
         }        
+    }
+
+    [Action("Find job from server task ID", Description = "Given a server task ID, a workflow step ID and a project ID, returns the job.")]
+    public async Task<JobDto> FindJobFromTask(
+        [ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter][Display("Server task ID")] string serverTaskId,
+        [ActionParameter] WorkflowStepRequest workflowStepRequest
+        )
+    {
+        var request = new RestRequest($"/api2/v1/mappings/tasks/{serverTaskId}", Method.Get);
+        var workflowLevel = await Client.GetWorkflowstepLevel(projectRequest.ProjectUId, workflowStepRequest.WorkflowStepId);
+        request.AddQueryParameter("workflowLevel", workflowLevel);
+
+        var response = await Client.ExecuteAsync(request);
+        using var doc = JsonDocument.Parse(response?.Content);
+        string jobUid = doc.RootElement.GetProperty("job").GetProperty("uid").GetString();
+
+        var jobrequest = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/{jobUid}", Method.Get);
+        return await Client.ExecuteWithHandling<JobDto>(jobrequest);
     }
 
     // Should be removed in a couple of updates when people adjust.
