@@ -224,23 +224,18 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
         if (input.JobsUIds is not null && input.JobsUIds.Any())
         {
             var request = new RestRequest($"/api2/v1/projects/{input.ProjectUId}/applyTemplate/{input.TemplateUId}/assignProviders/forJobParts", Method.Post);
-            request.WithJsonBody(JsonConvert.SerializeObject(new
-             {
-                 jobs =
-                    input.JobsUIds.Select(x =>
-                    new
-                    {
-                        uid = x
-                    }).ToArray()
-                ,
-             }));
-            await Client.ExecuteAsync(request);
+            var jobsList = input.JobsUIds.Select(uid => new { uid = uid }).ToList();
+            request.AddJsonBody(new
+            {
+                jobs = jobsList
+            });
+            await Client.ExecuteWithHandling(request);
         }
         else 
         {
             var request = new RestRequest($"/api2/v1/projects/{input.ProjectUId}/applyTemplate/{input.TemplateUId}/assignProviders", Method.Post);
 
-            await Client.ExecuteAsync(request);
+            await Client.ExecuteWithHandling(request);
         }
     }
 
