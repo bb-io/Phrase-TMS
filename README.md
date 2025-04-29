@@ -100,7 +100,7 @@ The following actions update a job's file (source or target) from their original
 - **Find project** given the same parameters as _Search projects_, only returns the first matching project
 - **Get project** get global project data for a specific project
 - **Create project** Create a new project. It has the following special inputs:
-  - **Propagate Translations**: Propagate translations to lower workflows when the source updates
+- **Propagate Translations**: Propagate translations to lower workflows when the source updates
 - **Create project from template** same as the previous action, however in this action you can use an existing project template
 - **Add project target language** adds a target language to the project
 - **Update project** updates a project with specified details

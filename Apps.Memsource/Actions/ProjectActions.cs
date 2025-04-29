@@ -23,7 +23,7 @@ namespace Apps.PhraseTMS.Actions;
 [ActionList]
 public class ProjectActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : PhraseInvocable(invocationContext)
 {
-    [Action("Seach projects", Description = "Search for projects matching the filters of the input parameters")]
+    [Action("Search projects", Description = "Search for projects matching the filters of the input parameters")]
     public async Task<ListAllProjectsResponse> ListAllProjects([ActionParameter] ListAllProjectsQuery query)
     {
         var endpoint = "/api2/v1/projects";
