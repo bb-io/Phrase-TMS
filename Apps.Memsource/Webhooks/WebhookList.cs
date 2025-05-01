@@ -418,27 +418,38 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             };
         }
 
-        var projectId = data.metadata.project.Uid;
-
         IEnumerable<JobPart> selectedJobs = data.JobParts;
-        if (!string.IsNullOrEmpty(job.JobUId) && !string.IsNullOrEmpty(projectId))
+        var projectId = data.metadata.project.Uid;
+        int workflowLevel = 0;
+        if (workflowStepRequest != null && !String.IsNullOrEmpty(workflowStepRequest?.WorkflowStepId))
+        {
+            workflowLevel = await Client.GetWorkflowstepLevel(projectId, workflowStepRequest.WorkflowStepId);
+        }
+        else if (lastWorkflowLevel.HasValue && lastWorkflowLevel.Value)
+        {
+            workflowLevel = await Client.GetLastWorkflowstepLevel(projectId);
+        }
+
+        if (job is null && workflowLevel > 0)
+        {
+            if (selectedJobs.Any(x => x.workflowLevel == workflowLevel)) 
+            {
+                selectedJobs = selectedJobs.Where(x => x.workflowLevel == workflowLevel);
+            }
+        }
+        
+        if (!string.IsNullOrEmpty(job?.JobUId) && !string.IsNullOrEmpty(projectId))
         {
             selectedJobs = data.JobParts.Where(x => x.Uid == job.JobUId);
         }
-        else if (!string.IsNullOrEmpty(sourceFileId.SourceFileId) && !string.IsNullOrEmpty(projectId))
+        else if (!string.IsNullOrEmpty(sourceFileId?.SourceFileId) && !string.IsNullOrEmpty(projectId))
         {
             var endpoint = $"/api2/v2/projects/{projectId}/jobs";
             var listJobsRequest = new RestRequest(endpoint.WithQuery(jobsQuery), Method.Get);
-            var workflowLevel = 1;
-            if (workflowStepRequest.WorkflowStepId != null)
+            if (workflowLevel > 0)
             {
-                workflowLevel = await Client.GetWorkflowstepLevel(projectId, workflowStepRequest.WorkflowStepId);                
+                listJobsRequest.AddQueryParameter("workflowLevel", workflowLevel);
             }
-            else if (lastWorkflowLevel.HasValue && lastWorkflowLevel.Value)
-            {
-                workflowLevel = await Client.GetLastWorkflowstepLevel(projectId);
-            }
-            listJobsRequest.AddQueryParameter("workflowLevel", workflowLevel);
             var listJobsResponse = await Client.Paginate<ListJobDto>(listJobsRequest);
             var filteredJobIds = listJobsResponse.Where(x => x.SourceFileUid == sourceFileId.SourceFileId).Select(x => x.Uid);
             selectedJobs = data.JobParts.IntersectBy(filteredJobIds, x => x.Uid);
