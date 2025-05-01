@@ -210,17 +210,33 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
     }
 
     [Action("Download project target files", Description = "Download project target files")]
-    public async Task<DownloadProjectFilesResponse> DownloadProjectTargetFiles([ActionParameter] ProjectRequest input, [ActionParameter] WorkflowStepOptionalRequest workflowStepRequest)
+    public async Task<DownloadProjectFilesResponse> DownloadProjectTargetFiles([ActionParameter] ProjectRequest input, 
+        [ActionParameter] WorkflowStepOptionalRequest workflowStepRequest,
+        [ActionParameter] ListAllJobsQuery jobsquery,
+        [ActionParameter] [Display("Source file ID")] string? sourceFileId,
+        [ActionParameter] [Display("Last workflow step")] bool? lastworkflowstep)
     {
-        var jobActions = new JobActions(InvocationContext, fileManagementClient);
-        var jobs = await jobActions.ListAllJobs(input, new ListAllJobsQuery(), new JobStatusesRequest(), workflowStepRequest, null);
-        var files = new List<FileReference>();
-        foreach (var job in jobs.Jobs)
+        if (lastworkflowstep.HasValue && lastworkflowstep.Value)
         {
-            var file = await jobActions.DownloadTargetFile(input, new JobRequest { JobUId = job.Uid });
-            files.Add(file.File);
+            var project = await GetProject(input);
+            var lastWfStep = project.WorkflowSteps.MaxBy(x => x.WorkflowLevel);
+            workflowStepRequest = new WorkflowStepOptionalRequest { WorkflowStepId = lastWfStep.InnerWorkflowStep.Id };
         }
-
+        var jobActions = new JobActions(InvocationContext, fileManagementClient);
+        var jobs = await jobActions.ListAllJobs(input, jobsquery, new JobStatusesRequest(), workflowStepRequest, null);
+        var files = new List<FileReference>();
+        if (jobs != null && jobs?.Jobs?.Any() == true)
+        {
+            if (!String.IsNullOrEmpty(sourceFileId))
+            {
+                jobs.Jobs = jobs.Jobs.Where(x => x.SourceFileUid == sourceFileId);
+            }
+            foreach (var job in jobs.Jobs)
+            {
+                var file = await jobActions.DownloadTargetFile(input, new JobRequest { JobUId = job.Uid });
+                files.Add(file.File);
+            }
+        }
         return new() { Files = files };
     }
 
