@@ -81,12 +81,12 @@ public class QualityAssuranceActions(InvocationContext invocationContext, IFileM
     public async Task<RunQAResponse> RunQA([ActionParameter] ProjectRequest project,
     [ActionParameter] JobRequest job,
     [ActionParameter] QaChecksRequest qachecks,
-    [Display("Maximum warning count", Description = "Number between 1 and 100. Default is 100.")] double? MaxWarnings)
+    [ActionParameter][Display("Maximum warning count", Description = "Number between 1 and 100. Default is 100.")] double? MaxWarnings)
     {
         var request = new RestRequest($"/api2/v3/projects/{project.ProjectUId}/jobs/{job.JobUId}/qualityAssurances/run", Method.Post);
-        if (qachecks != null)
+        if (qachecks != null && qachecks?.WarningTypes?.Any() == true)
         {
-            var body = new { warningTypes = qachecks.WarningTypes.ToList(), maxQaWarningsCount = MaxWarnings is null? 100 : MaxWarnings };
+            var body = new { warningTypes = qachecks?.WarningTypes.ToList(), maxQaWarningsCount = MaxWarnings is null? 100 : MaxWarnings };
             request.AddJsonBody(JsonConvert.SerializeObject(body));
         }
         else 
@@ -96,8 +96,9 @@ public class QualityAssuranceActions(InvocationContext invocationContext, IFileM
         }
         
         var response = await Client.ExecuteWithHandling<RunQAResponse>(request);
-        response.OutstandingWarnings = response.SegmentWarnings != null && response.SegmentWarnings?.Count > 0;
+        response.OutstandingWarnings = response?.SegmentWarnings != null && response.SegmentWarnings?.Count > 0;
         return response;
+
     }
 
     private static string GetFileNameFromResponse(RestResponse response)
