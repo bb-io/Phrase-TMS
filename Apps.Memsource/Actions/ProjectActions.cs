@@ -192,14 +192,20 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
     public async Task<DownloadProjectFilesResponse> DownloadProjectOriginalFiles([ActionParameter] ProjectRequest input)
     {
         var jobActions = new JobActions(InvocationContext, fileManagementClient);
-        var jobs = await jobActions.ListAllJobs(input, new ListAllJobsQuery(), new JobStatusesRequest(), null, null);
+        var jobs = await jobActions.ListAllJobs(input, null, null, null, null);
         var files = new List<FileReference>();
-        foreach (var job in jobs.Jobs)
+        if (jobs != null && jobs?.Jobs?.Any() == true)
         {
-            var file = await jobActions.DownloadOriginalFile(input, new JobRequest { JobUId = job.Uid });
-            files.Add(file.File);
-        }
+            foreach (var job in jobs.Jobs)
+            {
+                if (string.IsNullOrWhiteSpace(job?.Uid))
+                    continue;
 
+                var file = await jobActions.DownloadOriginalFile(input, new JobRequest { JobUId = job.Uid });
+                if (file?.File != null)
+                    files.Add(file.File);
+            }            
+        }
         return new() { Files = files };
     }
 

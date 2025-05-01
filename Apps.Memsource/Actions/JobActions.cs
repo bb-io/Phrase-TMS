@@ -37,7 +37,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
     {
         var endpoint = $"/api2/v2/projects/{input.ProjectUId}/jobs";
         var request = new RestRequest(endpoint.WithQuery(query), Method.Get);
-        if (workflowStepRequest.WorkflowStepId != null)
+        if (workflowStepRequest != null && !String.IsNullOrEmpty(workflowStepRequest?.WorkflowStepId))
         {
             var workflowLevel = await Client.GetWorkflowstepLevel(input.ProjectUId, workflowStepRequest.WorkflowStepId);
             request.AddQueryParameter("workflowLevel", workflowLevel);
@@ -68,7 +68,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
                 };
             }
 
-            if (jobStatusesRequest.Statuses != null)
+            if (jobStatusesRequest != null && jobStatusesRequest?.Statuses?.Any() == true)
             {
                 response = response.Where(x => jobStatusesRequest.Statuses.Contains(x.Status)).ToList();
             }
