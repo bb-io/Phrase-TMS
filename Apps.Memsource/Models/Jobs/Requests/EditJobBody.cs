@@ -6,7 +6,7 @@ namespace Apps.PhraseTMS.Models.Jobs.Requests;
 
 public class EditJobBody
 {
-    [StaticDataSource(typeof(JobStatusDataHandler))]
+    [StaticDataSource(typeof(UpdateJobStatusDataHandler))]
     public string? Status { get; set; } 
     
     [Display("Due date")]
