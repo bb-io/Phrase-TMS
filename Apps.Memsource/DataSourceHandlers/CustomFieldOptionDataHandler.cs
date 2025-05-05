@@ -24,6 +24,7 @@ public class CustomFieldOptionDataHandler : PhraseInvocable, IAsyncDataSourceIte
         {
             throw new PluginMisconfigurationException("Please fill in Custom Field ID first");
         }
+        
         var endpoint = $"api2/v1/customFields/{customFieldRequest.FieldUId}/options";
         var request = new RestRequest(endpoint, Method.Get);
         if (context.SearchString != null) request.AddQueryParameter("name", context.SearchString);
