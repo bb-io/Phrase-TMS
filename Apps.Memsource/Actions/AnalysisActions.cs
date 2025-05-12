@@ -135,4 +135,35 @@ public class AnalysisActions(InvocationContext invocationContext, IFileManagemen
 
         return new AnalysisFileResponse { AnalysisFile = fileReference };
     }
+
+    [Action("Update analysis", Description = "Assign provider and net rate scheme to analysis")]
+    public async Task<FullAnalysisDto> UpdateAnalysis(
+        [ActionParameter] GetAnalysisRequest input,
+        [ActionParameter] EditAnalysisRequest analysisData)
+    {
+        var bodyDictionary = new Dictionary<string, object>();
+        if (analysisData.vendorId != null)
+        {
+            bodyDictionary.Add("provider", new[] { new { type = "VENDOR", id = analysisData.vendorId } });
+        }
+
+        if (analysisData.userId != null)
+        {
+            bodyDictionary.Add("provider", new[] { new { type = "USER", id = analysisData.userId } });
+        }
+
+        if (!String.IsNullOrEmpty(analysisData.Name))
+        {
+            bodyDictionary.Add("name",analysisData.Name);
+        }
+
+        if (!String.IsNullOrEmpty(analysisData.NetRateSchemeId))
+        {
+            bodyDictionary.Add("netRateScheme", new {uid = analysisData.NetRateSchemeId });
+        }
+
+        var request = new RestRequest($"/api2/v2/analyses/{input.AnalysisUId}", Method.Put)
+            .WithJsonBody(bodyDictionary, JsonConfig.DateSettings);
+        return await Client.ExecuteWithHandling<FullAnalysisDto>(request);
+    }
 }
