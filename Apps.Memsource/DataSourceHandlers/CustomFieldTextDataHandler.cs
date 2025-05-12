@@ -10,11 +10,16 @@ public class CustomFieldTextDataHandler(InvocationContext invocationContext) : P
 {
     public async Task<IEnumerable<DataSourceItem>> GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
     {
-        var request = new RestRequest("api2/v1/customFields", Method.Get);
-        request.AddQueryParameter("types", "STRING,URL");
-        if (context.SearchString != null) request.AddQueryParameter("name", context.SearchString);
+        var request = new RestRequest("api2/v1/customFields", Method.Get)
+            .AddQueryParameter("types", "STRING")
+            .AddQueryParameter("types", "URL");
+        
+        if (context.SearchString != null)
+        {
+            request.AddQueryParameter("name", context.SearchString);
+        }
+        
         var response = await Client.PaginateOnce<CustomFieldDto>(request);
         return response.Select(x => new DataSourceItem(x.UId, x.Name));
     }
 }
-

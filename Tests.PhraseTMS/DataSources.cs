@@ -85,6 +85,9 @@ namespace Tests.PhraseTMS
         public async Task Project_template_with_query_returns_values() => await Test(new ProjectTemplateDataHandler(InvocationContext), "test");
 
         [TestMethod]
+        public async Task CustomFields_returns_values() => await Test(new CustomFieldTextDataHandler(InvocationContext));
+
+        [TestMethod]
         public async Task Reference_file_returns_values() => await Test(new ReferenceFileDataHandler(InvocationContext, new ReferenceFileRequest { ProjectUId = EMPTY_PROJECT_ID }));
 
         [TestMethod]
