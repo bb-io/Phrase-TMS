@@ -40,6 +40,7 @@ Before you can connect you need to make sure that:
 - **Get analysis data** returns the full details of a specific analysis.
 - **Create analyses** create one or multiple analyses for jobs in a given project
 - **Download analysis file** download an analysis file in specified format, you can choose from CSV, JSON and LOG
+- **Update analysis** Assign provider and net rate scheme to analysis
 
 ### Clients
 
@@ -80,9 +81,10 @@ Custom fields are associated with a specific type, e.g. date, number, text, etc.
 - **Upload source file (create jobs)** uploads a source file to the project and creates relevant jobs for these files. This action will return multiple jobs as its output. It will also return a single Source file ID. See instructions below on how to use this in combination with 'On job status changed'.
 - **Find job from source file ID** given a source file ID, a workflow step ID and a language, returns the job.
 - **Find job from server task ID** given a server task ID, a workflow step ID and a project ID, returns the job.
-- **Delete job** deletes jobs from a project
+- **Delete job** Deletes jobs from a project
 - **Update job** Update a job's global data
 - **Pre-translate job** pre-translate a job in the project
+- **Export jobs to online repository** Exports jobs to online repository
 
 The following actions download job files in either their original format or as a bilingual file.
 - **Download target file**
