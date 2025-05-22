@@ -26,7 +26,7 @@ public class ListAllUsersQuery
     public IEnumerable<string>? role { get; set; }
 
     [Display("Include deleted")]
-    public bool includeDeleted { get; set; }
+    public bool? includeDeleted { get; set; }
 
     [Display("Sort")]
     public IEnumerable<string>? sort { get; set; }
