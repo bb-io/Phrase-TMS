@@ -90,6 +90,24 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         }
     }
 
+    [Action("Export jobs to online repository", Description = "Exports jobs to online repository")]
+    public async Task<ExportJobsResponse> ExportJobsToOnlineRepository(
+        [ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] ExportJobsToOnlineRepositoryRequest jobsRequest)
+    {
+        var request = new RestRequest($"/api2/v3/projects/{projectRequest.ProjectUId}/jobs/export", Method.Post);
+
+        var body = new
+        {
+            jobs = jobsRequest.JobIds.Select(jobId => new { uid = jobId }).ToList()
+        };
+
+        request.AddJsonBody(body);
+
+        var response = await Client.ExecuteWithHandling<ExportJobsResponse>(request);
+        return response;
+    }
+
     [Action("Get job", Description = "Get all job information for a specific job")]
     public async Task<JobDto> GetJob(
         [ActionParameter] ProjectRequest projectRequest,

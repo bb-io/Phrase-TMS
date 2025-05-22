@@ -31,7 +31,7 @@ namespace Tests.PhraseTMS
         public async Task Search_jobs_works()
         {
             var action = new JobActions(InvocationContext, FileManager);
-            var projectRequest = new ProjectRequest { ProjectUId = PROJECT_ID };
+            var projectRequest = new ProjectRequest { ProjectUId = "FwDrhxXNmSU15GNJiDVvQ7" };
             var searchQuery = new ListAllJobsQuery
             {
 
@@ -162,5 +162,23 @@ namespace Tests.PhraseTMS
         //    Assert.IsNotNull(result);
         //}
 
+
+
+
+        [TestMethod]
+        public async Task ExportJobsToOnlineRepository_Success()
+        {
+            var action = new JobActions(InvocationContext, FileManager);
+            var input1 = new ProjectRequest { ProjectUId = "FwDrhxXNmSU15GNJiDVvQ7" };
+            var jobs = new ExportJobsToOnlineRepositoryRequest { JobIds = ["wH062Uw4XpQ9qq8LZ53cf0", "nc6TRX9h3upSeZV0177xF5"] };
+
+            var result = await action.ExportJobsToOnlineRepository(input1, jobs);
+            foreach (var job in result.Jobs)
+            {
+                Console.WriteLine($"{job.Uid}");
+            }
+            
+            Assert.IsNotNull(result);
+        }
     }
 }
