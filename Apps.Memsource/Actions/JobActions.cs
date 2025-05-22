@@ -103,7 +103,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         };
 
         request.AddJsonBody(body);
-
+        Console.WriteLine(JsonConvert.SerializeObject(request, Formatting.Indented));
         var response = await Client.ExecuteWithHandling<ExportJobsResponse>(request);
         return response;
     }
