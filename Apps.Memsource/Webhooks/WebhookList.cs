@@ -370,7 +370,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         [WebhookParameter] OptionalSearchJobsQuery jobsQuery,
         [WebhookParameter] [Display("Last workflow level?")] bool? lastWorkflowLevel,
         [WebhookParameter] [Display("Project name contains")] string? projectNameContains,
-        [WebhookParameter] [Display("Subdomain ID")][DataSource(typeof(SubdomainDataHandler))] string? subdomain)
+        [WebhookParameter] MultipleSubdomains subdomains)
     {
         if (job?.JobUId != null && projectOptionalRequest?.ProjectUId == null)
         {
@@ -408,7 +408,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             };
         }
 
-        if (!String.IsNullOrEmpty(subdomain) && data.metadata.project.subDomain.subDomainUid != subdomain)
+        if (subdomains != null && subdomains.Subdomains != null && !subdomains.Subdomains.Contains(data.metadata.project.subDomain.subDomainUid))
         {
             return new()
             {
