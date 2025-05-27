@@ -1,4 +1,5 @@
 using System.Data;
+using System.Linq;
 using Apps.PhraseTMS.DataSourceHandlers;
 using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Dtos.Analysis;
@@ -28,7 +29,9 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
 
     [Webhook("On project created", typeof(ProjectCreationHandler), Description = "On a new project created")]
     public async Task<WebhookResponse<ProjectDto>> ProjectCreation(WebhookRequest webhookRequest,
-        [WebhookParameter] ProjectCreatedRequest projectCreatedRequest)
+        [WebhookParameter] ProjectCreatedRequest projectCreatedRequest,
+        [WebhookParameter] MultipleSubdomains subdomains,
+        [WebhookParameter] MultipleDomains domains)
     {
         var data = JsonConvert.DeserializeObject<ProjectWrapper>(webhookRequest.Body.ToString()!);
 
@@ -39,6 +42,24 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
 
         if (!string.IsNullOrEmpty(projectCreatedRequest.ProjectNameContains) &&
             !data.Project.Name!.Contains(projectCreatedRequest.ProjectNameContains))
+        {
+            return new()
+            {
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight
+            };
+        }
+
+        if (subdomains != null && subdomains.Subdomains != null 
+            && !subdomains.Subdomains.Contains(data.Project.SubDomain?.Uid))
+        {
+            return new()
+            {
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight
+            };
+        }
+
+        if (domains != null && domains.Domains != null
+            && !domains.Domains.Contains(data.Project.Domain?.Uid))
         {
             return new()
             {
@@ -179,7 +200,9 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
     public async Task<WebhookResponse<ProjectDto>> ProjectStatusChanged(WebhookRequest webhookRequest,
         [WebhookParameter] ProjectStatusChangedRequest request,
         [WebhookParameter] ProjectOptionalRequest project,
-        [WebhookParameter][Display("Project name contains")] string? projectNameContains)
+        [WebhookParameter][Display("Project name contains")] string? projectNameContains,
+        [WebhookParameter] MultipleSubdomains subdomains,
+        [WebhookParameter] MultipleDomains domains)
     {
         var data = JsonConvert.DeserializeObject<ProjectWrapper>(webhookRequest.Body.ToString());
         if (data is null)
@@ -193,6 +216,24 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             {
                 HttpResponseMessage = null,
                 Result = null,
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight
+            };
+        }
+
+        if (subdomains != null && subdomains.Subdomains != null
+            && !subdomains.Subdomains.Contains(data.Project.SubDomain?.Uid))
+        {
+            return new()
+            {
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight
+            };
+        }
+
+        if (domains != null && domains.Domains != null
+            && !domains.Domains.Contains(data.Project.Domain?.Uid))
+        {
+            return new()
+            {
                 ReceivedWebhookRequestType = WebhookRequestType.Preflight
             };
         }

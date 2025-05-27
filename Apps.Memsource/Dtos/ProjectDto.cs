@@ -69,12 +69,16 @@ public class Domain
 {
     [Display("Domain Name")] 
     public string Name { get; set; }
+
+    public string Uid { get; set; }
 }
 
 public class SubDomain
 {
     [Display("Subdomain Name")] 
     public string Name { get; set; }
+
+    public string Uid { get; set; }
 }
 
 public class Client
