@@ -2,6 +2,7 @@
 using Apps.PhraseTMS.Models.Analysis.Requests;
 using Apps.PhraseTMS.Models.Jobs.Requests;
 using Apps.PhraseTMS.Models.Projects.Requests;
+using Blackbird.Applications.Sdk.Common.Files;
 using Newtonsoft.Json;
 using PhraseTMSTests.Base;
 
@@ -74,7 +75,7 @@ namespace Tests.PhraseTMS
         {
             var action = new JobActions(InvocationContext, FileManager);
             var projectRequest = new ProjectRequest { ProjectUId = PROJECT_ID };
-            var input2 = new CreateJobsRequest {  File = new Blackbird.Applications.Sdk.Common.Files.FileReference { Name = "test.txt" } };
+            var input2 = new CreateJobsRequest { useProjectFileImportSettings=true,  File = new FileReference { Name = "Business Trial Follow Up Email AIFW - 2567.html" } };
 
             var result = await action.CreateJobs(projectRequest, input2);
 
