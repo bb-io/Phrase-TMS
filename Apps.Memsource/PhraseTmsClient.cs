@@ -5,6 +5,7 @@ using Apps.PhraseTMS.Models.Responses;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
+using HtmlAgilityPack;
 using Newtonsoft.Json;
 using RestSharp;
 using System.Net;
@@ -138,6 +139,12 @@ public class PhraseTmsClient : RestClient
             throw new PluginApplicationException(error.ErrorDescription + " Please check the inputs for this action");
         }
 
+        if (restResponse.ContentType?.Contains("text/html", StringComparison.OrdinalIgnoreCase) == true || restResponse.Content.StartsWith("<"))
+        {
+            var errorMessage = ExtractHtmlErrorMessage(restResponse.Content);
+            throw new PluginApplicationException(errorMessage);
+        }
+
 
         if (error.ErrorDescription.Contains("JobCountLimit"))
             throw new PluginMisconfigurationException("You have reached your job count limit. Please remove some jobs or increase your limit by upgrading your Phrase plan.");
@@ -166,5 +173,20 @@ public class PhraseTmsClient : RestClient
         var response = await ExecuteWithHandling<ProjectDto>(request);
         if (response.WorkflowSteps.Count() == 0) return 1;
         return response.WorkflowSteps.Select(x => x.WorkflowLevel).Max();
+    }
+
+    private string ExtractHtmlErrorMessage(string html)
+    {
+        if (string.IsNullOrEmpty(html)) return "N/A";
+
+        var htmlDoc = new HtmlDocument();
+        htmlDoc.LoadHtml(html);
+
+        var titleNode = htmlDoc.DocumentNode.SelectSingleNode("//title");
+        var bodyNode = htmlDoc.DocumentNode.SelectSingleNode("//body");
+
+        var title = titleNode?.InnerText.Trim() ?? "No Title";
+        var body = bodyNode?.InnerText.Trim() ?? "No Description";
+        return $"{title}: \nError Description: {body}";
     }
 }
