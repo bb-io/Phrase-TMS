@@ -50,7 +50,7 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
     [Action("Get project", Description = "Get global project data for a specific project")]
     public async Task<ProjectDto> GetProject([ActionParameter] ProjectRequest input)
     {
-        var request = new RestRequest($"/api2/v1/projects/{input.ProjectUId}", Method.Get);
+        var request = new RestRequest($"/api2/v1/projects/{input.ProjectUId}?with=owners", Method.Get);
         return await Client.ExecuteWithHandling<ProjectDto>(request);
     }
 

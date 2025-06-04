@@ -49,7 +49,11 @@ namespace Tests.PhraseTMS
             workflow.Add("lxHYoo7KWvWN6R7Ca99mz3");
             workflow.Add("NeLxbybjmGHy69Dq0QAsR0");
 
-            var input = new CreateFromTemplateRequest {SourceLanguage = "hu", TargetLanguages=targetLangs,TemplateUId= "lG56tOurwL9u21kRlsXgy3", Name="template project", WorkflowSteps = workflow };
+            var input = new CreateFromTemplateRequest {SourceLanguage = "hu", 
+                TargetLanguages=targetLangs,
+                TemplateUId= "lG56tOurwL9u21kRlsXgy3", 
+                Name="template project with date with neccesary timezone", 
+            };
 
             var result = await actions.CreateProjectFromTemplate(input);
 
@@ -73,7 +77,7 @@ namespace Tests.PhraseTMS
         public async Task Get_project_works()
         {
             var actions = new ProjectActions(InvocationContext, FileManager);
-            var result = await actions.GetProject(new ProjectRequest { ProjectUId = "FwDrhxXNmSU15GNJiDVvQ7" });
+            var result = await actions.GetProject(new ProjectRequest { ProjectUId = "0ZVImvG0oRFR1FPsyj9Jol" });
 
             Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
             Assert.IsNotNull(result);
