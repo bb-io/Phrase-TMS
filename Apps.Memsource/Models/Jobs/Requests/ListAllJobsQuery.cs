@@ -9,8 +9,8 @@ namespace Apps.PhraseTMS.Models.Jobs.Requests;
 
 public class ListAllJobsQuery
 {
-    [Display("Assigned user ID"), JsonProperty("assignedUser")]
-    public int? AssignedUser { get; set; }
+    [Display("Assigned users ID"), JsonProperty("assignedUser")]
+    public IEnumerable<int>? AssignedUsers { get; set; }
 
     [Display("Due in hours"), JsonProperty("dueInHours")]
     public int? DueInHours { get; set; }

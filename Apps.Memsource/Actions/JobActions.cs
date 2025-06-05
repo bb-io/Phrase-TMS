@@ -36,25 +36,111 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         [ActionParameter] [Display("LQA Score null?")] bool? LQAScorenull)
     {
         var endpoint = $"/api2/v2/projects/{input.ProjectUId}/jobs";
-        var request = new RestRequest(endpoint.WithQuery(query), Method.Get);
-        if (workflowStepRequest != null && !String.IsNullOrEmpty(workflowStepRequest?.WorkflowStepId))
+        var jobs = new List<ListJobDto>();
+
+        if (query != null && query.AssignedUsers?.Any() == true)
         {
-            var workflowLevel = await Client.GetWorkflowstepLevel(input.ProjectUId, workflowStepRequest.WorkflowStepId);
-            request.AddQueryParameter("workflowLevel", workflowLevel);
+            foreach (var userId in query.AssignedUsers)
+            {
+                var request = new RestRequest(endpoint, Method.Get);
+
+                request.AddQueryParameter("assignedUser", userId);
+
+                if (query.DueInHours.HasValue)
+                {
+                    request.AddQueryParameter("dueInHours", query.DueInHours.Value);
+                }
+                if (!string.IsNullOrEmpty(query.Filename))
+                {
+                    request.AddQueryParameter("filename", query.Filename);
+                }
+                if (!string.IsNullOrEmpty(query.TargetLang))
+                {
+                    request.AddQueryParameter("targetLang", query.TargetLang);
+                }
+                if (query.AssignedVendor.HasValue)
+                {
+                    request.AddQueryParameter("assignedVendor", query.AssignedVendor.Value);
+                }
+
+                int? workflowLevel = null;
+                if (workflowStepRequest != null && !string.IsNullOrEmpty(workflowStepRequest.WorkflowStepId))
+                {
+                    workflowLevel = await Client.GetWorkflowstepLevel(input.ProjectUId, workflowStepRequest.WorkflowStepId);
+                }
+                else if (query.AssignedUsers.Count() > 1)
+                {
+                    var lastWorkflowStep = await GetLastWorkflowStep(input.ProjectUId);
+                    if (lastWorkflowStep != null)
+                    {
+                        workflowLevel = await Client.GetWorkflowstepLevel(input.ProjectUId, lastWorkflowStep.Id);
+                    }
+                }
+
+                if (workflowLevel.HasValue)
+                {
+                    request.AddQueryParameter("workflowLevel", workflowLevel.Value);
+                }
+
+                var response = await Client.Paginate<ListJobDto>(request);
+                jobs.AddRange(response);
+            }
         }
+        else
+        {
+            var request = new RestRequest(endpoint, Method.Get);
+
+            if (query != null)
+            {
+                if (query.DueInHours.HasValue)
+                {
+                    request.AddQueryParameter("dueInHours", query.DueInHours.Value);
+                }
+                if (!string.IsNullOrEmpty(query.Filename))
+                {
+                    request.AddQueryParameter("filename", query.Filename);
+                }
+                if (!string.IsNullOrEmpty(query.TargetLang))
+                {
+                    request.AddQueryParameter("targetLang", query.TargetLang);
+                }
+                if (query.AssignedVendor.HasValue)
+                {
+                    request.AddQueryParameter("assignedVendor", query.AssignedVendor.Value);
+                }
+            }
+
+            int? workflowLevel = null;
+            if (workflowStepRequest != null && !string.IsNullOrEmpty(workflowStepRequest.WorkflowStepId))
+            {
+                workflowLevel = await Client.GetWorkflowstepLevel(input.ProjectUId, workflowStepRequest.WorkflowStepId);
+            }
+
+            if (workflowLevel.HasValue)
+            {
+                request.AddQueryParameter("workflowLevel", workflowLevel.Value);
+            }
+
+            var response = await Client.Paginate<ListJobDto>(request);
+            jobs.AddRange(response);
+        }
+
         try
         {
-            var response = await Client.Paginate<ListJobDto>(request);
+            jobs = jobs
+                .GroupBy(j => j.Uid)
+                .Select(g => g.First())
+                .ToList();
 
             if (LQAScorenull.HasValue && LQAScorenull.Value)
             {
                 var lqaEndpoint = "/api2/v1/lqa/assessments";
                 var lqaRequest = new RestRequest(lqaEndpoint, Method.Post);
                 var bodyDictionary = new Dictionary<string, object>
-                {
-                    { "jobParts", response.Select(u => new { uid = u.Uid }) }
-                };
-                
+            {
+                { "jobParts", jobs.Select(u => new { uid = u.Uid }) }
+            };
+
                 lqaRequest.WithJsonBody(bodyDictionary);
                 var result = await Client.ExecuteWithHandling(lqaRequest);
                 var data = JsonConvert.DeserializeObject<LQAAssessmentSimpleDto>(result.Content!);
@@ -62,20 +148,20 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
                     .Where(a => a.LqaEnabled && a.AssessmentResult == null)
                     .Select(a => a.JobPartUid)?.ToList() ?? Enumerable.Empty<string>();
 
-                return new()
+                return new ListAllJobsResponse
                 {
-                    Jobs = response.Where(x => jobsWithoutLQA.Contains(x.Uid))?.ToList() ?? new List<ListJobDto>()
+                    Jobs = jobs.Where(x => jobsWithoutLQA.Contains(x.Uid))?.ToList() ?? new List<ListJobDto>()
                 };
             }
 
-            if (jobStatusesRequest != null && jobStatusesRequest?.Statuses?.Any() == true)
+            if (jobStatusesRequest != null && jobStatusesRequest.Statuses?.Any() == true)
             {
-                response = response.Where(x => jobStatusesRequest.Statuses.Contains(x.Status)).ToList();
+                jobs = jobs.Where(x => jobStatusesRequest.Statuses.Contains(x.Status)).ToList();
             }
 
-            return new()
+            return new ListAllJobsResponse
             {
-                Jobs = response
+                Jobs = jobs
             };
         }
         catch (Exception e)
@@ -83,12 +169,29 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
             if (e.Message.Contains("Invalid parameters") || e.Message.Contains("The object referenced by the field") ||
                 e.Message.Contains("unsupported locale"))
             {
-                throw new PluginMisconfigurationException(e.Message + "Make sure that the input values are correct.");
+                throw new PluginMisconfigurationException(e.Message + " Make sure that the input values are correct.");
             }
-            
+
             throw new PluginApplicationException(e.Message);
         }
     }
+
+    public async Task<WorkflowStepDto?> GetLastWorkflowStep(string projectUId)
+    {
+        var endpoint = $"/api2/v2/projects/{projectUId}/workflowSteps";
+        var request = new RestRequest(endpoint, Method.Get);
+
+        try
+        {
+            var response = await Client.ExecuteWithHandling<List<WorkflowStepDto>>(request);
+            return response.OrderByDescending(w => w.WorkflowLevel).FirstOrDefault();
+        }
+        catch (Exception e)
+        {
+            throw new PluginApplicationException($"Failed to retrieve workflow steps: {e.Message}");
+        }
+    }
+
 
     [Action("Export jobs to online repository", Description = "Exports jobs to online repository")]
     public async Task<ExportJobsResponse> ExportJobsToOnlineRepository(

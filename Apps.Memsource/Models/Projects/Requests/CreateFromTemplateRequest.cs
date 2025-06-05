@@ -1,5 +1,7 @@
 ﻿using Apps.PhraseTMS.DataSourceHandlers;
+using Apps.PhraseTMS.DataSourceHandlers.StaticHandlers;
 using Blackbird.Applications.Sdk.Common;
+using Blackbird.Applications.Sdk.Common.Dictionaries;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.PhraseTMS.Models.Projects.Requests;
@@ -15,6 +17,12 @@ public class CreateFromTemplateRequest
     [Display("Due date")]
     public DateTime? DateDue { get; set; }
 
+    //[Display("Due date (Text)")]
+    //public string? DateDueString { get; set; }
+
+    //[Display("TimeZone")]
+    //[StaticDataSource(typeof(TimeZoneSourceHandler))]
+    //public string? TimeZone { get; set; }
 
     [Display("Source language")]
     public string? SourceLanguage { get; set; }

@@ -1,5 +1,6 @@
 ﻿using Blackbird.Applications.Sdk.Common;
 using Newtonsoft.Json;
+using System;
 
 namespace Apps.PhraseTMS.Dtos;
 
@@ -63,6 +64,12 @@ public class ProjectDto
     [DefinitionIgnore]
     [JsonProperty("workflowSteps")]
     public IEnumerable<WorkflowStep> WorkflowSteps { get; set; }
+
+    [JsonProperty("buyerOwner")]
+    public BuyerOwner? BuyerOwner { get; set; }
+
+    [JsonProperty("buyer")]
+    public Buyer? Buyer { get; set; }
 }
 
 public class Domain
@@ -133,4 +140,43 @@ public class WorkflowStep
 public class InnerWorkflowStep
 {
     public string Id { get; set; }
+}
+
+public class BuyerOwner
+{
+    [Display("Type")]
+    public string? Type { get; set; }
+
+    [Display("ID")]
+    public string? Id { get; set; }
+
+    [Display("UID")]
+    public string? Uid { get; set; }
+
+    [Display("Username")]
+    public string? UserName { get; set; }
+
+    [Display("First Name")]
+    public string? FirstName { get; set; }
+
+    [Display("Last Name")]
+    public string? LastName { get; set; }
+
+    [Display("Email")]
+    public string? Email { get; set; }
+
+    [Display("Active")]
+    public bool? Active { get; set; }
+}
+
+public class Buyer
+{
+    [Display("ID")]
+    public string? Id { get; set; }
+
+    [Display("UID")]
+    public string? Uid { get; set; }
+
+    [Display("Name")]
+    public string? Name { get; set; }
 }

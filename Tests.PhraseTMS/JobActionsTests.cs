@@ -35,7 +35,6 @@ namespace Tests.PhraseTMS
             var projectRequest = new ProjectRequest { ProjectUId = "FwDrhxXNmSU15GNJiDVvQ7" };
             var searchQuery = new ListAllJobsQuery
             {
-
             };
             var jobStatuses = new JobStatusesRequest
             {
@@ -43,7 +42,8 @@ namespace Tests.PhraseTMS
             };
             var workflowStep = new WorkflowStepOptionalRequest
             {
-
+                WorkflowStepId = "7445",
+                
             };
 
             bool? lqaScore = null;
