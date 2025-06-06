@@ -73,12 +73,28 @@ public class PhraseTmsClient : RestClient
 
     public async Task<RestResponse> ExecuteWithHandling(RestRequest request)
     {
-        var response = await ExecuteAsync(request);
+        int[] retryDelaysInMs = { 2000, 4000, 8000 };
+        RestResponse response = null;
+        
+        for (int attempt = 0; attempt <= retryDelaysInMs.Length; attempt++)
+        {
+            response = await ExecuteAsync(request);
 
-        if (response.IsSuccessful)
-            return response;
+            if (response.IsSuccessful)
+            {
+                return response;
+            }
 
-        throw ConfigureErrorException(response);
+            if (response.StatusCode == HttpStatusCode.InternalServerError && attempt < retryDelaysInMs.Length)
+            {
+                await Task.Delay(retryDelaysInMs[attempt]);
+                continue;
+            }
+            
+            throw ConfigureErrorException(response);
+        }
+
+        return response!;
     }
         
     public async Task<List<T>> Paginate<T>(RestRequest request)
