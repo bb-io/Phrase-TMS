@@ -1,6 +1,4 @@
 using System.Data;
-using System.Linq;
-using Apps.PhraseTMS.DataSourceHandlers;
 using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Dtos.Analysis;
 using Apps.PhraseTMS.Dtos.Jobs;
@@ -12,7 +10,6 @@ using Apps.PhraseTMS.Webhooks.Handlers.OtherHandlers;
 using Apps.PhraseTMS.Webhooks.Handlers.ProjectHandlers;
 using Apps.PhraseTMS.Webhooks.Models.Requests;
 using Blackbird.Applications.Sdk.Common;
-using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.Sdk.Common.Webhooks;
@@ -200,7 +197,8 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
     public async Task<WebhookResponse<ProjectDto>> ProjectStatusChanged(WebhookRequest webhookRequest,
         [WebhookParameter] ProjectStatusChangedRequest request,
         [WebhookParameter] ProjectOptionalRequest project,
-        [WebhookParameter][Display("Project name contains")] string? projectNameContains,
+        [WebhookParameter] [Display("Project name contains")] string? projectNameContains,
+        [WebhookParameter] [Display("Project name doesn't contains")] string? projectNameDoesntContains,
         [WebhookParameter] MultipleSubdomains subdomains,
         [WebhookParameter] MultipleDomains domains)
     {
@@ -249,6 +247,16 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         }
 
         if (!String.IsNullOrEmpty(projectNameContains) && !data.Project.Name.Contains(projectNameContains))
+        {
+            return new()
+            {
+                HttpResponseMessage = null,
+                Result = null,
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight
+            };
+        }
+
+        if (!String.IsNullOrEmpty(projectNameDoesntContains) && data.Project.Name.Contains(projectNameDoesntContains))
         {
             return new()
             {
@@ -411,6 +419,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         [WebhookParameter] OptionalSearchJobsQuery jobsQuery,
         [WebhookParameter] [Display("Last workflow level?")] bool? lastWorkflowLevel,
         [WebhookParameter] [Display("Project name contains")] string? projectNameContains,
+        [WebhookParameter] [Display("Project name doesn't contains")] string? projectNameDoesntContains,
         [WebhookParameter] MultipleSubdomains subdomains)
     {
         if (job?.JobUId != null && projectOptionalRequest?.ProjectUId == null)
@@ -430,6 +439,16 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         }
 
         if (!String.IsNullOrEmpty(projectNameContains) && !data.metadata.project.Name.Contains(projectNameContains))
+        {
+            return new()
+            {
+                HttpResponseMessage = null,
+                Result = null,
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight
+            };
+        }
+
+        if (!String.IsNullOrEmpty(projectNameDoesntContains) && data.metadata.project.Name.Contains(projectNameDoesntContains))
         {
             return new()
             {
