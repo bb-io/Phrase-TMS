@@ -61,8 +61,8 @@ public class ProjectDto
     [JsonProperty("isPublishedOnJobBoard")]
     public string IsPublishedOnJobBoard { get; set; }
 
-    [DefinitionIgnore]
     [JsonProperty("workflowSteps")]
+    [Display("Workflow steps")]
     public IEnumerable<WorkflowStep> WorkflowSteps { get; set; }
 
     [JsonProperty("buyerOwner")]
