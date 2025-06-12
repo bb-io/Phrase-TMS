@@ -77,7 +77,7 @@ namespace Tests.PhraseTMS
         public async Task Get_project_works()
         {
             var actions = new ProjectActions(InvocationContext, FileManager);
-            var result = await actions.GetProject(new ProjectRequest { ProjectUId = "0ZVImvG0oRFR1FPsyj9Jol" });
+            var result = await actions.GetProject(new ProjectRequest { ProjectUId = "9BZbL0QL0CE6I45Q0CFpgh" });
 
             Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
             Assert.IsNotNull(result);
