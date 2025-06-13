@@ -652,6 +652,29 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
     }
 
 
+    [Action("Remove assigned providers from job", Description = "Removes assigned providers from job")]
+    public async Task<JobDto> RemoveProvider(
+        [ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] JobRequest jobRequest)
+    {
+        var requestGet = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/{jobRequest.JobUId}", Method.Get);
+        var job = await Client.ExecuteWithHandling<JobDto>(requestGet);
+
+        var requestRemove = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/{jobRequest.JobUId}", Method.Put);
+
+        var removeBody = new
+        {
+            status = job.Status,
+            dateDue = job.DateDue,
+            providers = new List<string>() 
+        };
+
+        requestRemove.AddJsonBody(removeBody);
+
+        return await Client.ExecuteWithHandling<JobDto>(requestRemove);
+    }
+
+
     public static bool IsOnlyAscii(string input)
     {
         return input.All(c => c <= 127);
