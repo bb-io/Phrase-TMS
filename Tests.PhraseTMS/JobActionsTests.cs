@@ -32,7 +32,7 @@ namespace Tests.PhraseTMS
         public async Task Search_jobs_works()
         {
             var action = new JobActions(InvocationContext, FileManager);
-            var projectRequest = new ProjectRequest { ProjectUId = "FwDrhxXNmSU15GNJiDVvQ7" };
+            var projectRequest = new ProjectRequest { ProjectUId = "RjmNQDYiERXq75syXIdHS2" };
             var searchQuery = new ListAllJobsQuery
             {
             };
@@ -180,6 +180,21 @@ namespace Tests.PhraseTMS
             }
             
             Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public async Task Remove_Provers_works()
+        {
+            var action = new JobActions(InvocationContext, FileManager);
+            var projectRequest = new ProjectRequest { ProjectUId = "RjmNQDYiERXq75syXIdHS2" };
+            var jobRequest = new JobRequest { JobUId = "fk6DHhe6TcFk2Zu9VWTx21" };
+
+            var result = await action.RemoveProvider(projectRequest, jobRequest);
+
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.Uid);
+
+            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
         }
     }
 }

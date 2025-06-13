@@ -85,6 +85,7 @@ Custom fields are associated with a specific type, e.g. date, number, text, etc.
 - **Update job** Update a job's global data
 - **Pre-translate job** pre-translate a job in the project
 - **Export jobs to online repository** Exports jobs to online repository
+- **Remove assigned providers from job** Removes all assigned providers from a job.
 
 The following actions download job files in either their original format or as a bilingual file.
 - **Download target file**
@@ -178,6 +179,7 @@ The following actions update a job's file (source or target) from their original
 - **On job target updated** Triggered when a job's target has been updated
 - **On jobs unexported** Triggered when jobs are exported
 - **On all jobs in workflow step reached status** Triggered when all jobs in a specific workflow step reach a specified status. Returns only jobs in the specified workflow step
+
 
 ### Analysis
 
