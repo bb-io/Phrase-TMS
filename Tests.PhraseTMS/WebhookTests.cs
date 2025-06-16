@@ -246,4 +246,27 @@ public class WebhookTests : TestBase
         Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
         Assert.IsTrue(result.Result.Jobs.Any());
     }
+
+    [TestMethod]
+    public async Task All_jobs_reached_status_async_works()
+    {
+        var events = new WebhookList(InvocationContext);
+
+        var projectUid = "mx1qPbEEGiN0vAKpIbFwa9";
+        var workflowStepId = "7447";
+        var jobStatus = "COMPLETED_BY_LINGUIST";
+
+        var result = await events.HandleAllJobsReachedStatusAsync(
+            CreateWebhookRequest("job_status_changed_all_jobs_in_workflow_step.json"),
+            new WorkflowStepStatusRequest
+            {
+                ProjectUId = projectUid,
+                WorkflowStepId = workflowStepId,
+                JobStatus = jobStatus
+            }
+        );
+
+        Assert.IsNotNull(result.Result);
+        Assert.IsTrue(result.Result.Jobs.Any());
+    }
 }

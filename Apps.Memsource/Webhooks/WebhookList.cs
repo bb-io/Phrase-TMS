@@ -571,7 +571,20 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         }
 
         var primaryJob = jobData.JobParts.FirstOrDefault();
-        if (primaryJob?.Status != workflowStepStatusRequest.JobStatus)
+        if (primaryJob == null)
+        {
+            throw new InvalidCastException("Failed to retrieve a job from webhook request body.");
+        }
+
+        if (primaryJob.Status != workflowStepStatusRequest.JobStatus)
+        {
+            return new WebhookResponse<ListAllJobsResponse>
+            {
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight
+            };
+        }
+
+        if (primaryJob.Project.Uid != workflowStepStatusRequest.ProjectUId)
         {
             return new WebhookResponse<ListAllJobsResponse>
             {
@@ -581,9 +594,10 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
 
         var jobsEndpoint = $"/api2/v2/projects/{workflowStepStatusRequest.ProjectUId}/jobs";
         var apiRequest = new RestRequest(jobsEndpoint, Method.Get);
+        apiRequest.AddQueryParameter("workflowLevel", primaryJob.workflowLevel);
 
         var allJobs = await Client.Paginate<ListJobDto>(apiRequest);
-        if (allJobs.All(job => primaryJob?.Uid != job.Uid))
+        if (allJobs.All(job => primaryJob.Uid != job.Uid))
         {
             return new WebhookResponse<ListAllJobsResponse>
             {
@@ -593,14 +607,20 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
 
         var relevantJobs = allJobs
             .Where(job => job.WorkflowStep?.Id == workflowStepStatusRequest.WorkflowStepId)
+            .Where(job => job.Status == workflowStepStatusRequest.JobStatus)
             .ToList();
 
-        var allJobsInStepMatchStatus = relevantJobs.All(job => job.Status == workflowStepStatusRequest.JobStatus);
-        var triggered = allJobsInStepMatchStatus;
+        if (relevantJobs.Count == 0)
+        {
+            return new WebhookResponse<ListAllJobsResponse>
+            {
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight
+            };
+        }
 
         return new WebhookResponse<ListAllJobsResponse>
         {
-            ReceivedWebhookRequestType = triggered ? WebhookRequestType.Default : WebhookRequestType.Preflight,
+            ReceivedWebhookRequestType = WebhookRequestType.Default,
             Result = new ListAllJobsResponse { Jobs = relevantJobs },
         };
     }
