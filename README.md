@@ -178,7 +178,7 @@ The following actions update a job's file (source or target) from their original
 - **On job status changed** If you are using checkpoints, please fill all optional inputs (including Project ID). It will work even without a specified Project ID, but using it will allow us to check if the job already has the specified status. The status "Completed by linguist" will also trigger the event if the optional status "Completed" is set. In a checkpoint it works with either "Job ID" or "Source file ID" in combination with the workflow step or last workflow step. For more details see below.
 - **On job target updated** Triggered when a job's target has been updated
 - **On jobs unexported** Triggered when jobs are exported
-- **On all jobs in workflow step reached status** Triggered when all jobs in a specific workflow step reach a specified status. Returns only jobs in the specified workflow step
+- **On all jobs in workflow step reached status** Triggered when all jobs in a specific workflow step reach a specified status. Returns only jobs in the specified workflow step. Please be aware that this event might trigger multiple times if several jobs are updated simultaneously, for example, through a bulk action or in very quick succession.
 
 
 ### Analysis
