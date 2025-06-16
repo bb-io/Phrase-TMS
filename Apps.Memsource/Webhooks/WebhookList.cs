@@ -597,7 +597,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         apiRequest.AddQueryParameter("workflowLevel", primaryJob.workflowLevel);
 
         var allJobs = await Client.Paginate<ListJobDto>(apiRequest);
-        if (allJobs.All(job => primaryJob.Uid != job.Uid))
+        if (allJobs.All(job => primaryJob.Uid != job.Uid) || allJobs.Count == 0)
         {
             return new WebhookResponse<ListAllJobsResponse>
             {
@@ -610,7 +610,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             .Where(job => job.Status == workflowStepStatusRequest.JobStatus)
             .ToList();
 
-        if (relevantJobs.Count == 0)
+        if (allJobs.Count != relevantJobs.Count)
         {
             return new WebhookResponse<ListAllJobsResponse>
             {
