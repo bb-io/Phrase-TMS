@@ -171,7 +171,8 @@ public class PhraseTmsClient : RestClient
 
         if (error.ErrorDescription.Contains("contains unsupported locale."))
             throw new PluginMisconfigurationException(error.ErrorDescription);
-        throw new PluginApplicationException(error.ErrorDescription);
+
+        throw new PluginApplicationException($"({error.ErrorCode}): {error.ErrorDescription}");
     }
 
     public async Task<int> GetWorkflowstepLevel(string projectId, string workflowStepId)
