@@ -343,7 +343,9 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         string fileNameForHeader = fileName;
         if (!IsOnlyAscii(fileName))
         {
-            fileNameForHeader = Uri.EscapeDataString(fileName);
+            fileNameForHeader = Uri.EscapeDataString(fileName)
+                .Replace("\n", string.Empty)
+                .Replace("\r", string.Empty);
         }
 
         if (string.IsNullOrWhiteSpace(projectRequest.ProjectUId))
