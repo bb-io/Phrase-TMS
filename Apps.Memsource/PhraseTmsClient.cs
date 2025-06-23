@@ -135,9 +135,9 @@ public class PhraseTmsClient : RestClient
         {
             error = JsonConvert.DeserializeObject<Error>(restResponse.Content);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            throw new Exception($"Content: {restResponse.Content}, Exception message: {ex.Message}");
+            throw new Exception(restResponse.Content);
         }
        
 
