@@ -1,4 +1,5 @@
 ﻿using Apps.PhraseTMS.Actions;
+using Apps.PhraseTMS.Models.Jobs.Requests;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Apps.PhraseTMS.Models.QualityAssurance.Responses;
 using Apps.PhraseTMS.Polling.Models;
@@ -16,7 +17,8 @@ public class LqaPollingList(InvocationContext invocationContext) : PhraseInvocab
     [PollingEvent("On LQA reports created", "Triggered when new reports can be downloaded within a specific project")]
     public async Task<PollingEventResponse<PollingMemory, SearchLqaResponse>> OnLqaReportsCreated(
         PollingEventRequest<PollingMemory> request,
-        [PollingEventParameter] ProjectRequest projectRequest)
+        [PollingEventParameter] ProjectRequest projectRequest,
+        [PollingEventParameter] WorkflowStepOptionalRequest wfStep)
     {
         if (request.Memory is null)
         {
@@ -31,7 +33,7 @@ public class LqaPollingList(InvocationContext invocationContext) : PhraseInvocab
         }
 
         var jobActions = new JobActions(InvocationContext, null!);
-        var projectJobs = await jobActions.ListAllJobs(projectRequest, new(), new(), null, null);
+        var projectJobs = await jobActions.ListAllJobs(projectRequest, new(), new(), wfStep, null, null);
 
         var getBatchRequest = new RestRequest("/api2/v1/lqa/assessments", Method.Post)
             .WithJsonBody(new
