@@ -135,9 +135,9 @@ public class PhraseTmsClient : RestClient
         {
             error = JsonConvert.DeserializeObject<Error>(restResponse.Content);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            throw new Exception($"Content: {restResponse.Content}, Exception message: {ex.Message}");
+            throw new Exception(restResponse.Content);
         }
        
 
@@ -164,14 +164,21 @@ public class PhraseTmsClient : RestClient
 
 
         if (error.ErrorDescription.Contains("JobCountLimit"))
+        {
             throw new PluginMisconfigurationException("You have reached your job count limit. Please remove some jobs or increase your limit by upgrading your Phrase plan.");
+        }
 
         if (error.ErrorDescription.Contains("targetLangs must match project"))
+        {
             throw new PluginMisconfigurationException("The target languages do not match the project. Please make sure the target languages in this action match the target languages of the project.");
+        }
 
         if (error.ErrorDescription.Contains("contains unsupported locale."))
+        {
             throw new PluginMisconfigurationException(error.ErrorDescription);
-        throw new PluginApplicationException(error.ErrorDescription);
+        }
+
+        throw new PluginApplicationException($"({error.ErrorCode}): {error.ErrorDescription}");
     }
 
     public async Task<int> GetWorkflowstepLevel(string projectId, string workflowStepId)

@@ -1,0 +1,47 @@
+{
+  "jobParts": [
+    {
+      "id": 2923465,
+      "uid": "r1GQaDEP7RPC4iHSJEIBF6",
+      "internalId": "2",
+      "task": "Y3t8mR6spGsxGQ4q_dc2",
+      "fileName": "sample.html",
+      "targetLang": "it",
+      "workflowLevel": 3,
+      "status": "COMPLETED_BY_LINGUIST",
+      "wordsCount": 4,
+      "beginIndex": 0,
+      "endIndex": 0,
+      "isParentJobSplit": false,
+      "dateCreated": "2025-06-14T07:53:40Z",
+      "project": {
+        "id": 1559778,
+        "uid": "mx1qPbEEGiN0vAKpIbFwa9",
+        "lastWorkflowLevel": 3
+      },
+      "assignedTo": []
+    }
+  ],
+  "metadata": {
+    "project": {
+      "id": 1559778,
+      "uid": "mx1qPbEEGiN0vAKpIbFwa9",
+      "name": "On all jobs in workflow step reached status",
+      "sourceLang": "en",
+      "status": "NEW",
+      "createdBy": {
+        "id": 192519,
+        "uid": "W05glSRceoSoaO70Uk85D7",
+        "username": "alex.terekhov"
+      },
+      "owner": {
+        "id": 192519,
+        "uid": "W05glSRceoSoaO70Uk85D7",
+        "username": "alex.terekhov"
+      }
+    }
+  },
+  "event": "JOB_STATUS_CHANGED",
+  "timestamp": 1749889219,
+  "eventUid": "Cr2N0lOJSvnVcOeeEU0w1q"
+}
