@@ -48,8 +48,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         {
             if (LastWfStep.HasValue && LastWfStep.Value)
             {
-                var LastWorkflowStep = await GetLastWorkflowStep(input.ProjectUId);
-                workflowLevel = LastWorkflowStep.WorkflowLevel;
+                workflowLevel = await Client.GetLastWorkflowstepLevel(input.ProjectUId);
             }
         }
         
@@ -166,23 +165,6 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
             throw new PluginApplicationException(e.Message);
         }
     }
-
-    public async Task<WorkflowStepDto?> GetLastWorkflowStep(string projectUId)
-    {
-        var endpoint = $"/api2/v2/projects/{projectUId}/workflowSteps";
-        var request = new RestRequest(endpoint, Method.Get);
-
-        try
-        {
-            var response = await Client.ExecuteWithHandling<List<WorkflowStepDto>>(request);
-            return response.OrderByDescending(w => w.WorkflowLevel).FirstOrDefault();
-        }
-        catch (Exception e)
-        {
-            throw new PluginApplicationException($"Failed to retrieve workflow steps: {e.Message}");
-        }
-    }
-
 
     [Action("Export jobs to online repository", Description = "Exports jobs to online repository")]
     public async Task<ExportJobsResponse> ExportJobsToOnlineRepository(
