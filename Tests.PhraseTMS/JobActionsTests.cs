@@ -48,7 +48,7 @@ namespace Tests.PhraseTMS
 
             bool? lqaScore = null;
 
-            var result = await action.ListAllJobs(projectRequest, searchQuery, jobStatuses, workflowStep, lqaScore);
+            var result = await action.ListAllJobs(projectRequest, searchQuery, jobStatuses, workflowStep, lqaScore, null);
 
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Jobs.Any());

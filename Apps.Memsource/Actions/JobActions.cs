@@ -21,6 +21,7 @@ using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Apps.PhraseTMS.Dtos.Jobs;
 using System.Text.Json;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -33,10 +34,25 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         [ActionParameter] ListAllJobsQuery query,
         [ActionParameter] JobStatusesRequest jobStatusesRequest,
         [ActionParameter] WorkflowStepOptionalRequest workflowStepRequest,
-        [ActionParameter] [Display("LQA Score null?")] bool? LQAScorenull)
+        [ActionParameter] [Display("LQA Score null?")] bool? LQAScorenull,
+        [ActionParameter] [Display("Last workflow step")] bool? LastWfStep)
     {
         var endpoint = $"/api2/v2/projects/{input.ProjectUId}/jobs";
         var jobs = new List<ListJobDto>();
+        int workflowLevel = 1;
+        if (workflowStepRequest != null && !String.IsNullOrEmpty(workflowStepRequest.WorkflowStepId))
+        {
+            workflowLevel = await Client.GetWorkflowstepLevel(input.ProjectUId, workflowStepRequest.WorkflowStepId); 
+        }
+        else 
+        {
+            if (LastWfStep.HasValue && LastWfStep.Value)
+            {
+                var LastWorkflowStep = await GetLastWorkflowStep(input.ProjectUId);
+                workflowLevel = LastWorkflowStep.WorkflowLevel;
+            }
+        }
+        
 
         if (query != null && query.AssignedUsers?.Any() == true)
         {
@@ -63,24 +79,8 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
                     request.AddQueryParameter("assignedVendor", query.AssignedVendor.Value);
                 }
 
-                int? workflowLevel = null;
-                if (workflowStepRequest != null && !string.IsNullOrEmpty(workflowStepRequest.WorkflowStepId))
-                {
-                    workflowLevel = await Client.GetWorkflowstepLevel(input.ProjectUId, workflowStepRequest.WorkflowStepId);
-                }
-                else if (query.AssignedUsers.Count() > 1)
-                {
-                    var lastWorkflowStep = await GetLastWorkflowStep(input.ProjectUId);
-                    if (lastWorkflowStep != null)
-                    {
-                        workflowLevel = await Client.GetWorkflowstepLevel(input.ProjectUId, lastWorkflowStep.Id);
-                    }
-                }
-
-                if (workflowLevel.HasValue)
-                {
-                    request.AddQueryParameter("workflowLevel", workflowLevel.Value);
-                }
+                request.AddQueryParameter("workflowLevel", workflowLevel);
+                
 
                 var response = await Client.Paginate<ListJobDto>(request);
                 jobs.AddRange(response);
@@ -110,17 +110,8 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
                 }
             }
 
-            int? workflowLevel = null;
-            if (workflowStepRequest != null && !string.IsNullOrEmpty(workflowStepRequest.WorkflowStepId))
-            {
-                workflowLevel = await Client.GetWorkflowstepLevel(input.ProjectUId, workflowStepRequest.WorkflowStepId);
-            }
-
-            if (workflowLevel.HasValue)
-            {
-                request.AddQueryParameter("workflowLevel", workflowLevel.Value);
-            }
-
+            request.AddQueryParameter("workflowLevel", workflowLevel);
+            
             var response = await Client.Paginate<ListJobDto>(request);
             jobs.AddRange(response);
         }

@@ -67,7 +67,7 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
                 client = input.ClientId != null ? new { id = input.ClientId } : null,
                 businessUnit = input.BusinessUnitId != null ? new { id = input.BusinessUnitId } : null,
                 domain = input.DomainId != null ? new { id = input.DomainId } : null,
-                subdomain = input.SubDomainId != null ? new { id = input.SubDomainId } : null,
+                subDomain = input.SubDomainId != null ? new { id = input.SubDomainId } : null,
                 costCenter = input.CostCenterId != null ? new { id = input.CostCenterId } : null,
                 purchaseOrder = input.PurchaseOrder,
                 workflowSteps = input.WorkflowSteps?.Select(x=> new {id=x}),
@@ -181,7 +181,7 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
     {
         var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}";
 
-        if (input.Purge != null)
+        if (input?.Purge != null)
             endpoint += $"?purge={input.Purge}";
 
         var request = new RestRequest(endpoint, Method.Delete);
@@ -192,7 +192,7 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
     public async Task<DownloadProjectFilesResponse> DownloadProjectOriginalFiles([ActionParameter] ProjectRequest input)
     {
         var jobActions = new JobActions(InvocationContext, fileManagementClient);
-        var jobs = await jobActions.ListAllJobs(input, null, null, null, null);
+        var jobs = await jobActions.ListAllJobs(input, null, null, null, null, null);
         var files = new List<FileReference>();
         if (jobs != null && jobs?.Jobs?.Any() == true)
         {
@@ -223,7 +223,7 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
             workflowStepRequest = new WorkflowStepOptionalRequest { WorkflowStepId = lastWfStep.InnerWorkflowStep.Id };
         }
         var jobActions = new JobActions(InvocationContext, fileManagementClient);
-        var jobs = await jobActions.ListAllJobs(input, jobsquery, new JobStatusesRequest(), workflowStepRequest, null);
+        var jobs = await jobActions.ListAllJobs(input, jobsquery, new JobStatusesRequest(), workflowStepRequest, null, lastworkflowstep);
         var files = new List<FileReference>();
         if (jobs != null && jobs?.Jobs?.Any() == true)
         {
