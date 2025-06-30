@@ -1,4 +1,6 @@
-﻿using Blackbird.Applications.Sdk.Common;
+﻿using Apps.PhraseTMS.DataSourceHandlers.StaticHandlers;
+using Blackbird.Applications.Sdk.Common;
+using Blackbird.Applications.Sdk.Common.Dictionaries;
 using Newtonsoft.Json;
 
 namespace Apps.PhraseTMS.Models.Jobs.Requests
@@ -60,18 +62,19 @@ namespace Apps.PhraseTMS.Models.Jobs.Requests
         public bool? UseMachineTranslation { get; set; }
 
         [Display("Machine translation behavior")]
+        [StaticDataSource(typeof(MachineTranslationBehaviorSource))]
         [JsonProperty("machineTranslationBehavior")]
-        public string MachineTranslationBehavior { get; set; }
+        public string? MachineTranslationBehavior { get; set; }
 
         [Display("Lock 100 percent matches (MT)")]
         [JsonProperty("lock100PercentMatchesMT")]
         public bool? Lock100PercentMatchesMT { get; set; }
 
-        [Display("Confirm matches")]
+        [Display("Confirm matches (MT)")]
         [JsonProperty("confirmMatches")]
         public bool? ConfirmMatches { get; set; }
 
-        [Display("Confirm matches threshold")]
+        [Display("Confirm matches threshold (MT)")]
         [JsonProperty("confirmMatchesThreshold")]
         public float? ConfirmMatchesThreshold { get; set; }
 
