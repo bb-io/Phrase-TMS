@@ -40,11 +40,11 @@ namespace Apps.PhraseTMS.Models.Jobs.Requests
         [JsonProperty("translationMemoryThreshold")]
         public float? TranslationMemoryThreshold { get; set; }
 
-        [Display("Confirm 100 percent matches")]
+        [Display("Confirm 100 percent matches (TM)")]
         [JsonProperty("confirm100PercentMatches")]
         public bool? Confirm100PercentMatches { get; set; }
 
-        [Display("Confirm 101 percent matches")]
+        [Display("Confirm 101 percent matches (TM)")]
         [JsonProperty("confirm101PercentMatches")]
         public bool? Confirm101PercentMatches { get; set; }
 
@@ -52,7 +52,7 @@ namespace Apps.PhraseTMS.Models.Jobs.Requests
         [JsonProperty("lock100PercentMatchesTM")]
         public bool? Lock100PercentMatchesTM { get; set; }
 
-        [Display("Lock 101 percent matches")]
+        [Display("Lock 101 percent matches (TM)")]
         [JsonProperty("lock101PercentMatches")]
         public bool? Lock101PercentMatches { get; set; }
 
@@ -78,7 +78,7 @@ namespace Apps.PhraseTMS.Models.Jobs.Requests
         [JsonProperty("confirmMatchesThreshold")]
         public float? ConfirmMatchesThreshold { get; set; }
 
-        [Display("Use alt translations only")]
+        [Display("Use alt translations only (MT)")]
         [JsonProperty("useAltTransOnly")]
         public bool? UseAltTransOnly { get; set; }
 
