@@ -28,7 +28,8 @@ namespace Tests.PhraseTMS
             workflow.Add("lxHYoo7KWvWN6R7Ca99mz3");
             workflow.Add("NeLxbybjmGHy69Dq0QAsR0");
 
-            var input = new CreateProjectRequest { SourceLanguage = "hu", TargetLanguages = targetLangs, Name = "this name", WorkflowSteps = workflow };
+            var input = new CreateProjectRequest { SourceLanguage = "hu", TargetLanguages = targetLangs, Name = "this name", WorkflowSteps = workflow,
+            DateDue=Datetime};
 
             var result = await actions.CreateProject(input);
 

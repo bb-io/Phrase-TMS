@@ -567,12 +567,73 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         var endpoint = $"/api2/v3/projects/{projectRequest.ProjectUId}/jobs/preTranslate";
         var request = new RestRequest(endpoint, Method.Post);
 
+
+        var translationMemorySettings = new Dictionary<string, object>();
+        if (settings.UseTranslationMemory.HasValue)
+            translationMemorySettings["useTranslationMemory"] = settings.UseTranslationMemory.Value;
+        if (settings.TranslationMemoryThreshold.HasValue)
+            translationMemorySettings["translationMemoryThreshold"] = settings.TranslationMemoryThreshold.Value;
+        if (settings.Confirm100PercentMatches.HasValue)
+            translationMemorySettings["confirm100PercentMatches"] = settings.Confirm100PercentMatches.Value;
+        if (settings.Confirm101PercentMatches.HasValue)
+            translationMemorySettings["confirm101PercentMatches"] = settings.Confirm101PercentMatches.Value;
+        if (settings.Lock100PercentMatchesTM.HasValue)
+            translationMemorySettings["lock100PercentMatches"] = settings.Lock100PercentMatchesTM.Value;
+        if (settings.Lock101PercentMatches.HasValue)
+            translationMemorySettings["lock101PercentMatches"] = settings.Lock101PercentMatches.Value;
+
+        var machineTranslationSettings = new Dictionary<string, object>();
+        if (settings.UseMachineTranslation.HasValue)
+            machineTranslationSettings["useMachineTranslation"] = settings.UseMachineTranslation.Value;
+        if (!string.IsNullOrEmpty(settings.MachineTranslationBehavior))
+            machineTranslationSettings["machineTranslationBehavior"] = settings.MachineTranslationBehavior;
+        if (settings.Lock100PercentMatchesMT.HasValue)
+            machineTranslationSettings["lock100PercentMatches"] = settings.Lock100PercentMatchesMT.Value;
+        if (settings.ConfirmMatches.HasValue)
+            machineTranslationSettings["confirmMatches"] = settings.ConfirmMatches.Value;
+        if (settings.ConfirmMatchesThreshold.HasValue)
+            machineTranslationSettings["confirmMatchesThreshold"] = settings.ConfirmMatchesThreshold.Value;
+        if (settings.UseAltTransOnly.HasValue)
+            machineTranslationSettings["useAltTransOnly"] = settings.UseAltTransOnly.Value;
+        if (settings.MtSuggestOnlyTmBelow.HasValue)
+            machineTranslationSettings["mtSuggestOnlyTmBelow"] = settings.MtSuggestOnlyTmBelow.Value;
+        if (settings.MtSuggestOnlyTmBelowThreshold.HasValue)
+            machineTranslationSettings["mtSuggestOnlyTmBelowThreshold"] = settings.MtSuggestOnlyTmBelowThreshold.Value;
+
+        var nonTranslatableSettings = new Dictionary<string, object>();
+        if (settings.PreTranslateNonTranslatables.HasValue)
+            nonTranslatableSettings["preTranslateNonTranslatables"] = settings.PreTranslateNonTranslatables.Value;
+        if (settings.Confirm100PercentMatchesNT.HasValue)
+            nonTranslatableSettings["confirm100PercentMatches"] = settings.Confirm100PercentMatchesNT.Value;
+        if (settings.Lock100PercentMatchesNT.HasValue)
+            nonTranslatableSettings["lock100PercentMatches"] = settings.Lock100PercentMatchesNT.Value;
+
+        var preTranslateSettings = new Dictionary<string, object>();
+        if (settings.AutoPropagateRepetitions.HasValue)
+            preTranslateSettings["autoPropagateRepetitions"] = settings.AutoPropagateRepetitions.Value;
+        if (settings.ConfirmRepetitions.HasValue)
+            preTranslateSettings["confirmRepetitions"] = settings.ConfirmRepetitions.Value;
+        if (settings.SetJobStatusCompleted.HasValue)
+            preTranslateSettings["setJobStatusCompleted"] = settings.SetJobStatusCompleted.Value;
+        if (settings.SetJobStatusCompletedWhenConfirmed.HasValue)
+            preTranslateSettings["setJobStatusCompletedWhenConfirmed"] = settings.SetJobStatusCompletedWhenConfirmed.Value;
+        if (settings.SetProjectStatusCompleted.HasValue)
+            preTranslateSettings["setProjectStatusCompleted"] = settings.SetProjectStatusCompleted.Value;
+        if (settings.OverwriteExistingTranslations.HasValue)
+            preTranslateSettings["overwriteExistingTranslations"] = settings.OverwriteExistingTranslations.Value;
+        if (translationMemorySettings.Any())
+            preTranslateSettings["translationMemorySettings"] = translationMemorySettings;
+        if (machineTranslationSettings.Any())
+            preTranslateSettings["machineTranslationSettings"] = machineTranslationSettings;
+        if (nonTranslatableSettings.Any())
+            preTranslateSettings["nonTranslatableSettings"] = nonTranslatableSettings;
+
         var body = new
         {
             jobs = input.Jobs.Select(uid => new { uid }),
             segmentFilters = input.SegmentFilters?.Any() == true ? input.SegmentFilters : new[] { "NOT_LOCKED" },
             useProjectPreTranslateSettings = input.UseProjectPreTranslateSettings ?? false,
-            preTranslateSettings = settings
+            preTranslateSettings = preTranslateSettings.Any() ? preTranslateSettings : null
         };
 
         request.WithJsonBody(body, JsonConfig.Settings);
