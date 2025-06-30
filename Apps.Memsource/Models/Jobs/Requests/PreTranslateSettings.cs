@@ -7,27 +7,27 @@ namespace Apps.PhraseTMS.Models.Jobs.Requests
 {
     public class PreTranslateSettings
     {
-        [Display("Propagate repetitions")]
+        [Display("Propagate repetitions", Description = "Propagate repetitions. Default: false")]
         [JsonProperty("autoPropagateRepetitions")]
         public bool? AutoPropagateRepetitions { get; set; }
 
-        [Display("Confirm repetitions")]
+        [Display("Confirm repetitions", Description = "Set segment status to confirmed for: Repetitions. Default: false")]
         [JsonProperty("confirmRepetitions")]
         public bool? ConfirmRepetitions { get; set; }
 
-        [Display("Set job status completed")]
+        [Display("Set job status completed", Description = "Pre-translate and set job to completed: Set job to completed once pre-translated. Default: false")]
         [JsonProperty("setJobStatusCompleted")]
         public bool? SetJobStatusCompleted { get; set; }
 
-        [Display("Completed when confirmed")]
+        [Display("Completed when confirmed", Description = "Pre-translate and set job to completed when all segments confirmed: Set job to completed once pre-translated and all segments are confirmed. Default: false")]
         [JsonProperty("setJobStatusCompletedWhenConfirmed")]
         public bool? SetJobStatusCompletedWhenConfirmed { get; set; }
 
-        [Display("Set project status competed")]
+        [Display("Set project status competed", Description = "Pre-translate & set job to completed: Set project to completed once all jobs pre-translated. Default: false")]
         [JsonProperty("setProjectStatusCompleted")]
         public bool? SetProjectStatusCompleted { get; set; }
 
-        [Display("Overwrite existing translation")]
+        [Display("Overwrite existing translation", Description = "Overwrite existing translations in target segments. Default: false")]
         [JsonProperty("overwriteExistingTranslations")]
         public bool? OverwriteExistingTranslations { get; set; }
 
@@ -36,7 +36,7 @@ namespace Apps.PhraseTMS.Models.Jobs.Requests
         [JsonProperty("useTranslationMemory")]
         public bool? UseTranslationMemory { get; set; }
 
-        [Display("Translation memory threshold")]
+        [Display("Translation memory threshold", Description = "Pre-translation threshold percent. Default: 0.7")]
         [JsonProperty("translationMemoryThreshold")]
         public float? TranslationMemoryThreshold { get; set; }
 
@@ -74,19 +74,19 @@ namespace Apps.PhraseTMS.Models.Jobs.Requests
         [JsonProperty("confirmMatches")]
         public bool? ConfirmMatches { get; set; }
 
-        [Display("Confirm matches threshold (MT)")]
+        [Display("Confirm matches threshold (MT)", Description = "Machine translation suggestions percent. Default: 1.0. Required range: 0 < x < 1")]
         [JsonProperty("confirmMatchesThreshold")]
         public float? ConfirmMatchesThreshold { get; set; }
 
-        [Display("Use alt translations only (MT)")]
+        [Display("Use alt translations only (MT)", Description = "Do not put machine translations to target and use alt-trans fields (alt-trans in mxlf). Default: false")]
         [JsonProperty("useAltTransOnly")]
         public bool? UseAltTransOnly { get; set; }
 
-        [Display("MT suggest only TM below")]
+        [Display("MT suggest only TM below", Description = "Suggest MT only for segments with a TM match below. Default: true")]
         [JsonProperty("mtSuggestOnlyTmBelow")]
         public bool? MtSuggestOnlyTmBelow { get; set; }
 
-        [Display("MT suggest only TM below threshold")]
+        [Display("MT suggest only TM below threshold", Description = "Suggest MT only for segments with a TM match below threshold. Default: 1.0. Required range: 0 < x < 1.01")]
         [JsonProperty("mtSuggestOnlyTmBelowThreshold")]
         public float? MtSuggestOnlyTmBelowThreshold { get; set; }
 
