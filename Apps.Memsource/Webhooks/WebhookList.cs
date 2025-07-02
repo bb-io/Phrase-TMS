@@ -481,6 +481,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         IEnumerable<JobPart> selectedJobs = data.JobParts;
         var projectId = data.metadata.project.Uid;
         int workflowLevel = 0;
+
         if (workflowStepRequest != null && !String.IsNullOrEmpty(workflowStepRequest?.WorkflowStepId))
         {
             workflowLevel = await Client.GetWorkflowstepLevel(projectId, workflowStepRequest.WorkflowStepId);
@@ -492,12 +493,31 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
 
         if (job is null && workflowLevel > 0)
         {
-            if (selectedJobs.Any(x => x.workflowLevel == workflowLevel)) 
+            if (workflowStepRequest != null && !String.IsNullOrEmpty(workflowStepRequest?.WorkflowStepId))
             {
-                selectedJobs = selectedJobs.Where(x => x.workflowLevel == workflowLevel);
+                if (selectedJobs.Any(x => x.workflowLevel == workflowLevel))
+                {
+                    selectedJobs = selectedJobs.Where(x => x.workflowLevel == workflowLevel);
+                }
+                else
+                {
+                    return new()
+                    {
+                        HttpResponseMessage = null,
+                        Result = null,
+                        ReceivedWebhookRequestType = WebhookRequestType.Preflight
+                    };
+                }
+            }
+            else if (lastWorkflowLevel.HasValue && lastWorkflowLevel.Value)
+            {
+                if (selectedJobs.Any(x => x.workflowLevel == workflowLevel))
+                {
+                    selectedJobs = selectedJobs.Where(x => x.workflowLevel == workflowLevel);
+                }
             }
         }
-        
+
         if (!string.IsNullOrEmpty(job?.JobUId) && !string.IsNullOrEmpty(projectId))
         {
             selectedJobs = data.JobParts.Where(x => x.Uid == job.JobUId);
