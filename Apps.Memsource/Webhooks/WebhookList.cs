@@ -484,10 +484,12 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         if (workflowStepRequest != null && !String.IsNullOrEmpty(workflowStepRequest?.WorkflowStepId))
         {
             workflowLevel = await Client.GetWorkflowstepLevel(projectId, workflowStepRequest.WorkflowStepId);
+            selectedJobs = selectedJobs.Where(x => x.workflowLevel == workflowLevel); //additional check
         }
         else if (lastWorkflowLevel.HasValue && lastWorkflowLevel.Value)
         {
             workflowLevel = await Client.GetLastWorkflowstepLevel(projectId);
+            selectedJobs = selectedJobs.Where(x => x.workflowLevel == workflowLevel); //additional check
         }
 
         if (job is null && workflowLevel > 0)
