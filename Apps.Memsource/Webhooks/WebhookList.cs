@@ -481,20 +481,23 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         IEnumerable<JobPart> selectedJobs = data.JobParts;
         var projectId = data.metadata.project.Uid;
         int workflowLevel = 0;
-        if (lastWorkflowLevel.HasValue && lastWorkflowLevel.Value)
+
+        if (workflowStepRequest != null && !String.IsNullOrEmpty(workflowStepRequest?.WorkflowStepId))
+        {
+            workflowLevel = await Client.GetWorkflowstepLevel(projectId, workflowStepRequest.WorkflowStepId);
+        }
+        else if (lastWorkflowLevel.HasValue && lastWorkflowLevel.Value)
         {
             workflowLevel = await Client.GetLastWorkflowstepLevel(projectId);
         }
 
-        if (job is null)
+        if (job is null && workflowLevel > 0)
         {
             if (workflowStepRequest != null && !String.IsNullOrEmpty(workflowStepRequest?.WorkflowStepId))
             {
-                var targetWorkflowLevel = await Client.GetWorkflowstepLevel(projectId, workflowStepRequest.WorkflowStepId);
-
-                if (selectedJobs.Any(x => x.workflowLevel == targetWorkflowLevel))
+                if (selectedJobs.Any(x => x.workflowLevel == workflowLevel))
                 {
-                    selectedJobs = selectedJobs.Where(x => x.workflowLevel == targetWorkflowLevel);
+                    selectedJobs = selectedJobs.Where(x => x.workflowLevel == workflowLevel);
                 }
                 else
                 {
@@ -506,7 +509,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
                     };
                 }
             }
-            else if (lastWorkflowLevel.HasValue && lastWorkflowLevel.Value && workflowLevel > 0)
+            else if (lastWorkflowLevel.HasValue && lastWorkflowLevel.Value)
             {
                 if (selectedJobs.Any(x => x.workflowLevel == workflowLevel))
                 {
