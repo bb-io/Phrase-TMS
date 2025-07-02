@@ -481,25 +481,40 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         IEnumerable<JobPart> selectedJobs = data.JobParts;
         var projectId = data.metadata.project.Uid;
         int workflowLevel = 0;
-        if (workflowStepRequest != null && !String.IsNullOrEmpty(workflowStepRequest?.WorkflowStepId))
-        {
-            workflowLevel = await Client.GetWorkflowstepLevel(projectId, workflowStepRequest.WorkflowStepId);
-            selectedJobs = selectedJobs.Where(x => x.workflowLevel == workflowLevel); //additional check
-        }
-        else if (lastWorkflowLevel.HasValue && lastWorkflowLevel.Value)
+        if (lastWorkflowLevel.HasValue && lastWorkflowLevel.Value)
         {
             workflowLevel = await Client.GetLastWorkflowstepLevel(projectId);
-            selectedJobs = selectedJobs.Where(x => x.workflowLevel == workflowLevel); //additional check
         }
 
-        if (job is null && workflowLevel > 0)
+        if (job is null)
         {
-            if (selectedJobs.Any(x => x.workflowLevel == workflowLevel)) 
+            if (workflowStepRequest != null && !String.IsNullOrEmpty(workflowStepRequest?.WorkflowStepId))
             {
-                selectedJobs = selectedJobs.Where(x => x.workflowLevel == workflowLevel);
+                var targetWorkflowLevel = await Client.GetWorkflowstepLevel(projectId, workflowStepRequest.WorkflowStepId);
+
+                if (selectedJobs.Any(x => x.workflowLevel == targetWorkflowLevel))
+                {
+                    selectedJobs = selectedJobs.Where(x => x.workflowLevel == targetWorkflowLevel);
+                }
+                else
+                {
+                    return new()
+                    {
+                        HttpResponseMessage = null,
+                        Result = null,
+                        ReceivedWebhookRequestType = WebhookRequestType.Preflight
+                    };
+                }
+            }
+            else if (lastWorkflowLevel.HasValue && lastWorkflowLevel.Value && workflowLevel > 0)
+            {
+                if (selectedJobs.Any(x => x.workflowLevel == workflowLevel))
+                {
+                    selectedJobs = selectedJobs.Where(x => x.workflowLevel == workflowLevel);
+                }
             }
         }
-        
+
         if (!string.IsNullOrEmpty(job?.JobUId) && !string.IsNullOrEmpty(projectId))
         {
             selectedJobs = data.JobParts.Where(x => x.Uid == job.JobUId);
