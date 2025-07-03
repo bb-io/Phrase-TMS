@@ -422,8 +422,11 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         [WebhookParameter] [Display("Project name doesn't contains")] string? projectNameDoesntContains,
         [WebhookParameter] MultipleSubdomains subdomains)
     {
+        InvocationContext.Logger?.LogInformation(
+              "[Phrase TMS WebhookLogger] Invoked webhook", null);
+
         if (job?.JobUId != null && projectOptionalRequest?.ProjectUId == null)
-        {
+        {          
             throw new PluginMisconfigurationException("If Job ID is specified in the inputs you must also specify the Project ID");
         }
 
@@ -433,6 +436,10 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         }
 
         var data = JsonConvert.DeserializeObject<JobStatusChangedWrapper>(webhookRequest.Body.ToString());
+        var payloadJson = JsonConvert.SerializeObject(data, Formatting.Indented);
+        InvocationContext.Logger?.LogDebug(
+            $"[Phrase TMS WebhookLogger] Payload received from server JSON: {payloadJson}", null);
+
         if (data is null)
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
@@ -479,6 +486,11 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         }
 
         IEnumerable<JobPart> selectedJobs = data.JobParts;
+
+        var payloadJson2 = JsonConvert.SerializeObject(selectedJobs, Formatting.Indented);
+        InvocationContext.Logger?.LogDebug(
+            $"[Phrase TMS WebhookLogger] Payload JSON Job parts: {payloadJson2}", null);
+
         var projectId = data.metadata.project.Uid;
         int workflowLevel = 0;
 
@@ -557,7 +569,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             };
         }
 
-        return new WebhookResponse<JobResponse>
+        var response= new WebhookResponse<JobResponse>
         {
             HttpResponseMessage = null,
             Result = new()
@@ -570,6 +582,12 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
                 ProjectName = data.metadata.project.Name
             }
         };
+
+        var payloadJson3 = JsonConvert.SerializeObject(response, Formatting.Indented);
+        InvocationContext.Logger?.LogDebug(
+            $"[Phrase TMS WebhookLogger] Payload JSON response: {payloadJson3}", null);
+
+        return response;
     }
 
     [Webhook("On all jobs in workflow step reached status", typeof(AllJobsReachedStatusHandler),
