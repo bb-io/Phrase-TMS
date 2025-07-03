@@ -437,7 +437,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
 
         var data = JsonConvert.DeserializeObject<JobStatusChangedWrapper>(webhookRequest.Body.ToString());
         var payloadJson = JsonConvert.SerializeObject(data, Formatting.Indented);
-        InvocationContext.Logger?.LogDebug(
+        InvocationContext.Logger?.LogInformation(
             $"[Phrase TMS WebhookLogger] Payload received from server JSON: {payloadJson}", null);
 
         if (data is null)
@@ -488,7 +488,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         IEnumerable<JobPart> selectedJobs = data.JobParts;
 
         var payloadJson2 = JsonConvert.SerializeObject(selectedJobs, Formatting.Indented);
-        InvocationContext.Logger?.LogDebug(
+        InvocationContext.Logger?.LogInformation(
             $"[Phrase TMS WebhookLogger] Payload JSON Job parts: {payloadJson2}", null);
 
         var projectId = data.metadata.project.Uid;
@@ -584,7 +584,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         };
 
         var payloadJson3 = JsonConvert.SerializeObject(response, Formatting.Indented);
-        InvocationContext.Logger?.LogDebug(
+        InvocationContext.Logger?.LogInformation(
             $"[Phrase TMS WebhookLogger] Payload JSON response: {payloadJson3}", null);
 
         return response;
