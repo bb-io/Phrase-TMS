@@ -1,9 +1,14 @@
 ﻿using Apps.PhraseTMS.Actions;
+using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Models.Analysis.Requests;
 using Apps.PhraseTMS.Models.Jobs.Requests;
 using Apps.PhraseTMS.Models.Projects.Requests;
+using Apps.PhraseTMS.Webhooks;
+using Apps.PhraseTMS.Webhooks.Models.Requests;
 using Blackbird.Applications.Sdk.Common.Files;
+using Blackbird.Applications.Sdk.Common.Webhooks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PhraseTMSTests.Base;
 
 namespace Tests.PhraseTMS
