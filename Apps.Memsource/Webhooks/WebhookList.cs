@@ -503,7 +503,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             workflowLevel = await Client.GetLastWorkflowstepLevel(projectId);
         }
 
-        if (job is null && workflowLevel > 0)
+        if (string.IsNullOrEmpty(job?.JobUId) && workflowLevel > 0)
         {
             if (workflowStepRequest != null && !String.IsNullOrEmpty(workflowStepRequest?.WorkflowStepId))
             {
