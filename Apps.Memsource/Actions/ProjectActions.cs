@@ -119,6 +119,11 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
     [Action("Update project", Description = "Update project with specified details")]
     public Task EditProject([ActionParameter] ProjectRequest projectRequest, [ActionParameter] EditProjectRequest input)
     {
+        if (input == null || input.GetType().GetProperties().All(p => p.GetValue(input) == null))
+        {
+            throw new PluginMisconfigurationException("At least one value from the optional inputs needs to be filled in.");
+        }
+
         var bodyDictionary = new Dictionary<string, object>();
 
         if (!String.IsNullOrEmpty(input.ProjectName))
