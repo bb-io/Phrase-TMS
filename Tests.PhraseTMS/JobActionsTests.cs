@@ -188,6 +188,20 @@ namespace Tests.PhraseTMS
         }
 
         [TestMethod]
+        public async Task GetSegments_Success()
+        {
+            var action = new JobActions(InvocationContext, FileManager);
+            var input1 = new ProjectRequest { ProjectUId = "s2MJwHdD0HOb3WyvR1XLL2" };
+            var jobs = new GetSegmentsCountRequest { JobUids = ["cO2cj1bqQCOzuGXIclxeF2"] };
+
+            var result = await action.GetSegmentsCount(input1, jobs);
+            var json = JsonConvert.SerializeObject(result, Formatting.Indented);
+            Console.WriteLine(json);
+
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
         public async Task Remove_Provers_works()
         {
             var action = new JobActions(InvocationContext, FileManager);
@@ -200,6 +214,112 @@ namespace Tests.PhraseTMS
             Assert.IsNotNull(result.Uid);
 
             Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+        }
+
+
+        [TestMethod]
+        public async Task TestWebhook()
+        {
+            var jsonPayload1 = @"
+      {
+        ""JobParts"": [
+          {
+            ""Uid"": ""4rUxlLJVAyVDdFgxGo9mf3"",
+            ""Project"": {
+              ""Uid"": ""GWzjor9lk8oR02NMa0fmDe"",
+              ""LastWorkflowLevel"": 2,
+              ""Name"": null,
+              ""subDomain"": null
+            },
+            ""Status"": ""COMPLETED_BY_LINGUIST"",
+            ""FileName"": ""PW  Test - Quote-009c1acc-3b43-40a4-934a-44128626f67d-jensenh@squareup.com-resubmission.json"",
+            ""TargetLang"": ""es_es"",
+            ""workflowLevel"": 1,
+            ""assignedTo"": [
+              {
+                ""Uid"": null
+              }
+            ]
+          }
+        ],
+        ""metadata"": {
+          ""project"": {
+            ""Uid"": ""GWzjor9lk8oR02NMa0fmDe"",
+            ""LastWorkflowLevel"": 0,
+            ""Name"": ""Eng Sandbox_test_ignore_jensen_2 - ICR - LQA"",
+            ""subDomain"": null
+          }
+        }
+      }";
+
+            var jsonPayload2 = @"
+      {
+        ""JobParts"": [
+          {
+            ""Uid"": ""VeKgQDyPzzqC69U7r2Uil2"",
+            ""Project"": {
+              ""Uid"": ""GWzjor9lk8oR02NMa0fmDe"",
+              ""LastWorkflowLevel"": 2,
+              ""Name"": null,
+              ""subDomain"": null
+            },
+            ""Status"": ""COMPLETED_BY_LINGUIST"",
+            ""FileName"": ""PW  Test - Quote-009c1acc-3b43-40a4-934a-44128626f67d-jensenh@squareup.com-resubmission.json"",
+            ""TargetLang"": ""es_es"",
+            ""workflowLevel"": 2,
+            ""assignedTo"": []
+          }
+        ],
+        ""metadata"": {
+          ""project"": {
+            ""Uid"": ""GWzjor9lk8oR02NMa0fmDe"",
+            ""LastWorkflowLevel"": 0,
+            ""Name"": ""Eng Sandbox_test_ignore_jensen_2 - ICR - LQA"",
+            ""subDomain"": null
+          }
+        }
+      }";
+
+            var webhookRequest = new WebhookRequest
+            {
+                Body = JObject.Parse(jsonPayload2),
+                Headers = new Dictionary<string, string>(),
+                HttpMethod = HttpMethod.Post,
+                Url = "https://example.com/webhooks/job-status-changed",
+                QueryParameters = new Dictionary<string, string>()
+            };
+
+            var statusRequest = new JobStatusChangedRequest
+            {
+                Status = new[] { "COMPLETED_BY_LINGUIST" }
+            };
+            var projectOpt = new ProjectOptionalRequest { };
+            var jobOpt = new OptionalJobRequest { };
+            var workflowOpt = new WorkflowStepOptionalRequest { WorkflowStepId = "1081443" };
+            var sourceFileOpt = new OptionalSourceFileIdRequest { };
+            var jobsQuery = new OptionalSearchJobsQuery { };
+            bool? lastLevel = null;
+            string contain = "ICR - LQA";
+            string notContain = null;
+            var subdomains = new MultipleSubdomains { };
+
+            var actions = new WebhookList(InvocationContext);
+            var response = await actions.JobStatusChanged(
+                webhookRequest,
+                statusRequest,
+                projectOpt,
+                jobOpt,
+                workflowOpt,
+                sourceFileOpt,
+                jobsQuery,
+                lastLevel,
+                contain,
+            notContain,
+                subdomains
+            );
+
+            Console.WriteLine(JsonConvert.SerializeObject(response, Formatting.Indented));
+            Assert.IsNotNull(response);
         }
     }
 }

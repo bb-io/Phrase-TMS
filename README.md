@@ -86,6 +86,7 @@ Custom fields are associated with a specific type, e.g. date, number, text, etc.
 - **Pre-translate job** pre-translate a job in the project
 - **Export jobs to online repository** Exports jobs to online repository
 - **Remove assigned providers from job** Removes all assigned providers from a job.
+- **Get segments count** returns the number of segments in a job
 
 The following actions download job files in either their original format or as a bilingual file.
 - **Download target file**
