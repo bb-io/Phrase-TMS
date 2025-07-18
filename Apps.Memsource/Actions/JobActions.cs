@@ -687,6 +687,20 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         return response.Jobs.FirstOrDefault();
     }
 
+    [Action("Get segments count", Description = "Get current segments counts for specified jobs")]
+    public async Task<GetSegmentsCountResponse> GetSegmentsCount([ActionParameter] ProjectRequest projectRequest,
+            [ActionParameter] GetSegmentsCountRequest input)
+    {
+        var request = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/segmentsCount",Method.Post);
+
+        var body = new
+        {
+            jobs = input.JobUids.Select(uid => new { uid })
+        };
+        request.AddJsonBody(body);
+
+        return await Client.ExecuteWithHandling<GetSegmentsCountResponse>(request);
+    }
 
     [Action("Remove assigned providers from job", Description = "Removes assigned providers from job")]
     public async Task<JobDto> RemoveProvider(

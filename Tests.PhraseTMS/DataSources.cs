@@ -49,7 +49,7 @@ namespace Tests.PhraseTMS
         public async Task Domain_with_query_returns_values() => await Test(new DomainDataHandler(InvocationContext), "test");
 
         [TestMethod]
-        public async Task Job_query_returns_values() => await Test(new JobDataHandler(InvocationContext, new ProjectRequest { ProjectUId = "FwDrhxXNmSU15GNJiDVvQ7" }));
+        public async Task Job_query_returns_values() => await Test(new JobDataHandler(InvocationContext, new ProjectRequest { ProjectUId = "s2MJwHdD0HOb3WyvR1XLL2" }));
 
         [TestMethod]
         public async Task Language_returns_values() => await Test(new LanguageDataHandler(InvocationContext));

@@ -188,6 +188,20 @@ namespace Tests.PhraseTMS
         }
 
         [TestMethod]
+        public async Task GetSegments_Success()
+        {
+            var action = new JobActions(InvocationContext, FileManager);
+            var input1 = new ProjectRequest { ProjectUId = "s2MJwHdD0HOb3WyvR1XLL2" };
+            var jobs = new GetSegmentsCountRequest { JobUids = ["cO2cj1bqQCOzuGXIclxeF2"] };
+
+            var result = await action.GetSegmentsCount(input1, jobs);
+            var json = JsonConvert.SerializeObject(result, Formatting.Indented);
+            Console.WriteLine(json);
+
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
         public async Task Remove_Provers_works()
         {
             var action = new JobActions(InvocationContext, FileManager);
