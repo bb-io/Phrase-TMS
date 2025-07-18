@@ -118,12 +118,23 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
 
     [Action("Update project", Description = "Update project with specified details")]
     public Task EditProject([ActionParameter] ProjectRequest projectRequest, [ActionParameter] EditProjectRequest input)
-    {        
-        var bodyDictionary = new Dictionary<string, object>
+    {
+        if (input == null || input.GetType().GetProperties().All(p => p.GetValue(input) == null))
         {
-            { "name", input.ProjectName},
-            { "status", input.Status}
-        };
+            throw new PluginMisconfigurationException("At least one value from the optional inputs needs to be filled in.");
+        }
+
+        var bodyDictionary = new Dictionary<string, object>();
+
+        if (!String.IsNullOrEmpty(input.ProjectName))
+        {
+            bodyDictionary.Add("name", input.ProjectName);
+        }
+
+        if (!String.IsNullOrEmpty(input.Status))
+        {
+            bodyDictionary.Add("status", input.Status);
+        }
 
         if (input.DueDate.HasValue)
         {
@@ -168,6 +179,11 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
             {
                 id = input.OwnerId
             });
+        }
+
+        if (input.Archived.HasValue)
+        {
+            bodyDictionary.Add("archived", input.Archived);
         }
 
         var request = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}", Method.Patch)

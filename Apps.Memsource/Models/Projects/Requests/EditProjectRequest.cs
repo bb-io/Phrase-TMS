@@ -8,10 +8,10 @@ namespace Apps.PhraseTMS.Models.Projects.Requests;
 
 public class EditProjectRequest
 {
-    [Display("Project name")] public string ProjectName { get; set; }
+    [Display("Project name")] public string? ProjectName { get; set; }
 
     [StaticDataSource(typeof(ProjectStatusDataHandler))]
-    public string Status { get; set; }
+    public string? Status { get; set; }
     
     [Display("Due date")]
     public DateTime? DueDate { get; set; }
@@ -30,4 +30,6 @@ public class EditProjectRequest
 
     [Display("Owner user ID"), DataSource(typeof(UserDataHandler))]
     public string? OwnerId { get; set; }
+
+    public bool? Archived { get; set; }
 }
