@@ -118,12 +118,18 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
 
     [Action("Update project", Description = "Update project with specified details")]
     public Task EditProject([ActionParameter] ProjectRequest projectRequest, [ActionParameter] EditProjectRequest input)
-    {        
-        var bodyDictionary = new Dictionary<string, object>
+    {
+        var bodyDictionary = new Dictionary<string, object>();
+
+        if (!String.IsNullOrEmpty(input.ProjectName))
         {
-            { "name", input.ProjectName},
-            { "status", input.Status}
-        };
+            bodyDictionary.Add("name", input.ProjectName);
+        }
+
+        if (!String.IsNullOrEmpty(input.Status))
+        {
+            bodyDictionary.Add("status", input.Status);
+        }
 
         if (input.DueDate.HasValue)
         {
@@ -168,6 +174,11 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
             {
                 id = input.OwnerId
             });
+        }
+
+        if (input.Archived.HasValue)
+        {
+            bodyDictionary.Add("archived", input.Archived);
         }
 
         var request = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}", Method.Patch)
