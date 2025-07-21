@@ -32,7 +32,7 @@ namespace Apps.PhraseTMS.Models.Jobs.Responses
         [JsonProperty("confirmedCharsCount")][Display("Confirmed char count")] public int ConfirmedCharsCount { get; set; }
         [JsonProperty("lockedCharsCount")][Display("Locked chars count")] public int LockedCharsCount { get; set; }
         [JsonProperty("segmentsCount")][Display("Segments count")] public int SegmentsCount { get; set; }
-        [JsonProperty("completedSegmentsCount")][Display("Completed  segments count")] public int CompletedSegmentsCount { get; set; }
+        [JsonProperty("completedSegmentsCount")][Display("Completed segments count")] public int CompletedSegmentsCount { get; set; }
         [JsonProperty("lockedSegmentsCount")][Display("Locked segments count")] public int LockedSegmentsCount { get; set; }
         [JsonProperty("translatedSegmentsCount")][Display("Translated segments count")] public int TranslatedSegmentsCount { get; set; }
         [JsonProperty("wordsCount")][Display("Words count")] public int WordsCount { get; set; }

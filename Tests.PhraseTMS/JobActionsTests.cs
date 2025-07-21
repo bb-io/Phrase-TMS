@@ -192,9 +192,9 @@ namespace Tests.PhraseTMS
         {
             var action = new JobActions(InvocationContext, FileManager);
             var input1 = new ProjectRequest { ProjectUId = "s2MJwHdD0HOb3WyvR1XLL2" };
-            var jobs = new GetSegmentsCountRequest { JobUids = ["cO2cj1bqQCOzuGXIclxeF2"] };
+            var job = new JobRequest { JobUId = "cO2cj1bqQCOzuGXIclxeF2" };
 
-            var result = await action.GetSegmentsCount(input1, jobs);
+            var result = await action.GetSegmentsCount(input1, job );
             var json = JsonConvert.SerializeObject(result, Formatting.Indented);
             Console.WriteLine(json);
 
