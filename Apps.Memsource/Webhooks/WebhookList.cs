@@ -422,8 +422,9 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         [WebhookParameter] [Display("Project name doesn't contains")] string? projectNameDoesntContains,
         [WebhookParameter] MultipleSubdomains subdomains)
     {
-        InvocationContext.Logger?.LogInformation(
-              "[Phrase TMS WebhookLogger] Invoked webhook", null);
+        InvocationContext.Logger?.LogInformation("[Phrase TMS WebhookLogger] Invoked webhook", null);
+
+        InvocationContext.Logger?.LogInformation( $"[Phrase TMS WebhookLogger] Input parameters: request.Status={JsonConvert.SerializeObject(request?.Status)}", null);
 
         if (job?.JobUId != null && projectOptionalRequest?.ProjectUId == null)
         {          
