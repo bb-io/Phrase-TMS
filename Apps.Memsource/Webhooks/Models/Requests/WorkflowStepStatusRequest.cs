@@ -9,9 +9,11 @@ namespace Apps.PhraseTMS.Webhooks.Models.Requests;
 
 public class WorkflowStepStatusRequest : ProjectRequest
 {
-    [Display("Workflow step ID"), DataSource(typeof(WorkflowStepDataHandler))]
+    [Display("Workflow step ID")]
+    [DataSource(typeof(WorkflowStepDataHandler))]
     public string WorkflowStepId { get; set; } = string.Empty;
 
-    [Display("Job status"), StaticDataSource(typeof(JobStatusDataHandler))]
-    public string JobStatus { get; set; } = string.Empty;
+    [Display("Job statuses", Description = "Start an event if all jobs are in any of the selected statuses.")]
+    [StaticDataSource(typeof(JobStatusDataHandler))]
+    public IEnumerable<string> JobStatuses { get; set; } = [];
 }

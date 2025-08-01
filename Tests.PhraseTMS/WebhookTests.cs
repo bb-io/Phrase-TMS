@@ -254,7 +254,7 @@ public class WebhookTests : TestBase
 
         var projectUid = "mx1qPbEEGiN0vAKpIbFwa9";
         var workflowStepId = "7447";
-        var jobStatus = "COMPLETED_BY_LINGUIST";
+        var jobStatuses = new List<string> { "COMPLETED_BY_LINGUIST", "NEW" };
 
         var result = await events.HandleAllJobsReachedStatusAsync(
             CreateWebhookRequest("job_status_changed_all_jobs_in_workflow_step.json"),
@@ -262,7 +262,7 @@ public class WebhookTests : TestBase
             {
                 ProjectUId = projectUid,
                 WorkflowStepId = workflowStepId,
-                JobStatus = jobStatus
+                JobStatuses = jobStatuses
             }
         );
 
