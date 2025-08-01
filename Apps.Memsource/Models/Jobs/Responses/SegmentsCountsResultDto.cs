@@ -12,7 +12,7 @@ namespace Apps.PhraseTMS.Models.Jobs.Responses
     public class SegmentsCountsResultDto
     {
         [JsonProperty("jobPartUid")]
-        [Display("Job part UID")]
+        [Display("Job ID")]
         public string JobPartUid { get; set; }
 
         [JsonProperty("counts")]

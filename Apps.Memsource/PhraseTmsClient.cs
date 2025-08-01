@@ -145,7 +145,9 @@ public class PhraseTmsClient : RestClient
 
         if (string.IsNullOrEmpty(error.ErrorDescription))
         {
-            throw new PluginApplicationException("There has been an error with no error description.");
+            if (string.IsNullOrEmpty(error.ErrorCode))
+                throw new PluginApplicationException("There has been an error with no error description.");
+            else throw new PluginApplicationException("Error code: " + error.ErrorCode);
         }
 
         if (restResponse.StatusCode.Equals(HttpStatusCode.Unauthorized))
