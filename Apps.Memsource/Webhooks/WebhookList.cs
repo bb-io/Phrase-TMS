@@ -615,7 +615,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             throw new InvalidCastException("Failed to retrieve a job from webhook request body.");
         }
 
-        if (primaryJob.Status != workflowStepStatusRequest.JobStatus)
+        if (!workflowStepStatusRequest.JobStatuses.Contains(primaryJob.Status))
         {
             return new WebhookResponse<ListAllJobsResponse>
             {
@@ -646,7 +646,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
 
         var relevantJobs = allJobs
             .Where(job => job.WorkflowStep?.Id == workflowStepStatusRequest.WorkflowStepId)
-            .Where(job => job.Status == workflowStepStatusRequest.JobStatus)
+            .Where(job => workflowStepStatusRequest.JobStatuses.Contains(job.Status))
             .ToList();
 
         if (allJobs.Count != relevantJobs.Count)
