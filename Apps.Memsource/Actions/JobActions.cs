@@ -537,7 +537,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
     }
 
     [Action("Upload job bilingual file", Description = "Upload bilingual file to update job")]
-    public Task UploadBilingualFile([ActionParameter] UploadBilingualFileRequest input)
+    public async Task UploadBilingualFile([ActionParameter] UploadBilingualFileRequest input)
     {
         var fileBytes = fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
         var request = new RestRequest($"/api2/v2/bilingualFiles", Method.Post);
@@ -554,7 +554,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         request.AlwaysMultipartFormData = true;
         request.AddFile("file", fileBytes, input.File.Name);
 
-        return Client.ExecuteWithHandling(request);
+        await Client.ExecuteWithHandling(request);
     }
 
 
