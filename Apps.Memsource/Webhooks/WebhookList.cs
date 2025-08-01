@@ -593,7 +593,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
 
     [Webhook("On all jobs in workflow step reached status", typeof(AllJobsReachedStatusHandler),
         Description =
-            "Triggered when all jobs in a specific workflow step reach a specified status. Returns only jobs in the specified workflow step")]
+            "Triggered when all jobs in a specific workflow step reach any of specified statuses. Returns only jobs in the specified workflow step")]
     public async Task<WebhookResponse<ListAllJobsResponse>> HandleAllJobsReachedStatusAsync(WebhookRequest webhookRequest,
         [WebhookParameter] WorkflowStepStatusRequest workflowStepStatusRequest)
     {
