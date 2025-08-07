@@ -140,6 +140,7 @@ The following actions update a job's file (source or target) from their original
 
 ### Translation memory
 
+- **Search translation memories** Get all translation memories that match th specified search criteria
 - **Create translation memory** create a new translation memory
 - **Get translation memory** get information about a specific translation memory
 - **Import TMX file** imports a new TMX file into the translation memory
