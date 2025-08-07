@@ -19,7 +19,7 @@ namespace Apps.PhraseTMS.Actions;
 public class TranslationMemoryActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : PhraseInvocable(invocationContext)
 {
     [Action("Search translation memories", Description = "Get all translation memories that match search criteria")]
-    public Task<List<TranslationMemoryDto>> GetTranslationMemory([ActionParameter] SearchTranslationMemoryRequest input)
+    public Task<List<TranslationMemoryDto>> SearchTranslationMemories([ActionParameter] SearchTranslationMemoryRequest input)
     {
         var request = new RestRequest("/api2/v1/transMemories", Method.Get);
 
