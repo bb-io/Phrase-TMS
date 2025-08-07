@@ -18,6 +18,29 @@ namespace Apps.PhraseTMS.Actions;
 [ActionList]
 public class TranslationMemoryActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : PhraseInvocable(invocationContext)
 {
+    [Action("Search translation memories", Description = "Get all translation memories that match search criteria")]
+    public Task<List<TranslationMemoryDto>> GetTranslationMemory([ActionParameter] SearchTranslationMemoryRequest input)
+    {
+        var request = new RestRequest("/api2/v1/transMemories", Method.Get);
+
+        if (!string.IsNullOrEmpty(input.Name))
+            request.AddQueryParameter("name", input.Name);
+        if (!string.IsNullOrEmpty(input.SourceLang))
+            request.AddQueryParameter("sourceLang", input.SourceLang);
+        if (!string.IsNullOrEmpty(input.TargetLang))
+            request.AddQueryParameter("targetLang", input.TargetLang);
+        if (!string.IsNullOrEmpty(input.ClientId))
+            request.AddQueryParameter("clientId", input.ClientId);
+        if (!string.IsNullOrEmpty(input.DomainId))
+            request.AddQueryParameter("domainId", input.DomainId);
+        if (!string.IsNullOrEmpty(input.SubDomainId))
+            request.AddQueryParameter("subDomainId", input.SubDomainId);
+        if (!string.IsNullOrEmpty(input.BusinessUnitId))
+            request.AddQueryParameter("businessUnitId", input.BusinessUnitId);
+
+        return Client.Paginate<TranslationMemoryDto>(request);
+    }
+
     [Action("Create translation memory", Description = "Create a new translation memory")]
     public Task<TranslationMemoryDto> CreateTranslationMemory([ActionParameter] CreateTranslationMemoryRequest input)
     {
