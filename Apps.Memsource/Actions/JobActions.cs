@@ -190,6 +190,16 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         [ActionParameter] JobRequest input
         )
     {
+        if (string.IsNullOrWhiteSpace(projectRequest?.ProjectUId))
+        {
+            throw new PluginMisconfigurationException("Project Id cannot be null or empty. Please check your input and try again");
+        }
+
+        if (string.IsNullOrWhiteSpace(input?.JobUId))
+        {
+            throw new PluginMisconfigurationException("Job Id cannot be null or empty. Please check your input and try again");
+        }
+
         var request = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/{input.JobUId}", Method.Get);
         return await Client.ExecuteWithHandling<JobDto>(request);
     }
