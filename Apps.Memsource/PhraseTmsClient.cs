@@ -18,7 +18,7 @@ public class PhraseTmsClient : RestClient
 {
     public PhraseTmsClient(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders) :
         base(new RestClientOptions
-            { BaseUrl = GetUri(authenticationCredentialsProviders) })
+            { BaseUrl = GetUri(authenticationCredentialsProviders), MaxTimeout=600000 })
     {
         var authorization = authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value;
         this.AddDefaultHeader("Authorization", authorization);
@@ -87,7 +87,7 @@ public class PhraseTmsClient : RestClient
                 return response;
             }
 
-            if (response.StatusCode == HttpStatusCode.InternalServerError && attempt < retryDelaysInMs.Length)
+            if ((response.StatusCode == HttpStatusCode.InternalServerError || (int)response.StatusCode == 0) && attempt < retryDelaysInMs.Length)
             {
                 await Task.Delay(retryDelaysInMs[attempt]);
                 continue;
