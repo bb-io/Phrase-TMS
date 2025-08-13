@@ -130,7 +130,7 @@ public class AnalysisActions(InvocationContext invocationContext, IFileManagemen
 
         var memoryStream = new MemoryStream(bytes);
         fileName ??= $"analysis_{analysisRequest.AnalysisUId}";
-        fileName = $"{fileName}.{format}";
+        fileName = $"{fileName}.{format.ToLower()}";
         var fileReference = await fileManagementClient.UploadAsync(memoryStream, MimeTypes.GetMimeType(fileName), fileName);
 
         return new AnalysisFileResponse { AnalysisFile = fileReference };
