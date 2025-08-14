@@ -77,25 +77,43 @@ public class PhraseTmsClient : RestClient
     {
         int[] retryDelaysInMs = { 2000, 4000, 8000 };
         RestResponse response = null;
-        
+
         for (int attempt = 0; attempt <= retryDelaysInMs.Length; attempt++)
         {
-            response = await ExecuteAsync(request);
-
-            if (response.IsSuccessful)
+            try
             {
-                return response;
+                response = await ExecuteAsync(request);
             }
-
-            if ((response.StatusCode == HttpStatusCode.InternalServerError || (int)response.StatusCode == 0) && attempt < retryDelaysInMs.Length)
+            catch (TaskCanceledException tce) when (!tce.CancellationToken.IsCancellationRequested && attempt < retryDelaysInMs.Length)
             {
                 await Task.Delay(retryDelaysInMs[attempt]);
                 continue;
             }
-            
-            throw ConfigureErrorException(response);
-        }
+            catch (HttpRequestException) when (attempt < retryDelaysInMs.Length)
+            {
+                await Task.Delay(retryDelaysInMs[attempt]);
+                continue;
+            }
+            catch (IOException) when (attempt < retryDelaysInMs.Length)
+            {
+                await Task.Delay(retryDelaysInMs[attempt]);
+                continue;
+            }
 
+            if (response is { IsSuccessful: true })
+                return response;
+
+            if (ShouldRetry(response))
+            {
+                if (attempt < retryDelaysInMs.Length)
+                {
+                    var delayMs = GetRetryDelayMs(response) ?? retryDelaysInMs[attempt];
+                    await Task.Delay(delayMs);
+                    continue;
+                }
+            }
+            throw ConfigureErrorException(response!);
+        }
         return response!;
     }
         
@@ -216,5 +234,44 @@ public class PhraseTmsClient : RestClient
         var title = titleNode?.InnerText.Trim() ?? "No Title";
         var body = bodyNode?.InnerText.Trim() ?? "No Description";
         return $"{title}: \nError Description: {body}";
+    }
+
+    private static bool ShouldRetry(RestResponse? resp)
+    {
+        if (resp is null) return true;
+
+        var status = (int)resp.StatusCode;
+
+        if (status == 0 || (status >= 500 && status < 600) || status == 429)
+            return true;
+
+        if (resp.ErrorException is HttpRequestException) return true;
+        if (resp.ErrorException is IOException) return true;
+
+        if (!string.IsNullOrWhiteSpace(resp.ErrorMessage) &&
+            resp.ErrorMessage.IndexOf("An error occurred while sending the request", StringComparison.OrdinalIgnoreCase) >= 0)
+            return true;
+
+        return false;
+    }
+
+    private static int? GetRetryDelayMs(RestResponse resp)
+    {
+        var hdr = resp.Headers?
+            .FirstOrDefault(h => string.Equals(h.Name, "Retry-After", StringComparison.OrdinalIgnoreCase))
+            ?.Value?.ToString();
+
+        if (string.IsNullOrWhiteSpace(hdr)) return null;
+
+        if (int.TryParse(hdr, out var seconds) && seconds >= 0)
+            return seconds * 1000;
+
+        if (DateTimeOffset.TryParse(hdr, out var when))
+        {
+            var ms = (int)Math.Max(0, (when - DateTimeOffset.UtcNow).TotalMilliseconds);
+            return ms;
+        }
+
+        return null;
     }
 }
