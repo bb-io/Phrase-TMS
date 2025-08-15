@@ -504,16 +504,20 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             workflowLevel = await Client.GetLastWorkflowstepLevel(projectId);
         }
 
+
+
         if (string.IsNullOrEmpty(job?.JobUId) && workflowLevel > 0)
         {
-            if (workflowStepRequest != null && !String.IsNullOrEmpty(workflowStepRequest?.WorkflowStepId))
+            if (!string.IsNullOrEmpty(workflowStepRequest?.WorkflowStepId) || lastWorkflowLevel == true)
             {
-                if (selectedJobs.Any(x => x.workflowLevel == workflowLevel))
+                selectedJobs = selectedJobs.Where(x => x.workflowLevel == workflowLevel);
+
+                if (!selectedJobs.Any())
                 {
-                    selectedJobs = selectedJobs.Where(x => x.workflowLevel == workflowLevel);
-                }
-                else
-                {
+                    InvocationContext.Logger?.LogInformation(
+                        $"[Phrase TMS WebhookLogger] No job parts at required workflow level ({workflowLevel}); ignoring event.",
+                        null);
+
                     return new()
                     {
                         HttpResponseMessage = null,
@@ -522,18 +526,30 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
                     };
                 }
             }
-            else if (lastWorkflowLevel.HasValue && lastWorkflowLevel.Value)
-            {
-                if (selectedJobs.Any(x => x.workflowLevel == workflowLevel))
-                {
-                    selectedJobs = selectedJobs.Where(x => x.workflowLevel == workflowLevel);
-                }
-            }
         }
+
 
         if (!string.IsNullOrEmpty(job?.JobUId) && !string.IsNullOrEmpty(projectId))
         {
             selectedJobs = data.JobParts.Where(x => x.Uid == job.JobUId);
+
+            if (lastWorkflowLevel == true && workflowLevel > 0)
+            {
+                var single = selectedJobs.FirstOrDefault();
+                if (single != null && single.workflowLevel != workflowLevel)
+                {
+                    InvocationContext.Logger?.LogInformation(
+                        $"[Phrase TMS WebhookLogger] Job {single.Uid} is at level {single.workflowLevel}, required last level {workflowLevel}; ignoring event.",
+                        null);
+
+                    return new()
+                    {
+                        HttpResponseMessage = null,
+                        Result = null,
+                        ReceivedWebhookRequestType = WebhookRequestType.Preflight
+                    };
+                }
+            }
         }
         else if (!string.IsNullOrEmpty(sourceFileId?.SourceFileId) && !string.IsNullOrEmpty(projectId))
         {
