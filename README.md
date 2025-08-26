@@ -182,6 +182,9 @@ The following actions update a job's file (source or target) from their original
 - **On jobs unexported** Triggered when jobs are exported
 - **On all jobs in workflow step reached status** Triggered when all jobs in a specific workflow step reach any of specified statuses. Returns only jobs in the specified workflow step. Please be aware that this event might trigger multiple times if several jobs are updated simultaneously, for example, through a bulk action or in very quick succession.
 
+### User
+
+- **On users created** Triggered when a new users have been created
 
 ### Analysis
 
