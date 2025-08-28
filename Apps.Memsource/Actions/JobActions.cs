@@ -25,7 +25,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace Apps.PhraseTMS.Actions;
 
-[ActionList]
+[ActionList("Jobs")]
 public class JobActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : PhraseInvocable(invocationContext)
 {
     [Action("Search jobs", Description = "Returns a list of jobs in the project based on specified parameters")]

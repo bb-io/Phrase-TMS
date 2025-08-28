@@ -12,7 +12,7 @@ using Blackbird.Applications.Sdk.Common.Invocation;
 
 namespace Apps.PhraseTMS.Actions;
 
-[ActionList]
+[ActionList("Users")]
 public class UserActions(InvocationContext invocationContext) : PhraseInvocable(invocationContext)
 {
     [Action("Search users", Description = "Search through all users active on this Phrase instance")]

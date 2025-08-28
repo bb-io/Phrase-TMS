@@ -14,7 +14,7 @@ using Blackbird.Applications.Sdk.Common.Invocation;
 
 namespace Apps.PhraseTMS.Actions;
 
-[ActionList]
+[ActionList("Miscellaneous")]
 public class TranslationActions(InvocationContext invocationContext) : PhraseInvocable(invocationContext)
 {
     [Action("Delete all project translations", Description = "Delete all translations by project ID for the given jobs")]

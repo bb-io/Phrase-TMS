@@ -12,7 +12,7 @@ using Blackbird.Applications.Sdk.Common.Invocation;
 
 namespace Apps.PhraseTMS.Actions;
 
-[ActionList]
+[ActionList("Quotes")]
 public class QuoteActions(InvocationContext invocationContext) : PhraseInvocable(invocationContext)
 {
     [Action("Get quote", Description = "Get quote by ID")]

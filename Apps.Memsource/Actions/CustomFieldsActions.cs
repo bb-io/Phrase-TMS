@@ -12,8 +12,7 @@ using Blackbird.Applications.Sdk.Common.Invocation;
 
 namespace Apps.PhraseTMS.Actions;
 
-[ActionList]
-
+[ActionList("Custom fields")]
 public class CustomFieldsActions(InvocationContext invocationContext) : PhraseInvocable(invocationContext)
 {
     [Action("Get project text custom field value", Description = "Gets the text value of a project custom field")]

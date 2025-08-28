@@ -17,7 +17,7 @@ using Blackbird.Applications.Sdk.Common.Exceptions;
 
 namespace Apps.PhraseTMS.Actions;
 
-[ActionList]
+[ActionList("Reference files")]
 public class ProjectRefrenceFileActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : PhraseInvocable(invocationContext)
 {
     [Action("Search project reference files", Description = "Searches through all project reference files")]

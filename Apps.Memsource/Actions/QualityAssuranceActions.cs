@@ -17,7 +17,7 @@ using Newtonsoft.Json;
 
 namespace Apps.PhraseTMS.Actions;
 
-[ActionList]
+[ActionList("Quality assurance")]
 public class QualityAssuranceActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : PhraseInvocable(invocationContext)
 {
     [Action("Download LQA assessment", Description = "Downloads a single xlsx report based on specific job ID")]

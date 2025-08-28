@@ -5,7 +5,7 @@ using Blackbird.Applications.Sdk.Common.Invocation;
 
 namespace Apps.PhraseTMS.Actions
 {
-    [ActionList]
+    [ActionList("Miscellaneous")]
     public class DebugActions(InvocationContext invocationContext) : PhraseInvocable(invocationContext)
     {
         [Action("Debug", Description = "Debug action")]
