@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Apps.PhraseTMS.Polling
 {
-    [PollingEventList]
+    [PollingEventList("Users")]
     public class UserPollingList(InvocationContext invocationContext) : PhraseInvocable(invocationContext)
     {
         [PollingEvent("On users created", "Triggered when new users are created")]

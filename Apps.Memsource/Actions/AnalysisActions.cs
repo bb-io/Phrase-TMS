@@ -17,7 +17,7 @@ using Apps.PhraseTMS.Dtos.Jobs;
 
 namespace Apps.PhraseTMS.Actions;
 
-[ActionList]
+[ActionList("Analysis")]
 public class AnalysisActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient): PhraseInvocable(invocationContext)
 {
 

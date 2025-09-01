@@ -13,7 +13,7 @@ using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 
 namespace Apps.PhraseTMS.Actions;
 
-[ActionList]
+[ActionList("Clients")]
 public class ClientActions(InvocationContext invocationContext) : PhraseInvocable(invocationContext)
 {
     [Action("Search clients", Description = "Search through all clients")]

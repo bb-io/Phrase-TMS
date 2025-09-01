@@ -14,7 +14,7 @@ using Apps.PhraseTMS.Models.Glossary.Responses;
 
 namespace Apps.PhraseTMS.Actions;
 
-[ActionList]
+[ActionList("Glossaries")]
 public class GlossaryActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : PhraseInvocable(invocationContext)
 {
     [Action("Create glossary", Description = "Create a new glossary")]
@@ -45,9 +45,9 @@ public class GlossaryActions(InvocationContext invocationContext, IFileManagemen
         var requestGlossaryDetails = new RestRequest(endpointGlossaryDetails, Method.Get);
         var responseGlossaryDetails = await Client.ExecuteWithHandling<GlossaryDto>(requestGlossaryDetails);
 
-        using var streamGlossaryData = new MemoryStream(responseGlossaryData.RawBytes);
+        using var streamGlossaryData = new MemoryStream(responseGlossaryData.RawBytes ?? []);
 
-        using var resultStream = await streamGlossaryData.ConvertFromTBXV2ToV3(responseGlossaryDetails.Name);
+        using var resultStream = await CoreTbxVersionsConverter.ConvertFromTbxV2ToV3(streamGlossaryData, responseGlossaryDetails.Name);
         return new() { File = await fileManagementClient.UploadAsync(resultStream, MediaTypeNames.Application.Xml, $"{responseGlossaryDetails.Name}.tbx") };
     }
 
@@ -55,7 +55,7 @@ public class GlossaryActions(InvocationContext invocationContext, IFileManagemen
     public async Task ImportGlossary([ActionParameter] ImportGlossaryRequest input)
     {
         var fileStream = await fileManagementClient.DownloadAsync(input.File);
-        var fileTbxv2Stream = await fileStream.ConvertFromTBXV3ToV2();
+        var fileTbxv2Stream = await CoreTbxVersionsConverter.ConvertFromTbxV3ToV2(fileStream);
 
         var endpointGlossaryData = $"/api2/v1/termBases/{input.GlossaryUId}/upload";
         var requestGlossaryData = new RestRequest(endpointGlossaryData.WithQuery(new{updateTerms = false}), Method.Post);

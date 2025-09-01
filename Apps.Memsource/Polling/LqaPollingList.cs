@@ -11,7 +11,7 @@ using RestSharp;
 
 namespace Apps.PhraseTMS.Polling;
 
-[PollingEventList]
+[PollingEventList("Quality assurance")]
 public class LqaPollingList(InvocationContext invocationContext) : PhraseInvocable(invocationContext)
 {
     [PollingEvent("On LQA reports created", "Triggered when new reports can be downloaded within a specific project")]

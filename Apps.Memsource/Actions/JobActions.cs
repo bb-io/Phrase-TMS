@@ -25,7 +25,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace Apps.PhraseTMS.Actions;
 
-[ActionList]
+[ActionList("Jobs")]
 public class JobActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : PhraseInvocable(invocationContext)
 {
     [Action("Search jobs", Description = "Returns a list of jobs in the project based on specified parameters")]
@@ -138,10 +138,9 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
                     .Where(a => a.LqaEnabled && a.AssessmentResult == null)
                     .Select(a => a.JobPartUid)?.ToList() ?? Enumerable.Empty<string>();
 
-                return new ListAllJobsResponse
-                {
-                    Jobs = jobs.Where(x => jobsWithoutLQA.Contains(x.Uid))?.ToList() ?? new List<ListJobDto>()
-                };
+
+                jobs = jobs.Where(x => jobsWithoutLQA.Contains(x.Uid))?.ToList() ?? new List<ListJobDto>();
+                
             }
 
             if (jobStatusesRequest != null && jobStatusesRequest.Statuses?.Any() == true)

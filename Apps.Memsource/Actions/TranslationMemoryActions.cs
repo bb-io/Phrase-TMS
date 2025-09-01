@@ -15,7 +15,7 @@ using Apps.PhraseTMS.Dtos.Async;
 
 namespace Apps.PhraseTMS.Actions;
 
-[ActionList]
+[ActionList("Translation memory")]
 public class TranslationMemoryActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : PhraseInvocable(invocationContext)
 {
     [Action("Search translation memories", Description = "Get all translation memories that match search criteria")]

@@ -19,7 +19,7 @@ using RestSharp;
 
 namespace Apps.PhraseTMS.Webhooks;
 
-[WebhookList]
+[WebhookList("Miscellaneous")]
 public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(invocationContext)
 {
     #region ProjectWebhooks
