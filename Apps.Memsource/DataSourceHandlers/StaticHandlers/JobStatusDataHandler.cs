@@ -10,7 +10,7 @@ public class JobStatusDataHandler : IStaticDataSourceItemHandler
         { "NEW", "New" },
         { "EMAILED", "Emailed to provider" },
         { "ACCEPTED", "Accepted by provider" },
-        { "DECLINED_BY_LINGUIST", "Declined by provider" },
+        { "DECLINED", "Declined by provider" },
         { "COMPLETED_BY_LINGUIST", "Completed by provider" },
         { "COMPLETED", "Delivered" },
         { "CANCELLED", "Cancelled" },
