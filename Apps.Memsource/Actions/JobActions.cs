@@ -37,6 +37,9 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         [ActionParameter] [Display("LQA Score null?")] bool? LQAScorenull,
         [ActionParameter] [Display("Last workflow step")] bool? LastWfStep)
     {
+        if (LastWfStep.GetValueOrDefault() && string.IsNullOrWhiteSpace(input?.ProjectUId))
+            throw new PluginMisconfigurationException("When 'Last workflow step' is enabled, you must provide a valid Project ID.");
+
         var endpoint = $"/api2/v2/projects/{input.ProjectUId}/jobs";
         var jobs = new List<ListJobDto>();
         int workflowLevel = 1;
