@@ -147,6 +147,7 @@ The following actions update a job's file (source or target) from their original
 - **Export translation memory** exports the selected translation memory as either a TMX or an XLSX
 - **Insert segment into memory** insert a new segment into the translation memory
 - **Delete translation memory** deletes the entire translation memory
+- **Edit translation memories** edits the name and description of a translation memory
 
 ### User
 
