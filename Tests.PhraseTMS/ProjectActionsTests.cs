@@ -74,14 +74,56 @@ namespace Tests.PhraseTMS
         }
 
         [TestMethod]
+        public async Task SearchTranslationMemories_works()
+        {
+            var actions = new TranslationMemoryActions(InvocationContext, FileManager);
+            var result = await actions.SearchTranslationMemories(new Apps.PhraseTMS.Models.TranslationMemories.Requests.SearchTranslationMemoryRequest { });
+
+            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
         public async Task Get_project_works()
         {
             var actions = new ProjectActions(InvocationContext, FileManager);
-            var result = await actions.GetProject(new ProjectRequest { ProjectUId = "V5AndfLXDsELeVLRym1UG6" });
+            var result = await actions.GetProject(new ProjectRequest { ProjectUId = "0SBo723Ge0wHfk0A1k1XWn0" });
 
             Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Name != null);
+        }
+
+
+        [TestMethod]
+        public async Task EditProjectTranslationMemories_works()
+        {
+            var actions = new TranslationMemoryActions(InvocationContext, FileManager);
+
+            //var reqLangReadWrite = new Apps.PhraseTMS.Models.TranslationMemories.Requests.EditProjectTransMemoriesRequest
+            //{
+            //    TransMemoryUids = new[] { "w1pV1izYniDtTQjV4iPD1s" }
+            //};
+
+            var reqLangReadWrite = new Apps.PhraseTMS.Models.TranslationMemories.Requests.EditProjectTransMemoriesRequest
+            {
+                TargetLanguage = "de",
+                TransMemoryUids = new[] { "w1pV1izYniDtTQjV4iPD1s" },
+                ReadModes = new[] { true },
+                WriteModes = new[] { true },
+                Penalties = new[] { 2 },
+                Orders = new[] { 1 },
+            };
+
+            var input = reqLangReadWrite;
+
+            var result = await actions.EditProjectTranslationMemories(
+                new ProjectRequest { ProjectUId = "0SBo723Ge0wHfk0A1k1XWn0" },
+                input
+            );
+
+            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+            Assert.IsNotNull(result);
         }
     }
 }

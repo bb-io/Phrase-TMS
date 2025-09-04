@@ -12,6 +12,8 @@ using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Blackbird.Applications.Sdk.Utils.Extensions.Files;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Apps.PhraseTMS.Dtos.Async;
+using Apps.PhraseTMS.Models.Projects.Requests;
+using Blackbird.Applications.Sdk.Common.Exceptions;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -121,4 +123,50 @@ public class TranslationMemoryActions(InvocationContext invocationContext, IFile
         var request = new RestRequest(endpoint, Method.Delete);
         return Client.ExecuteWithHandling(request);
     }
+
+
+    [Action("Edit translation memories", Description = "Edit translation memories")]
+    public Task<EditProjectTransMemoriesResponse> EditProjectTranslationMemories(
+    [ActionParameter] ProjectRequest project,
+    [ActionParameter] EditProjectTransMemoriesRequest input)
+    {
+        if (input.TransMemoryUids == null || input.TransMemoryUids.Length == 0)
+            throw new PluginMisconfigurationException("Provide at least one TM UID.");
+
+        if (input.Penalties != null && input.Penalties.Any(p => p < 0 || p > 100))
+            throw new PluginMisconfigurationException("Penalties must be between 0 and 100.");
+
+        var request = new RestRequest($"/api2/v3/projects/{project.ProjectUId}/transMemories", Method.Put);
+
+        var count = input.TransMemoryUids.Length;
+        var transMemories = Enumerable.Range(0, count).Select(i => new
+        {
+            transMemory = new { uid = input.TransMemoryUids[i] },
+            readMode = GetAt(input.ReadModes, i),
+            writeMode = GetAt(input.WriteModes, i),
+            penalty = GetAt(input.Penalties, i),
+            applyPenaltyTo101Only = GetAt(input.ApplyPenaltyTo101Only, i),
+            order = GetAt(input.Orders, i)
+        });
+
+        var body = new
+        {
+            dataPerContext = new[]
+            {
+            new
+            {
+                transMemories,
+                targetLang = input.TargetLanguage,
+                workflowStep = string.IsNullOrWhiteSpace(input.WorkflowStepUid) ? null : new { uid = input.WorkflowStepUid },
+                orderEnabled = input.OrderEnabled
+            }
+        }
+        };
+
+        request.WithJsonBody(body, JsonConfig.Settings);
+        return Client.ExecuteWithHandling<EditProjectTransMemoriesResponse>(request);
+
+        static T? GetAt<T>(T[]? arr, int index) => (arr != null && index < arr.Length) ? arr[index] : default;
+    }
+
 }
