@@ -324,15 +324,6 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] CreateJobsRequest input)
     {
-        var fileName = input.File.Name;
-        string fileNameForHeader = fileName;
-        if (!IsOnlyAscii(fileName))
-        {
-            fileNameForHeader = Uri.EscapeDataString(fileName)
-                .Replace("\n", string.Empty)
-                .Replace("\r", string.Empty);
-        }
-
         if (string.IsNullOrWhiteSpace(projectRequest.ProjectUId))
         {
             throw new PluginMisconfigurationException("Project ID is not provided. Please specify a valid Project ID.");
@@ -343,7 +334,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
             throw new PluginMisconfigurationException("File is not provided. Please upload a file.");
         }
 
-        if (input.TargetLanguages == null || !input.TargetLanguages.Any())
+        if (input.TargetLanguages?.Any() != true)
         {
             var _projectRequest = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}", Method.Get);
             var project = await Client.ExecuteWithHandling<ProjectDto>(_projectRequest);
@@ -352,7 +343,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
 
         var request = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs", Method.Post);
 
-        var bodyJson = JsonConvert.SerializeObject(new
+        var memsourceHeader = JsonConvert.SerializeObject(new
         {
             targetLangs = input.TargetLanguages,
             preTranslate = input.preTranslate ?? false,
@@ -360,26 +351,28 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
             due = input.DueDate
         });
 
+        var fileNameForHeader = input.File.Name;
+        if (!IsOnlyAscii(input.File.Name))
+        {
+            fileNameForHeader = Uri.EscapeDataString(input.File.Name)
+                .Replace("\n", string.Empty)
+                .Replace("\r", string.Empty);
+        }
+
         request
-         .AddHeader("Memsource", bodyJson)
+         .AddHeader("Memsource", memsourceHeader)
          .AddHeader("Content-Disposition", $"filename*=UTF-8''{fileNameForHeader}")
          .AddHeader("Content-Type", "application/octet-stream");
 
         var fileStream = await fileManagementClient.DownloadAsync(input.File);
-        using (var memoryStream = new MemoryStream())
+        var fileBytes = await fileStream.GetByteData();
+
+        if (fileBytes.Length == 0)
         {
-            await fileStream.CopyToAsync(memoryStream);
-            memoryStream.Position = 0;
-
-            if (memoryStream.ReadByte() == -1)
-            {
-                throw new PluginMisconfigurationException("The provided file is empty. Please check your file input and try again");
-            }
-
-            memoryStream.Position = 0;
-            var fileBytes = memoryStream.ToArray();
-            request.AddParameter("application/octet-stream", fileBytes, ParameterType.RequestBody);
+            throw new PluginMisconfigurationException("The provided file is empty. Please check your file input and try again");
         }
+
+        request.AddParameter("application/octet-stream", fileBytes, ParameterType.RequestBody);
 
         return await Client.ExecuteWithHandling<JobResponseWrapper>(request);
     }
