@@ -1,6 +1,7 @@
 ﻿using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using RestSharp;
 
 namespace PhraseTMSTests.Base
@@ -40,6 +41,11 @@ namespace PhraseTMSTests.Base
             };
 
             FileManager = new FileManager();
+        }
+
+        public static void PrintResponse(object response)
+        {
+            Console.WriteLine(JsonConvert.SerializeObject(response, Formatting.Indented));
         }
     }
 
