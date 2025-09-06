@@ -22,6 +22,9 @@ using Blackbird.Applications.Sdk.Common.Invocation;
 using Apps.PhraseTMS.Dtos.Jobs;
 using System.Text.Json;
 using DocumentFormat.OpenXml.Wordprocessing;
+using Blackbird.Filters.Transformations;
+using Blackbird.Filters.Xliff.Xliff2;
+using Blackbird.Filters.Enums;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -370,6 +373,32 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         if (fileBytes.Length == 0)
         {
             throw new PluginMisconfigurationException("The provided file is empty. Please check your file input and try again");
+        }
+
+        // Phrase TMS doesn't support xliff v2.1 or newer as of September 2025,
+        // so we need to convert it to v2.0 if the user uploads a newer version.
+        if (input.File.Name.EndsWith(".xlf", StringComparison.OrdinalIgnoreCase) ||
+            input.File.Name.EndsWith(".xliff", StringComparison.OrdinalIgnoreCase))
+        {
+            try
+            {
+                var fileContent = System.Text.Encoding.UTF8.GetString(fileBytes);
+
+                // TODO Implement a public method for this in Blackbird.Filters
+                var isXliffV21 = fileContent.Contains("version=\"2.1\"") && fileContent.Contains("xmlns=\"urn:oasis:names:tc:xliff:document:2.0\"");
+                var isXliffV22 = fileContent.Contains("xmlns=\"urn:oasis:names:tc:xliff:document:2.2\"");
+
+                if (isXliffV21 || isXliffV22)
+                {
+                    var xliff = Transformation.Parse(fileContent, input.File.Name);
+                    var xliffV20 = Xliff2Serializer.Serialize(xliff, Xliff2Version.Xliff20);
+                    fileBytes = System.Text.Encoding.UTF8.GetBytes(xliffV20);
+                }
+            }
+            catch (Exception)
+            {
+                // If deserialization fails, we pass file to Phrase TMS as is
+            }
         }
 
         request.AddParameter("application/octet-stream", fileBytes, ParameterType.RequestBody);

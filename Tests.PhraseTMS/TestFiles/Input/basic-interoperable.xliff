@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.2" version="2.2" srcLang="en" trgLang="ko">
+    <file id="f1">
+		<skeleton>
+			&lt;html&gt;
+			&lt;body&gt;
+			&lt;div"&gt;
+			Hello World! This is a new segment.
+			&lt;/div&gt;
+			&lt;/div&gt;
+			&lt;/body&gt;
+			&lt;/html&gt;
+		</skeleton>
+        <unit id="u1">
+            <notes>
+                <note>note for unit</note>
+            </notes>
+            <segment id="s1" state="final">
+                <source>Hello World</source>
+                <target>안녕하세요, 세계</target>
+            </segment>
+			<segment id="s2">
+				<source>This is a new segment.</source>
+				<target></target>
+			</segment>
+        </unit>
+    </file>
+</xliff>

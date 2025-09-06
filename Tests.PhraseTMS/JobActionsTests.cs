@@ -91,6 +91,18 @@ namespace Tests.PhraseTMS
         }
 
         [TestMethod]
+        public async Task CreateJobs_FromInteroperableXliff_works()
+        {
+            var projectRequest = new ProjectRequest { ProjectUId = PROJECT_ID };
+            var createJobsRequest = new CreateJobsRequest { File = new FileReference { Name = "basic-interoperable.xliff" } };
+
+            var result = await _jobActions.CreateJobs(projectRequest, createJobsRequest);
+
+            PrintResponse(result);
+            Assert.IsTrue(result.Jobs.Select(x => x.SourceFileUid).All(x => x == result.SourceFileUid));
+        }
+
+        [TestMethod]
         public async Task Create_job_and_delete_jobworks()
         {
             var projectRequest = new ProjectRequest { ProjectUId = PROJECT_ID };
