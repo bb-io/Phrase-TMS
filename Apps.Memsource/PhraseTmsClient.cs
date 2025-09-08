@@ -157,7 +157,7 @@ public class PhraseTmsClient : RestClient
         }
         catch (Exception)
         {
-            throw new Exception(restResponse.Content);
+            throw new PluginApplicationException(restResponse.ErrorMessage ?? restResponse.Content);
         }
        
 
