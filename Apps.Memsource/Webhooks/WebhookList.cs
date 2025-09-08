@@ -34,6 +34,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
 
         if (data is null)
         {
+            InvocationContext.Logger?.LogError($"[PhraseTMSProjectCreation] Data is null. Body: {webhookRequest.Body}", []);
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
 
@@ -144,6 +145,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         var data = JsonConvert.DeserializeObject<ProjectWrapper>(webhookRequest.Body.ToString());
         if (data is null)
         {
+            InvocationContext.Logger?.LogError($"[PhraseTMSProjectMetadataUpdated] Data is null. Body: {webhookRequest.Body}", []);
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
 
@@ -172,6 +174,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         var data = JsonConvert.DeserializeObject<ProjectWrapper>(webhookRequest.Body.ToString());
         if (data is null)
         {
+            InvocationContext.Logger?.LogError($"[PhraseTMSProjectSharedAssigned] Data is null. Body: {webhookRequest.Body}", []);
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
 
@@ -202,10 +205,11 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         [WebhookParameter] MultipleSubdomains subdomains,
         [WebhookParameter] MultipleDomains domains)
     {
-        var data = JsonConvert.DeserializeObject<ProjectWrapper>(webhookRequest.Body.ToString());
+        var data = JsonConvert.DeserializeObject<ProjectWrapper>(webhookRequest.Body.ToString()!);
         if (data is null)
         {
-            throw new InvalidCastException(nameof(webhookRequest.Body));
+            InvocationContext.Logger?.LogError($"[PhraseTMSProjectStatusChanged] Data is null. Body: {webhookRequest.Body}", []);
+            throw new InvalidCastException($"Couldn't convert {nameof(webhookRequest.Body)} to {nameof(ProjectWrapper)}.");
         }
 
         if (request.Status is not null && !request.Status.Contains(data.Project.Status))
@@ -422,10 +426,6 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         [WebhookParameter] [Display("Project name doesn't contains")] string? projectNameDoesntContains,
         [WebhookParameter] MultipleSubdomains subdomains)
     {
-        InvocationContext.Logger?.LogInformation("[Phrase TMS WebhookLogger] Invoked webhook", null);
-
-        InvocationContext.Logger?.LogInformation( $"[Phrase TMS WebhookLogger] Input parameters: request.Status={JsonConvert.SerializeObject(request?.Status)}", null);
-
         if (job?.JobUId != null && projectOptionalRequest?.ProjectUId == null)
         {          
             throw new PluginMisconfigurationException("If Job ID is specified in the inputs you must also specify the Project ID");
@@ -436,13 +436,10 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             throw new PluginMisconfigurationException("If Source file ID is specified in the inputs you must also specify the Project ID");
         }
 
-        var data = JsonConvert.DeserializeObject<JobStatusChangedWrapper>(webhookRequest.Body.ToString());
-        var payloadJson = JsonConvert.SerializeObject(data, Formatting.Indented);
-        InvocationContext.Logger?.LogInformation(
-            $"[Phrase TMS WebhookLogger] Payload received from server JSON: {payloadJson}", null);
-
+        var data = JsonConvert.DeserializeObject<JobStatusChangedWrapper>(webhookRequest.Body.ToString()!);
         if (data is null)
         {
+            InvocationContext.Logger?.LogError($"[PhraseTMSJobStatusChanged] Data is null. Body: {webhookRequest.Body}", []);
             throw new InvalidCastException(nameof(webhookRequest.Body));
         }
 
@@ -487,11 +484,6 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         }
 
         IEnumerable<JobPart> selectedJobs = data.JobParts;
-
-        var payloadJson2 = JsonConvert.SerializeObject(selectedJobs, Formatting.Indented);
-        InvocationContext.Logger?.LogInformation(
-            $"[Phrase TMS WebhookLogger] Payload JSON Job parts: {payloadJson2}", null);
-
         var projectId = data.metadata.project.Uid;
         int workflowLevel = 0;
 
@@ -503,9 +495,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         {
             workflowLevel = await Client.GetLastWorkflowstepLevel(projectId);
         }
-
-
-
+        
         if (string.IsNullOrEmpty(job?.JobUId) && workflowLevel > 0)
         {
             if (!string.IsNullOrEmpty(workflowStepRequest?.WorkflowStepId) || lastWorkflowLevel == true)
@@ -514,10 +504,6 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
 
                 if (!selectedJobs.Any())
                 {
-                    InvocationContext.Logger?.LogInformation(
-                        $"[Phrase TMS WebhookLogger] No job parts at required workflow level ({workflowLevel}); ignoring event.",
-                        null);
-
                     return new()
                     {
                         HttpResponseMessage = null,
@@ -538,10 +524,6 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
                 var single = selectedJobs.FirstOrDefault();
                 if (single != null && single.workflowLevel != workflowLevel)
                 {
-                    InvocationContext.Logger?.LogInformation(
-                        $"[Phrase TMS WebhookLogger] Job {single.Uid} is at level {single.workflowLevel}, required last level {workflowLevel}; ignoring event.",
-                        null);
-
                     return new()
                     {
                         HttpResponseMessage = null,
@@ -603,10 +585,6 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
                 ProjectName = data.metadata.project.Name
             }
         };
-
-        var payloadJson3 = JsonConvert.SerializeObject(response, Formatting.Indented);
-        InvocationContext.Logger?.LogInformation(
-            $"[Phrase TMS WebhookLogger] Payload JSON response: {payloadJson3}", null);
 
         return response;
     }
