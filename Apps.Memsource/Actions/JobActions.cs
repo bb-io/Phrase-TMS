@@ -384,14 +384,11 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
             {
                 var fileContent = System.Text.Encoding.UTF8.GetString(fileBytes);
 
-                // TODO Implement a public method for this in Blackbird.Filters
-                var isXliffV21 = fileContent.Contains("version=\"2.1\"") && fileContent.Contains("xmlns=\"urn:oasis:names:tc:xliff:document:2.0\"");
-                var isXliffV22 = fileContent.Contains("xmlns=\"urn:oasis:names:tc:xliff:document:2.2\"");
-
-                if (isXliffV21 || isXliffV22)
+                if (Xliff2Serializer.TryGetXliffVersion(fileContent, out var version)
+                    && version != "2.0")
                 {
-                    var xliff = Transformation.Parse(fileContent, input.File.Name);
-                    var xliffV20 = Xliff2Serializer.Serialize(xliff, Xliff2Version.Xliff20);
+                    var transformation = Transformation.Parse(fileContent, input.File.Name);
+                    var xliffV20 = Xliff2Serializer.Serialize(transformation, Xliff2Version.Xliff20);
                     fileBytes = System.Text.Encoding.UTF8.GetBytes(xliffV20);
                 }
             }

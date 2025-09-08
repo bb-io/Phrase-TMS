@@ -78,7 +78,7 @@ Custom fields are associated with a specific type, e.g. date, number, text, etc.
 - **Search jobs** returns a list of jobs in the project based on specified parameters
 - **Get job** get all job information for a specific job
 - **Create job** == DEPRECATED == will be removed in a future update. Use the action below.
-- **Upload source file (create jobs)** uploads a source file to the project and creates relevant jobs for these files. This action will return multiple jobs as its output. It will also return a single Source file ID. See instructions below on how to use this in combination with 'On job status changed'.
+- **Upload source file (create jobs)** uploads a source file to the project and creates relevant jobs for these files. This action will return multiple jobs as its output. It will also return a single Source file ID. See instructions below on how to use this in combination with 'On job status changed'. This action supports uploading XLIFF file as source v2.1 and v2.2 by converting them to v2.0.
 - **Find job from source file ID** given a source file ID, a workflow step ID and a language, returns the job.
 - **Find job from server task ID** given a server task ID, a workflow step ID and a project ID, returns the job.
 - **Delete job** Deletes jobs from a project
