@@ -354,18 +354,19 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
             due = input.DueDate
         });
 
-        var fileNameForHeader = input.File.Name;
-        if (!IsOnlyAscii(input.File.Name))
-        {
-            fileNameForHeader = Uri.EscapeDataString(input.File.Name)
-                .Replace("\n", string.Empty)
-                .Replace("\r", string.Empty);
-        }
+        var rawName = (input.File.Name ?? "upload")
+        .Replace("\n", string.Empty)
+        .Replace("\r", string.Empty)
+        .Trim();
+
+        var encodedName = Uri.EscapeDataString(rawName);
+        var quotedName = rawName.Replace("\\", "\\\\").Replace("\"", "\\\"");
 
         request
-         .AddHeader("Memsource", memsourceHeader)
-         .AddHeader("Content-Disposition", $"filename*=UTF-8''{fileNameForHeader}")
-         .AddHeader("Content-Type", "application/octet-stream");
+            .AddHeader("Memsource", memsourceHeader)
+            .AddHeader("Content-Disposition",
+                $"attachment; filename=\"{quotedName}\"; filename*=UTF-8''{encodedName}")
+            .AddHeader("Content-Type", "application/octet-stream");
 
         var fileStream = await fileManagementClient.DownloadAsync(input.File);
         var fileBytes = await fileStream.GetByteData();
