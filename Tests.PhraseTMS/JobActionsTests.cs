@@ -107,7 +107,7 @@ namespace Tests.PhraseTMS
         {
             var projectRequest = new ProjectRequest { ProjectUId = PROJECT_ID };
             var createJobsRequest = new CreateJobsRequest { 
-                File = new FileReference { Name = "WEEX Referral Program Complete Guide to Earn 10 TRUMP and 50% Commissions.txt" } ,
+                File = new FileReference { Name = "test_2.txt" } ,
                 TargetLanguages = ["nl"],
             };
 
