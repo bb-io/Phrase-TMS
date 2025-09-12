@@ -77,9 +77,9 @@ namespace Apps.PhraseTMS.Models.Conversation
         [JsonProperty("unavailable")]
         public bool? Unavailable { get; set; }
 
-        [JsonProperty("jobRoles")]
-        [Display("Job roles")]
-        public JToken? JobRoles { get; set; }
+        //[JsonProperty("jobRoles")]
+        //[Display("Job roles")]
+        //public JToken? JobRoles { get; set; }
     }
 
     public class Comment
