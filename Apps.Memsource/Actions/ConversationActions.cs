@@ -15,9 +15,10 @@ namespace Apps.PhraseTMS.Actions
 
         [Action("Get plain conversation")]
         public async Task<Conversation> GetConversation([ActionParameter] ProjectRequest projectRequest,
-            [ActionParameter] GetConversationRequest conv)
+            [ActionParameter] JobRequest jobRequest,
+            [ActionParameter] ConversationRequest conv)
         {
-            var endpoint = $"/api2/v1/jobs/{conv.JobUId}/conversations/plains/{conv.ConversationUId}";
+            var endpoint = $"/api2/v1/jobs/{jobRequest.JobUId}/conversations/plains/{conv.ConversationUId}";
             var request = new RestRequest(endpoint, Method.Get);
             var response = await Client.ExecuteWithHandling<Conversation>(request);
 
@@ -49,11 +50,31 @@ namespace Apps.PhraseTMS.Actions
 
         [Action("Delete plain conversation")]
         public async Task DeleteConversation([ActionParameter] ProjectRequest projectRequest,
-            [ActionParameter] GetConversationRequest conv)
+            [ActionParameter] JobRequest jobRequest,
+            [ActionParameter] ConversationRequest conv)
         {
-            var endpoint = $"/api2/v1/jobs/{conv.JobUId}/conversations/plains/{conv.ConversationUId}";
+            var endpoint = $"/api2/v1/jobs/{jobRequest.JobUId}/conversations/plains/{conv.ConversationUId}";
             var request = new RestRequest(endpoint, Method.Delete);
             var response = await Client.ExecuteWithHandling(request);
+        }
+
+        [Action("Edit plain conversation")]
+        public async Task<Conversation> EditConversation([ActionParameter] ProjectRequest projectRequest,
+            [ActionParameter] JobRequest jobRequest,
+            [ActionParameter] ConversationRequest conv,
+            [ActionParameter] EditConversationRequest input)
+        {
+            var endpoint = $"/api2/v1/jobs/{jobRequest.JobUId}/conversations/plains/{conv.ConversationUId}";
+            var request = new RestRequest(endpoint, Method.Put);
+
+            if (!string.IsNullOrEmpty(input.Status))
+            {
+                request.AddJsonBody(new {status = input.Status});
+            }
+
+            var response = await Client.ExecuteWithHandling<Conversation>(request);
+
+            return response;
         }
     }
 }

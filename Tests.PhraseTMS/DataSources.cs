@@ -1,6 +1,7 @@
 ﻿using Apps.PhraseTMS.DataSourceHandlers;
 using Apps.PhraseTMS.Models.Analysis.Requests;
 using Apps.PhraseTMS.Models.Conversation;
+using Apps.PhraseTMS.Models.Jobs.Requests;
 using Apps.PhraseTMS.Models.ProjectReferenceFiles.Requests;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.Sdk.Common.Dynamic;
@@ -127,7 +128,7 @@ namespace Tests.PhraseTMS
         [TestMethod]
         public async Task ConversationDataHandler_returns_values()
         {
-           var habdler = new ConversationDataHandler(InvocationContext, new GetConversationRequest { JobUId = "ftRN9yMaryr4fRUYYbdX42" });
+           var habdler = new ConversationDataHandler(InvocationContext, new JobRequest { JobUId = "ftRN9yMaryr4fRUYYbdX42" });
         
             var response = await habdler.GetDataAsync(new DataSourceContext { SearchString = "" }, CancellationToken.None);
 
@@ -138,8 +139,6 @@ namespace Tests.PhraseTMS
             }
 
             Assert.IsNotNull(response);
-        }
-           
-
+        }          
     }
 }

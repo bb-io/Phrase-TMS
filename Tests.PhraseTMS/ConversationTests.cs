@@ -13,12 +13,12 @@ namespace Tests.PhraseTMS
         public async Task Get_conversation_works()
         {
             var actions = new ConversationActions(InvocationContext);
-            var conv = new GetConversationRequest
+            var conv = new ConversationRequest
             {
-                JobUId = "ftRN9yMaryr4fRUYYbdX42",
                 ConversationUId= "8eb9ddb1_d052_4b76_b6c3_32d600a8e919"
             };
-            var result = await actions.GetConversation(new ProjectRequest { ProjectUId = "0SBo723Ge0wHfk0A1k1XWn0" }, conv);
+            var job = new JobRequest { JobUId = "ftRN9yMaryr4fRUYYbdX42" };
+            var result = await actions.GetConversation(new ProjectRequest { ProjectUId = "0SBo723Ge0wHfk0A1k1XWn0" }, job, conv);
             Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(result, Newtonsoft.Json.Formatting.Indented));
             Assert.IsNotNull(result);
         }
@@ -46,13 +46,31 @@ namespace Tests.PhraseTMS
         public async Task Delete_conversation_works()
         {
             var actions = new ConversationActions(InvocationContext);
-            var conv = new GetConversationRequest
+            var conv = new ConversationRequest
             {
-                JobUId = "ftRN9yMaryr4fRUYYbdX42",
                 ConversationUId = "8eb9ddb1_d052_4b76_b6c3_32d600a8e919"
             };
-            await actions.DeleteConversation(new ProjectRequest { ProjectUId = "0SBo723Ge0wHfk0A1k1XWn0" }, conv);
+            var job = new JobRequest { JobUId = "ftRN9yMaryr4fRUYYbdX42" };
+            await actions.DeleteConversation(new ProjectRequest { ProjectUId = "0SBo723Ge0wHfk0A1k1XWn0" }, job, conv);
             Assert.IsTrue(true);
+        }
+
+        [TestMethod]
+        public async Task Edit_conversation_works()
+        {
+            var actions = new ConversationActions(InvocationContext);
+            var conv = new ConversationRequest
+            {
+                ConversationUId = "8eb9ddb1_d052_4b76_b6c3_32d600a8e919"
+            };
+            var job = new JobRequest { JobUId = "ftRN9yMaryr4fRUYYbdX42" };
+            var input = new EditConversationRequest
+            {
+                Status= "resolved"
+            };
+            var result = await actions.EditConversation(new ProjectRequest { ProjectUId = "0SBo723Ge0wHfk0A1k1XWn0" }, job, conv, input);
+            Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(result, Newtonsoft.Json.Formatting.Indented));
+            Assert.IsNotNull(result);
         }
     }
 }

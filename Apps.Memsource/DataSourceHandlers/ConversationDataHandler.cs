@@ -1,4 +1,5 @@
 ﻿using Apps.PhraseTMS.Models.Conversation;
+using Apps.PhraseTMS.Models.Jobs.Requests;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common.Invocation;
@@ -6,7 +7,7 @@ using RestSharp;
 
 namespace Apps.PhraseTMS.DataSourceHandlers
 {
-    public class ConversationDataHandler(InvocationContext invocationContext, [ActionParameter] GetConversationRequest conv) : PhraseInvocable(invocationContext), IAsyncDataSourceItemHandler
+    public class ConversationDataHandler(InvocationContext invocationContext, [ActionParameter] JobRequest conv) : PhraseInvocable(invocationContext), IAsyncDataSourceItemHandler
     {
         public async Task<IEnumerable<DataSourceItem>> GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
         {

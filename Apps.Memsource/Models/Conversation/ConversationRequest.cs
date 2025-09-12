@@ -9,13 +9,10 @@ using System.Threading.Tasks;
 
 namespace Apps.PhraseTMS.Models.Conversation
 {
-    public class GetConversationRequest
+    public class ConversationRequest
     {
-        [Display("Job ID")]
-        [DataSource(typeof(JobDataHandler))]
-        public string JobUId { get; set; }
-
         [Display("Conversation ID")]
+        [DataSource(typeof(ConversationDataHandler))]
         public string ConversationUId { get; set; }
     }
 }
