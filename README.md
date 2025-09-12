@@ -128,6 +128,14 @@ The following actions update a job's file (source or target) from their original
 - **Get LQA assessment** get a specific LQA assessment
 - **Run quality assurance** Run quality checks on job part
 
+### Conversation
+
+- **Search conversations** searches through all conversations in a project
+- **Get conversation** get information about a specific conversation
+- **Delete plain conversation** deletes a plain conversation
+- **Edit plain conversation** edits plain conversation
+
+
 ### Quote
 
 - **Get quote** gets information about a quote

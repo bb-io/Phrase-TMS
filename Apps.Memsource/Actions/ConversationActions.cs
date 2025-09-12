@@ -13,7 +13,7 @@ namespace Apps.PhraseTMS.Actions
     public class ConversationActions(InvocationContext invocationContext) : PhraseInvocable(invocationContext)
     {
 
-        [Action("Get plain conversation")]
+        [Action("Get conversation", Description = "Gets plain conversation")]
         public async Task<Conversation> GetConversation([ActionParameter] ProjectRequest projectRequest,
             [ActionParameter] JobRequest jobRequest,
             [ActionParameter] ConversationRequest conv)
@@ -25,7 +25,7 @@ namespace Apps.PhraseTMS.Actions
             return response;
         }
 
-        [Action("Search conversations")]
+        [Action("Search conversations", Description = "Searches conversations")]
         public async Task<ConversationsResponse> SearchConversations([ActionParameter] ProjectRequest projectRequest,
             [ActionParameter] JobRequest jobRequest, [ActionParameter] SearchConversationRequest input)
         {
@@ -48,7 +48,7 @@ namespace Apps.PhraseTMS.Actions
         }
 
 
-        [Action("Delete plain conversation")]
+        [Action("Delete plain conversation", Description = "Deletes plain conversation")]
         public async Task DeleteConversation([ActionParameter] ProjectRequest projectRequest,
             [ActionParameter] JobRequest jobRequest,
             [ActionParameter] ConversationRequest conv)
@@ -58,7 +58,7 @@ namespace Apps.PhraseTMS.Actions
             var response = await Client.ExecuteWithHandling(request);
         }
 
-        [Action("Edit plain conversation")]
+        [Action("Edit plain conversation", Description = "Edits plain conversation")]
         public async Task<Conversation> EditConversation([ActionParameter] ProjectRequest projectRequest,
             [ActionParameter] JobRequest jobRequest,
             [ActionParameter] ConversationRequest conv,
