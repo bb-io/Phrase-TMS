@@ -1,24 +1,24 @@
 ﻿using Apps.PhraseTMS.Constants;
 using Apps.PhraseTMS.DataSourceHandlers.StaticHandlers;
-using Blackbird.Applications.Sdk.Common;
-using RestSharp;
-using Apps.PhraseTMS.Models.Analysis.Requests;
-using Apps.PhraseTMS.Models.Analysis.Responses;
-using Blackbird.Applications.Sdk.Common.Actions;
-using Blackbird.Applications.Sdk.Utils.Extensions.Http;
-using Blackbird.Applications.Sdk.Utils.Extensions.String;
-using Apps.PhraseTMS.Models.Projects.Requests;
-using Apps.PhraseTMS.Models.Jobs.Requests;
-using Blackbird.Applications.Sdk.Common.Dictionaries;
-using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
-using Blackbird.Applications.Sdk.Common.Invocation;
 using Apps.PhraseTMS.Dtos.Analysis;
 using Apps.PhraseTMS.Dtos.Jobs;
+using Apps.PhraseTMS.Models.Analysis.Requests;
+using Apps.PhraseTMS.Models.Analysis.Responses;
+using Apps.PhraseTMS.Models.Jobs.Requests;
+using Apps.PhraseTMS.Models.Projects.Requests;
+using Blackbird.Applications.Sdk.Common;
+using Blackbird.Applications.Sdk.Common.Actions;
+using Blackbird.Applications.Sdk.Common.Dictionaries;
+using Blackbird.Applications.Sdk.Common.Invocation;
+using Blackbird.Applications.Sdk.Utils.Extensions.Http;
+using Blackbird.Applications.Sdk.Utils.Extensions.String;
+using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
+using RestSharp;
 
 namespace Apps.PhraseTMS.Actions;
 
 [ActionList("Analysis")]
-public class AnalysisActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient): PhraseInvocable(invocationContext)
+public class AnalysisActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : PhraseInvocable(invocationContext)
 {
 
     [Action("Search job analyses", Description = "Search through all analyses of a specific job")]
@@ -154,12 +154,12 @@ public class AnalysisActions(InvocationContext invocationContext, IFileManagemen
 
         if (!String.IsNullOrEmpty(analysisData.Name))
         {
-            bodyDictionary.Add("name",analysisData.Name);
+            bodyDictionary.Add("name", analysisData.Name);
         }
 
         if (!String.IsNullOrEmpty(analysisData.NetRateSchemeId))
         {
-            bodyDictionary.Add("netRateScheme", new {uid = analysisData.NetRateSchemeId });
+            bodyDictionary.Add("netRateScheme", new { uid = analysisData.NetRateSchemeId });
         }
 
         var request = new RestRequest($"/api2/v2/analyses/{input.AnalysisUId}", Method.Put)

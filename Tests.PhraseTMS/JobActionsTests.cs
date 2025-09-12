@@ -80,8 +80,8 @@ namespace Tests.PhraseTMS
             var projectRequest = new ProjectRequest { ProjectUId = PROJECT_ID };
             var createJobsRequest = new CreateJobsRequest
             {
-                useProjectFileImportSettings = true,
-                File = new FileReference { Name = "Business Trial Follow Up Email AIFW - 2567.html" },
+                preTranslate = true,
+                File = new FileReference { Name = "Semiconductor_Device_Control_Add_On_for_DUT_Validation_Course_Overview-en-zh_tw-Tr.mxliff" },
             };
 
             var result = await _jobActions.CreateJobs(projectRequest, createJobsRequest);

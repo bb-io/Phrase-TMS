@@ -25,6 +25,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using Blackbird.Filters.Transformations;
 using Blackbird.Filters.Xliff.Xliff2;
 using Blackbird.Filters.Enums;
+using System.Text.RegularExpressions;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -346,27 +347,36 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
 
         var request = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs", Method.Post);
 
-        var memsourceHeader = JsonConvert.SerializeObject(new
-        {
-            targetLangs = input.TargetLanguages,
-            preTranslate = input.preTranslate ?? false,
-            useProjectFileImportSettings = input.useProjectFileImportSettings ?? true,
-            due = input.DueDate
-        });
+        var memsourceHeader = JsonConvert.SerializeObject(
+       new
+       {
+           targetLangs = input.TargetLanguages,
+           preTranslate = input.preTranslate ?? false,
+           useProjectFileImportSettings = input.useProjectFileImportSettings ?? true,
+           due = input.DueDate?.ToUniversalTime().ToString("yyyy-MM-dd'T'HH:mm:ssK")
+       },
+       new JsonSerializerSettings
+       {
+           NullValueHandling = NullValueHandling.Ignore,
+           StringEscapeHandling = StringEscapeHandling.EscapeNonAscii
+       });
+
 
         var rawName = (input.File.Name ?? "upload")
         .Replace("\n", string.Empty)
         .Replace("\r", string.Empty)
         .Trim();
 
+        var asciiName = Regex.Replace(rawName, @"[^\x20-\x7E]", "_");
+        if (string.IsNullOrWhiteSpace(asciiName)) asciiName = "upload";
+        var quotedAscii = asciiName.Replace("\\", "\\\\").Replace("\"", "\\\"");
+
         var encodedName = Uri.EscapeDataString(rawName);
-        var quotedName = rawName.Replace("\\", "\\\\").Replace("\"", "\\\"");
 
         request
             .AddHeader("Memsource", memsourceHeader)
             .AddHeader("Content-Disposition",
-                $"attachment; filename=\"{quotedName}\"; filename*=UTF-8''{encodedName}")
-            .AddHeader("Content-Type", "application/octet-stream");
+                $"attachment; filename=\"{quotedAscii}\"; filename*=UTF-8''{encodedName}");
 
         var fileStream = await fileManagementClient.DownloadAsync(input.File);
         var fileBytes = await fileStream.GetByteData();
