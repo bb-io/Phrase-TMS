@@ -132,8 +132,8 @@ The following actions update a job's file (source or target) from their original
 
 - **Search conversations** searches through all conversations in a project
 - **Get conversation** get information about a specific conversation
-- **Delete plain conversation** deletes a plain conversation
-- **Edit plain conversation** edits plain conversation
+- **Delete conversation** deletes a plain conversation
+- **Edit conversation** edits plain conversation
 
 
 ### Quote

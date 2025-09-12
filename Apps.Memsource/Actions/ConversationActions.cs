@@ -48,7 +48,7 @@ namespace Apps.PhraseTMS.Actions
         }
 
 
-        [Action("Delete plain conversation", Description = "Deletes plain conversation")]
+        [Action("Delete conversation", Description = "Deletes plain conversation")]
         public async Task DeleteConversation([ActionParameter] ProjectRequest projectRequest,
             [ActionParameter] JobRequest jobRequest,
             [ActionParameter] ConversationRequest conv)
@@ -58,7 +58,7 @@ namespace Apps.PhraseTMS.Actions
             var response = await Client.ExecuteWithHandling(request);
         }
 
-        [Action("Edit plain conversation", Description = "Edits plain conversation")]
+        [Action("Edit conversation", Description = "Edits plain conversation")]
         public async Task<Conversation> EditConversation([ActionParameter] ProjectRequest projectRequest,
             [ActionParameter] JobRequest jobRequest,
             [ActionParameter] ConversationRequest conv,
