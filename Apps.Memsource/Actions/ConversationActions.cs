@@ -1,14 +1,11 @@
 ﻿using Apps.PhraseTMS.Models.Conversation;
+using Apps.PhraseTMS.Models.Jobs.Requests;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using RestSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Globalization;
 
 namespace Apps.PhraseTMS.Actions
 {
@@ -16,15 +13,47 @@ namespace Apps.PhraseTMS.Actions
     public class ConversationActions(InvocationContext invocationContext) : PhraseInvocable(invocationContext)
     {
 
-        //[Action("Get plain conversation")]
-        //public async Task GetConversation([ActionParameter] ProjectRequest projectRequest, 
-        //    [ActionParameter] GetConversationRequest conv)
-        //{
+        [Action("Get plain conversation")]
+        public async Task<Conversation> GetConversation([ActionParameter] ProjectRequest projectRequest,
+            [ActionParameter] GetConversationRequest conv)
+        {
+            var endpoint = $"/api2/v1/jobs/{conv.JobUId}/conversations/plains/{conv.ConversationUId}";
+            var request = new RestRequest(endpoint, Method.Get);
+            var response = await Client.ExecuteWithHandling<Conversation>(request);
 
-        //    var endpoint = $"/api2/v1/jobs/{conv.JobUId}/conversations/plains/{conversationId}";
-        //    var request = new RestRequest(endpoint, Method.Get);
-        //    var response = await Client.ExecuteWithHandling<>(request);
-        //    return response;
-        //}
+            return response;
+        }
+
+        [Action("Search conversations")]
+        public async Task<ConversationsResponse> SearchConversations([ActionParameter] ProjectRequest projectRequest,
+            [ActionParameter] JobRequest jobRequest, [ActionParameter] SearchConversationRequest input)
+        {
+            var endpoint = $"/api2/v1/jobs/{jobRequest.JobUId}/conversations/plains";
+            var request = new RestRequest(endpoint, Method.Get);
+            if (input.IncludeDeleted.HasValue)
+                request.AddQueryParameter("includeDeleted",
+                    input.IncludeDeleted.Value ? "true" : "false");
+
+            if (input.Since.HasValue)
+            {
+                var sinceUtc = input.Since.Value.ToUniversalTime();
+                var sinceStr = sinceUtc.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'", CultureInfo.InvariantCulture);
+                request.AddQueryParameter("since", sinceStr);
+            }
+
+            var response = await Client.ExecuteWithHandling<ConversationsResponse>(request);
+
+            return response;
+        }
+
+
+        [Action("Delete plain conversation")]
+        public async Task DeleteConversation([ActionParameter] ProjectRequest projectRequest,
+            [ActionParameter] GetConversationRequest conv)
+        {
+            var endpoint = $"/api2/v1/jobs/{conv.JobUId}/conversations/plains/{conv.ConversationUId}";
+            var request = new RestRequest(endpoint, Method.Delete);
+            var response = await Client.ExecuteWithHandling(request);
+        }
     }
 }

@@ -1,37 +1,38 @@
-﻿using Newtonsoft.Json;
+﻿using Blackbird.Applications.Sdk.Common;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Apps.PhraseTMS.Models.Conversation
 {
     public class ConversationsResponse
     {
         [JsonProperty("conversations")]
-        public List<Conversation> Conversations { get; set; } = new();
+        public List<Conversation> Conversations { get; set; }
     }
     public class Conversation
     {
         [JsonProperty("id")]
+        [Display("Conversation ID")]
         public string? Id { get; set; }
 
         [JsonProperty("type")]
+        [Display("Conversation type")]
         public string? Type { get; set; }
 
         [JsonProperty("dateCreated")]
-        public DateTimeOffset? DateCreated { get; set; }
+        [Display("Created date")]
+        public DateTime? DateCreated { get; set; }
 
         [JsonProperty("dateModified")]
-        public DateTimeOffset? DateModified { get; set; }
+        [Display("Modified date")]
+        public DateTime? DateModified { get; set; }
 
         [JsonProperty("dateEdited")]
-        public DateTimeOffset? DateEdited { get; set; }
+        [Display("Edited date")]
+        public DateTime? DateEdited { get; set; }
 
         [JsonProperty("createdBy")]
+        [Display("Created by")]
         public UserInfo? CreatedBy { get; set; }
 
         [JsonProperty("comments")]
@@ -50,12 +51,15 @@ namespace Apps.PhraseTMS.Models.Conversation
     public class UserInfo
     {
         [JsonProperty("firstName")]
+        [Display("First name")]
         public string? FirstName { get; set; }
 
         [JsonProperty("lastName")]
+        [Display("Last name")]
         public string? LastName { get; set; }
 
         [JsonProperty("userName")]
+        [Display("User name")]
         public string? UserName { get; set; }
 
         [JsonProperty("email")]
@@ -74,6 +78,7 @@ namespace Apps.PhraseTMS.Models.Conversation
         public bool? Unavailable { get; set; }
 
         [JsonProperty("jobRoles")]
+        [Display("Job roles")]
         public JToken? JobRoles { get; set; }
     }
 
@@ -86,13 +91,15 @@ namespace Apps.PhraseTMS.Models.Conversation
         public string? Text { get; set; }
 
         [JsonProperty("createdBy")]
+        [Display("Created by")]
         public UserInfo? CreatedBy { get; set; }
 
         [JsonProperty("dateCreated")]
-        public DateTimeOffset? DateCreated { get; set; }
+        public DateTime? DateCreated { get; set; }
 
         [JsonProperty("dateModified")]
-        public DateTimeOffset? DateModified { get; set; }
+        [Display("Modified date")]
+        public DateTime? DateModified { get; set; }
 
         [JsonProperty("mentions")]
         public List<Mention> Mentions { get; set; } = new();
@@ -101,18 +108,23 @@ namespace Apps.PhraseTMS.Models.Conversation
     public class Mention
     {
         [JsonProperty("mentionType")]
+        [Display("Mention type")]
         public string? MentionType { get; set; }
 
         [JsonProperty("mentionGroupType")]
+        [Display("Mention group type")]
         public string? MentionGroupType { get; set; }
 
         [JsonProperty("uidReference")]
+        [Display("ID referencee")]
         public UidReference? UidReference { get; set; }
 
         [JsonProperty("userReferences")]
+        [Display("User references")]
         public List<UserInfo> UserReferences { get; set; } = new();
 
         [JsonProperty("mentionableGroup")]
+        [Display("Mentionable group")]
         public MentionableGroup? MentionableGroup { get; set; }
 
         [JsonProperty("tag")]
@@ -128,12 +140,15 @@ namespace Apps.PhraseTMS.Models.Conversation
     public class MentionableGroup
     {
         [JsonProperty("groupType")]
+        [Display("Group type")]
         public string? GroupType { get; set; }
 
         [JsonProperty("groupName")]
+        [Display("Group name")]
         public string? GroupName { get; set; }
 
         [JsonProperty("groupReference")]
+        [Display("Group reference")]
         public GroupReference? GroupReference { get; set; }
     }
 
@@ -152,42 +167,52 @@ namespace Apps.PhraseTMS.Models.Conversation
         public UserInfo? By { get; set; }
 
         [JsonProperty("date")]
-        public DateTimeOffset? Date { get; set; }
+        public DateTime? Date { get; set; }
     }
 
     public class ConversationReferences
     {
         [JsonProperty("taskId")]
+        [Display("Task ID")]
         public string? TaskId { get; set; }
 
         [JsonProperty("jobPartUid")]
+        [Display("Job part ID")]
         public string? JobPartUid { get; set; }
 
         [JsonProperty("transGroupId")]
+        [Display("Trans-group ID")]
         public int? TransGroupId { get; set; }
 
         [JsonProperty("segmentId")]
+        [Display("Segment ID")]
         public string? SegmentId { get; set; }
 
         [JsonProperty("conversationTitle")]
+        [Display("Conversation title")]
         public string? ConversationTitle { get; set; }
 
         [JsonProperty("conversationTitleOffset")]
+        [Display("Conversation title offset")]
         public int? ConversationTitleOffset { get; set; }
 
         [JsonProperty("commentedText")]
+        [Display("Commented text")]
         public string? CommentedText { get; set; }
 
         [JsonProperty("correlation")]
+        [Display("Correlation")]
         public CorrelationRef? Correlation { get; set; }
     }
 
     public class CorrelationRef
     {
         [JsonProperty("uid")]
+        [Display("Correlation ID")]
         public string? Uid { get; set; }
 
         [JsonProperty("role")]
+        [Display("Correlation role")]
         public string? Role { get; set; }
     }
 }
