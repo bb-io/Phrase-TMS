@@ -82,11 +82,12 @@ Custom fields are associated with a specific type, e.g. date, number, text, etc.
 - **Find job from source file ID** given a source file ID, a workflow step ID and a language, returns the job.
 - **Find job from server task ID** given a server task ID, a workflow step ID and a project ID, returns the job.
 - **Delete job** Deletes jobs from a project
-- **Update job** Update a job's global data
-- **Pre-translate job** pre-translate a job in the project
+- **Update job** Updates a job's global data
+- **Pre-translate job** Pre-translates a job in the project
 - **Export jobs to online repository** Exports jobs to online repository
 - **Remove assigned providers from job** Removes all assigned providers from a job.
 - **Get segments count** returns the number of segments in a job
+- **Get aggregated segments count (multiple jobs)** Gets aggregated segment counts for specified jobs in a project
 
 The following actions download job files in either their original format or as a bilingual file.
 - **Download target file**
