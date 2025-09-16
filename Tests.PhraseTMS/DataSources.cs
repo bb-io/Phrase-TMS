@@ -125,12 +125,15 @@ public class DataSources : TestBase
     public async Task Workflow_with_query_returns_values() => await Test(new WorkflowStepDataHandler(InvocationContext), "Translation");
 
     [TestMethod]
-    public async Task ConversationDataHandler_returns_values()
+    public async Task ConversationDataHandler_ReturnsConversations()
     {
-       var habdler = new ConversationDataHandler(InvocationContext, new JobRequest { JobUId = "ftRN9yMaryr4fRUYYbdX42" });
-    
-        var response = await habdler.GetDataAsync(new DataSourceContext { SearchString = "" }, CancellationToken.None);
+        // Arrange
+        var handler = new ConversationDataHandler(InvocationContext, new JobRequest { JobUId = "S1Lng7SgldQMeiwPm2srx3" });
 
+        // Act
+        var response = await handler.GetDataAsync(new DataSourceContext { SearchString = "" }, CancellationToken.None);
+
+        // Assert
         Console.WriteLine($"Total: {response.Count()}");
         foreach (var item in response)
         {
