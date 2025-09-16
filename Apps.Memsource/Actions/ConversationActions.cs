@@ -1,4 +1,5 @@
-﻿using Apps.PhraseTMS.Models.Conversations.Requests;
+﻿using Apps.PhraseTMS.Dtos.Conversations;
+using Apps.PhraseTMS.Models.Conversations.Requests;
 using Apps.PhraseTMS.Models.Conversations.Responses;
 using Apps.PhraseTMS.Models.Jobs.Requests;
 using Apps.PhraseTMS.Models.Projects.Requests;
@@ -78,8 +79,8 @@ public class ConversationActions(InvocationContext invocationContext) : PhraseIn
         return response;
     }
 
-    [Action("Add conversation", Description = "Adds plain conversation")]
-    public async Task<Conversation> AddConversation([ActionParameter] ProjectRequest projectRequest,
+    [Action("Create conversation", Description = "Creates plain conversation")]
+    public async Task<Conversation> CreateConversation([ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] JobRequest jobRequest,
         [ActionParameter] ConversationReferencesRequest references,
         [ActionParameter] AddEditPlainCommentRequest comment)
@@ -87,12 +88,12 @@ public class ConversationActions(InvocationContext invocationContext) : PhraseIn
         var endpoint = $"/api2/v3/jobs/{jobRequest.JobUId}/conversations/plains";
         var request = new RestRequest(endpoint, Method.Post);
 
-        var body = new Dictionary<string, object?>
+        var dto = new CreateConversationDto
         {
-            { "references", references },
-            { "comment", comment }
+            Comment = comment,
+            References = new ConversationReferencesRequestDto(references)
         };
-        request.AddJsonBody(body);
+        request.AddJsonBody(dto);
 
         var response = await Client.ExecuteWithHandling<Conversation>(request);
         return response;

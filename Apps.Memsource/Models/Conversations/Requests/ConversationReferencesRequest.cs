@@ -15,8 +15,4 @@ public class ConversationReferencesRequest
     [Display("Conversation title")]
     [JsonProperty("conversationTitle")]
     public string? ConversationTitle { get; set; }
-
-    [DefinitionIgnore]
-    [JsonProperty("transGroupId")]
-    public int TransGroupId => (int)char.GetNumericValue(SegmentId[^1]);
 }

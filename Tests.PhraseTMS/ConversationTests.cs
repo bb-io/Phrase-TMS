@@ -74,17 +74,17 @@ public class ConversationTests : TestBase
     }
 
     [TestMethod]
-    public async Task AddConversation_IsSuccess()
+    public async Task CreateConversation_IsSuccess()
     {
         // Arrange
         var actions = new ConversationActions(InvocationContext);
         var projectRequest = new ProjectRequest { ProjectUId = "YWxQLsQXtwbN2FnxwoSFx0" };
         var jobRequest = new JobRequest { JobUId = "S1Lng7SgldQMeiwPm2srx3" };
         var references = new ConversationReferencesRequest { SegmentId = "MXArLeioKmu7Bvcq_dc2:0" };
-        var comment = new AddEditPlainCommentRequest { Text = "oi mate" };
+        var comment = new AddEditPlainCommentRequest { Text = "oi mate :)" };
 
         // Act
-        var result = await actions.AddConversation(projectRequest, jobRequest, references, comment);
+        var result = await actions.CreateConversation(projectRequest, jobRequest, references, comment);
 
         // Assert
         Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(result, Newtonsoft.Json.Formatting.Indented));
