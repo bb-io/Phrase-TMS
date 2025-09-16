@@ -81,7 +81,7 @@ public class ConversationTests : TestBase
         var projectRequest = new ProjectRequest { ProjectUId = "YWxQLsQXtwbN2FnxwoSFx0" };
         var jobRequest = new JobRequest { JobUId = "S1Lng7SgldQMeiwPm2srx3" };
         var references = new ConversationReferencesRequest { SegmentId = "MXArLeioKmu7Bvcq_dc2:0" };
-        var comment = new AddEditPlainCommentRequest { Text = "aiaiai" };
+        var comment = new AddEditPlainCommentRequest { Text = "oi mate" };
 
         // Act
         var result = await actions.AddConversation(projectRequest, jobRequest, references, comment);

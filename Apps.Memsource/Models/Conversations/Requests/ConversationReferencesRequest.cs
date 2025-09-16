@@ -8,12 +8,15 @@ namespace Apps.PhraseTMS.Models.Conversations.Requests;
 public class ConversationReferencesRequest
 {
     [Display("Segment ID")]
+    [JsonProperty("segmentId")]
     [DataSource(typeof(SegmentDataHandler))]
     public string SegmentId { get; set; }
 
     [Display("Conversation title")]
+    [JsonProperty("conversationTitle")]
     public string? ConversationTitle { get; set; }
 
+    [DefinitionIgnore]
     [JsonProperty("transGroupId")]
     public uint TransGroupId => (uint)char.GetNumericValue(SegmentId[^1]);
 }
