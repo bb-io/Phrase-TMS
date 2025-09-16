@@ -1,4 +1,4 @@
-﻿using Apps.PhraseTMS.Models.Conversation;
+﻿using Apps.PhraseTMS.Models.Conversations.Responses;
 using Apps.PhraseTMS.Models.Jobs.Requests;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Dynamic;
