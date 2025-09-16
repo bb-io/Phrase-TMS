@@ -729,7 +729,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         return response.Jobs.FirstOrDefault();
     }
 
-    [Action("Get segments count", Description = "Get current segments counts for specified jobs")]
+    [Action("Get segments count", Description = "Get current segments counts for specified job")]
     public async Task<SegmentsCountsResultDto> GetSegmentsCount([ActionParameter] ProjectRequest projectRequest, 
         [ActionParameter] JobRequest input )
     {
@@ -750,6 +750,60 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         var response = await Client.ExecuteWithHandling<GetSegmentsCountResponse>(request);
         return response.SegmentsCountsResults.First();
     }
+
+    [Action("Get aggregated segments count (multiple jobs)", Description = "Get aggregated segment counts for specified jobs in a project")]
+    public async Task<AggregatedSegmentsCountsResultDto> GetAggregatedSegmentsCount(
+        [ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] ListAllJobsQuery query,
+        [ActionParameter] JobStatusesRequest jobStatusesRequest,
+        [ActionParameter] WorkflowStepOptionalRequest workflowStepRequest,
+        [ActionParameter][Display("LQA Score null?")] bool? LQAScorenull,
+        [ActionParameter][Display("Last workflow step")] bool? LastWfStep)
+    {
+        const int batchSize = 100;
+
+        var inputJobs = await ListAllJobs(projectRequest, query, jobStatusesRequest, workflowStepRequest, LQAScorenull, LastWfStep);
+
+        var aggregatedResult = new AggregatedSegmentsCountsResultDto
+        {
+            SegmentsCount = 0,
+            CompletedSegmentsCount = 0,
+            LockedSegmentsCount = 0,
+            TranslatedSegmentsCount = 0,
+            WordsCount = 0,
+            AllConfirmed = true
+        };
+
+        for (int i = 0; i < inputJobs.Jobs.Count(); i += batchSize)
+        {
+            var batch = inputJobs.Jobs.Skip(i).Take(batchSize).ToList();
+
+            var request = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/segmentsCount", Method.Post);
+            var jobsBody = batch.Select(j => new { uid = j.Uid });
+            request.AddJsonBody(new { jobs = jobsBody });
+
+            var response = await Client.ExecuteWithHandling<GetSegmentsCountResponse>(request);
+
+            foreach (var result in response.SegmentsCountsResults)
+            {
+                var counts = result.Counts;
+
+                aggregatedResult.SegmentsCount += counts.SegmentsCount;
+                aggregatedResult.CompletedSegmentsCount += counts.CompletedSegmentsCount;
+                aggregatedResult.LockedSegmentsCount += counts.LockedSegmentsCount;
+                aggregatedResult.TranslatedSegmentsCount += counts.TranslatedSegmentsCount;
+                aggregatedResult.WordsCount += counts.WordsCount;
+
+                if (counts.AllConfirmed != true)
+                {
+                    aggregatedResult.AllConfirmed = false;
+                }
+            }
+        }
+
+        return aggregatedResult;
+    }
+
 
     [Action("Remove assigned providers from job", Description = "Removes assigned providers from job")]
     public async Task<JobDto> RemoveProvider(
