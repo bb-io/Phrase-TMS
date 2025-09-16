@@ -135,7 +135,10 @@ The following actions update a job's file (source or target) from their original
 - **Get conversation** get information about a specific conversation
 - **Delete conversation** deletes a plain conversation
 - **Edit conversation** edits plain conversation
-
+- **Create conversation** creates a new plain conversation
+- **Add plain comment** adds a plain comment
+- **Edit plain comment** edits the content of an existing plain comment
+- **Delete plain comment** removes a plain comment
 
 ### Quote
 
