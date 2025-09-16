@@ -18,5 +18,5 @@ public class ConversationReferencesRequest
 
     [DefinitionIgnore]
     [JsonProperty("transGroupId")]
-    public uint TransGroupId => (uint)char.GetNumericValue(SegmentId[^1]);
+    public int TransGroupId => (int)char.GetNumericValue(SegmentId[^1]);
 }
