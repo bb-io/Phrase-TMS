@@ -41,6 +41,11 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         [ActionParameter] [Display("LQA Score null?")] bool? LQAScorenull,
         [ActionParameter] [Display("Last workflow step")] bool? LastWfStep)
     {
+        if (string.IsNullOrEmpty(input.ProjectUId))
+        {
+            throw new PluginMisconfigurationException("Project ID is null or empty. Please check your input and try again");
+        }
+
         if (LastWfStep.GetValueOrDefault() && string.IsNullOrWhiteSpace(input?.ProjectUId))
             throw new PluginMisconfigurationException("When 'Last workflow step' is enabled, you must provide a valid Project ID.");
 
