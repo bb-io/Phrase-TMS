@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.2" version="2.2" srcLang="en" trgLang="fr">
+    <file id="test-1.html">
+        <unit id="0">
+            <originalData>
+                <data id="d1">&lt;b&gt;</data>
+                <data id="d2">&lt;/b&gt;</data>
+                <data id="d3">&lt;i&gt;</data>
+                <data id="d4">&lt;/i&gt;</data>
+            </originalData>
+            <segment id="0">
+                <source>Source <pc id="1" dataRefStart="d1" dataRefEnd="d2">0</pc></source>
+                <target><pc id="2" dataRefStart="d3" dataRefEnd="d4">Target 0</pc></target>
+            </segment>
+        </unit>
+        <unit id="1">
+            <originalData>
+                <data id="d1">&lt;b&gt;</data>
+                <data id="d2">&lt;/b&gt;</data>
+                <data id="d3">&lt;i&gt;</data>
+                <data id="d4">&lt;/i&gt;</data>
+            </originalData>
+            <segment id="1">
+                <source>Source <pc id="1" dataRefStart="d1" dataRefEnd="d2">1</pc></source>
+                <target><pc id="2" dataRefStart="d3" dataRefEnd="d4">Target 1</pc></target>
+            </segment>
+        </unit>
+        <unit id="2">
+            <originalData>
+                <data id="d1">&lt;b&gt;</data>
+                <data id="d2">&lt;/b&gt;</data>
+                <data id="d3">&lt;i&gt;</data>
+                <data id="d4">&lt;/i&gt;</data>
+            </originalData>
+            <segment id="2">
+                <source>Source <pc id="1" dataRefStart="d1" dataRefEnd="d2">2</pc></source>
+                <target><pc id="2" dataRefStart="d3" dataRefEnd="d4">Target 2</pc></target>
+            </segment>
+        </unit>
+        <unit id="3">
+            <originalData>
+                <data id="d1">&lt;b&gt;</data>
+                <data id="d2">&lt;/b&gt;</data>
+                <data id="d3">&lt;i&gt;</data>
+                <data id="d4">&lt;/i&gt;</data>
+            </originalData>
+            <segment id="3">
+                <source>Source <pc id="1" dataRefStart="d1" dataRefEnd="d2">3</pc></source>
+                <target><pc id="2" dataRefStart="d3" dataRefEnd="d4">Target 3</pc></target>
+            </segment>
+        </unit>
+    </file>
+    <file id="test-2.html">
+        <unit id="4">
+            <originalData>
+                <data id="d1">&lt;b&gt;</data>
+                <data id="d2">&lt;/b&gt;</data>
+                <data id="d3">&lt;i&gt;</data>
+                <data id="d4">&lt;/i&gt;</data>
+            </originalData>
+            <segment id="4">
+                <source>Source <pc id="1" dataRefStart="d1" dataRefEnd="d2">4</pc></source>
+                <target><pc id="2" dataRefStart="d3" dataRefEnd="d4">Target 4</pc></target>
+            </segment>
+        </unit>
+        <unit id="5">
+            <originalData>
+                <data id="d1">&lt;b&gt;</data>
+                <data id="d2">&lt;/b&gt;</data>
+                <data id="d3">&lt;i&gt;</data>
+                <data id="d4">&lt;/i&gt;</data>
+            </originalData>
+            <segment id="5">
+                <source>Source <pc id="1" dataRefStart="d1" dataRefEnd="d2">5</pc></source>
+                <target><pc id="2" dataRefStart="d3" dataRefEnd="d4">Target 5</pc></target>
+            </segment>
+        </unit>
+        <unit id="6">
+            <originalData>
+                <data id="d1">&lt;b&gt;</data>
+                <data id="d2">&lt;/b&gt;</data>
+                <data id="d3">&lt;i&gt;</data>
+                <data id="d4">&lt;/i&gt;</data>
+            </originalData>
+            <segment id="6">
+                <source>Source <pc id="1" dataRefStart="d1" dataRefEnd="d2">6</pc></source>
+                <target><pc id="2" dataRefStart="d3" dataRefEnd="d4">Target 6</pc></target>
+            </segment>
+        </unit>
+        <unit id="7">
+            <originalData>
+                <data id="d1">&lt;b&gt;</data>
+                <data id="d2">&lt;/b&gt;</data>
+                <data id="d3">&lt;i&gt;</data>
+                <data id="d4">&lt;/i&gt;</data>
+            </originalData>
+            <segment id="7">
+                <source>Source <pc id="1" dataRefStart="d1" dataRefEnd="d2">7</pc></source>
+                <target><pc id="2" dataRefStart="d3" dataRefEnd="d4">Target 7</pc></target>
+            </segment>
+        </unit>
+        <unit id="8">
+            <originalData>
+                <data id="d1">&lt;b&gt;</data>
+                <data id="d2">&lt;/b&gt;</data>
+                <data id="d3">&lt;i&gt;</data>
+                <data id="d4">&lt;/i&gt;</data>
+            </originalData>
+            <segment id="8">
+                <source>Source <pc id="1" dataRefStart="d1" dataRefEnd="d2">8</pc></source>
+                <target><pc id="2" dataRefStart="d3" dataRefEnd="d4">Target 8</pc></target>
+            </segment>
+        </unit>
+        <unit id="9">
+            <originalData>
+                <data id="d1">&lt;b&gt;</data>
+                <data id="d2">&lt;/b&gt;</data>
+                <data id="d3">&lt;i&gt;</data>
+                <data id="d4">&lt;/i&gt;</data>
+            </originalData>
+            <segment id="9">
+                <source>Source <pc id="1" dataRefStart="d1" dataRefEnd="d2">9</pc></source>
+                <target><pc id="2" dataRefStart="d3" dataRefEnd="d4">Target 9</pc></target>
+            </segment>
+        </unit>
+    </file>
+</xliff>

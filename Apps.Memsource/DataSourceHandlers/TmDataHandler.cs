@@ -9,8 +9,12 @@ public class TmDataHandler(InvocationContext invocationContext) : PhraseInvocabl
 {
     public async Task<IEnumerable<DataSourceItem>> GetDataAsync(DataSourceContext context, CancellationToken cancellationToken)
     {
-        var request = new RestRequest($"/api2/v1/transMemories", Method.Get);
-        if (context.SearchString != null) request.AddQueryParameter("name", context.SearchString);
+        var request = new RestRequest($"/api2/v1/transMemories");
+        if (context.SearchString != null)
+        {
+            request.AddQueryParameter("name", context.SearchString);
+        }
+        
         var result = await Client.PaginateOnce<TranslationMemoryDto>(request);
         return result.Select(x => new DataSourceItem(x.UId, x.Name));
     }
