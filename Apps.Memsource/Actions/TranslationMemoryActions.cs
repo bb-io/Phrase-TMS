@@ -97,7 +97,7 @@ public class TranslationMemoryActions(InvocationContext invocationContext, IFile
         return new() { File = file };
     }
     
-    [Action("Update TM (Insert segments from file)", Description = "Update TM by inserting segments from a file")]
+    [Action("Update TM (insert segments from xliff)", Description = "Update TM by inserting segments from a xliff file")]
     public async Task UpdateTmInsertSegmentsFromFile([ActionParameter] UpdateTmRequest updateTmRequest)
     {
         var fileStream = await fileManagementClient.DownloadAsync(updateTmRequest.File);
