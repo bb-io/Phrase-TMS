@@ -14,6 +14,7 @@ using Blackbird.Applications.Sdk.Common.Invocation;
 using Apps.PhraseTMS.Dtos.Async;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.Sdk.Common.Exceptions;
+using Blackbird.Filters.Transformations;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -95,20 +96,43 @@ public class TranslationMemoryActions(InvocationContext invocationContext, IFile
         var file = await fileManagementClient.UploadAsync(stream, responseDownload.ContentType, $"{input.TranslationMemoryUId}.tmx");
         return new() { File = file };
     }
+    
+    [Action("Update TM (insert segments from xliff)", Description = "Update TM by inserting segments from a xliff file")]
+    public async Task UpdateTmInsertSegmentsFromFile([ActionParameter] UpdateTmRequest updateTmRequest)
+    {
+        var fileStream = await fileManagementClient.DownloadAsync(updateTmRequest.File);
+        using var stream = new MemoryStream();
+        await fileStream.CopyToAsync(stream);
+        stream.Position = 0;
+        
+        var transformation = await Transformation.Parse(stream, updateTmRequest.File.Name);
+        foreach (var segment in transformation.GetSegments())
+        {
+            var insertRequest = new InsertSegmentRequest
+            {
+                TranslationMemoryUId = updateTmRequest.TranslationMemoryUId,
+                SourceSegment = segment.GetSource(),
+                TargetSegment = segment.GetTarget(),
+                TargetLanguage = updateTmRequest.TargetLanguage ?? transformation.TargetLanguage ?? string.Empty
+            };
+            
+            await InsertSegmentAsync(updateTmRequest.TranslationMemoryUId, segment.Id, insertRequest.SourceSegment, insertRequest.TargetSegment, insertRequest.TargetLanguage);
+        }
+    }
 
     [Action("Insert segment into memory", Description = "Insert a new segment into the translation memory")]
     public Task InsertSegment([ActionParameter] InsertSegmentRequest input)
     {
-        var request = new RestRequest($"/api2/v1/transMemories/{input.TranslationMemoryUId}/segments", Method.Post);
-
-        request.WithJsonBody(new
-        {
-            sourceSegment = input.SourceSegment,
-            targetSegment = input.TargetSegment,
-            targetLang = input.TargetLanguage,
-            previousSourceSegment = input.PreviousSourceSegment,
-            nextSourceSegment = input.NextSourceSegment,
-        });
+        var request = new RestRequest($"/api2/v1/transMemories/{input.TranslationMemoryUId}/segments", Method.Post)
+            .WithJsonBody(new
+            {
+                sourceSegment = input.SourceSegment,
+                targetSegment = input.TargetSegment,
+                targetLang = input.TargetLanguage,
+                previousSourceSegment = input.PreviousSourceSegment,
+                nextSourceSegment = input.NextSourceSegment,
+            });
+        
         return Client.ExecuteWithHandling(request);
     }
 
@@ -169,4 +193,24 @@ public class TranslationMemoryActions(InvocationContext invocationContext, IFile
         static T? GetAt<T>(T[]? arr, int index) => (arr != null && index < arr.Length) ? arr[index] : default;
     }
 
+    private async Task InsertSegmentAsync(string translationMemoryUId, string? segmentId, string source, string target, string targetLanguage)
+    {
+        try
+        {
+            var request = new RestRequest($"/api2/v1/transMemories/{translationMemoryUId}/segments", Method.Post)
+                .WithJsonBody(new
+                {
+                    sourceSegment = source,
+                    targetSegment = target,
+                    targetLang = targetLanguage
+                });
+        
+            await Client.ExecuteWithHandling(request);
+        }
+        catch (Exception e)
+        {
+            throw new PluginApplicationException($"Failed to insert segment {(segmentId != null ? $"with ID {segmentId} " : string.Empty)}into TM {translationMemoryUId}. " +
+                                                 $"Error: {e.Message}");
+        }
+    }
 }
