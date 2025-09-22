@@ -160,6 +160,7 @@ The following actions update a job's file (source or target) from their original
 - **Insert segment into memory** insert a new segment into the translation memory
 - **Delete translation memory** deletes the entire translation memory
 - **Edit translation memories** edits the name and description of a translation memory
+- **Update TM (insert segments from xliff)** updates the translation memory by inserting segments from an XLIFF file
 
 ### User
 
