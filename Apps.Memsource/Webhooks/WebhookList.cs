@@ -419,6 +419,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         [WebhookParameter] ProjectOptionalRequest projectOptionalRequest,
         [WebhookParameter] OptionalJobRequest job,
         [WebhookParameter] WorkflowStepOptionalRequest workflowStepRequest,
+        [WebhookParameter] MultipleWorkflowStepsOptionalRequest multipleWorkflowSteps,
         [WebhookParameter] OptionalSourceFileIdRequest sourceFileId,
         [WebhookParameter] OptionalSearchJobsQuery jobsQuery,
         [WebhookParameter] [Display("Last workflow level?")] bool? lastWorkflowLevel,
@@ -485,44 +486,52 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
 
         IEnumerable<JobPart> selectedJobs = data.JobParts;
         var projectId = data.metadata.project.Uid;
-        int workflowLevel = 0;
+        var workflowLevels = new HashSet<int>();
 
-        if (workflowStepRequest != null && !String.IsNullOrEmpty(workflowStepRequest?.WorkflowStepId))
+        if (multipleWorkflowSteps?.WorkflowStepIds?.Any() == true)
         {
-            workflowLevel = await Client.GetWorkflowstepLevel(projectId, workflowStepRequest.WorkflowStepId);
-        }
-        else if (lastWorkflowLevel.HasValue && lastWorkflowLevel.Value)
-        {
-            workflowLevel = await Client.GetLastWorkflowstepLevel(projectId);
-        }
-        
-        if (string.IsNullOrEmpty(job?.JobUId) && workflowLevel > 0)
-        {
-            if (!string.IsNullOrEmpty(workflowStepRequest?.WorkflowStepId) || lastWorkflowLevel == true)
+            foreach (var stepId in multipleWorkflowSteps.WorkflowStepIds.Where(x => !string.IsNullOrWhiteSpace(x)))
             {
-                selectedJobs = selectedJobs.Where(x => x.workflowLevel == workflowLevel);
-
-                if (!selectedJobs.Any())
-                {
-                    return new()
-                    {
-                        HttpResponseMessage = null,
-                        Result = null,
-                        ReceivedWebhookRequestType = WebhookRequestType.Preflight
-                    };
-                }
+                var level = await Client.GetWorkflowstepLevel(projectId, stepId);
+                if (level > 0) workflowLevels.Add(level);
             }
         }
 
+        if (!string.IsNullOrWhiteSpace(workflowStepRequest?.WorkflowStepId))
+        {
+            var singleLevel = await Client.GetWorkflowstepLevel(projectId, workflowStepRequest.WorkflowStepId);
+            if (singleLevel > 0) workflowLevels.Add(singleLevel);
+        }
+
+        if (lastWorkflowLevel == true)
+        {
+            var lastLevel = await Client.GetLastWorkflowstepLevel(projectId);
+            if (lastLevel > 0) workflowLevels.Add(lastLevel);
+        }
+
+        if (string.IsNullOrEmpty(job?.JobUId) && workflowLevels.Count > 0)
+        {
+            selectedJobs = selectedJobs.Where(x => workflowLevels.Contains(x.workflowLevel));
+
+            if (!selectedJobs.Any())
+            {
+                return new()
+                {
+                    HttpResponseMessage = null,
+                    Result = null,
+                    ReceivedWebhookRequestType = WebhookRequestType.Preflight
+                };
+            }
+        }
 
         if (!string.IsNullOrEmpty(job?.JobUId) && !string.IsNullOrEmpty(projectId))
         {
             selectedJobs = data.JobParts.Where(x => x.Uid == job.JobUId);
 
-            if (lastWorkflowLevel == true && workflowLevel > 0)
+            if (workflowLevels.Count > 0)
             {
                 var single = selectedJobs.FirstOrDefault();
-                if (single != null && single.workflowLevel != workflowLevel)
+                if (single == null || !workflowLevels.Contains(single.workflowLevel))
                 {
                     return new()
                     {
@@ -537,12 +546,23 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         {
             var endpoint = $"/api2/v2/projects/{projectId}/jobs";
             var listJobsRequest = new RestRequest(endpoint.WithQuery(jobsQuery), Method.Get);
-            if (workflowLevel > 0)
+
+            if (workflowLevels.Count == 1)
             {
-                listJobsRequest.AddQueryParameter("workflowLevel", workflowLevel);
+                listJobsRequest.AddQueryParameter("workflowLevel", workflowLevels.First());
             }
+
             var listJobsResponse = await Client.Paginate<ListJobDto>(listJobsRequest);
-            var filteredJobIds = listJobsResponse.Where(x => x.SourceFileUid == sourceFileId.SourceFileId).Select(x => x.Uid);
+            var filteredByFile = listJobsResponse.Where(x => x.SourceFileUid == sourceFileId.SourceFileId);
+
+            if (workflowLevels.Count > 1)
+            {
+                filteredByFile = filteredByFile.Where(x =>
+                    x.WorkflowStep != null &&
+                    workflowLevels.Contains(x.WorkflowStep.WorkflowLevel));
+            }
+
+            var filteredJobIds = filteredByFile.Select(x => x.Uid);
             selectedJobs = data.JobParts.IntersectBy(filteredJobIds, x => x.Uid);
         }
 
@@ -551,13 +571,12 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             selectedJobs = selectedJobs.Where(x => x.TargetLang == jobsQuery.TargetLang);
         }
 
-        if (request?.Status != null && request?.Status.Count() > 0)
+        if (request?.Status != null && request.Status.Any())
         {
             selectedJobs = selectedJobs.Where(x => request.Status.Contains(x.Status));
         }
 
         var selectedJob = selectedJobs.FirstOrDefault();
-
         if (selectedJob == null)
         {
             return new()
@@ -571,7 +590,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         var projectRequest = new RestRequest($"/api2/v1/projects/{selectedJob.Project.Uid}?with=owners", Method.Get);
         var projectResponse = await Client.ExecuteWithHandling<ProjectDto>(projectRequest);
 
-        var response= new WebhookResponse<JobResponse>
+        var response = new WebhookResponse<JobResponse>
         {
             HttpResponseMessage = null,
             Result = new()
