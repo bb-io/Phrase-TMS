@@ -1,27 +1,26 @@
 ﻿using Apps.PhraseTMS.Constants;
-using Blackbird.Applications.Sdk.Common;
-using Blackbird.Applications.Sdk.Common.Authentication;
-using RestSharp;
-using Apps.PhraseTMS.Models.TranslationMemories.Requests;
 using Apps.PhraseTMS.Dtos;
+using Apps.PhraseTMS.Models.Projects.Requests;
+using Apps.PhraseTMS.Models.TranslationMemories.Requests;
 using Apps.PhraseTMS.Models.TranslationMemories.Responses;
+using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
+using Blackbird.Applications.Sdk.Common.Exceptions;
+using Blackbird.Applications.Sdk.Common.Invocation;
+using Blackbird.Applications.Sdk.Utils.Extensions.Files;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
-using Blackbird.Applications.Sdk.Utils.Extensions.Files;
-using Blackbird.Applications.Sdk.Common.Invocation;
-using Apps.PhraseTMS.Dtos.Async;
-using Apps.PhraseTMS.Models.Projects.Requests;
-using Blackbird.Applications.Sdk.Common.Exceptions;
+using Blackbird.Filters.Enums;
 using Blackbird.Filters.Transformations;
+using RestSharp;
 
 namespace Apps.PhraseTMS.Actions;
 
 [ActionList("Translation memory")]
 public class TranslationMemoryActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : PhraseInvocable(invocationContext)
 {
-    [Action("Search translation memories", Description = "Get all translation memories that match search criteria")]
+    [Action("Search translation memories", Description = "Get all TMs that match search criteria")]
     public Task<List<TranslationMemoryDto>> SearchTranslationMemories([ActionParameter] SearchTranslationMemoryRequest input)
     {
         var request = new RestRequest("/api2/v1/transMemories", Method.Get);
@@ -44,7 +43,7 @@ public class TranslationMemoryActions(InvocationContext invocationContext, IFile
         return Client.Paginate<TranslationMemoryDto>(request);
     }
 
-    [Action("Create translation memory", Description = "Create a new translation memory")]
+    [Action("Create translation memory", Description = "Create a new TM")]
     public Task<TranslationMemoryDto> CreateTranslationMemory([ActionParameter] CreateTranslationMemoryRequest input)
     {
         var request = new RestRequest($"/api2/v1/transMemories", Method.Post);
@@ -59,14 +58,14 @@ public class TranslationMemoryActions(InvocationContext invocationContext, IFile
         return Client.ExecuteWithHandling<TranslationMemoryDto>(request);
     }
 
-    [Action("Get translation memory", Description = "Get specific translation memory")]
+    [Action("Get translation memory", Description = "Get specific TM")]
     public Task<TranslationMemoryDto> GetTranslationMemory([ActionParameter] GetTranslationMemoryRequest input)
     {
         var request = new RestRequest($"/api2/v1/transMemories/{input.TranslationMemoryUId}", Method.Get);
         return Client.ExecuteWithHandling<TranslationMemoryDto>(request);
     }
 
-    [Action("Import TMX file", Description = "Imports a new TMX file into the TM")]
+    [Action("Import TMX file into translation memory", Description = "Imports a new TMX file into the TM")]
     public async Task ImportTmx([ActionParameter] ImportTmxRequest input, [ActionParameter] ImportTmxQuery query)
     {
         var endpoint = $"/api2/v2/transMemories/{input.TranslationMemoryUId}/import";
@@ -81,7 +80,7 @@ public class TranslationMemoryActions(InvocationContext invocationContext, IFile
         await Client.PerformAsyncRequest(request);
     }
 
-    [Action("Export translation memory", Description = "Export selected translation memory as either a TMX or an XLSX")]
+    [Action("Export translation memory", Description = "Export selected TM as either a TMX or an XLSX")]
     public async Task<ExportTranslationMemoryResponse> ExportTranslationMemory([ActionParameter] ExportTransMemoryRequest input,[ActionParameter] ExportTransMemoryBody body)
     {
         var request = new RestRequest($"/api2/v2/transMemories/{input.TranslationMemoryUId}/export", Method.Post);
@@ -97,30 +96,55 @@ public class TranslationMemoryActions(InvocationContext invocationContext, IFile
         return new() { File = file };
     }
     
-    [Action("Update TM (insert segments from xliff)", Description = "Update TM by inserting segments from a xliff file")]
+    [Action("Update translation memory from XLIFF", Description = "Update TM by inserting segments from a xliff file")]
     public async Task UpdateTmInsertSegmentsFromFile([ActionParameter] UpdateTmRequest updateTmRequest)
     {
         var fileStream = await fileManagementClient.DownloadAsync(updateTmRequest.File);
-        using var stream = new MemoryStream();
-        await fileStream.CopyToAsync(stream);
-        stream.Position = 0;
-        
-        var transformation = await Transformation.Parse(stream, updateTmRequest.File.Name);
-        foreach (var segment in transformation.GetSegments())
+        var transformation = await Transformation.Parse(fileStream, updateTmRequest.File.Name);
+
+        var targetLanguage = updateTmRequest.TargetLanguage ?? transformation.TargetLanguage;
+        if (string.IsNullOrWhiteSpace(targetLanguage))
+            throw new PluginMisconfigurationException("Target language must be specified either in the input or in the XLIFF file.");
+
+        var segmentStates = updateTmRequest.SegmentStates?
+            .Select(SegmentStateHelper.ToSegmentState)
+            .Where(state => state is not null)
+            .Select(s => s!.Value)
+            .ToList();
+
+        var units = transformation.GetUnits().ToList();
+
+        for (var unitIndex = 0; unitIndex < units.Count; unitIndex++)
         {
-            var insertRequest = new InsertSegmentRequest
+            var unit = units[unitIndex];
+
+            for (var segmentIndex = 0; segmentIndex < unit.Segments.Count; segmentIndex++)
             {
-                TranslationMemoryUId = updateTmRequest.TranslationMemoryUId,
-                SourceSegment = segment.GetSource(),
-                TargetSegment = segment.GetTarget(),
-                TargetLanguage = updateTmRequest.TargetLanguage ?? transformation.TargetLanguage ?? string.Empty
-            };
-            
-            await InsertSegmentAsync(updateTmRequest.TranslationMemoryUId, segment.Id, insertRequest.SourceSegment, insertRequest.TargetSegment, insertRequest.TargetLanguage);
+                var segment = unit.Segments[segmentIndex];
+
+                if (string.IsNullOrEmpty(segment.GetSource()) || string.IsNullOrEmpty(segment.GetTarget()))
+                    continue;
+
+                if (segmentStates is not null && !segmentStates.Contains(segment.State ?? SegmentState.Initial))
+                    continue;
+
+                var previousSegment = GetSurroundingSegment(units, unitIndex, segmentIndex, true);
+                var nextSegment = GetSurroundingSegment(units, unitIndex, segmentIndex, false);
+
+                await InsertSegment(new InsertSegmentRequest
+                {
+                    TranslationMemoryUId = updateTmRequest.TranslationMemoryUId,
+                    SourceSegment = segment.GetSource(),
+                    TargetSegment = segment.GetTarget(),
+                    TargetLanguage = targetLanguage,
+                    PreviousSourceSegment = previousSegment?.GetSource(),
+                    NextSourceSegment = nextSegment?.GetSource(),
+                });
+            }
         }
     }
 
-    [Action("Insert segment into memory", Description = "Insert a new segment into the translation memory")]
+    [Action("Insert text into translation memory", Description = "Insert a new segment into TM")]
     public Task InsertSegment([ActionParameter] InsertSegmentRequest input)
     {
         var request = new RestRequest($"/api2/v1/transMemories/{input.TranslationMemoryUId}/segments", Method.Post)
@@ -136,7 +160,7 @@ public class TranslationMemoryActions(InvocationContext invocationContext, IFile
         return Client.ExecuteWithHandling(request);
     }
 
-    [Action("Delete translation memory", Description = "Delete translation memory by ID")]
+    [Action("Delete translation memory", Description = "Delete TM by ID")]
     public Task DeleteTransMemory([ActionParameter] DeleteTransMemoryRequest input)
     {
         var endpoint = $"/api2/v1/transMemories/{input.TranslationMemoryUId}";
@@ -149,7 +173,7 @@ public class TranslationMemoryActions(InvocationContext invocationContext, IFile
     }
 
 
-    [Action("Edit translation memories", Description = "Edit translation memories")]
+    [Action("Edit translation memories", Description = "Edit TMs")]
     public Task<EditProjectTransMemoriesResponse> EditProjectTranslationMemories(
     [ActionParameter] ProjectRequest project,
     [ActionParameter] EditProjectTransMemoriesRequest input)
@@ -193,24 +217,31 @@ public class TranslationMemoryActions(InvocationContext invocationContext, IFile
         static T? GetAt<T>(T[]? arr, int index) => (arr != null && index < arr.Length) ? arr[index] : default;
     }
 
-    private async Task InsertSegmentAsync(string translationMemoryUId, string? segmentId, string source, string target, string targetLanguage)
+    private static Segment? GetSurroundingSegment(List<Unit> units, int unitIndex, int segmentIndex, bool getPrevious)
     {
-        try
+        var unit = units[unitIndex];
+
+        if (unit is null)
+            return null;
+
+        if (getPrevious)
         {
-            var request = new RestRequest($"/api2/v1/transMemories/{translationMemoryUId}/segments", Method.Post)
-                .WithJsonBody(new
-                {
-                    sourceSegment = source,
-                    targetSegment = target,
-                    targetLang = targetLanguage
-                });
-        
-            await Client.ExecuteWithHandling(request);
+            if (segmentIndex > 0)
+                return unit.Segments.ElementAt(segmentIndex - 1);
+
+            if (getPrevious && unitIndex > 0)
+                return units[unitIndex - 1].Segments.Last();
         }
-        catch (Exception e)
+
+        if (getPrevious == false)
         {
-            throw new PluginApplicationException($"Failed to insert segment {(segmentId != null ? $"with ID {segmentId} " : string.Empty)}into TM {translationMemoryUId}. " +
-                                                 $"Error: {e.Message}");
+            if (segmentIndex < unit.Segments.Count - 1)
+                return unit.Segments.ElementAt(segmentIndex + 1);
+
+            if (unitIndex < units.Count - 1)
+                return units[unitIndex + 1].Segments.First();
         }
+
+        return null;
     }
 }

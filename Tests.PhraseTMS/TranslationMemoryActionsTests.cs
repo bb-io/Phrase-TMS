@@ -37,4 +37,17 @@ public class TranslationMemoryActionsTests : TestBase
 
         await TranslationMemoryActions.UpdateTmInsertSegmentsFromFile(updateTmRequest);
     }
+
+    [TestMethod]
+    public async Task UpdateTmInsertSegmentsFromFile_FilterSegments_Success()
+    {
+        var updateTmRequest = new UpdateTmRequest
+        {
+            TranslationMemoryUId = TranslationMemoryId,
+            File = new FileReference { Name = "basic-interoperable.xliff" },
+            SegmentStates = ["initial"],
+        };
+
+        await TranslationMemoryActions.UpdateTmInsertSegmentsFromFile(updateTmRequest);
+    }
 }
