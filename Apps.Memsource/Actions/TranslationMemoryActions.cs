@@ -20,7 +20,7 @@ namespace Apps.PhraseTMS.Actions;
 [ActionList("Translation memory")]
 public class TranslationMemoryActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : PhraseInvocable(invocationContext)
 {
-    [Action("Search translation memories", Description = "Get all TMs that match search criteria")]
+    [Action("Search TM", Description = "Get all translation memories that match search criteria")]
     public Task<List<TranslationMemoryDto>> SearchTranslationMemories([ActionParameter] SearchTranslationMemoryRequest input)
     {
         var request = new RestRequest("/api2/v1/transMemories", Method.Get);
@@ -43,7 +43,7 @@ public class TranslationMemoryActions(InvocationContext invocationContext, IFile
         return Client.Paginate<TranslationMemoryDto>(request);
     }
 
-    [Action("Create translation memory", Description = "Create a new TM")]
+    [Action("Create TM", Description = "Create a new translation memory")]
     public Task<TranslationMemoryDto> CreateTranslationMemory([ActionParameter] CreateTranslationMemoryRequest input)
     {
         var request = new RestRequest($"/api2/v1/transMemories", Method.Post);
@@ -58,14 +58,14 @@ public class TranslationMemoryActions(InvocationContext invocationContext, IFile
         return Client.ExecuteWithHandling<TranslationMemoryDto>(request);
     }
 
-    [Action("Get translation memory", Description = "Get specific TM")]
+    [Action("Get TM", Description = "Get specific translation memory")]
     public Task<TranslationMemoryDto> GetTranslationMemory([ActionParameter] GetTranslationMemoryRequest input)
     {
         var request = new RestRequest($"/api2/v1/transMemories/{input.TranslationMemoryUId}", Method.Get);
         return Client.ExecuteWithHandling<TranslationMemoryDto>(request);
     }
 
-    [Action("Import TMX file into translation memory", Description = "Imports a new TMX file into the TM")]
+    [Action("Import TMX file into TM", Description = "Imports a new TMX file into a translation memory")]
     public async Task ImportTmx([ActionParameter] ImportTmxRequest input, [ActionParameter] ImportTmxQuery query)
     {
         var endpoint = $"/api2/v2/transMemories/{input.TranslationMemoryUId}/import";
@@ -80,7 +80,7 @@ public class TranslationMemoryActions(InvocationContext invocationContext, IFile
         await Client.PerformAsyncRequest(request);
     }
 
-    [Action("Export translation memory", Description = "Export selected TM as either a TMX or an XLSX")]
+    [Action("Export TM", Description = "Export selected translation memory as either a TMX or an XLSX")]
     public async Task<ExportTranslationMemoryResponse> ExportTranslationMemory([ActionParameter] ExportTransMemoryRequest input,[ActionParameter] ExportTransMemoryBody body)
     {
         var request = new RestRequest($"/api2/v2/transMemories/{input.TranslationMemoryUId}/export", Method.Post);
@@ -96,7 +96,7 @@ public class TranslationMemoryActions(InvocationContext invocationContext, IFile
         return new() { File = file };
     }
     
-    [Action("Update translation memory from XLIFF", Description = "Update TM by inserting segments from a xliff file")]
+    [Action("Update TM from XLIFF", Description = "Update translation memory by inserting segments from a xliff file")]
     public async Task UpdateTmInsertSegmentsFromFile([ActionParameter] UpdateTmRequest updateTmRequest)
     {
         var fileStream = await fileManagementClient.DownloadAsync(updateTmRequest.File);
@@ -144,7 +144,7 @@ public class TranslationMemoryActions(InvocationContext invocationContext, IFile
         }
     }
 
-    [Action("Insert text into translation memory", Description = "Insert a new segment into TM")]
+    [Action("Insert text into TM", Description = "Insert a new segment into a translation memory")]
     public Task InsertSegment([ActionParameter] InsertSegmentRequest input)
     {
         var request = new RestRequest($"/api2/v1/transMemories/{input.TranslationMemoryUId}/segments", Method.Post)
@@ -160,7 +160,7 @@ public class TranslationMemoryActions(InvocationContext invocationContext, IFile
         return Client.ExecuteWithHandling(request);
     }
 
-    [Action("Delete translation memory", Description = "Delete TM by ID")]
+    [Action("Delete TM", Description = "Delete selected translation memory")]
     public Task DeleteTransMemory([ActionParameter] DeleteTransMemoryRequest input)
     {
         var endpoint = $"/api2/v1/transMemories/{input.TranslationMemoryUId}";
@@ -173,7 +173,7 @@ public class TranslationMemoryActions(InvocationContext invocationContext, IFile
     }
 
 
-    [Action("Edit translation memories", Description = "Edit TMs")]
+    [Action("Edit TMs", Description = "Edit translation memories")]
     public Task<EditProjectTransMemoriesResponse> EditProjectTranslationMemories(
     [ActionParameter] ProjectRequest project,
     [ActionParameter] EditProjectTransMemoriesRequest input)
