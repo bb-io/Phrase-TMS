@@ -42,12 +42,13 @@ public class WebhookTests : TestBase
             new ProjectOptionalRequest { ProjectUId = PROJECT_ID },
             new OptionalJobRequest { },
             new WorkflowStepOptionalRequest { },
+            new MultipleWorkflowStepsOptionalRequest { },
             new OptionalSourceFileIdRequest { },
             new OptionalSearchJobsQuery { },
             null,
             null,
             null,
-            null
+            new MultipleSubdomains { }
             );
 
         Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
@@ -65,12 +66,13 @@ public class WebhookTests : TestBase
             new ProjectOptionalRequest { ProjectUId = PROJECT_ID },
             new OptionalJobRequest { JobUId = JOB_ID },
             new WorkflowStepOptionalRequest { },
+            new MultipleWorkflowStepsOptionalRequest { },
             new OptionalSourceFileIdRequest { },
             new OptionalSearchJobsQuery { },
             null,
             null,
             null,
-            null
+            new MultipleSubdomains { }
             );
 
         Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
@@ -88,12 +90,13 @@ public class WebhookTests : TestBase
             new ProjectOptionalRequest { ProjectUId = PROJECT_ID },
             new OptionalJobRequest { JobUId = JOB_ID },
             new WorkflowStepOptionalRequest { },
+            new MultipleWorkflowStepsOptionalRequest { },
             new OptionalSourceFileIdRequest { },
             new OptionalSearchJobsQuery { },
             null,
             null,
             null,
-            null
+            new MultipleSubdomains { }
             );
 
         Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
@@ -111,12 +114,13 @@ public class WebhookTests : TestBase
             new ProjectOptionalRequest { ProjectUId = PROJECT_ID },
             new OptionalJobRequest { JobUId = JOB_ID },
             new WorkflowStepOptionalRequest { },
+            new MultipleWorkflowStepsOptionalRequest { },
             new OptionalSourceFileIdRequest { },
             new OptionalSearchJobsQuery { },
             null,
             null,
             null,
-            null
+            new MultipleSubdomains { }
             );
 
         Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
@@ -134,12 +138,13 @@ public class WebhookTests : TestBase
             new ProjectOptionalRequest { ProjectUId = PROJECT_ID },
             new OptionalJobRequest { },
             new WorkflowStepOptionalRequest { },
+            new MultipleWorkflowStepsOptionalRequest { },
             new OptionalSourceFileIdRequest { SourceFileId = "WRONG" },
             new OptionalSearchJobsQuery { },
             null,
             null,
             null,
-            null
+            new MultipleSubdomains { }
             );
 
         Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
@@ -157,12 +162,13 @@ public class WebhookTests : TestBase
             new ProjectOptionalRequest { ProjectUId = PROJECT_ID },
             new OptionalJobRequest { },
             new WorkflowStepOptionalRequest { WorkflowStepId = WORKFLOW_STEP_ID },
+            new MultipleWorkflowStepsOptionalRequest { },
             new OptionalSourceFileIdRequest { SourceFileId = SOURCE_FILE_ID },
             new OptionalSearchJobsQuery { },
             null,
             null,
             null,
-            null
+            new MultipleSubdomains { }
             );
 
         Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
@@ -180,12 +186,13 @@ public class WebhookTests : TestBase
             new ProjectOptionalRequest { ProjectUId = PROJECT_ID },
             new OptionalJobRequest { },
             new WorkflowStepOptionalRequest { WorkflowStepId = WORKFLOW_STEP_ID },
+            new MultipleWorkflowStepsOptionalRequest { },
             new OptionalSourceFileIdRequest { SourceFileId = SOURCE_FILE_ID },
             new OptionalSearchJobsQuery { TargetLang = "nl"  },
             null,
             null,
             null,
-            null
+            new MultipleSubdomains { }
             );
 
         Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
@@ -203,12 +210,13 @@ public class WebhookTests : TestBase
             new ProjectOptionalRequest { ProjectUId = PROJECT_ID },
             new OptionalJobRequest { },
             new WorkflowStepOptionalRequest { WorkflowStepId = WORKFLOW_STEP_ID },
+            new MultipleWorkflowStepsOptionalRequest { },
             new OptionalSourceFileIdRequest { SourceFileId = SOURCE_FILE_ID },
             new OptionalSearchJobsQuery { TargetLang = LANG },
             null,
             null,
             null,
-            null
+            new MultipleSubdomains { }
             );
 
         Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
@@ -226,12 +234,13 @@ public class WebhookTests : TestBase
             new ProjectOptionalRequest { ProjectUId = PROJECT_ID },
             new OptionalJobRequest { },
             new WorkflowStepOptionalRequest { },
+            new MultipleWorkflowStepsOptionalRequest { },
             new OptionalSourceFileIdRequest { SourceFileId = SOURCE_FILE_ID },
             new OptionalSearchJobsQuery { },
             true,
             null,
             null,
-            null
+            new MultipleSubdomains { }
             );
 
         Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
