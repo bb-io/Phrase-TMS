@@ -5,8 +5,6 @@ namespace Apps.PhraseTMS.Connections;
 
 public class OAuth2ConnectionDefinition : IConnectionDefinition
 {
-    private const string ApiKeyName = "apiToken";
-
     public IEnumerable<ConnectionPropertyGroup> ConnectionPropertyGroups => new List<ConnectionPropertyGroup>
     {
         new()
