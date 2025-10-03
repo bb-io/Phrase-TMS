@@ -161,29 +161,42 @@ public class CustomFieldsActions(InvocationContext invocationContext) : PhraseIn
     [Action("Set project date custom field value", Description = "Sets the date type value of a project custom field")]
     public async Task SetDateCustomField([ActionParameter] ProjectRequest projectRequest, [ActionParameter] DateCustomFieldRequest input, [ActionParameter] DateTime Value)
     {
-        var endpoint1 = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/";
-        var request1 = new RestRequest(endpoint1, Method.Get);
-        var projectCustomFields = await Client.Paginate<ProjectCustomFieldDto>(request1);
+        var listEndpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields";
+        var listRequest = new RestRequest(listEndpoint, Method.Get);
+        var instances = await Client.Paginate<ProjectCustomFieldDto>(listRequest);
 
-        if (projectCustomFields.Any(x => x.customField.uid == input.FieldUId))
+        var dateString = Value.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+
+        var existing = instances.FirstOrDefault(x => x.customField?.uid == input.FieldUId);
+
+        if (existing != null)
         {
-            var projectCustomField = projectCustomFields.First(x => x.customField.uid == input.FieldUId);
-            var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/{projectCustomField.UId}";
-            var body = new { value = Value };
-            var request = new RestRequest(endpoint, Method.Put)
-                .WithJsonBody(body,JsonConfig.DateSettings);
-            var response = await Client.ExecuteAsync(request);
+            var putEndpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/{existing.UId}";
+            var putBody = new { value = dateString };
+            var putRequest = new RestRequest(putEndpoint, Method.Put)
+                .WithJsonBody(putBody);
+            var putResponse = await Client.ExecuteWithHandling(putRequest);
         }
         else
         {
-            var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/";
-            var body = "{\"customFieldInstances\": [{\"customField\":{\"uid\":\"" + input.FieldUId + "\"}, \"value\": \""+Value+"\"}]}";
-            var request = new RestRequest(endpoint, Method.Post)
-            .WithJsonBody(body, JsonConfig.DateSettings);
-            var response = await Client.ExecuteAsync(request);
+            var postEndpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields";
+            var postBody = new
+            {
+                customFieldInstances = new[]
+                {
+                new
+                {
+                    customField = new { uid = input.FieldUId },
+                    value = dateString
+                }
+            }
+            };
+            var postRequest = new RestRequest(postEndpoint, Method.Post)
+                .WithJsonBody(postBody);
+            var postResponse = await Client.ExecuteWithHandling(postRequest);
         }
-
     }
+
 
     [Action("Set project single select custom field value", Description = "Sets the single select value of a project custom field")]
     public async Task SetSingleSelectCustomField([ActionParameter] ProjectRequest projectRequest, [ActionParameter] SingleSelectCustomFieldRequest input, [ActionParameter] SelectedOptionRequest Value)
