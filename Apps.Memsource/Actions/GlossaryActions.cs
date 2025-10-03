@@ -39,7 +39,7 @@ public class GlossaryActions(InvocationContext invocationContext, IFileManagemen
     {
         var endpointGlossaryData = $"/api2/v1/termBases/{input.GlossaryUId}/export";
         var requestGlossaryData = new RestRequest(endpointGlossaryData, Method.Get);
-        var responseGlossaryData = await Client.ExecuteAsync(requestGlossaryData);
+        var responseGlossaryData = await Client.ExecuteWithHandling(requestGlossaryData);
 
         var endpointGlossaryDetails = $"/api2/v1/termBases/{input.GlossaryUId}";
         var requestGlossaryDetails = new RestRequest(endpointGlossaryDetails, Method.Get);
