@@ -1,5 +1,6 @@
 ﻿using Apps.PhraseTMS.Actions;
 using Apps.PhraseTMS.Models.Analysis.Requests;
+using Apps.PhraseTMS.Models.CustomFields;
 using Apps.PhraseTMS.Models.Jobs.Requests;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Newtonsoft.Json;
@@ -55,6 +56,15 @@ namespace Tests.PhraseTMS
 
             var result = await actions.DownloadAnalysis(new GetAnalysisRequest { AnalysisUId = ANALYSIS_ID }, "JSON", null);
             Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+        }
+
+        [TestMethod]
+        public async Task SetDateCustomField_works()
+        {
+            var actions = new CustomFieldsActions(InvocationContext);
+            var date = DateTime.UtcNow.AddDays(15);
+            await actions.SetDateCustomField(new ProjectRequest { ProjectUId= "0SBo723Ge0wHfk0A1k1XWn0" },new DateCustomFieldRequest {  FieldUId= "gtCnCd6aZ0SkaGXu8wETa1" }, date);
+            Assert.IsTrue(true);
         }
     }
 }
