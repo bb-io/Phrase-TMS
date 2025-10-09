@@ -302,10 +302,15 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
             termbases = termbases.Where(tb => tb.TermBase.Name.Equals(request.Name, StringComparison.OrdinalIgnoreCase)).ToList();
         }
 
+        if (!string.IsNullOrEmpty(request.NameContains))
+        {
+            termbases = termbases.Where(tb => tb.TermBase.Name.ToLower().Contains(request.NameContains.ToLower())).ToList();
+        }
+
         var matchingTermbase = termbases.FirstOrDefault();
         if (matchingTermbase == null)
         {
-            throw new PluginMisconfigurationException("No matching termbase found for the given criteria.");
+            return new TermbaseDto();
         }
 
         return matchingTermbase.TermBase;
