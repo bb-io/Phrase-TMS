@@ -28,5 +28,8 @@ namespace Apps.PhraseTMS.Models.Projects.Requests
         [JsonProperty("name")]
         [Display("Name")]
         public string? Name { get; set; }
+
+        [Display("Termbase name contains")]
+        public string? NameContains { get; set; }
     }
 }
