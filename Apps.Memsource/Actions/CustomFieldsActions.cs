@@ -220,7 +220,7 @@ public class CustomFieldsActions(InvocationContext invocationContext) : PhraseIn
         }
         catch (Exception ex)
         {
-            InvocationContext.Logger?.LogError($"Error: {Newtonsoft.Json.JsonConvert.SerializeObject(ex, Newtonsoft.Json.Formatting.Indented)}", null);
+            InvocationContext.Logger?.LogError($"[Url custom field] Error: {Newtonsoft.Json.JsonConvert.SerializeObject(ex, Newtonsoft.Json.Formatting.Indented)}", null);
         }
     }
 
