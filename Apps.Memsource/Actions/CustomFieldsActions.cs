@@ -175,9 +175,6 @@ public class CustomFieldsActions(InvocationContext invocationContext) : PhraseIn
     public async Task SetUrlCustomField([ActionParameter] ProjectRequest projectRequest,[ActionParameter] UrlCustomFieldRequest input,
         [ActionParameter, Display("URL value")] string url)
     {
-        if (!Uri.TryCreate(url, UriKind.Absolute, out _))
-            throw new PluginMisconfigurationException("Please provide a valid absolute URL (e.g., https://example.com/path).");
-
         var endpointList = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/";
         var requestList = new RestRequest(endpointList, Method.Get);
         var projectCustomFields = await Client.Paginate<ProjectCustomFieldDto>(requestList);
