@@ -60,10 +60,12 @@ Custom fields are associated with a specific type, e.g. date, number, text, etc.
 - **Get project single select custom field value**
 - **Get project multi select custom field value**
 - **Get project text custom field value**
+- **Get project URL custom field value**
 - **Set project date custom field value**
 - **Set project numeric custom field value**
 - **Set project single select custom field value**
 - **Set project text custom field value**
+- **Set project URL custom field value**
 
 > If a Custom field is not present in a project, it will be added as part of the `Set` action.
 

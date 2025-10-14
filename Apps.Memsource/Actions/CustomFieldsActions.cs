@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using RestSharp;
 using Apps.PhraseTMS.Constants;
 using Blackbird.Applications.Sdk.Common.Invocation;
+using Blackbird.Applications.Sdk.Common.Exceptions;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -75,6 +76,19 @@ public class CustomFieldsActions(InvocationContext invocationContext) : PhraseIn
         return null;
     }
 
+    [Action("Get project URL custom field value", Description = "Gets the URL value of a project custom field")]
+    public async Task<string?> GetUrlCustomField([ActionParameter] ProjectRequest projectRequest, [ActionParameter] UrlCustomFieldRequest input)
+    {
+        var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/";
+        var request = new RestRequest(endpoint, Method.Get);
+
+        var projectCustomFields = await Client.Paginate<ProjectCustomFieldDto>(request);
+        var instance = projectCustomFields.FirstOrDefault(x => x.customField?.uid == input.FieldUId);
+
+        var value = instance?.Value;
+        return string.IsNullOrWhiteSpace(value) ? null : value;
+    }
+
     [Action("Get project multi select custom field value", Description = "Gets the value of a project custom field of type multi select")]
     public async Task<GetMultiSelectResponse> GetMultiSelectCustomField([ActionParameter] ProjectRequest projectRequest, [ActionParameter] MultiSelectCustomFieldRequest input)
     {
@@ -120,7 +134,6 @@ public class CustomFieldsActions(InvocationContext invocationContext) : PhraseIn
             request.AddStringBody(body, DataFormat.Json);
             var response = await Client.ExecuteAsync(request);
         }
-
     }
 
     [Action("Set project numeric custom field value", Description = "Sets the number type value of a project custom field")]
@@ -156,6 +169,44 @@ public class CustomFieldsActions(InvocationContext invocationContext) : PhraseIn
             var response = await Client.ExecuteAsync(request);
         }
 
+    }
+
+    [Action("Set project URL custom field value", Description = "Sets the URL value of a project custom field")]
+    public async Task SetUrlCustomField([ActionParameter] ProjectRequest projectRequest,[ActionParameter] UrlCustomFieldRequest input,
+        [ActionParameter] string Value)
+    {
+        var endpointList = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/";
+        var requestList = new RestRequest(endpointList, Method.Get);
+        var projectCustomFields = await Client.Paginate<ProjectCustomFieldDto>(requestList);
+
+        if (projectCustomFields.Any(x => x.customField.uid == input.FieldUId))
+        {
+            var projectCustomField = projectCustomFields.First(x => x.customField.uid == input.FieldUId);
+            var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/{projectCustomField.UId}";
+            var body = new { value = Value };
+
+            var request = new RestRequest(endpoint, Method.Put)
+                .WithJsonBody(body, new JsonSerializerSettings
+                {
+                    ContractResolver = new DefaultContractResolver
+                    {
+                        NamingStrategy = new SnakeCaseNamingStrategy()
+                    },
+                    NullValueHandling = NullValueHandling.Ignore
+                });
+
+            var response = await Client.ExecuteAsync(request);
+        }
+        else
+        {
+            var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/";
+            var body = "{\"customFieldInstances\": [{\"customField\":{\"uid\":\"" + input.FieldUId + "\"}, \"value\": \"" + Value + "\"}]}";
+
+            var request = new RestRequest(endpoint, Method.Post);
+            request.AddStringBody(body, DataFormat.Json);
+
+            var response = await Client.ExecuteAsync(request);
+        }
     }
 
     [Action("Set project date custom field value", Description = "Sets the date type value of a project custom field")]

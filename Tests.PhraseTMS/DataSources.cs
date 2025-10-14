@@ -184,4 +184,24 @@ public class DataSources : TestBase
 
         Assert.IsNotNull(response);
     }
+
+    [TestMethod]
+    public async Task CustomFieldUrlDataHandler_ReturnsFields()
+    {
+        // Arrange
+        //var projectRequest = new ProjectRequest { ProjectUId = "B1hg3UPb3dQoqaIheND4D5" };
+        var handler = new CustomFieldUrlDataHandler(InvocationContext);
+
+        // Act
+        var response = await handler.GetDataAsync(new DataSourceContext { SearchString = "" }, CancellationToken.None);
+
+        // Assert
+        Console.WriteLine($"Total: {response.Count()}");
+        foreach (var item in response)
+        {
+            Console.WriteLine($"{item.Value}: {item.DisplayName}");
+        }
+
+        Assert.IsNotNull(response);
+    }
 }

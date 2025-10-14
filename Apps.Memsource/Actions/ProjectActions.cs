@@ -315,5 +315,4 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
 
         return matchingTermbase.TermBase;
     }
-
 }
