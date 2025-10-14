@@ -134,7 +134,6 @@ public class CustomFieldsActions(InvocationContext invocationContext) : PhraseIn
             request.AddStringBody(body, DataFormat.Json);
             var response = await Client.ExecuteAsync(request);
         }
-
     }
 
     [Action("Set project numeric custom field value", Description = "Sets the number type value of a project custom field")]
@@ -176,52 +175,40 @@ public class CustomFieldsActions(InvocationContext invocationContext) : PhraseIn
     public async Task SetUrlCustomField([ActionParameter] ProjectRequest projectRequest,[ActionParameter] UrlCustomFieldRequest input,
         [ActionParameter, Display("URL value")] string url)
     {
+        if (!Uri.TryCreate(url, UriKind.Absolute, out _))
+            throw new PluginMisconfigurationException("Please provide a valid absolute URL (e.g., https://example.com/path).");
 
-       if (!Uri.TryCreate(url, UriKind.Absolute, out _))
-        throw new PluginMisconfigurationException("Please provide a valid absolute URL (e.g., https://example.com/path).");
+        var endpointList = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/";
+        var requestList = new RestRequest(endpointList, Method.Get);
+        var projectCustomFields = await Client.Paginate<ProjectCustomFieldDto>(requestList);
 
-        var jsonSettings = new JsonSerializerSettings
+        if (projectCustomFields.Any(x => x.customField.uid == input.FieldUId))
         {
-            ContractResolver = new DefaultContractResolver
-            {
-                NamingStrategy = new SnakeCaseNamingStrategy()
-            },
-            NullValueHandling = NullValueHandling.Ignore
-        };
+            var projectCustomField = projectCustomFields.First(x => x.customField.uid == input.FieldUId);
+            var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/{projectCustomField.UId}";
+            var body = new { value = url };
 
-        var listEndpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields";
-        var listRequest = new RestRequest(listEndpoint, Method.Get);
-        var instances = await Client.Paginate<ProjectCustomFieldDto>(listRequest);
+            var request = new RestRequest(endpoint, Method.Put)
+                .WithJsonBody(body, new JsonSerializerSettings
+                {
+                    ContractResolver = new DefaultContractResolver
+                    {
+                        NamingStrategy = new SnakeCaseNamingStrategy()
+                    },
+                    NullValueHandling = NullValueHandling.Ignore
+                });
 
-        var existing = instances.FirstOrDefault(x => x.customField?.uid == input.FieldUId);
-
-        if (existing != null)
-        {
-            var putEndpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/{existing.UId}";
-            var putBody = new { value = url };
-
-            var putRequest = new RestRequest(putEndpoint, Method.Put)
-                .WithJsonBody(putBody, jsonSettings);
-            await Client.ExecuteWithHandling(putRequest);
+            var response = await Client.ExecuteAsync(request);
         }
         else
         {
-            var postEndpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields";
-            var postBody = new
-            {
-                customFieldInstances = new[]
-                {
-                    new
-                    {
-                        customField = new { uid = input.FieldUId },
-                        value = url
-                    }
-                }
-            };
+            var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/";
+            var body = "{\"customFieldInstances\": [{\"customField\":{\"uid\":\"" + input.FieldUId + "\"}, \"value\": \"" + url + "\"}]}";
 
-            var postRequest = new RestRequest(postEndpoint, Method.Post)
-                .WithJsonBody(postBody, jsonSettings);
-            await Client.ExecuteWithHandling(postRequest);
+            var request = new RestRequest(endpoint, Method.Post);
+            request.AddStringBody(body, DataFormat.Json);
+
+            var response = await Client.ExecuteAsync(request);
         }
     }
 
