@@ -173,7 +173,7 @@ public class CustomFieldsActions(InvocationContext invocationContext) : PhraseIn
 
     [Action("Set project URL custom field value", Description = "Sets the URL value of a project custom field")]
     public async Task SetUrlCustomField([ActionParameter] ProjectRequest projectRequest,[ActionParameter] UrlCustomFieldRequest input,
-        [ActionParameter, Display("URL value")] string url)
+        [ActionParameter] string Value)
     {
         var endpointList = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/";
         var requestList = new RestRequest(endpointList, Method.Get);
@@ -183,7 +183,7 @@ public class CustomFieldsActions(InvocationContext invocationContext) : PhraseIn
         {
             var projectCustomField = projectCustomFields.First(x => x.customField.uid == input.FieldUId);
             var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/{projectCustomField.UId}";
-            var body = new { value = url };
+            var body = new { value = Value };
 
             var request = new RestRequest(endpoint, Method.Put)
                 .WithJsonBody(body, new JsonSerializerSettings
@@ -200,7 +200,7 @@ public class CustomFieldsActions(InvocationContext invocationContext) : PhraseIn
         else
         {
             var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/";
-            var body = "{\"customFieldInstances\": [{\"customField\":{\"uid\":\"" + input.FieldUId + "\"}, \"value\": \"" + url + "\"}]}";
+            var body = "{\"customFieldInstances\": [{\"customField\":{\"uid\":\"" + input.FieldUId + "\"}, \"value\": \"" + Value + "\"}]}";
 
             var request = new RestRequest(endpoint, Method.Post);
             request.AddStringBody(body, DataFormat.Json);
