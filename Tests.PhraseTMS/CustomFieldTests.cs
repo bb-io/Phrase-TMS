@@ -27,7 +27,7 @@ namespace Tests.PhraseTMS
             var action = new CustomFieldsActions(InvocationContext);
 
             await action.SetUrlCustomField(new ProjectRequest { ProjectUId = "B1hg3UPb3dQoqaIheND4D5" }, new UrlCustomFieldRequest { FieldUId = "qUTQ7vF7YpoP9Rhewu2lg0" },
-                "https://www.larksuite.com/hc/en-US/articles/test2");
+                "https://www.larksuite.com/hc/en-US/articles/test");
 
             Assert.IsTrue(true);
         }
