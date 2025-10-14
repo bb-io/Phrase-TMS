@@ -316,4 +316,72 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
         return matchingTermbase.TermBase;
     }
 
+    //Testing
+    private static void EnsureSameLength(IEnumerable<string>? a, IEnumerable<string>? b, string aName, string bName)
+    {
+        var aCount = a?.Count() ?? 0;
+        var bCount = b?.Count() ?? 0;
+        if (aCount != bCount)
+            throw new PluginMisconfigurationException(
+                $"'{aName}' and '{bName}' must have the same number of items (got {aCount} vs {bCount}).");
+    }
+
+    private static IEnumerable<object>? BuildCustomFieldsPayload(
+        IEnumerable<string>? urlFieldUids,
+        IEnumerable<string>? urlValues,
+        IEnumerable<string>? singleFieldUids,
+        IEnumerable<string>? singleOptionUids)
+    {
+        var list = new List<object>();
+
+        if (urlFieldUids != null || urlValues != null)
+        {
+            EnsureSameLength(urlFieldUids, urlValues, "URL CF: Field UIDs", "URL CF: Values");
+
+            if (urlFieldUids != null && urlValues != null)
+            {
+                foreach (var pair in urlFieldUids.Zip(urlValues, (uid, val) => new { uid, val }))
+                {
+                    if (string.IsNullOrWhiteSpace(pair.uid))
+                        throw new PluginMisconfigurationException("URL CF: Field UID cannot be empty.");
+                    if (string.IsNullOrWhiteSpace(pair.val))
+                        throw new PluginMisconfigurationException("URL CF: Value cannot be empty.");
+
+                    if (!Uri.TryCreate(pair.val, UriKind.Absolute, out _))
+                        throw new PluginMisconfigurationException($"URL CF: '{pair.val}' is not a valid absolute URL.");
+
+                    list.Add(new
+                    {
+                        customField = new { uid = pair.uid },
+                        value = pair.val
+                    });
+                }
+            }
+        }
+
+        if (singleFieldUids != null || singleOptionUids != null)
+        {
+            EnsureSameLength(singleFieldUids, singleOptionUids,
+                "Single-select CF: Field UIDs", "Single-select CF: Option UIDs");
+
+            if (singleFieldUids != null && singleOptionUids != null)
+            {
+                foreach (var pair in singleFieldUids.Zip(singleOptionUids, (f, o) => new { f, o }))
+                {
+                    if (string.IsNullOrWhiteSpace(pair.f))
+                        throw new PluginMisconfigurationException("Single-select CF: Field UID cannot be empty.");
+                    if (string.IsNullOrWhiteSpace(pair.o))
+                        throw new PluginMisconfigurationException("Single-select CF: Option UID cannot be empty.");
+
+                    list.Add(new
+                    {
+                        customField = new { uid = pair.f },
+                        selectedOptions = new[] { new { uid = pair.o } }
+                    });
+                }
+            }
+        }
+
+        return list.Any() ? list : null;
+    }
 }
