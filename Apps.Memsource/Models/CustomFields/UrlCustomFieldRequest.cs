@@ -6,7 +6,7 @@ namespace Apps.PhraseTMS.Models.CustomFields
 {
     public class UrlCustomFieldRequest
     {
-        [Display("Field UID")]
+        [Display("Field ID")]
         [DataSource(typeof(CustomFieldUrlDataHandler))]
         public string FieldUId { get; set; }
     }

@@ -173,11 +173,13 @@ public class CustomFieldsActions(InvocationContext invocationContext) : PhraseIn
     }
 
     [Action("Set project URL custom field value", Description = "Sets the URL value of a project custom field")]
-    public async Task SetUrlCustomField(
-        [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] UrlCustomFieldRequest input,
+    public async Task SetUrlCustomField([ActionParameter] ProjectRequest projectRequest,[ActionParameter] UrlCustomFieldRequest input,
         [ActionParameter, Display("URL value")] string url)
     {
+        try
+        {
+
+        
         if (!Uri.TryCreate(url, UriKind.Absolute, out _))
             throw new PluginMisconfigurationException("Please provide a valid absolute URL (e.g., https://example.com/path).");
 
@@ -214,6 +216,11 @@ public class CustomFieldsActions(InvocationContext invocationContext) : PhraseIn
             var postRequest = new RestRequest(postEndpoint, Method.Post)
                 .WithJsonBody(postBody);
             await Client.ExecuteWithHandling(postRequest);
+        }
+        }
+        catch (Exception ex)
+        {
+            InvocationContext.Logger?.LogError($"Error: {Newtonsoft.Json.JsonConvert.SerializeObject(ex, Newtonsoft.Json.Formatting.Indented)}", null);
         }
     }
 
