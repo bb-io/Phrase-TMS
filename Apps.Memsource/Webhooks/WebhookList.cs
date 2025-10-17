@@ -1,4 +1,4 @@
-using System.Data;
+using Apps.PhraseTMS.DataSourceHandlers;
 using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Dtos.Analysis;
 using Apps.PhraseTMS.Dtos.Jobs;
@@ -10,12 +10,14 @@ using Apps.PhraseTMS.Webhooks.Handlers.OtherHandlers;
 using Apps.PhraseTMS.Webhooks.Handlers.ProjectHandlers;
 using Apps.PhraseTMS.Webhooks.Models.Requests;
 using Blackbird.Applications.Sdk.Common;
+using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.Sdk.Common.Webhooks;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using Newtonsoft.Json;
 using RestSharp;
+using System.Data;
 
 namespace Apps.PhraseTMS.Webhooks;
 
@@ -612,7 +614,9 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         Description =
             "Triggered when all jobs in a specific workflow step reach any of specified statuses. Returns only jobs in the specified workflow step")]
     public async Task<WebhookResponse<ListAllJobsResponse>> HandleAllJobsReachedStatusAsync(WebhookRequest webhookRequest,
-        [WebhookParameter] WorkflowStepStatusRequest workflowStepStatusRequest)
+        [WebhookParameter] WorkflowStepStatusRequest workflowStepStatusRequest, [WebhookParameter] [Display("Target language")]
+    [DataSource(typeof(LanguageDataHandler))] string? TargetLang)
+    
     {
         var requestBody = webhookRequest.Body.ToString();
         if (string.IsNullOrWhiteSpace(requestBody))
@@ -648,9 +652,21 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             };
         }
 
+        if (!String.IsNullOrEmpty(TargetLang) && primaryJob.TargetLang != TargetLang) 
+        {
+            return new WebhookResponse<ListAllJobsResponse>
+            {
+                ReceivedWebhookRequestType = WebhookRequestType.Preflight
+            };
+        }
+
         var jobsEndpoint = $"/api2/v2/projects/{workflowStepStatusRequest.ProjectUId}/jobs";
         var apiRequest = new RestRequest(jobsEndpoint, Method.Get);
         apiRequest.AddQueryParameter("workflowLevel", primaryJob.workflowLevel);
+        if (!String.IsNullOrEmpty(TargetLang))
+        {
+            apiRequest.AddQueryParameter("targetLang",TargetLang);
+        }
 
         var allJobs = await Client.Paginate<ListJobDto>(apiRequest);
         if (allJobs.All(job => primaryJob.Uid != job.Uid) || allJobs.Count == 0)
