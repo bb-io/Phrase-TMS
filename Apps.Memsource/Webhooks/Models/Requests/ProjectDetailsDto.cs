@@ -25,7 +25,7 @@ namespace Apps.PhraseTMS.Webhooks.Models.Requests
 
     public class UserRef
     {
-        [JsonProperty("id")] public string? Id { get; set; }
+        [JsonProperty("uid")] public string? Uid { get; set; }
         [JsonProperty("userName")] public string? UserName { get; set; }
         [JsonProperty("email")] public string? Email { get; set; }
     }
@@ -37,7 +37,7 @@ namespace Apps.PhraseTMS.Webhooks.Models.Requests
 
     public class ClientRef
     {
-        [JsonProperty("id")] public string? Id { get; set; }
+        [JsonProperty("uid")] public string? Uid { get; set; }
         [JsonProperty("name")] public string? Name { get; set; }
     }
 }

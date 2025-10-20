@@ -757,48 +757,41 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         };
     }
 
+    private static bool Eq(string? a, string b) =>!string.IsNullOrWhiteSpace(a) && a.Equals(b, StringComparison.OrdinalIgnoreCase);
+
     private static bool MatchFilters(ProjectDetailsDto? meta, JobPart part, JobCreatedFilters? f)
     {
         if (f == null) return true;
 
-        if (f.Projects != null && f.Projects.Any())
+        if (f.Projects?.Any() == true)
         {
-            var set = new HashSet<string>(f.Projects, StringComparer.OrdinalIgnoreCase);
+            var set = new HashSet<string>(f.Projects.Where(s => !string.IsNullOrWhiteSpace(s))
+                                                    .Select(s => s.Trim()),
+                                          StringComparer.OrdinalIgnoreCase);
             var projectHit = (meta?.Uid != null && set.Contains(meta.Uid))
-                             || (!string.IsNullOrEmpty(meta?.Name) && set.Contains(meta.Name));
+                          || (!string.IsNullOrEmpty(meta?.Name) && set.Contains(meta.Name));
             if (!projectHit) return false;
         }
 
         if (!string.IsNullOrWhiteSpace(f.ProjectOwner))
         {
-            var owner = meta?.Owner;
             var needle = f.ProjectOwner.Trim();
-            var ownerHit =
-                (!string.IsNullOrEmpty(owner?.Id) && owner!.Id.Equals(needle, StringComparison.OrdinalIgnoreCase)) ||
-                (!string.IsNullOrEmpty(owner?.UserName) && owner!.UserName.Equals(needle, StringComparison.OrdinalIgnoreCase)) ||
-                (!string.IsNullOrEmpty(owner?.Email) && owner!.Email.Equals(needle, StringComparison.OrdinalIgnoreCase));
+            var o = meta?.Owner;
+            var ownerHit = o != null && (Eq(o.Uid, needle) || Eq(o.UserName, needle) || Eq(o.Email, needle));
             if (!ownerHit) return false;
         }
 
-        if (!string.IsNullOrWhiteSpace(f.Domain))
-        {
-            var hit = string.Equals(meta?.Domain?.Name, f.Domain, StringComparison.OrdinalIgnoreCase);
-            if (!hit) return false;
-        }
+        if (!string.IsNullOrWhiteSpace(f.Domain) && !Eq(meta?.Domain?.Name, f.Domain.Trim()))
+            return false;
 
-        if (!string.IsNullOrWhiteSpace(f.SubDomain))
-        {
-            var hit = string.Equals(meta?.SubDomain?.Name, f.SubDomain, StringComparison.OrdinalIgnoreCase);
-            if (!hit) return false;
-        }
+        if (!string.IsNullOrWhiteSpace(f.SubDomain) && !Eq(meta?.SubDomain?.Name, f.SubDomain.Trim()))
+            return false;
 
         if (!string.IsNullOrWhiteSpace(f.Client))
         {
             var needle = f.Client.Trim();
-            var client = meta?.Client;
-            var clientHit =
-                (!string.IsNullOrEmpty(client?.Id) && client!.Id.Equals(needle, StringComparison.OrdinalIgnoreCase)) ||
-                (!string.IsNullOrEmpty(client?.Name) && client!.Name.Equals(needle, StringComparison.OrdinalIgnoreCase));
+            var c = meta?.Client;
+            var clientHit = c != null && (Eq(c.Uid, needle) || Eq(c.Name, needle));
             if (!clientHit) return false;
         }
 
