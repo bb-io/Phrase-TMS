@@ -15,6 +15,7 @@ using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.Sdk.Common.Webhooks;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Newtonsoft.Json;
 using RestSharp;
 using System.Data;
@@ -304,12 +305,38 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
     }
 
     [Webhook("On jobs created", typeof(JobCreationHandler), Description = "Triggered when new jobs are created")]
-    public async Task<WebhookResponse<MultipleJobResponse>> JobCreation(WebhookRequest webhookRequest)
+    public async Task<WebhookResponse<MultipleJobResponse>> JobCreation(WebhookRequest webhookRequest,
+        [WebhookParameter] JobCreatedFilters filters)
     {
         var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
-        return new()
+
+        if (data?.JobParts == null || data.JobParts.Count == 0)
+            return new WebhookResponse<MultipleJobResponse> { ReceivedWebhookRequestType = WebhookRequestType.Preflight};
+
+        var uniqueProjectUids = data.JobParts
+            .Where(p => p?.Project?.Uid != null)
+            .Select(p => p.Project.Uid)
+            .Distinct()
+            .ToList();
+
+        var projectMeta = await LoadProjectsMeta(uniqueProjectUids);
+
+        var shouldTrigger = data.JobParts.Any(p =>
         {
-            Result = await FetchJobs(data),
+            if (p?.Project?.Uid == null) return false;
+            projectMeta.TryGetValue(p.Project.Uid, out var meta);
+            return MatchFilters(meta, p, filters);
+        });
+
+        if (!shouldTrigger)
+            return new WebhookResponse<MultipleJobResponse> { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
+
+        var result = await FetchJobs(data.JobParts);
+
+        return new WebhookResponse<MultipleJobResponse>
+        {
+            ReceivedWebhookRequestType = WebhookRequestType.Default,
+            Result = result
         };
     }
 
@@ -728,6 +755,79 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
                 ? WebhookRequestType.Preflight
                 : WebhookRequestType.Default
         };
+    }
+
+    private static bool Eq(string? a, string b) =>!string.IsNullOrWhiteSpace(a) && a.Equals(b, StringComparison.OrdinalIgnoreCase);
+
+    private static bool MatchFilters(ProjectDetailsDto? meta, JobPart part, JobCreatedFilters? f)
+    {
+        if (f == null) return true;
+
+        if (f.Projects?.Any() == true)
+        {
+            var set = new HashSet<string>(f.Projects.Where(s => !string.IsNullOrWhiteSpace(s))
+                                                    .Select(s => s.Trim()),
+                                          StringComparer.OrdinalIgnoreCase);
+            var projectHit = (meta?.Uid != null && set.Contains(meta.Uid))
+                          || (!string.IsNullOrEmpty(meta?.Name) && set.Contains(meta.Name));
+            if (!projectHit) return false;
+        }
+
+        if (!string.IsNullOrWhiteSpace(f.ProjectOwner))
+        {
+            var needle = f.ProjectOwner.Trim();
+            var o = meta?.Owner;
+            var ownerHit = o != null && (Eq(o.Uid, needle) || Eq(o.UserName, needle) || Eq(o.Email, needle));
+            if (!ownerHit) return false;
+        }
+
+        if (!string.IsNullOrWhiteSpace(f.Domain) && !Eq(meta?.Domain?.Name, f.Domain.Trim()))
+            return false;
+
+        if (!string.IsNullOrWhiteSpace(f.SubDomain) && !Eq(meta?.SubDomain?.Name, f.SubDomain.Trim()))
+            return false;
+
+        if (!string.IsNullOrWhiteSpace(f.Client))
+        {
+            var needle = f.Client.Trim();
+            var c = meta?.Client;
+            var clientHit = c != null && (Eq(c.Uid, needle) || Eq(c.Name, needle));
+            if (!clientHit) return false;
+        }
+
+        return true;
+    }
+
+    private async Task<MultipleJobResponse> FetchJobs(IEnumerable<JobPart> parts)
+    {
+        var jobs = new List<JobDto>();
+
+        foreach (var part in parts)
+        {
+            var request = new RestRequest($"/api2/v1/projects/{part.Project.Uid}/jobs/{part.Uid}", Method.Get);
+            var job = await Client.ExecuteWithHandling<JobDto>(request);
+            jobs.Add(job);
+        }
+
+        return new MultipleJobResponse
+        {
+            Jobs = jobs,
+        };
+    }
+
+    private async Task<Dictionary<string, ProjectDetailsDto>> LoadProjectsMeta(IEnumerable<string> projectUids)
+    {
+        var dict = new Dictionary<string, ProjectDetailsDto>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var uid in projectUids)
+        {
+            var req = new RestRequest($"/api2/v1/projects/{uid}", Method.Get);
+            var meta = await Client.ExecuteWithHandling<ProjectDetailsDto>(req);
+            if (meta?.Uid != null)
+                dict[meta.Uid] = meta;
+        }
+
+        return dict;
     }
 
     #endregion
