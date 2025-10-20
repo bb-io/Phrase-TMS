@@ -251,7 +251,7 @@ public class WebhookTests : TestBase
     public async Task Job_created_works()
     {
         var events = new WebhookList(InvocationContext);
-        var result = await events.JobCreation(CreateWebhookRequest("job_created.json"));
+        var result = await events.JobCreation(CreateWebhookRequest("job_created.json"), new JobCreatedFilters { });
         Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
         Assert.IsTrue(result.Result.Jobs.Any());
     }
@@ -272,7 +272,7 @@ public class WebhookTests : TestBase
                 ProjectUId = projectUid,
                 WorkflowStepId = workflowStepId,
                 JobStatuses = jobStatuses
-            }
+            },""
         );
 
         Assert.IsNotNull(result.Result);

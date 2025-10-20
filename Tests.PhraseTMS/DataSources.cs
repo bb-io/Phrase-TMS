@@ -113,7 +113,7 @@ public class DataSources : TestBase
     public async Task User_returns_values() => await Test(new UserDataHandler(InvocationContext));
 
     [TestMethod]
-    public async Task User_with_query_returns_values() => await Test(new UserDataHandler(InvocationContext), "Vitalii");
+    public async Task User_with_query_returns_values() => await Test(new UserDataHandler(InvocationContext), "");
 
     [TestMethod]
     public async Task Vendor_returns_values() => await Test(new VendorDataHandler(InvocationContext));

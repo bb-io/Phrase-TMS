@@ -311,10 +311,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
 
         if (data?.JobParts == null || data.JobParts.Count == 0)
-            return new()
-            {
-                Result = new MultipleJobResponse { Jobs = Enumerable.Empty<JobDto>() }
-            };
+            return new WebhookResponse<MultipleJobResponse> { ReceivedWebhookRequestType = WebhookRequestType.Preflight};
 
         var uniqueProjectUids = data.JobParts
             .Where(p => p?.Project?.Uid != null)
@@ -324,24 +321,21 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
 
         var projectMeta = await LoadProjectsMeta(uniqueProjectUids);
 
-        var filteredParts = data.JobParts.Where(p =>
+        var shouldTrigger = data.JobParts.Any(p =>
         {
             if (p?.Project?.Uid == null) return false;
-
             projectMeta.TryGetValue(p.Project.Uid, out var meta);
             return MatchFilters(meta, p, filters);
-        }).ToList();
+        });
 
-        if (filteredParts.Count == 0)
-            return new()
-            {
-                Result = new MultipleJobResponse { Jobs = Enumerable.Empty<JobDto>() }
-            };
+        if (!shouldTrigger)
+            return new WebhookResponse<MultipleJobResponse> { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
 
-        var result = await FetchJobs(filteredParts);
+        var result = await FetchJobs(data.JobParts);
 
-        return new()
+        return new WebhookResponse<MultipleJobResponse>
         {
+            ReceivedWebhookRequestType = WebhookRequestType.Default,
             Result = result
         };
     }
