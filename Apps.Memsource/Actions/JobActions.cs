@@ -1,30 +1,31 @@
 ﻿using Apps.PhraseTMS.Constants;
+using Apps.PhraseTMS.DataSourceHandlers;
 using Apps.PhraseTMS.Dtos;
+using Apps.PhraseTMS.Dtos.Async;
+using Apps.PhraseTMS.Dtos.Jobs;
+using Apps.PhraseTMS.Models;
 using Apps.PhraseTMS.Models.Jobs.Requests;
 using Apps.PhraseTMS.Models.Jobs.Responses;
+using Apps.PhraseTMS.Models.Projects.Requests;
 using Apps.PhraseTMS.Models.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Authentication;
-using Blackbird.Applications.Sdk.Utils.Extensions.Http;
-using Blackbird.Applications.Sdk.Utils.Extensions.String;
-using Newtonsoft.Json;
-using RestSharp;
-using System.Net.Mime;
-using Apps.PhraseTMS.Models;
-using Apps.PhraseTMS.Models.Projects.Requests;
-using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
-using Blackbird.Applications.Sdk.Utils.Extensions.Files;
-using Apps.PhraseTMS.DataSourceHandlers;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Common.Invocation;
-using Apps.PhraseTMS.Dtos.Jobs;
-using System.Text.Json;
-using DocumentFormat.OpenXml.Wordprocessing;
+using Blackbird.Applications.Sdk.Utils.Extensions.Files;
+using Blackbird.Applications.Sdk.Utils.Extensions.Http;
+using Blackbird.Applications.Sdk.Utils.Extensions.String;
+using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
+using Blackbird.Filters.Enums;
 using Blackbird.Filters.Transformations;
 using Blackbird.Filters.Xliff.Xliff2;
-using Blackbird.Filters.Enums;
+using DocumentFormat.OpenXml.Wordprocessing;
+using Newtonsoft.Json;
+using RestSharp;
+using System.Net.Mime;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace Apps.PhraseTMS.Actions;
@@ -432,7 +433,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
     }
 
     [Action("Update job", Description = "Update a job's global data")]
-    public async Task EditJob([ActionParameter] ProjectRequest projectRequest,
+    public async Task<JobDto> EditJob([ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] JobRequest input,
         [ActionParameter] EditJobBody body,
         [ActionParameter] [Display("Assignee (vendor ID)")][DataSource(typeof(VendorDataHandler))]
@@ -457,21 +458,25 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
             bodyDictionary.Add("dateDue", body.DateDue);
         }
 
-        if (vendorId != null)
+        if (!String.IsNullOrEmpty(vendorId))
         {
             bodyDictionary.Add("providers", new[] { new { type = "VENDOR", id = vendorId } });
         }
 
-        if (userId != null)
+        if (!String.IsNullOrEmpty(userId))
         {
             bodyDictionary.Add("providers", new[] { new { type = "USER", id = userId } });
         }
 
         var request = new RestRequest($"/api2/v3/jobs", Method.Patch)
             .WithJsonBody(bodyDictionary, JsonConfig.DateSettings);
-
-
-        await Client.ExecuteWithHandling(request);
+        var response = await Client.ExecuteWithHandling<ApiResponse>(request);
+        if (response.Errors != null && response.Errors.Count() > 0)
+        {
+            throw new PluginApplicationException(string.Join("; ", response.Errors.Select(e => $"{e.Message} (Code: {e.Code})")));
+        }
+        var job = await GetJob(projectRequest, input);
+        return job;
     }
 
 
