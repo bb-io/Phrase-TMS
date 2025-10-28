@@ -470,11 +470,10 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
 
         var request = new RestRequest($"/api2/v3/jobs", Method.Patch)
             .WithJsonBody(bodyDictionary, JsonConfig.DateSettings);
-
         var response = await Client.ExecuteWithHandling<ApiResponse>(request);
         if (response.Errors != null && response.Errors.Count() > 0)
         {
-            throw new PluginApplicationException(string.Join(", ", response.Errors));
+            throw new PluginApplicationException(string.Join("; ", response.Errors.Select(e => $"{e.Message} (Code: {e.Code})"))));
         }
         var job = await GetJob(projectRequest, input);
         return job;
