@@ -432,7 +432,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
     }
 
     [Action("Update job", Description = "Update a job's global data")]
-    public async Task EditJob([ActionParameter] ProjectRequest projectRequest,
+    public async Task<JobDto> EditJob([ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] JobRequest input,
         [ActionParameter] EditJobBody body,
         [ActionParameter] [Display("Assignee (vendor ID)")][DataSource(typeof(VendorDataHandler))]
@@ -471,7 +471,8 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
             .WithJsonBody(bodyDictionary, JsonConfig.DateSettings);
 
 
-        await Client.ExecuteWithHandling(request);
+        var response = await Client.ExecuteWithHandling<JobDto>(request);
+        return response;
     }
 
 
