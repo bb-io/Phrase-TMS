@@ -29,9 +29,10 @@ namespace Tests.PhraseTMS
         [TestMethod]
         public async Task Search_jobs_works()
         {
-            var projectRequest = new ProjectRequest { ProjectUId = PROJECT_ID };
+            var projectRequest = new ProjectRequest { ProjectUId = "0SBo723Ge0wHfk0A1k1XWn0" };
             var searchQuery = new ListAllJobsQuery
             {
+                NoteContains = "automated note",
             };
             var jobStatuses = new JobStatusesRequest
             {
@@ -39,7 +40,7 @@ namespace Tests.PhraseTMS
             };
             var workflowStep = new WorkflowStepOptionalRequest
             {
-                WorkflowStepId = "7445",
+                //WorkflowStepId = "7445",
                 
             };
             bool? lqaScore = null;
