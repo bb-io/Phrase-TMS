@@ -454,8 +454,11 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         [WebhookParameter] [Display("Last workflow level?")] bool? lastWorkflowLevel,
         [WebhookParameter] [Display("Project name contains")] string? projectNameContains,
         [WebhookParameter] [Display("Project name doesn't contains")] string? projectNameDoesntContains,
+        [WebhookParameter][Display("Note contains")] string? projectNoteContains,
+        [WebhookParameter][Display("Note doesn't contain")] string? projectNoteDoesntContains,
         [WebhookParameter] MultipleSubdomains subdomains)
     {
+        InvocationContext.Logger?.LogError($"[PhraseTMSJobStatusChanged] Invocation webhook", []);
         if (job?.JobUId != null && projectOptionalRequest?.ProjectUId == null)
         {          
             throw new PluginMisconfigurationException("If Job ID is specified in the inputs you must also specify the Project ID");
@@ -511,6 +514,30 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
                 Result = null,
                 ReceivedWebhookRequestType = WebhookRequestType.Preflight
             };
+        }
+
+        if (!string.IsNullOrWhiteSpace(projectNoteContains) ||
+        !string.IsNullOrWhiteSpace(projectNoteDoesntContains))
+        {
+            var projectIdForNote = data.metadata.project.Uid;
+            var note = (await GetProjectNote(projectIdForNote)) ?? string.Empty;
+
+            var pass = true;
+            if (!string.IsNullOrWhiteSpace(projectNoteContains))
+                pass &= note.IndexOf(projectNoteContains, StringComparison.OrdinalIgnoreCase) >= 0;
+
+            if (!string.IsNullOrWhiteSpace(projectNoteDoesntContains))
+                pass &= note.IndexOf(projectNoteDoesntContains, StringComparison.OrdinalIgnoreCase) < 0;
+
+            if (!pass)
+            {
+                return new()
+                {
+                    HttpResponseMessage = null,
+                    Result = null,
+                    ReceivedWebhookRequestType = WebhookRequestType.Preflight
+                };
+            }
         }
 
         IEnumerable<JobPart> selectedJobs = data.JobParts;
@@ -828,6 +855,23 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         }
 
         return dict;
+    }
+
+    public async Task<string?> GetProjectNote(string projectUid)
+    {
+        var req = new RestRequest($"/api2/v1/projects/{projectUid}", Method.Get);
+        var resp = await Client.ExecuteWithHandling(req);
+        if (string.IsNullOrWhiteSpace(resp.Content)) return null;
+
+        try
+        {
+            var j = Newtonsoft.Json.Linq.JObject.Parse(resp.Content);
+            return j["note"]?.ToString();
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     #endregion

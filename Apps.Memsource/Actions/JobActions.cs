@@ -50,6 +50,22 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         if (LastWfStep.GetValueOrDefault() && string.IsNullOrWhiteSpace(input?.ProjectUId))
             throw new PluginMisconfigurationException("When 'Last workflow step' is enabled, you must provide a valid Project ID.");
 
+        if (!string.IsNullOrWhiteSpace(query?.NoteContains) || !string.IsNullOrWhiteSpace(query?.NoteNotContains))
+        {
+            var projectNote = await GetProjectNote(input.ProjectUId!);
+            var note = projectNote ?? string.Empty;
+
+            bool pass = true;
+            if (!string.IsNullOrWhiteSpace(query!.NoteContains))
+                pass &= note.IndexOf(query.NoteContains, StringComparison.OrdinalIgnoreCase) >= 0;
+
+            if (!string.IsNullOrWhiteSpace(query!.NoteNotContains))
+                pass &= note.IndexOf(query.NoteNotContains, StringComparison.OrdinalIgnoreCase) < 0;
+
+            if (!pass)
+                return new ListAllJobsResponse { Jobs = Array.Empty<ListJobDto>() };
+        }
+
         var endpoint = $"/api2/v2/projects/{input.ProjectUId}/jobs";
         var jobs = new List<ListJobDto>();
         int workflowLevel = 1;
@@ -843,4 +859,20 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         return input.All(c => c <= 127);
     }
 
+    private async Task<string?> GetProjectNote(string projectUid)
+    {
+        var req = new RestRequest($"/api2/v1/projects/{projectUid}", Method.Get);
+        var resp = await Client.ExecuteWithHandling(req);
+        if (string.IsNullOrWhiteSpace(resp.Content)) return null;
+
+        try
+        {
+            var j = Newtonsoft.Json.Linq.JObject.Parse(resp.Content);
+            return j["note"]?.ToString();
+        }
+        catch
+        {
+            return null;
+        }
+    }
 }

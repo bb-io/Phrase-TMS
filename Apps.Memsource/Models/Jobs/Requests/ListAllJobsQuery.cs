@@ -24,4 +24,10 @@ public class ListAllJobsQuery
 
     [Display("Assigned vendor ID"), JsonProperty("assignedVendor")]
     public int? AssignedVendor { get; set; }
+
+    [Display("Project note contains", Description ="Checks the project note")]
+    public string? NoteContains { get; set; }
+
+    [Display("Project note doesn’t contain", Description = "Checks the project note")]
+    public string? NoteNotContains { get; set; }
 }
