@@ -454,8 +454,8 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         [WebhookParameter] [Display("Last workflow level?")] bool? lastWorkflowLevel,
         [WebhookParameter] [Display("Project name contains")] string? projectNameContains,
         [WebhookParameter] [Display("Project name doesn't contains")] string? projectNameDoesntContains,
-        [WebhookParameter][Display("Note contains")] string? projectNoteContains,
-        [WebhookParameter][Display("Note doesn't contain")] string? projectNoteDoesntContains,
+        [WebhookParameter][Display("Project note contains")] string? projectNoteContains,
+        [WebhookParameter][Display("Project note doesn't contain")] string? projectNoteDoesntContains,
         [WebhookParameter] MultipleSubdomains subdomains)
     {
         InvocationContext.Logger?.LogError($"[PhraseTMSJobStatusChanged] Invocation webhook", []);
