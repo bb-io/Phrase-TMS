@@ -12,5 +12,6 @@ public class RoleDataHandler : IStaticDataSourceItemHandler
         new DataSourceItem("LINGUIST", "Linguist"),
         new DataSourceItem("GUEST", "Guest"),
         new DataSourceItem("SUBMITTER", "Submitter"),
+        new DataSourceItem("PORTAL_MEMBER", "Portal member"),
     };
 }
