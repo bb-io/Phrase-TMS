@@ -12,8 +12,10 @@ public class JobStatusDataHandler : IStaticDataSourceItemHandler
         { "ACCEPTED", "Accepted by provider" },
         { "DECLINED", "Declined by provider" },
         { "COMPLETED_BY_LINGUIST", "Completed by provider" },
-        { "COMPLETED", "Delivered" },
+        { "REJECTED", "Rejected by reviewer" },
+        { "COMPLETED", "Completed" },
         { "CANCELLED", "Cancelled" },
+        { "DELIVERED", "Delivered" },
     };
 
     public IEnumerable<DataSourceItem> GetData()
