@@ -3,6 +3,7 @@ using Apps.PhraseTMS.DataSourceHandlers.StaticHandlers;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Dictionaries;
 using Blackbird.Applications.Sdk.Common.Dynamic;
+using Blackbird.Applications.Sdk.Common.Exceptions;
 using Newtonsoft.Json;
 using System.ComponentModel;
 
@@ -24,14 +25,14 @@ public class ListAllProjectsQuery
     [Display("Cost Center ID"), JsonProperty("costCenterId")] public long? CostCenterId { get; set; }
     [Display("Cost center name"), JsonProperty("costCenterName")] public string? CostCenterName { get; set; }
     [Display("Due in hours"), JsonProperty("dueInHours")] public int? DueInHours { get; set; }
-    [Display("Created in last hours"), JsonProperty("createdInLastHours")] public int? CreatedInLastHours { get; set; }
+    [Display("Created in last hours"), JsonProperty("createdInLastHours")] [JsonConverter(typeof(StrictNullableInt32NewtonsoftConverter))] public int? CreatedInLastHours { get; set; }
     [Display("Source languages"), DataSource(typeof(LanguageDataHandler)), JsonProperty("sourceLangs")] public IEnumerable<string>? SourceLangs { get; set; }
     [Display("Owner ID"), JsonProperty("ownedId")] public long? OwnerId { get; set; }
     [Display("Job statuses"), StaticDataSource(typeof(JobStatusDataHandler)), JsonProperty("jobStatuses")] public IEnumerable<string>? JobStatuses { get; set; }
     
     [Display("Job status group"), StaticDataSource(typeof(JobStatusGroupDataHandler)), JsonProperty("jobStatusGroup")]
     public string? JobStatusGroup { get; set; }
-    
+   
     [Display("Buyer ID"), JsonProperty("buyerId")] public long? BuyerId { get; set; }
     [Display("Name or internal ID"), JsonProperty("nameOrInternalId")] public string? NameOrInternalId { get; set; }
     [Display("Include archived"), JsonProperty("includeArchived")] public bool? IncludeArchived { get; set; }
@@ -40,5 +41,35 @@ public class ListAllProjectsQuery
     [Display("Sort"), StaticDataSource(typeof(SortDataHandler)), JsonProperty("sort")] public string? Sort { get; set; }
 
     [Display("Order"), StaticDataSource(typeof(OrderDataHandler)), JsonProperty("order")] public string? Order { get; set; }
+}
 
+
+public sealed class StrictNullableInt32NewtonsoftConverter : JsonConverter<int?>
+{
+    public override int? ReadJson(JsonReader reader, Type objectType, int? existingValue, bool hasExistingValue, JsonSerializer serializer)
+    {
+        switch (reader.TokenType)
+        {
+            case JsonToken.Null:
+                return null;
+
+            case JsonToken.Integer:
+                try { return Convert.ToInt32(reader.Value); }
+                catch
+                {
+                    throw new PluginMisconfigurationException(
+                        "\"Created in last hours\" must be an integer.");
+                }
+
+            default:
+                throw new PluginMisconfigurationException(
+                    "\"Created in last hours\" must be an integer number.");
+        }
+    }
+
+    public override void WriteJson(JsonWriter writer, int? value, JsonSerializer serializer)
+    {
+        if (value.HasValue) writer.WriteValue(value.Value);
+        else writer.WriteNull();
+    }
 }
