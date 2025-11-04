@@ -7,6 +7,7 @@ using Blackbird.Applications.Sdk.Common.Exceptions;
 using Newtonsoft.Json;
 using System.Globalization;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Apps.PhraseTMS.Models.Projects.Requests;
 
@@ -27,8 +28,10 @@ public class ListAllProjectsQuery
     [Display("Cost center name"), JsonProperty("costCenterName")] public string? CostCenterName { get; set; }
     [Display("Due in hours"), JsonProperty("dueInHours")] public int? DueInHours { get; set; }
 
-    [Display("Created in last hours"), JsonProperty("createdInLastHours")]
+    [Display("Created in last hours")]
+    [JsonProperty("createdInLastHours")]
     [System.Text.Json.Serialization.JsonConverter(typeof(StrictNullableInt32Converter))]
+    [JsonPropertyName("createdInLastHours")]
     public int? CreatedInLastHours { get; set; }
     [Display("Source languages"), DataSource(typeof(LanguageDataHandler)), JsonProperty("sourceLangs")] public IEnumerable<string>? SourceLangs { get; set; }
     [Display("Owner ID"), JsonProperty("ownedId")] public long? OwnerId { get; set; }
