@@ -30,8 +30,6 @@ public class ListAllProjectsQuery
 
     [Display("Created in last hours")]
     [JsonProperty("createdInLastHours")]
-    [System.Text.Json.Serialization.JsonConverter(typeof(StrictNullableInt32Converter))]
-    [JsonPropertyName("createdInLastHours")]
     public int? CreatedInLastHours { get; set; }
     [Display("Source languages"), DataSource(typeof(LanguageDataHandler)), JsonProperty("sourceLangs")] public IEnumerable<string>? SourceLangs { get; set; }
     [Display("Owner ID"), JsonProperty("ownedId")] public long? OwnerId { get; set; }
@@ -48,51 +46,5 @@ public class ListAllProjectsQuery
     [Display("Sort"), StaticDataSource(typeof(SortDataHandler)), JsonProperty("sort")] public string? Sort { get; set; }
 
     [Display("Order"), StaticDataSource(typeof(OrderDataHandler)), JsonProperty("order")] public string? Order { get; set; }
-
-
-    public sealed class StrictNullableInt32Converter : System.Text.Json.Serialization.JsonConverter<int?>
-    {
-        public override int? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-            if (reader.TokenType == JsonTokenType.Null)
-            {
-                return null;
-            }
-
-            if (reader.TokenType == JsonTokenType.Number)
-            {
-                if (reader.TryGetInt32(out int intValue))
-                {
-                    return intValue;
-                }
-
-                if (reader.TryGetDouble(out double doubleValue))
-                {
-                    if (doubleValue == Math.Floor(doubleValue))
-                    {
-                        return (int)doubleValue;
-                    }
-                    else
-                    {
-                        throw new PluginMisconfigurationException("\"Created in last hours\" must be a whole number ");
-                    }
-                }
-            }
-
-            throw new PluginMisconfigurationException("\"Created in last hours\" must be a number.");
-        }
-
-        public override void Write(Utf8JsonWriter writer, int? value, JsonSerializerOptions options)
-        {
-            if (value.HasValue)
-            {
-                writer.WriteNumberValue(value.Value);
-            }
-            else
-            {
-                writer.WriteNullValue();
-            }
-        }
-    }
 }
 
