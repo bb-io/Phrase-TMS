@@ -27,8 +27,8 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
     [Action("Search projects", Description = "Search for projects matching the filters of the input parameters")]
     public async Task<ListAllProjectsResponse> ListAllProjects([ActionParameter] ListAllProjectsQuery query)
     {
-        var endpoint = "/api2/v1/projects";
-        var request = new RestRequest(QueryHelper.WithQuery(endpoint, query), Method.Get);
+        var apiQuery = new ListAllProjectsApiQuery(query);
+        var request = new RestRequest(QueryHelper.WithQuery("/api2/v1/projects", apiQuery), Method.Get);
         var response = await Client.Paginate<ProjectDto>(request);
 
         return new()

@@ -30,7 +30,7 @@ public class ListAllProjectsQuery
 
     [Display("Created in last hours")]
     [JsonProperty("createdInLastHours")]
-    public int? CreatedInLastHours { get; set; }
+    public double? CreatedInLastHours { get; set; }
     [Display("Source languages"), DataSource(typeof(LanguageDataHandler)), JsonProperty("sourceLangs")] public IEnumerable<string>? SourceLangs { get; set; }
     [Display("Owner ID"), JsonProperty("ownedId")] public long? OwnerId { get; set; }
     [Display("Job statuses"), StaticDataSource(typeof(JobStatusDataHandler)), JsonProperty("jobStatuses")] public IEnumerable<string>? JobStatuses { get; set; }

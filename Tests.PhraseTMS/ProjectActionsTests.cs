@@ -66,7 +66,7 @@ namespace Tests.PhraseTMS
         public async Task Search_projects_works()
         {
             var actions = new ProjectActions(InvocationContext, FileManager);
-            var result = await actions.ListAllProjects(new ListAllProjectsQuery { CreatedInLastHours = 1});
+            var result = await actions.ListAllProjects(new ListAllProjectsQuery { CreatedInLastHours = 0.5});
 
             Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
             Assert.IsNotNull(result);
