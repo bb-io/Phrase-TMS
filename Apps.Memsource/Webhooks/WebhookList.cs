@@ -1,4 +1,4 @@
-using Apps.PhraseTMS.DataSourceHandlers;
+﻿using Apps.PhraseTMS.DataSourceHandlers;
 using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Dtos.Analysis;
 using Apps.PhraseTMS.Dtos.Jobs;
@@ -673,22 +673,28 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
     
     {
         var requestBody = webhookRequest.Body.ToString();
+        InvocationContext.Logger?.LogInformation($"[PhraseTMS Webhook] Raw body: {Newtonsoft.Json.JsonConvert.SerializeObject(webhookRequest)}", []);
         if (string.IsNullOrWhiteSpace(requestBody))
         {
+            InvocationContext.Logger?.LogError("[PhraseTMS Webhook] Body is null/empty", null);
             throw new InvalidCastException("Webhook request body is null or empty.");
         }
 
         var jobData = JsonConvert.DeserializeObject<JobsWrapper>(requestBody);
         if (jobData is null)
         {
+            InvocationContext.Logger?.LogError("[PhraseTMS Webhook] Failed to deserialize webhook request body", null);
             throw new InvalidCastException("Failed to deserialize webhook request body.");
         }
 
         var primaryJob = jobData.JobParts.FirstOrDefault();
         if (primaryJob == null)
         {
+            InvocationContext.Logger?.LogError("[PhraseTMS Webhook] Failed to retrieve a job from webhook request body", null);
             throw new InvalidCastException("Failed to retrieve a job from webhook request body.");
         }
+
+        InvocationContext.Logger?.LogInformation($"[PhraseTMS Webhook] Primary job: uid={primaryJob.Uid}, status={primaryJob.Status}, target={primaryJob.TargetLang}, workflowLevel={primaryJob.workflowLevel}, project={primaryJob.Project?.Uid}",null);
 
         if (!workflowStepStatusRequest.JobStatuses.Contains(primaryJob.Status))
         {
@@ -736,6 +742,8 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             .Where(job => workflowStepStatusRequest.JobStatuses.Contains(job.Status))
             .ToList();
 
+        InvocationContext.Logger?.LogInformation($"[PhraseTMS Webhook] RelevantJobs.Count={relevantJobs.Count}, JobId;",null);
+
         if (allJobs.Count != relevantJobs.Count)
         {
             return new WebhookResponse<ListAllJobsResponse>
@@ -743,6 +751,8 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
                 ReceivedWebhookRequestType = WebhookRequestType.Preflight
             };
         }
+        var returnedIds = string.Join(", ", relevantJobs.Select(j => $"{j.Uid}:{j.Status}"));
+        InvocationContext.Logger?.LogInformation($"[PhraseTMS Webhook] Returning {relevantJobs.Count} jobs → [{returnedIds}]",[]);
 
         return new WebhookResponse<ListAllJobsResponse>
         {
