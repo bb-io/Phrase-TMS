@@ -14,6 +14,6 @@ public class WorkflowStepStatusRequest : ProjectRequest
     public string WorkflowStepId { get; set; } = string.Empty;
 
     [Display("Job statuses", Description = "Start an event if all jobs are in any of the selected statuses.")]
-    [StaticDataSource(typeof(JobStatusDataHandler))]
+    [StaticDataSource(typeof(JobWebhookStatusDataHandler))]
     public IEnumerable<string> JobStatuses { get; set; } = [];
 }
