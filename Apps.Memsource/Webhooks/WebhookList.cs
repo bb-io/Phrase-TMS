@@ -673,10 +673,10 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
     
     {
         var requestBody = webhookRequest.Body.ToString();
-        InvocationContext.Logger?.LogInformation($"[PhraseTMS Webhook] Raw body: {Newtonsoft.Json.JsonConvert.SerializeObject(webhookRequest)}", []);
+        InvocationContext.Logger?.LogInformation($"[PhraseTMS Webhook] Raw body: {Newtonsoft.Json.JsonConvert.SerializeObject(webhookRequest)}",null);
         if (string.IsNullOrWhiteSpace(requestBody))
         {
-            InvocationContext.Logger?.LogError("[PhraseTMS Webhook] Body is null/empty", null);
+            InvocationContext.Logger?.LogError("[PhraseTMS Webhook] Body is null or empty", null);
             throw new InvalidCastException("Webhook request body is null or empty.");
         }
 
