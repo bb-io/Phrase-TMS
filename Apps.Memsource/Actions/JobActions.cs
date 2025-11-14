@@ -536,6 +536,14 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
     [Action("Upload job target file", Description = "Upload and update target file of a job")]
     public Task UpdateTargetFile([ActionParameter] ProjectRequest projectRequest, [ActionParameter] JobRequest job, [ActionParameter] UpdateTargetFileInput input)
     {
+        var fileName = input.File.Name;
+        var fileNameForHeader = fileName;
+
+        if (!IsOnlyAscii(fileNameForHeader))
+        {
+            fileNameForHeader = Uri.EscapeDataString(fileNameForHeader);
+        }
+
         var jsonPayload = JsonConvert.SerializeObject(new UpdateTargetFileRequest()
             {
                 Jobs = new[]
@@ -555,7 +563,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         var fileBytes = fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
         var request =
             new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/target", Method.Post)
-                .AddHeader("Content-Disposition", $"filename*=UTF-8''{input.File.Name}")
+                .AddHeader("Content-Disposition", $"filename*=UTF-8''{fileNameForHeader}")
                 .AddHeader("Content-Type", "application/octet-stream")
                 .AddHeader("Memsource", jsonPayload)
                 .AddParameter("application/octet-stream", fileBytes, ParameterType.RequestBody);

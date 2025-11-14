@@ -208,5 +208,20 @@ namespace Tests.PhraseTMS
 
             PrintResponse(result);
         }
+
+        [TestMethod]
+        public async Task UpdateTargetFile_IsSuccess()
+        {
+            var projectRequest = new ProjectRequest { ProjectUId = "" };
+            var jobRequest = new JobRequest { JobUId = "" };
+            var update = new UpdateTargetFileInput
+            {
+                File = new FileReference { Name = "" }
+            };
+
+           await _jobActions.UpdateTargetFile(projectRequest, jobRequest, update);
+
+            Assert.IsTrue(true);
+        }
     }
 }
