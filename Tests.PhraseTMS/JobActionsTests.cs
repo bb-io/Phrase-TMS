@@ -208,5 +208,23 @@ namespace Tests.PhraseTMS
 
             PrintResponse(result);
         }
+
+        //UpdateTargetFile
+
+
+        [TestMethod]
+        public async Task UpdateTargetFile_IsSuccess()
+        {
+            var projectRequest = new ProjectRequest { ProjectUId = "0O1ptYwaOHBZP4lVWRWkPd" };
+            var jobRequest = new JobRequest { JobUId = "f0ZliV14BkHCL4i88v3GP9" };
+            var update = new UpdateTargetFileInput
+            {
+                File = new FileReference { Name = "Descripción general del espacio.html" }
+            };
+
+           await _jobActions.UpdateTargetFile(projectRequest, jobRequest, update);
+
+            Assert.IsTrue(true);
+        }
     }
 }
