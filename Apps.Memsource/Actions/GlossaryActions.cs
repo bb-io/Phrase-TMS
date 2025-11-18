@@ -11,6 +11,7 @@ using Blackbird.Applications.Sdk.Glossaries.Utils.Converters;
 using Blackbird.Applications.Sdk.Utils.Extensions.Files;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Apps.PhraseTMS.Models.Glossary.Responses;
+using System.Xml.Linq;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -45,10 +46,21 @@ public class GlossaryActions(InvocationContext invocationContext, IFileManagemen
         var requestGlossaryDetails = new RestRequest(endpointGlossaryDetails, Method.Get);
         var responseGlossaryDetails = await Client.ExecuteWithHandling<GlossaryDto>(requestGlossaryDetails);
 
-        using var streamGlossaryData = new MemoryStream(responseGlossaryData.RawBytes ?? []);
+        var tbx2Bytes = responseGlossaryData.RawBytes ?? [];
 
-        using var resultStream = await CoreTbxVersionsConverter.ConvertFromTbxV2ToV3(streamGlossaryData, responseGlossaryDetails.Name);
-        return new() { File = await fileManagementClient.UploadAsync(resultStream, MediaTypeNames.Application.Xml, $"{responseGlossaryDetails.Name}.tbx") };
+        using var tbx2Stream = new MemoryStream(tbx2Bytes);
+        using var tbx3Stream = await CoreTbxVersionsConverter
+            .ConvertFromTbxV2ToV3(tbx2Stream, responseGlossaryDetails.Name);
+
+        using var finalStream = MergeFromTbx2IntoTbx3(tbx2Bytes, tbx3Stream);
+
+        return new()
+        {
+            File = await fileManagementClient.UploadAsync(
+                finalStream,
+                MediaTypeNames.Application.Xml,
+                $"{responseGlossaryDetails.Name}.tbx")
+        };
     }
 
     [Action("Import glossary", Description = "Import glossary")]
@@ -63,5 +75,120 @@ public class GlossaryActions(InvocationContext invocationContext, IFileManagemen
         requestGlossaryData.AddParameter("application/octet-stream", fileTbxv2Stream.GetByteData().Result, ParameterType.RequestBody);
 
         await Client.ExecuteWithHandling(requestGlossaryData);
+    }
+
+    private static Stream MergeFromTbx2IntoTbx3(byte[] tbx2Bytes, Stream tbx3Stream)
+    {
+        using var tbx2Ms = new MemoryStream(tbx2Bytes);
+        var v2 = XDocument.Load(tbx2Ms);
+
+        tbx3Stream.Position = 0;
+        var v3 = XDocument.Load(tbx3Stream);
+        XNamespace ns = "urn:iso:std:iso:30042:ed-2";
+
+        var termEntries = v2.Descendants("termEntry").ToList();
+        var conceptEntries = v3.Descendants(ns + "conceptEntry").ToList();
+
+        for (int i = 0; i < termEntries.Count && i < conceptEntries.Count; i++)
+        {
+            var termEntry = termEntries[i];
+            var conceptEntry = conceptEntries[i];
+
+            var existingDescrips = conceptEntry.Elements(ns + "descrip").ToList();
+
+            foreach (var descrip in termEntry.Elements("descrip"))
+            {
+                var type = (string?)descrip.Attribute("type");
+                if (string.IsNullOrWhiteSpace(type))
+                    continue;
+
+                bool alreadyExists = existingDescrips
+                    .Any(d => (string?)d.Attribute("type") == type);
+
+                if (alreadyExists)
+                    continue;
+
+                var newDescrip = new XElement(ns + "descrip",
+                    new XAttribute("type", type),
+                    descrip.Value);
+
+                var firstChild = conceptEntry.Elements().FirstOrDefault();
+                if (firstChild == null)
+                    conceptEntry.Add(newDescrip);
+                else
+                    firstChild.AddBeforeSelf(newDescrip);
+            }
+
+            foreach (var langSet in termEntry.Elements("langSet"))
+            {
+                var lang = (string?)langSet.Attribute(XNamespace.Xml + "lang");
+                if (string.IsNullOrWhiteSpace(lang))
+                    continue;
+
+                var langSec = conceptEntry.Elements(ns + "langSec")
+                    .FirstOrDefault(ls => (string?)ls.Attribute(XNamespace.Xml + "lang") == lang);
+
+                if (langSec == null)
+                {
+                    langSec = new XElement(ns + "langSec",
+                        new XAttribute(XNamespace.Xml + "lang", lang));
+                    conceptEntry.Add(langSec);
+                }
+
+                foreach (var tig in langSet.Elements("tig"))
+                {
+                    var termText = tig.Element("term")?.Value;
+                    if (string.IsNullOrWhiteSpace(termText))
+                        continue;
+
+                    var termSec = langSec.Elements(ns + "termSec")
+                        .FirstOrDefault(ts => ts.Element(ns + "term")?.Value == termText);
+
+                    if (termSec == null)
+                    {
+                        termSec = new XElement(ns + "termSec",
+                            new XElement(ns + "term", termText));
+                        langSec.Add(termSec);
+                    }
+
+                    foreach (var note in tig.Elements("note"))
+                    {
+                        bool noteExists = termSec.Elements(ns + "note")
+                            .Any(n => n.Value == note.Value);
+
+                        if (!noteExists)
+                        {
+                            termSec.Add(new XElement(ns + "note", note.Value));
+                        }
+                    }
+
+                    foreach (var tn in tig.Elements("termNote"))
+                    {
+                        var tnType = (string?)tn.Attribute("type");
+                        if (string.IsNullOrWhiteSpace(tnType))
+                            continue;
+
+                        var existingTn = termSec.Elements(ns + "termNote")
+                            .FirstOrDefault(x => (string?)x.Attribute("type") == tnType);
+
+                        if (existingTn == null)
+                        {
+                            termSec.Add(new XElement(ns + "termNote",
+                                new XAttribute("type", tnType),
+                                tn.Value));
+                        }
+                        else if (string.IsNullOrWhiteSpace(existingTn.Value))
+                        {
+                            existingTn.Value = tn.Value;
+                        }
+                    }
+                }
+            }
+        }
+
+        var outStream = new MemoryStream();
+        v3.Save(outStream);
+        outStream.Position = 0;
+        return outStream;
     }
 }
