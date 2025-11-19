@@ -125,5 +125,45 @@ namespace Tests.PhraseTMS
             Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
             Assert.IsNotNull(result);
         }
+
+        [TestMethod]
+        public async Task Search_project_templates_works()
+        {
+            var actions = new ProjectTemplateActions(InvocationContext);
+            var result = await actions.SearchProjectTemplates(new SearchProjectTemplatesQuery { });
+
+            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public async Task CreateProjectTemplate_ValidData_Success()
+        {
+            var actions = new ProjectTemplateActions(InvocationContext);
+            var result = await actions.CreateProjectTemplate(new ProjectRequest { ProjectUId= "0SBo723Ge0wHfk0A1k1XWn0" },
+                new CreateProjectTemplateRequest { Name="Testing template" });
+
+            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+            Assert.IsNotNull(result);
+            Assert.IsFalse(string.IsNullOrEmpty(result.UId));
+        }
+
+        [TestMethod]
+        public async Task TemplateTermBasesProjectTemplate_ValidData_Success()
+        {
+            var actions = new ProjectTemplateActions(InvocationContext);
+            await actions.SetProjectTemplateTermBases(new ProjectTemplateRequest { ProjectTemplateUId = "hrNgeVe66AHkadtUCNjWm0" },
+                new SetTemplateTermBasesRequest { TermBaseId= "EaZpWNsRTmbP9NEDxHlMl1", TargetLang="de", WorkflowStepId= "7445" });
+
+        }
+
+        [TestMethod]
+        public async Task TemplateTranslationMemoryProjectTemplate_ValidData_Success()
+        {
+            var actions = new ProjectTemplateActions(InvocationContext);
+            await actions.SetProjectTemplateTranslationMemory(new ProjectTemplateRequest { ProjectTemplateUId = "hrNgeVe66AHkadtUCNjWm0" },
+                new SetTemplateTranslationMemoryRequest { TransMemoryUid= "thG0gP1eE6D3RQ9wQFYmp7" });
+            Assert.IsTrue(true);
+        }
     }
 }
