@@ -9,5 +9,9 @@ namespace Apps.PhraseTMS.Models.Projects.Requests
         [Display("Translation memory UID")]
         [DataSource(typeof(TmDataHandler))]
         public string TransMemoryUid { get; set; } = default!;
+
+        [Display("Workflow step UID")]
+        [DataSource(typeof(WorkflowStepDataHandler))]
+        public string WorkflowStepUid { get; set; } = default!;
     }
 }

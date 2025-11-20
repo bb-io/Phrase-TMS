@@ -84,16 +84,16 @@ namespace Apps.PhraseTMS.Actions
         public async Task SetProjectTemplateTranslationMemory([ActionParameter] ProjectTemplateRequest templateRequest, [ActionParameter] SetTemplateTranslationMemoryRequest input)
         {
             if (string.IsNullOrWhiteSpace(templateRequest.ProjectTemplateUId))
-            {
                 throw new PluginMisconfigurationException(
                     "Project template UID cannot be empty or null. Please provide a valid template UID.");
-            }
 
             if (string.IsNullOrWhiteSpace(input.TransMemoryUid))
-            {
                 throw new PluginMisconfigurationException(
                     "Translation memory UID cannot be empty. Please fill in the 'Translation memory UID' field.");
-            }
+
+            if (string.IsNullOrWhiteSpace(input.WorkflowStepUid))
+                throw new PluginMisconfigurationException(
+                    "Workflow step UID cannot be empty. Please select a workflow step.");
 
             var getTemplateRequest = new RestRequest(
                 $"/api2/v1/projectTemplates/{templateRequest.ProjectTemplateUId}",
@@ -105,33 +105,85 @@ namespace Apps.PhraseTMS.Actions
                 throw new PluginMisconfigurationException(
                     "Project template has no target languages configured. Please add target languages in Phrase TMS.");
 
-            if (template.WorkflowSteps == null || !template.WorkflowSteps.Any())
-                throw new PluginMisconfigurationException(
-                    "Project template has no workflow steps configured. Please add workflow steps in Phrase TMS.");
+            var getTmsRequest = new RestRequest(
+                $"/api2/v2/projectTemplates/{templateRequest.ProjectTemplateUId}/transMemories",
+                Method.Get);
 
-            var dataPerContext = template.TargetLangs
-                .SelectMany(targetLang => template.WorkflowSteps.Select(step => new
-                {
-                    transMemories = new[]
+            var existingTmsConfig =
+                await Client.ExecuteWithHandling<ProjectTemplateTransMemoriesDto>(getTmsRequest);
+
+            var perTarget = existingTmsConfig?.PttmsPerTargetLang
+                            ?? Enumerable.Empty<ProjectTemplateTmsPerTargetLangDto>();
+
+            var dataPerContext = new List<object>();
+
+            foreach (var targetLang in template.TargetLangs)
+            {
+                var langConfig = perTarget
+                    .FirstOrDefault(x =>
+                        string.Equals(x.TargetLang, targetLang, StringComparison.OrdinalIgnoreCase));
+
+                var wfConfig = langConfig?.PttmsPerWfStep?
+                    .FirstOrDefault(w => w.WfStep?.Uid == input.WorkflowStepUid);
+
+                var existingTms = wfConfig?.PttmData
+                                 ?? Enumerable.Empty<ProjectTemplateTmDataDto>();
+
+                var alreadyPresent = existingTms.Any(tm =>
+                    string.Equals(tm.TransMemory?.Uid, input.TransMemoryUid, StringComparison.OrdinalIgnoreCase));
+
+                var mergedTms = existingTms
+                    .Where(tm => tm.TransMemory?.Uid != null)
+                    .Select(tm => new
                     {
-                new
+                        transMemory = new { uid = tm.TransMemory!.Uid },
+                        readMode = tm.ReadMode,
+                        writeMode = tm.WriteMode,
+                        penalty = tm.Penalty,
+                        applyPenaltyTo101Only = tm.ApplyPenaltyTo101Only,
+                        order = tm.Order
+                    })
+                    .ToList();
+
+                if (!alreadyPresent)
                 {
-                    transMemory = new { uid = input.TransMemoryUid },
-                    readMode = true,
-                    writeMode = true,
+                    var nextOrder = existingTms
+                        .Where(tm => tm.Order.HasValue)
+                        .Select(tm => tm.Order!.Value)
+                        .DefaultIfEmpty(0)
+                        .Max() + 1;
+
+                    mergedTms.Add(new
+                    {
+                        transMemory = new { uid = input.TransMemoryUid },
+                        readMode = true,
+                        writeMode = true,
+                        penalty = (int?)null,
+                        applyPenaltyTo101Only = (bool?)null,
+                        order = (int?)nextOrder
+                    });
                 }
-                    },
+
+                if (!mergedTms.Any())
+                    continue;
+
+                dataPerContext.Add(new
+                {
+                    transMemories = mergedTms,
                     targetLang = targetLang,
-                    workflowStep = new { uid = step.Uid },
-                    orderEnabled = false
-                }))
-                .ToArray();
+                    workflowStep = new { uid = input.WorkflowStepUid },
+                    orderEnabled = true
+                });
+            }
+
+            if (!dataPerContext.Any())
+                return;
 
             var endpoint = $"/api2/v2/projectTemplates/{templateRequest.ProjectTemplateUId}/transMemories";
 
             var body = new
             {
-                dataPerContext
+                dataPerContext = dataPerContext
             };
 
             var request = new RestRequest(endpoint, Method.Put)

@@ -12,10 +12,10 @@ namespace Apps.PhraseTMS.Models.Projects.Requests
 
         [Display("Target language")]
         [DataSource(typeof(LanguageDataHandler))]
-        public string TargetLang { get; set; } = default!;
+        public string? TargetLang { get; set; } = default!;
 
         [Display("Workflow step ID")]
         [DataSource(typeof(WorkflowStepDataHandler))]
-        public string WorkflowStepId { get; set; } = default!;
+        public string? WorkflowStepId { get; set; } = default!;
     }
 }

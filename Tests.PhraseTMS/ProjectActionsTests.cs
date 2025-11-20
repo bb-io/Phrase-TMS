@@ -161,8 +161,8 @@ namespace Tests.PhraseTMS
         public async Task TemplateTranslationMemoryProjectTemplate_ValidData_Success()
         {
             var actions = new ProjectTemplateActions(InvocationContext);
-            await actions.SetProjectTemplateTranslationMemory(new ProjectTemplateRequest { ProjectTemplateUId = "hrNgeVe66AHkadtUCNjWm0" },
-                new SetTemplateTranslationMemoryRequest { TransMemoryUid= "thG0gP1eE6D3RQ9wQFYmp7" });
+            await actions.SetProjectTemplateTranslationMemory(new ProjectTemplateRequest { ProjectTemplateUId = "1jVKgL8P0mEmHQWbJKCocb" },
+                new SetTemplateTranslationMemoryRequest { TransMemoryUid= "thG0gP1eE6D3RQ9wQFYmp7", WorkflowStepUid= "7446" });
             Assert.IsTrue(true);
         }
     }
