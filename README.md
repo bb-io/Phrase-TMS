@@ -69,6 +69,13 @@ Custom fields are associated with a specific type, e.g. date, number, text, etc.
 
 > If a Custom field is not present in a project, it will be added as part of the `Set` action.
 
+### Project template
+
+- **Search project templates** searches through all project templates
+- **Create project template** creates a new project template
+- **Set project template translation memory** sets a translation memory to a project template
+- **Set project template term bases** sets term bases to a project template
+
 ### Glossary
 
 - **Create glossary** creates a new glossary in your Phrase instance that you can then fill manually or through the _Import glossary_ action.
