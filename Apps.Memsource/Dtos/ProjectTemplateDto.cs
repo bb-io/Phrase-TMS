@@ -19,6 +19,8 @@ public class ProjectTemplateWorkflowStepDto
     [Display("Workflow step UID")]
     public string? Uid { get; set; }
 
+    public string? Id { get; set; }
+
     [Display("Workflow step name")]
     public string? Name { get; set; }
 }

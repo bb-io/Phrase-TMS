@@ -91,10 +91,6 @@ namespace Apps.PhraseTMS.Actions
                 throw new PluginMisconfigurationException(
                     "Translation memory UID cannot be empty. Please fill in the 'Translation memory UID' field.");
 
-            if (string.IsNullOrWhiteSpace(input.WorkflowStepUid))
-                throw new PluginMisconfigurationException(
-                    "Workflow step UID cannot be empty. Please select a workflow step.");
-
             var getTemplateRequest = new RestRequest(
                 $"/api2/v1/projectTemplates/{templateRequest.ProjectTemplateUId}",
                 Method.Get);
@@ -105,6 +101,27 @@ namespace Apps.PhraseTMS.Actions
                 throw new PluginMisconfigurationException(
                     "Project template has no target languages configured. Please add target languages in Phrase TMS.");
 
+            if (template.WorkflowSteps == null || !template.WorkflowSteps.Any())
+                throw new PluginMisconfigurationException(
+                    "Project template has no workflow steps configured. Please add workflow steps in Phrase TMS.");
+
+            IEnumerable<ProjectTemplateWorkflowStepDto> stepsToProcess;
+            if (!string.IsNullOrWhiteSpace(input.WorkflowStepUid))
+            {
+                stepsToProcess = template.WorkflowSteps
+                    .Where(ws => StepMatches(ws, input.WorkflowStepUid!))
+                    .ToList();
+
+                if (!stepsToProcess.Any())
+                {
+                    throw new PluginMisconfigurationException(
+                        $"Workflow step '{input.WorkflowStepUid}' does not exist in the project template.");
+                }
+            }
+            else
+            {
+                stepsToProcess = template.WorkflowSteps;
+            }
             var getTmsRequest = new RestRequest(
                 $"/api2/v2/projectTemplates/{templateRequest.ProjectTemplateUId}/transMemories",
                 Method.Get);
@@ -123,57 +140,69 @@ namespace Apps.PhraseTMS.Actions
                     .FirstOrDefault(x =>
                         string.Equals(x.TargetLang, targetLang, StringComparison.OrdinalIgnoreCase));
 
-                var wfConfig = langConfig?.PttmsPerWfStep?
-                    .FirstOrDefault(w => w.WfStep?.Uid == input.WorkflowStepUid);
+                var wfConfigs = langConfig?.PttmsPerWfStep
+                                ?? Enumerable.Empty<ProjectTemplateTmsPerWfStepDto>();
 
-                var existingTms = wfConfig?.PttmData
-                                 ?? Enumerable.Empty<ProjectTemplateTmDataDto>();
-
-                var alreadyPresent = existingTms.Any(tm =>
-                    string.Equals(tm.TransMemory?.Uid, input.TransMemoryUid, StringComparison.OrdinalIgnoreCase));
-
-                var mergedTms = existingTms
-                    .Where(tm => tm.TransMemory?.Uid != null)
-                    .Select(tm => new
-                    {
-                        transMemory = new { uid = tm.TransMemory!.Uid },
-                        readMode = tm.ReadMode,
-                        writeMode = tm.WriteMode,
-                        penalty = tm.Penalty,
-                        applyPenaltyTo101Only = tm.ApplyPenaltyTo101Only,
-                        order = tm.Order
-                    })
-                    .ToList();
-
-                if (!alreadyPresent)
+                foreach (var step in stepsToProcess)
                 {
-                    var nextOrder = existingTms
-                        .Where(tm => tm.Order.HasValue)
-                        .Select(tm => tm.Order!.Value)
-                        .DefaultIfEmpty(0)
-                        .Max() + 1;
+                    var wfConfig = wfConfigs
+                        .FirstOrDefault(w =>
+                            string.Equals(w.WfStep?.Uid, step.Uid, StringComparison.OrdinalIgnoreCase) ||
+                            string.Equals(w.WfStep?.Id, step.Id, StringComparison.OrdinalIgnoreCase));
 
-                    mergedTms.Add(new
+                    var existingTms = wfConfig?.PttmData
+                                      ?? Enumerable.Empty<ProjectTemplateTmDataDto>();
+
+                    var alreadyPresent = existingTms.Any(tm =>
+                        string.Equals(tm.TransMemory?.Uid, input.TransMemoryUid, StringComparison.OrdinalIgnoreCase));
+
+                    var mergedTms = existingTms
+                        .Where(tm => tm.TransMemory?.Uid != null)
+                        .Select(tm => new
+                        {
+                            transMemory = new { uid = tm.TransMemory!.Uid },
+                            readMode = tm.ReadMode,
+                            writeMode = tm.WriteMode,
+                            penalty = tm.Penalty,
+                            applyPenaltyTo101Only = tm.ApplyPenaltyTo101Only,
+                            order = tm.Order
+                        })
+                        .ToList();
+
+                    if (!alreadyPresent)
                     {
-                        transMemory = new { uid = input.TransMemoryUid },
-                        readMode = true,
-                        writeMode = true,
-                        penalty = (int?)null,
-                        applyPenaltyTo101Only = (bool?)null,
-                        order = (int?)nextOrder
+                        var nextOrder = existingTms
+                            .Where(tm => tm.Order.HasValue)
+                            .Select(tm => tm.Order!.Value)
+                            .DefaultIfEmpty(0)
+                            .Max() + 1;
+
+                        mergedTms.Add(new
+                        {
+                            transMemory = new { uid = input.TransMemoryUid },
+                            readMode = true,
+                            writeMode = true,
+                            penalty = (int?)null,
+                            applyPenaltyTo101Only = (bool?)null,
+                            order = (int?)nextOrder
+                        });
+                    }
+
+                    if (!mergedTms.Any())
+                        continue;
+
+                    dataPerContext.Add(new
+                    {
+                        transMemories = mergedTms,
+                        targetLang = targetLang,
+                        workflowStep = new
+                        {
+                            uid = step.Uid,
+                            id = step.Id
+                        },
+                        orderEnabled = true
                     });
                 }
-
-                if (!mergedTms.Any())
-                    continue;
-
-                dataPerContext.Add(new
-                {
-                    transMemories = mergedTms,
-                    targetLang = targetLang,
-                    workflowStep = new { uid = input.WorkflowStepUid },
-                    orderEnabled = true
-                });
             }
 
             if (!dataPerContext.Any())
@@ -183,16 +212,20 @@ namespace Apps.PhraseTMS.Actions
 
             var body = new
             {
-                dataPerContext = dataPerContext
+                dataPerContext
             };
 
             var request = new RestRequest(endpoint, Method.Put)
                 .WithJsonBody(body, JsonConfig.DateSettings);
 
             await Client.ExecuteWithHandling(request);
+
+            static bool StepMatches(ProjectTemplateWorkflowStepDto step, string value) =>
+                string.Equals(step.Uid, value, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(step.Id, value, StringComparison.OrdinalIgnoreCase);
         }
 
-        [Action("Set project template term bases",Description = "Assign a term base to a project template for a specific target language and workflow step")]
+        [Action("Set project template term bases", Description = "Assign a term base to a project template for a specific target language and workflow step")]
         public async Task SetProjectTemplateTermBases([ActionParameter] ProjectTemplateRequest templateRequest, [ActionParameter] SetTemplateTermBasesRequest input)
         {
             if (string.IsNullOrWhiteSpace(templateRequest.ProjectTemplateUId))
@@ -207,40 +240,36 @@ namespace Apps.PhraseTMS.Actions
                     "Term base ID cannot be empty. Please fill in the 'Term base ID' field.");
             }
 
-            if (string.IsNullOrWhiteSpace(input.TargetLang))
-            {
-                throw new PluginMisconfigurationException(
-                    "Target language cannot be empty. Please fill in the 'Target language' field.");
-            }
-
-            if (string.IsNullOrWhiteSpace(input.WorkflowStepId))
-            {
-                throw new PluginMisconfigurationException(
-                    "Workflow step ID cannot be empty. Please fill in the 'Workflow step ID' field.");
-            }
-
             var endpoint = $"/api2/v1/projectTemplates/{templateRequest.ProjectTemplateUId}/termBases";
 
-            var body = new
+            var body = new Dictionary<string, object>
             {
-                readTermBases = new[]
+                ["readTermBases"] = new[]
                 {
                 new { id = input.TermBaseId }
             },
-                writeTermBase = new
+                ["writeTermBase"] = new
                 {
                     id = input.TermBaseId
                 },
-                qualityAssuranceTermBases = new[]
-                {
+                ["qualityAssuranceTermBases"] = new[]
+                    {
                 new { id = input.TermBaseId }
-            },
-                targetLang = input.TargetLang,
-                workflowStep = new
+            }
+            };
+
+            if (!string.IsNullOrWhiteSpace(input.TargetLang))
+            {
+                body["targetLang"] = input.TargetLang;
+            }
+
+            if (!string.IsNullOrWhiteSpace(input.WorkflowStepId))
+            {
+                body["workflowStep"] = new
                 {
                     id = input.WorkflowStepId
-                }
-            };
+                };
+            }
 
             var request = new RestRequest(endpoint, Method.Put)
                 .WithJsonBody(body, JsonConfig.DateSettings);

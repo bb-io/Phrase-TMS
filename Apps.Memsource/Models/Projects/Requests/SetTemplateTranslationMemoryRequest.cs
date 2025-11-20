@@ -12,6 +12,6 @@ namespace Apps.PhraseTMS.Models.Projects.Requests
 
         [Display("Workflow step UID")]
         [DataSource(typeof(WorkflowStepDataHandler))]
-        public string WorkflowStepUid { get; set; } = default!;
+        public string? WorkflowStepUid { get; set; } = default!;
     }
 }

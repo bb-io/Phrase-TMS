@@ -153,7 +153,7 @@ namespace Tests.PhraseTMS
         {
             var actions = new ProjectTemplateActions(InvocationContext);
             await actions.SetProjectTemplateTermBases(new ProjectTemplateRequest { ProjectTemplateUId = "hrNgeVe66AHkadtUCNjWm0" },
-                new SetTemplateTermBasesRequest { TermBaseId= "EaZpWNsRTmbP9NEDxHlMl1", TargetLang="de", WorkflowStepId= "7445" });
+                new SetTemplateTermBasesRequest { TermBaseId= "EaZpWNsRTmbP9NEDxHlMl1", WorkflowStepId= "7445" });
 
         }
 
@@ -161,8 +161,8 @@ namespace Tests.PhraseTMS
         public async Task TemplateTranslationMemoryProjectTemplate_ValidData_Success()
         {
             var actions = new ProjectTemplateActions(InvocationContext);
-            await actions.SetProjectTemplateTranslationMemory(new ProjectTemplateRequest { ProjectTemplateUId = "1jVKgL8P0mEmHQWbJKCocb" },
-                new SetTemplateTranslationMemoryRequest { TransMemoryUid= "thG0gP1eE6D3RQ9wQFYmp7", WorkflowStepUid= "7446" });
+            await actions.SetProjectTemplateTranslationMemory(new ProjectTemplateRequest { ProjectTemplateUId = "hrNgeVe66AHkadtUCNjWm0" },
+                new SetTemplateTranslationMemoryRequest { TransMemoryUid= "w1pV1izYniDtTQjV4iPD1s", WorkflowStepUid = "7446" });
             Assert.IsTrue(true);
         }
     }

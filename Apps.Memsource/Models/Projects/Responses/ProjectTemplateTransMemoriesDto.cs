@@ -20,6 +20,7 @@
     public class ProjectTemplateWorkflowStepRefDto
     {
         public string? Uid { get; set; }
+        public string? Id { get; set; }
     }
     public class ProjectTemplateTmDataDto
     {
