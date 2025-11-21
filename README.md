@@ -69,13 +69,6 @@ Custom fields are associated with a specific type, e.g. date, number, text, etc.
 
 > If a Custom field is not present in a project, it will be added as part of the `Set` action.
 
-### Project template
-
-- **Search project templates** searches through all project templates
-- **Create project template** creates a new project template
-- **Set project template translation memory** sets a translation memory to a project template
-- **Set project template term bases** sets term bases to a project template
-
 ### Glossary
 
 - **Create glossary** creates a new glossary in your Phrase instance that you can then fill manually or through the _Import glossary_ action.
@@ -123,6 +116,13 @@ The following actions update a job's file (source or target) from their original
 - **Download project target files** download all the translated files (in the jobs) of a project
 - **Assign providers from template** assigns providers to the project or specific jobs who were predefined on a certain template
 - **Find project termbase** get the termbase linked to a project based on optional filters
+
+### Project templates
+
+- **Search project templates** searches through all project templates
+- **Create project template** creates a new project template
+- **Set project template translation memory** sets a translation memory to a project template
+- **Set project template term bases** sets term bases to a project template
 
 ### Project reference file
 

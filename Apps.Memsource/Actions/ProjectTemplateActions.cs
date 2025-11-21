@@ -12,7 +12,7 @@ using RestSharp;
 
 namespace Apps.PhraseTMS.Actions
 {
-    [ActionList("Project template")]
+    [ActionList("Project templates")]
     public class ProjectTemplateActions(InvocationContext invocationContext) : PhraseInvocable(invocationContext)
     {
         [Action("Search project templates", Description = "Search for project templates matching the filters of the input parameters")]
