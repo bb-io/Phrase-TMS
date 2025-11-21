@@ -889,12 +889,19 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
     #region OtherWebhooks
 
     [Webhook("On analysis created", typeof(AnalysisCreationHandler), Description = "Trigered when a new analysis has been created")]
-    public async Task<WebhookResponse<AnalysisDto>> AnalysisCreation(WebhookRequest webhookRequest)
+    public async Task<WebhookResponse<AnalysisDto>> AnalysisCreation(WebhookRequest webhookRequest,
+        [WebhookParameter] ProjectOptionalRequest projectFilter)
     {
         var data = JsonConvert.DeserializeObject<AnalyseWrapper>(webhookRequest.Body.ToString());
         if (data is null)
         {
             throw new InvalidCastException(nameof(webhookRequest.Body));
+        }
+
+        if (projectFilter != null && !String.IsNullOrEmpty(projectFilter.ProjectUId)
+            && data.Analyse.Project.ProjectId != projectFilter.ProjectUId)
+        {
+            return new WebhookResponse<AnalysisDto> { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
         }
 
         return new()
