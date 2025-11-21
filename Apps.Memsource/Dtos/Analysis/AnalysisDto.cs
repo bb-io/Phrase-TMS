@@ -1,6 +1,5 @@
 ﻿using Blackbird.Applications.Sdk.Common;
 using Newtonsoft.Json;
-using System.Text.Json.Serialization;
 
 namespace Apps.PhraseTMS.Dtos.Analysis;
 
@@ -17,7 +16,7 @@ public class AnalysisDto
 
 public class SimpleProjectDto
 {
-    [JsonPropertyName("uid")]
+    [JsonProperty("uid")]
     [Display("Project ID")]
     public string ProjectId { get; set; }
 
