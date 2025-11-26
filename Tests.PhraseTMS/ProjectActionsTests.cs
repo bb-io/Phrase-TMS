@@ -137,6 +137,16 @@ namespace Tests.PhraseTMS
         }
 
         [TestMethod]
+        public async Task Search_termBase_templates_works()
+        {
+            var actions = new ProjectActions(InvocationContext, FileManager);
+            var result = await actions.SearchTermBases(new() { });
+
+            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
         public async Task CreateProjectTemplate_ValidData_Success()
         {
             var actions = new ProjectTemplateActions(InvocationContext);
