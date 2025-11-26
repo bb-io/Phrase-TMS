@@ -110,6 +110,38 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
         return Client.ExecuteWithHandling<ProjectDto>(request);
     }
 
+    [Action("Search term bases", Description = "Search term bases matching the provided filters")]
+    public async Task<SearchTermBasesResponse> SearchTermBases([ActionParameter] SearchTermBasesQuery query)
+    {
+        var langs = query.Languages?
+        .Where(x => !string.IsNullOrWhiteSpace(x))
+        .ToArray();
+
+        if (langs is { Length: 0 })
+            langs = null;
+
+        var apiQuery = new
+        {
+            name = query.Name,
+            lang = langs,
+            clientId = query.ClientId,
+            domainId = query.DomainId,
+            subDomainId = query.SubDomainId,
+            businessUnitId = query.BusinessUnitId
+        };
+
+        var endpoint = QueryHelper.WithQuery("/api2/v1/termBases", apiQuery);
+        var request = new RestRequest(endpoint, Method.Get);
+
+        var termbases = await Client.Paginate<TermbaseDto>(request)
+                        ?? new List<TermbaseDto>();
+
+        return new SearchTermBasesResponse
+        {
+            TermBases = termbases
+        };
+    }
+
     [Action("Add project target language", Description = "Add a target language to the project")]
     public Task AddTargetLanguage([ActionParameter] ProjectRequest projectRequest, [ActionParameter] AddTargetLanguageRequest input)
     {
