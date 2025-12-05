@@ -2,6 +2,7 @@
 using Apps.PhraseTMS.Models.Jobs.Requests;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.Sdk.Common.Files;
+using Blackbird.Filters.Transformations;
 using PhraseTMSTests.Base;
 
 namespace Tests.PhraseTMS
@@ -161,17 +162,23 @@ namespace Tests.PhraseTMS
             PrintResponse(result);
         }
 
-        //[TestMethod]
-        //public async Task GetJobAnalysis_ValidIds_ShouldNotFailAndReturnNotEmptyResponse()
-        //{
-        //    var projectRequest = new ProjectRequest { ProjectUId = PROJECT_ID };
-        //    var jobRequest = new JobRequest { JobUId = JOB_ID };
-        //    var analysisRequest = new GetAnalysisRequest { AnalysisUId = "1376196960" };
-        //    var result = await _jobActions.GetJobAnalysis(jobRequest, analysisRequest);
-        //    PrintResponse(result.TotalInternalFuzzy);
-        //}
+        [TestMethod]
+        public async Task Download_job_target_file_with_blacklake_metadata_works()
+        {
+            var projectRequest = new ProjectRequest { ProjectUId = "ltRSUSNtQ3qt7JuW8x14b6" };
+            var jobRequest = new JobRequest { JobUId = "9aPeFiTrFyVZdddz0Q5Ys1" };
 
+            var result = await _jobActions.DownloadTargetFile(projectRequest, jobRequest);
+            Assert.IsTrue(result.File.Name.EndsWith(".xlf"));
+            var contentString = FileManager.ReadOutputAsString(result.File);
 
+            var transformation = Transformation.Parse(contentString, result.File.Name);
+
+            Assert.IsTrue(transformation.GetUnits().Any(x => x.Provenance.Translation.Tool == "Phrase TMS"));
+            Assert.IsTrue(transformation.GetUnits().Any(x => x.Provenance.Translation.Person == "Mathijs Sonnemans"));
+
+            PrintResponse(result);
+        }
 
         [TestMethod]
         public async Task ExportJobsToOnlineRepository_Success()
