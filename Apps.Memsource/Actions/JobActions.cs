@@ -16,15 +16,19 @@ using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.Sdk.Utils.Extensions.Files;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
+using Blackbird.Applications.Sdk.Utils.Extensions.Sdk;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
+using Blackbird.Filters.Constants;
 using Blackbird.Filters.Enums;
+using Blackbird.Filters.Extensions;
 using Blackbird.Filters.Transformations;
 using Blackbird.Filters.Xliff.Xliff2;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Newtonsoft.Json;
 using RestSharp;
 using System.Net.Mime;
+using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
@@ -506,15 +510,56 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         var responseDownload = await Client.ExecuteWithHandling(requestDownload);
 
         var fileData = responseDownload.RawBytes;
-        var filenameHeader = responseDownload.ContentHeaders.First(h => h.Name == "Content-Disposition");
-        var filename = Uri.UnescapeDataString(filenameHeader.Value.ToString().Split(';')[1].Split("\'\'")[1]);
-        string mimeType = "";
-        if (MimeTypes.TryGetMimeType(filename, out mimeType))
-            mimeType = MediaTypeNames.Application.Octet;
+        var filenameHeader = responseDownload?.ContentHeaders?.FirstOrDefault(h => h.Name == "Content-Disposition");
+        var filename = Uri.UnescapeDataString(filenameHeader?.Value?.ToString()?.Split(';')[1].Split("\'\'")[1] ?? "");
 
-        using var stream = new MemoryStream(fileData);
-        var file = await fileManagementClient.UploadAsync(stream, mimeType, filename);
-        return new() { File = file };
+        var fileString = Encoding.UTF8.GetString(fileData ?? []);
+        if (!Xliff2Serializer.IsXliff2(fileString))
+        {
+            if (!MimeTypes.TryGetMimeType(filename, out var mimeType))
+                mimeType = MediaTypeNames.Application.Octet;
+
+            using var stream = new MemoryStream(fileData ?? []);
+            var file = await fileManagementClient.UploadAsync(stream, mimeType, filename);
+            return new() { File = file };
+        }
+
+        var transformation = Transformation.Parse(fileString, filename);
+        var (mxliffFileData, mxFileName, _) = await GetBilingualFile(projectRequest, input, new BilingualRequest { });
+        var mxFileString = Encoding.UTF8.GetString(mxliffFileData ?? []);
+
+        var mxTransformation = Transformation.Parse(mxFileString, mxFileName ?? filename + ".mxliff");
+
+        foreach(var unit in transformation.GetUnits())
+        {
+            var mXliffUnit = MXLIFFHelper.FindMatchingMXLIFFUnit(unit, mxTransformation);
+            if (mXliffUnit is null) continue;
+            if (MXLIFFHelper.IsModified(mXliffUnit))
+            {
+                unit.Provenance.Translation.Tool = "Phrase TMS";
+                unit.Provenance.Translation.ToolReference = $"{Creds.Get("url").Value.Trim('/')}/web/job/{input.JobUId}/translate";
+
+                var modifiedPerson = MXLIFFHelper.GetModifiedUser(mXliffUnit, mxTransformation);
+                if (modifiedPerson is not null)
+                {
+                    unit.Provenance.Translation.Person = modifiedPerson.FullName;
+                    unit.Provenance.Translation.PersonReference = modifiedPerson.Url;
+                }
+
+                if (MXLIFFHelper.IsConfirmed(mXliffUnit))
+                {
+                    foreach(var segment in unit.Segments)
+                    {
+                        segment.State = SegmentState.Translated;
+                    }
+                }
+            }
+        }
+
+        return new ()
+        {
+            File = await fileManagementClient.UploadAsync(transformation.Serialize().ToStream(), MediaTypes.Xliff, transformation.XliffFileName)
+        };
     }
 
     [Action("Download job original file", Description = "Download original file of a job")]
@@ -577,6 +622,18 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         [ActionParameter] JobRequest input,
         [ActionParameter] BilingualRequest bilingualRequest)
     {
+        var (fileData, fileName, contentType) = await GetBilingualFile(projectRequest, input, bilingualRequest);
+
+        using var stream = new MemoryStream(fileData);
+        var file = await fileManagementClient.UploadAsync(stream, contentType, fileName);
+        return new() { File = file };
+    }
+
+    private async Task<(byte[]? fileData, string? fileName, string? contentType)> GetBilingualFile(
+        ProjectRequest projectRequest, 
+        JobRequest jobRequest, 
+        BilingualRequest bilingualRequest)
+    {
         var requestFile = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/bilingualFile", Method.Post);
         if (!String.IsNullOrEmpty(bilingualRequest.Format))
         {
@@ -594,7 +651,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
             {
                 new
                 {
-                    uid = input.JobUId
+                    uid = jobRequest.JobUId
                 }
             },
         });
@@ -605,11 +662,9 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
 
         var fileData = responseDownload.RawBytes;
         var filenameHeader = responseDownload.ContentHeaders.First(h => h.Name == "Content-Disposition");
-        var filename = Uri.UnescapeDataString(filenameHeader.Value.ToString().Split(';')[1].Split("\'\'")[1]);
+        var fileName = Uri.UnescapeDataString(filenameHeader.Value.ToString().Split(';')[1].Split("\'\'")[1]);
 
-        using var stream = new MemoryStream(fileData);
-        var file = await fileManagementClient.UploadAsync(stream, responseDownload.ContentType, filename);
-        return new() { File = file };
+        return (fileData, fileName, responseDownload.ContentType);
     }
 
     [Action("Upload job bilingual file", Description = "Upload bilingual file to update job")]

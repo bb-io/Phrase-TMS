@@ -1,0 +1,555 @@
+<?xml version='1.0' encoding='UTF-8'?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:m="http://www.memsource.com/mxlf/2.0" version="1.2" m:version="2.13" m:level="1">
+<file original="The Loire Valley_en-US.html.xlf" source-language="en-us" target-language="nl" datatype="x-undefined" m:file-format="XLF2" m:task-id="8JyDKT0odaW1A4aF1_dc2" m:begin-group-id="0" m:end-group-id="24" m:transmem-ignore-tag-metadata="yes" m:project-uid="ltRSUSNtQ3qt7JuW8x14b6" m:job-uid="9aPeFiTrFyVZdddz0Q5Ys1">
+<body>
+
+<group id="0" m:para-id="0">
+<context-group>
+<context context-type="x-file-part">f1</context>
+<context context-type="x-key">u1</context>
+<context context-type="x-max-len">256</context>
+</context-group>
+<trans-unit id="8JyDKT0odaW1A4aF1_dc2:0" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="1" m:locked="true" m:para-id="0" m:created-at="1764247811644" m:created-by="189794" m:modified-at="1764247811644" m:modified-by="189794" m:level-edited="false">
+<source>The Loire Valley</source>
+<target>Het Loiredal</target>
+<alt-trans origin="machine-trans"><target/></alt-trans>
+<alt-trans origin="memsource-tm"><target/></alt-trans>
+</trans-unit>
+</group>
+<group id="1" m:para-id="1">
+<context-group>
+<context context-type="x-file-part">f1</context>
+<context context-type="x-key">u2</context>
+<context context-type="x-max-len">256</context>
+</context-group>
+<trans-unit id="8JyDKT0odaW1A4aF1_dc2:1" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="true" m:para-id="1" m:created-at="1764247811646" m:created-by="189794" m:modified-at="1764247811646" m:modified-by="189794" m:level-edited="false">
+<source>Ready to discover the magic of the Loire Valley?</source>
+<target>Klaar om de magie van de Loirevallei te ontdekken?</target>
+<alt-trans origin="machine-trans"><target/></alt-trans>
+<alt-trans origin="memsource-tm"><target/></alt-trans>
+</trans-unit>
+</group>
+<group id="2" m:para-id="2">
+<context-group>
+<context context-type="x-file-part">f1::g1</context>
+<context context-type="x-key">u3</context>
+</context-group>
+<trans-unit id="8JyDKT0odaW1A4aF1_dc2:2" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="1" m:locked="true" m:para-id="2" m:created-at="1764247811678" m:created-by="189794" m:modified-at="1764247811678" m:modified-by="189794" m:level-edited="false">
+<source>Embark on an unforgettable journey through France's most enchanting countryside. Wander through majestic castles, taste the finest Loire wines, and immerse yourself in picturesque villages. Whether you're a history buff, a wine connoisseur, or just a fan of beautiful scenery, the Loire Valley offers an unrivaled travel experience.</source>
+<target>Ga op een onvergetelijke reis door het meest betoverende landschap van Frankrijk. Dwaal door majestueuze kastelen, proef de beste Loire-wijnen en dompel je onder in pittoreske dorpjes. Of je nu van geschiedenis houdt, een wijnkenner bent of gewoon van een prachtig landschap houdt, de Loirevallei biedt een ongeëvenaarde reiservaring.</target>
+<alt-trans origin="machine-trans"><target/></alt-trans>
+<alt-trans origin="memsource-tm"><target/></alt-trans>
+</trans-unit>
+</group>
+<group id="3" m:para-id="3">
+<context-group>
+<context context-type="x-file-part">f1::g1</context>
+<context context-type="x-key">u4</context>
+</context-group>
+<trans-unit id="8JyDKT0odaW1A4aF1_dc2:3" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="1" m:locked="true" m:para-id="3" m:created-at="1764247811737" m:created-by="189794" m:modified-at="1764247811737" m:modified-by="189794" m:level-edited="false">
+<source>
+            {1}Book a trip to the Loire Valley today and immerse yourself in a world where fairy tales come to life! {2}</source>
+<target>
+            {1}Boek vandaag nog een reis naar de Loire Vallei en dompel jezelf onder in een wereld waar sprookjes tot leven komen! {2}</target>
+<alt-trans origin="machine-trans"><target/></alt-trans>
+<alt-trans origin="memsource-tm"><target/></alt-trans>
+<m:tunit-metadata>
+<m:mark id="1">
+<m:type>sc</m:type>
+<m:content>&lt;sc xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" id="1" dataRef="d1" fs:fs="strong" /&gt;</m:content>
+</m:mark>
+<m:mark id="2">
+<m:type>ec</m:type>
+<m:content>&lt;ec xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" dataRef="d2" fs:fs="strong" startRef="1" /&gt;</m:content>
+</m:mark>
+</m:tunit-metadata>
+<m:tunit-target-metadata>
+<m:mark id="1">
+<m:type>sc</m:type>
+<m:content>&lt;sc xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" id="1" dataRef="d1" fs:fs="strong" /&gt;</m:content>
+</m:mark>
+<m:mark id="2">
+<m:type>ec</m:type>
+<m:content>&lt;ec xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" dataRef="d2" fs:fs="strong" startRef="1" /&gt;</m:content>
+</m:mark>
+</m:tunit-target-metadata>
+</trans-unit>
+</group>
+<group id="4" m:para-id="4">
+<context-group>
+<context context-type="x-file-part">f1</context>
+<context context-type="x-key">u5</context>
+<context context-type="x-max-len">256</context>
+</context-group>
+<trans-unit id="8JyDKT0odaW1A4aF1_dc2:4" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="true" m:para-id="4" m:created-at="1764247811739" m:created-by="189794" m:modified-at="1764247811739" m:modified-by="189794" m:level-edited="false">
+<source>A day in the heart of the Loire: castles and vineyards</source>
+<target>Een dag in het hart van de Loire: kastelen en wijngaarden</target>
+<alt-trans origin="machine-trans"><target/></alt-trans>
+<alt-trans origin="memsource-tm"><target/></alt-trans>
+</trans-unit>
+</group>
+<group id="5" m:para-id="5">
+<context-group>
+<context context-type="x-file-part">f1::g2</context>
+<context context-type="x-key">u6</context>
+</context-group>
+<trans-unit id="8JyDKT0odaW1A4aF1_dc2:5" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="false" m:para-id="5" m:created-at="1764247811742" m:created-by="189794" m:modified-at="1764247811742" m:modified-by="189794" m:level-edited="false">
+<source>
+            {1}Morning: Chateau de Chambord{2} Start your day with a visit to the legendary Chateau de Chambord, a masterpiece of French Renaissance architecture. This huge castle with 400 rooms, the legendary double spiral staircase and wooded grounds was created for King Francis I as a farming lodge. Wander the grand halls and rooftop terraces, which offer stunning views of the Loire countryside. Arrive early to enjoy the quiet and nice grandeur of the chateau before the crowds arrive.</source>
+<target>
+            {1}Ochtend: Château de Chambord{2} Begin uw dag met een bezoek aan het legendarische Château de Chambord, een meesterwerk van de Franse renaissancearchitectuur. Dit enorme kasteel met 400 kamers, de legendarische dubbele wenteltrap en het bosrijke terrein werd gebouwd voor koning Frans I als landhuis. Dwaal door de grote zalen en over de dakterrassen, die een prachtig uitzicht bieden op het platteland van de Loire. Kom vroeg om te genieten van de rust en de prachtige grandeur van het kasteel voordat de drukte begint.</target>
+<alt-trans origin="machine-trans"><target/></alt-trans>
+<alt-trans origin="memsource-tm"><target/></alt-trans>
+<m:tunit-metadata>
+<m:mark id="1">
+<m:type>sc</m:type>
+<m:content>&lt;sc xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" id="1" dataRef="d1" fs:fs="strong" /&gt;</m:content>
+</m:mark>
+<m:mark id="2">
+<m:type>ec</m:type>
+<m:content>&lt;ec xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" dataRef="d2" fs:fs="strong" startRef="1" /&gt;</m:content>
+</m:mark>
+</m:tunit-metadata>
+<m:tunit-target-metadata>
+<m:mark id="1">
+<m:type>sc</m:type>
+<m:content>&lt;sc xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" id="1" dataRef="d1" fs:fs="strong" /&gt;</m:content>
+</m:mark>
+<m:mark id="2">
+<m:type>ec</m:type>
+<m:content>&lt;ec xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" dataRef="d2" fs:fs="strong" startRef="1" /&gt;</m:content>
+</m:mark>
+</m:tunit-target-metadata>
+</trans-unit>
+</group>
+<group id="6" m:para-id="6">
+<context-group>
+<context context-type="x-file-part">f1::g2</context>
+<context context-type="x-key">u7</context>
+</context-group>
+<trans-unit id="8JyDKT0odaW1A4aF1_dc2:6" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="true" m:para-id="6" m:created-at="1764247811745" m:created-by="189794" m:modified-at="1764247811745" m:modified-by="189794" m:level-edited="false">
+<source>
+            {1}Afternoon: Lunch in Blois{2} Just a short drive away is the town of Blois, where you can experience the typical charm of the Loire Valley. Explore the medieval center, its winding streets and the palatial Château de Blois, known for its eclectic mix of architectural styles. Stop for lunch at a local bistro where you can enjoy Loire specialties such as goat cheese tartine or rillettes. Snack on a glass of crisp Sancerre wine, grown just a few kilometers away.</source>
+<target>
+            {1}Middag: Lunch in Blois{2} Op slechts een klein eindje rijden ligt de stad Blois, waar je de typische charme van de Loirevallei kunt ervaren. Verken het middeleeuwse centrum, de kronkelende straatjes en het paleisachtige Château de Blois, bekend om zijn eclectische mix van bouwstijlen. Stop voor de lunch bij een lokale bistro waar je kunt genieten van Loire-specialiteiten zoals geitenkaas tartine of rillettes. Drink een glas knapperige Sancerre wijn, die slechts een paar kilometer verderop wordt verbouwd.</target>
+<alt-trans origin="machine-trans"><target/></alt-trans>
+<alt-trans origin="memsource-tm"><target/></alt-trans>
+<m:tunit-metadata>
+<m:mark id="1">
+<m:type>sc</m:type>
+<m:content>&lt;sc xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" id="1" dataRef="d1" fs:fs="strong" /&gt;</m:content>
+</m:mark>
+<m:mark id="2">
+<m:type>ec</m:type>
+<m:content>&lt;ec xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" dataRef="d2" fs:fs="strong" startRef="1" /&gt;</m:content>
+</m:mark>
+</m:tunit-metadata>
+<m:tunit-target-metadata>
+<m:mark id="1">
+<m:type>sc</m:type>
+<m:content>&lt;sc xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" id="1" dataRef="d1" fs:fs="strong" /&gt;</m:content>
+</m:mark>
+<m:mark id="2">
+<m:type>ec</m:type>
+<m:content>&lt;ec xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" dataRef="d2" fs:fs="strong" startRef="1" /&gt;</m:content>
+</m:mark>
+</m:tunit-target-metadata>
+</trans-unit>
+</group>
+<group id="7" m:para-id="7">
+<context-group>
+<context context-type="x-file-part">f1::g2</context>
+<context context-type="x-key">u8</context>
+</context-group>
+<trans-unit id="8JyDKT0odaW1A4aF1_dc2:7" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="true" m:para-id="7" m:created-at="1764247811749" m:created-by="189794" m:modified-at="1764247811749" m:modified-by="189794" m:level-edited="false">
+<source>
+            {1}Evening: Amboise and the legacy of Leonardo da Vinci{2} Head to the Chateau of Amboise, which overlooks the Loire River and was once home to kings and dreamers. Stroll through the royal apartments, visit the Gothic chapel where Leonardo da Vinci is buried, and enjoy panoramic views of the river and city below. Just up the hill is the Clo Lucet Mansion, where da Vinci lived out his final years. Inside you'll find intricate models of his inventions, bringing the Renaissance genius to life.</source>
+<target>
+            {1}Avond: Amboise en de erfenis van Leonardo da Vinci{2} Ga naar het kasteel van Amboise, dat uitkijkt over de rivier de Loire en ooit de thuisbasis was van koningen en dromers. Wandel door de koninklijke appartementen, bezoek de gotische kapel waar Leonardo da Vinci begraven ligt en geniet van het panoramische uitzicht op de rivier en de stad beneden. Iets hoger op de heuvel ligt het herenhuis Clo Lucet, waar da Vinci zijn laatste jaren doorbracht. Binnen vind je ingewikkelde modellen van zijn uitvindingen, waardoor het genie uit de Renaissance tot leven komt.</target>
+<alt-trans origin="machine-trans"><target/></alt-trans>
+<alt-trans origin="memsource-tm"><target/></alt-trans>
+<m:tunit-metadata>
+<m:mark id="1">
+<m:type>sc</m:type>
+<m:content>&lt;sc xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" id="1" dataRef="d1" fs:fs="strong" /&gt;</m:content>
+</m:mark>
+<m:mark id="2">
+<m:type>ec</m:type>
+<m:content>&lt;ec xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" dataRef="d2" fs:fs="strong" startRef="1" /&gt;</m:content>
+</m:mark>
+</m:tunit-metadata>
+<m:tunit-target-metadata>
+<m:mark id="1">
+<m:type>sc</m:type>
+<m:content>&lt;sc xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" id="1" dataRef="d1" fs:fs="strong" /&gt;</m:content>
+</m:mark>
+<m:mark id="2">
+<m:type>ec</m:type>
+<m:content>&lt;ec xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" dataRef="d2" fs:fs="strong" startRef="1" /&gt;</m:content>
+</m:mark>
+</m:tunit-target-metadata>
+</trans-unit>
+</group>
+<group id="8" m:para-id="8">
+<context-group>
+<context context-type="x-file-part">f1::g2</context>
+<context context-type="x-key">u9</context>
+</context-group>
+<trans-unit id="8JyDKT0odaW1A4aF1_dc2:8" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="true" m:para-id="8" m:created-at="1764247811751" m:created-by="189794" m:modified-at="1764247811751" m:modified-by="189794" m:level-edited="false">
+<source>You can read more about the Loire Valley in this book:</source>
+<target>Je kunt meer lezen over de Loirevallei in dit boek:</target>
+<alt-trans origin="machine-trans"><target/></alt-trans>
+<alt-trans origin="memsource-tm"><target/></alt-trans>
+</trans-unit>
+</group>
+<group id="9" m:para-id="9">
+<context-group>
+<context context-type="x-file-part">f1::g3</context>
+<context context-type="x-key">u10</context>
+</context-group>
+<trans-unit id="8JyDKT0odaW1A4aF1_dc2:9" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="true" m:para-id="9" m:created-at="1764247811754" m:created-by="189794" m:modified-at="1764247811754" m:modified-by="189794" m:level-edited="false">
+<source>Embark on a journey through {1}France Unveiled: A Journey Through Culture, Cuisine, and Countryside{2}, a unique travel guide that weaves together the romantic charm of Paris, the sun-soaked allure of Provence, and the vineyard-laden trails of Bordeaux. This guide goes beyond the usual tourist stops to introduce you to hidden villages, local markets, and timeworn chateaux where history and modern French life blend seamlessly.</source>
+<target>Ga op reis met {1}Frankrijk Unveiled: A Journey Through Culture, Cuisine, and Countryside{2}, een unieke reisgids die de romantische charme van Parijs, de zonovergoten allure van de Provence en de met wijngaarden bezaaide paden van Bordeaux met elkaar verweeft. Deze gids gaat verder dan de gebruikelijke toeristische stops en laat je kennismaken met verborgen dorpjes, lokale markten en eeuwenoude kastelen waar geschiedenis en het moderne Franse leven naadloos in elkaar overgaan.</target>
+<alt-trans origin="machine-trans"><target/></alt-trans>
+<alt-trans origin="memsource-tm"><target/></alt-trans>
+<m:tunit-metadata>
+<m:mark id="1">
+<m:type>sc</m:type>
+<m:content>&lt;sc xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" id="1" dataRef="d1" fs:fs="i" /&gt;</m:content>
+</m:mark>
+<m:mark id="2">
+<m:type>ec</m:type>
+<m:content>&lt;ec xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" dataRef="d2" fs:fs="i" startRef="1" /&gt;</m:content>
+</m:mark>
+</m:tunit-metadata>
+<m:tunit-target-metadata>
+<m:mark id="1">
+<m:type>sc</m:type>
+<m:content>&lt;sc xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" id="1" dataRef="d1" fs:fs="i" /&gt;</m:content>
+</m:mark>
+<m:mark id="2">
+<m:type>ec</m:type>
+<m:content>&lt;ec xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" dataRef="d2" fs:fs="i" startRef="1" /&gt;</m:content>
+</m:mark>
+</m:tunit-target-metadata>
+</trans-unit>
+</group>
+<group id="10" m:para-id="10">
+<context-group>
+<context context-type="x-file-part">f1::g3</context>
+<context context-type="x-key">u11</context>
+</context-group>
+<trans-unit id="8JyDKT0odaW1A4aF1_dc2:10" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="true" m:para-id="10" m:created-at="1764247811757" m:created-by="189794" m:modified-at="1764247811757" m:modified-by="189794" m:level-edited="false">
+<source>Whether sipping coffee in a quiet Marais café, wandering through medieval streets in Alsace, or savoring fresh seafood along the Côte d'Azur, {1}France Unveiled{2} offers insights, local tips, and immersive experiences for travelers who want to explore like a local. Packed with detailed itineraries, insider recommendations, and stories that bring each region to life, this guide will help you uncover the heart of France—from its iconic sites to its best-kept secrets.</source>
+<target>Of je nu koffie drinkt in een rustig café in Marais, door middeleeuwse straatjes slentert in de Elzas of verse zeevruchten proeft aan de Côte d'Azur, {1}France Unveiled{2} biedt inzichten, lokale tips en meeslepende ervaringen voor reizigers die willen verkennen als een local. Deze gids zit boordevol gedetailleerde routes, aanbevelingen van insiders en verhalen die elke regio tot leven brengen, en helpt je het hart van Frankrijk te ontdekken - van de iconische bezienswaardigheden tot de best bewaarde geheimen.</target>
+<alt-trans origin="machine-trans"><target/></alt-trans>
+<alt-trans origin="memsource-tm"><target/></alt-trans>
+<m:tunit-metadata>
+<m:mark id="1">
+<m:type>sc</m:type>
+<m:content>&lt;sc xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" id="1" dataRef="d1" fs:fs="i" /&gt;</m:content>
+</m:mark>
+<m:mark id="2">
+<m:type>ec</m:type>
+<m:content>&lt;ec xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" dataRef="d2" fs:fs="i" startRef="1" /&gt;</m:content>
+</m:mark>
+</m:tunit-metadata>
+<m:tunit-target-metadata>
+<m:mark id="1">
+<m:type>sc</m:type>
+<m:content>&lt;sc xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" id="1" dataRef="d1" fs:fs="i" /&gt;</m:content>
+</m:mark>
+<m:mark id="2">
+<m:type>ec</m:type>
+<m:content>&lt;ec xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" dataRef="d2" fs:fs="i" startRef="1" /&gt;</m:content>
+</m:mark>
+</m:tunit-target-metadata>
+</trans-unit>
+</group>
+<group id="11" m:para-id="11">
+<context-group>
+<context context-type="x-file-part">f1::g3</context>
+<context context-type="x-key">u12</context>
+</context-group>
+<trans-unit id="8JyDKT0odaW1A4aF1_dc2:11" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="true" m:para-id="11" m:created-at="1764247811759" m:created-by="189794" m:modified-at="1764247811759" m:modified-by="189794" m:level-edited="false">
+<source>
+            {1}Perfect for first-time visitors and seasoned Francophiles alike, this guide will make every trip unforgettable{2}</source>
+<target>
+            {1}Deze gids is perfect voor zowel beginnende bezoekers als doorgewinterde francofielen en zal elke reis onvergetelijk maken{2}</target>
+<alt-trans origin="machine-trans"><target/></alt-trans>
+<alt-trans origin="memsource-tm"><target/></alt-trans>
+<m:tunit-metadata>
+<m:mark id="1">
+<m:type>sc</m:type>
+<m:content>&lt;sc xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" id="1" dataRef="d1" fs:fs="i" /&gt;</m:content>
+</m:mark>
+<m:mark id="2">
+<m:type>ec</m:type>
+<m:content>&lt;ec xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" dataRef="d2" fs:fs="i" startRef="1" /&gt;</m:content>
+</m:mark>
+</m:tunit-metadata>
+<m:tunit-target-metadata>
+<m:mark id="1">
+<m:type>sc</m:type>
+<m:content>&lt;sc xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" id="1" dataRef="d1" fs:fs="i" /&gt;</m:content>
+</m:mark>
+<m:mark id="2">
+<m:type>ec</m:type>
+<m:content>&lt;ec xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" dataRef="d2" fs:fs="i" startRef="1" /&gt;</m:content>
+</m:mark>
+</m:tunit-target-metadata>
+</trans-unit>
+</group>
+<group id="12" m:para-id="12">
+<context-group>
+<context context-type="x-file-part">f1</context>
+<context context-type="x-key">u13</context>
+</context-group>
+<trans-unit id="8JyDKT0odaW1A4aF1_dc2:12" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="true" m:para-id="12" m:created-at="1764247811761" m:created-by="189794" m:modified-at="1764247811761" m:modified-by="189794" m:level-edited="false">
+<source>Eiffel tower</source>
+<target>Eiffel tower</target>
+<alt-trans origin="machine-trans"><target/></alt-trans>
+<alt-trans origin="memsource-tm"><target/></alt-trans>
+</trans-unit>
+</group>
+<group id="13" m:para-id="13">
+<context-group>
+<context context-type="x-file-part">f1</context>
+<context context-type="x-key">u14</context>
+<context context-type="x-max-len">256</context>
+</context-group>
+<trans-unit id="8JyDKT0odaW1A4aF1_dc2:13" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="true" m:para-id="13" m:created-at="1764247811764" m:created-by="189794" m:modified-at="1764247811764" m:modified-by="189794" m:level-edited="false">
+<source>France Unveiled: A Journey Through Culture, Cuisine, and Countryside</source>
+<target>Frankrijk Ontsluierd: Een reis door cultuur, keuken en platteland</target>
+<alt-trans origin="machine-trans"><target/></alt-trans>
+<alt-trans origin="memsource-tm"><target/></alt-trans>
+</trans-unit>
+</group>
+<group id="14" m:para-id="14">
+<context-group>
+<context context-type="x-file-part">f1</context>
+<context context-type="x-key">u15</context>
+<context context-type="x-max-len">256</context>
+</context-group>
+<trans-unit id="8JyDKT0odaW1A4aF1_dc2:14" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="true" m:para-id="14" m:created-at="1764247811766" m:created-by="189794" m:modified-at="1764247811766" m:modified-by="189794" m:level-edited="false">
+<source>Discover the wines of the Loire</source>
+<target>Ontdek de wijnen van de Loire</target>
+<alt-trans origin="machine-trans"><target/></alt-trans>
+<alt-trans origin="memsource-tm"><target/></alt-trans>
+</trans-unit>
+</group>
+<group id="15" m:para-id="15">
+<context-group>
+<context context-type="x-file-part">f1::g4</context>
+<context context-type="x-key">u16</context>
+</context-group>
+<trans-unit id="8JyDKT0odaW1A4aF1_dc2:15" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="true" m:para-id="15" m:created-at="1764247811768" m:created-by="189794" m:modified-at="1764247811768" m:modified-by="189794" m:level-edited="false">
+<source>The Loire Valley is known for its diverse wine offerings, from crisp whites to delicate reds. To get to know the region's viticulture, visit a local winery near Vouvray or Chinon, where family-run wineries offer tastings and tours. Here you can taste the famous Loire Chenin Blanc, earthy Cabernet Franc and refreshing Rosé, often accompanied by local cheeses and breads. It's a truly fascinating way to get in touch with the region's rich farming traditions and taste the Loire Valley terroir.</source>
+<target>De Loirevallei staat bekend om zijn gevarieerde wijnaanbod, van frisse witte wijnen tot delicate rode wijnen. Om de wijnbouw in de regio te leren kennen, kun je een bezoek brengen aan een lokale wijnmakerij in de buurt van Vouvray of Chinon, waar familiewijnmakerijen proeverijen en rondleidingen aanbieden. Hier kun je de beroemde Loire Chenin Blanc, aardse Cabernet Franc en verfrissende Rosé proeven, vaak vergezeld van lokale kazen en brood. Het is echt een fascinerende manier om in contact te komen met de rijke landbouwtradities van de regio en het terroir van de Loirevallei te proeven.</target>
+<alt-trans origin="machine-trans"><target/></alt-trans>
+<alt-trans origin="memsource-tm"><target/></alt-trans>
+</trans-unit>
+</group>
+<group id="16" m:para-id="16">
+<context-group>
+<context context-type="x-file-part">f1::g4</context>
+<context context-type="x-key">u17</context>
+</context-group>
+<trans-unit id="8JyDKT0odaW1A4aF1_dc2:16" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="true" m:para-id="16" m:created-at="1764247811770" m:created-by="189794" m:modified-at="1764247811770" m:modified-by="189794" m:level-edited="false">
+<source>
+            {1}Local tips for exploring the Loire Valley{2}</source>
+<target>
+            {1}Lokale tips om de Loire-vallei te verkennen{2}</target>
+<alt-trans origin="machine-trans"><target/></alt-trans>
+<alt-trans origin="memsource-tm"><target/></alt-trans>
+<m:tunit-metadata>
+<m:mark id="1">
+<m:type>sc</m:type>
+<m:content>&lt;sc xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" id="1" dataRef="d1" fs:fs="strong" /&gt;</m:content>
+</m:mark>
+<m:mark id="2">
+<m:type>ec</m:type>
+<m:content>&lt;ec xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" dataRef="d2" fs:fs="strong" startRef="1" /&gt;</m:content>
+</m:mark>
+</m:tunit-metadata>
+<m:tunit-target-metadata>
+<m:mark id="1">
+<m:type>sc</m:type>
+<m:content>&lt;sc xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" id="1" dataRef="d1" fs:fs="strong" /&gt;</m:content>
+</m:mark>
+<m:mark id="2">
+<m:type>ec</m:type>
+<m:content>&lt;ec xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" dataRef="d2" fs:fs="strong" startRef="1" /&gt;</m:content>
+</m:mark>
+</m:tunit-target-metadata>
+</trans-unit>
+</group>
+<group id="17" m:para-id="17">
+<context-group>
+<context context-type="x-file-part">f1::g4</context>
+<context context-type="x-key">u18</context>
+</context-group>
+<trans-unit id="8JyDKT0odaW1A4aF1_dc2:17" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="true" m:para-id="17" m:created-at="1764247811772" m:created-by="189794" m:modified-at="1764247811772" m:modified-by="189794" m:level-edited="false">
+<source>
+            {1}The best time to visit:{2}</source>
+<target>
+            {1}De beste tijd voor een bezoek:{2}</target>
+<alt-trans origin="machine-trans"><target/></alt-trans>
+<alt-trans origin="memsource-tm"><target/></alt-trans>
+<m:tunit-metadata>
+<m:mark id="1">
+<m:type>sc</m:type>
+<m:content>&lt;sc xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" id="1" dataRef="d1" fs:fs="strong" /&gt;</m:content>
+</m:mark>
+<m:mark id="2">
+<m:type>ec</m:type>
+<m:content>&lt;ec xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" dataRef="d2" fs:fs="strong" startRef="1" /&gt;</m:content>
+</m:mark>
+</m:tunit-metadata>
+<m:tunit-target-metadata>
+<m:mark id="1">
+<m:type>sc</m:type>
+<m:content>&lt;sc xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" id="1" dataRef="d1" fs:fs="strong" /&gt;</m:content>
+</m:mark>
+<m:mark id="2">
+<m:type>ec</m:type>
+<m:content>&lt;ec xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" dataRef="d2" fs:fs="strong" startRef="1" /&gt;</m:content>
+</m:mark>
+</m:tunit-target-metadata>
+</trans-unit>
+</group>
+<group id="18" m:para-id="18">
+<context-group>
+<context context-type="x-file-part">f1::g4</context>
+<context context-type="x-key">u19</context>
+</context-group>
+<trans-unit id="8JyDKT0odaW1A4aF1_dc2:18" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="true" m:para-id="18" m:created-at="1764247811774" m:created-by="189794" m:modified-at="1764247811774" m:modified-by="189794" m:level-edited="false">
+<source>In spring and autumn, the weather is pleasant and there are fewer crowds, and in summer the region comes alive with festivals and open-air concerts.</source>
+<target>In de lente en herfst is het weer aangenaam en zijn er minder mensenmassa's, en in de zomer komt de regio tot leven met festivals en openluchtconcerten.</target>
+<alt-trans origin="machine-trans"><target/></alt-trans>
+<alt-trans origin="memsource-tm"><target/></alt-trans>
+</trans-unit>
+</group>
+<group id="19" m:para-id="19">
+<context-group>
+<context context-type="x-file-part">f1::g4</context>
+<context context-type="x-key">u20</context>
+</context-group>
+<trans-unit id="8JyDKT0odaW1A4aF1_dc2:19" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="true" m:para-id="19" m:created-at="1764247811777" m:created-by="189794" m:modified-at="1764247811777" m:modified-by="189794" m:level-edited="false">
+<source>
+            {1}Transportation:{2}</source>
+<target>
+            {1}Vervoer:{2}</target>
+<alt-trans origin="machine-trans"><target/></alt-trans>
+<alt-trans origin="memsource-tm"><target/></alt-trans>
+<m:tunit-metadata>
+<m:mark id="1">
+<m:type>sc</m:type>
+<m:content>&lt;sc xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" id="1" dataRef="d1" fs:fs="strong" /&gt;</m:content>
+</m:mark>
+<m:mark id="2">
+<m:type>ec</m:type>
+<m:content>&lt;ec xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" dataRef="d2" fs:fs="strong" startRef="1" /&gt;</m:content>
+</m:mark>
+</m:tunit-metadata>
+<m:tunit-target-metadata>
+<m:mark id="1">
+<m:type>sc</m:type>
+<m:content>&lt;sc xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" id="1" dataRef="d1" fs:fs="strong" /&gt;</m:content>
+</m:mark>
+<m:mark id="2">
+<m:type>ec</m:type>
+<m:content>&lt;ec xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" dataRef="d2" fs:fs="strong" startRef="1" /&gt;</m:content>
+</m:mark>
+</m:tunit-target-metadata>
+</trans-unit>
+</group>
+<group id="20" m:para-id="20">
+<context-group>
+<context context-type="x-file-part">f1::g4</context>
+<context context-type="x-key">u21</context>
+</context-group>
+<trans-unit id="8JyDKT0odaW1A4aF1_dc2:20" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="true" m:para-id="20" m:created-at="1764247811779" m:created-by="189794" m:modified-at="1764247811779" m:modified-by="189794" m:level-edited="false">
+<source>Renting a bike is a great way to explore the scenic Loire à Vélo cycling routes that connect many of the region's top attractions.</source>
+<target>Een fiets huren is een geweldige manier om de schilderachtige Loire à Vélo-fietsroutes te verkennen die veel van de topattracties van de regio met elkaar verbinden.</target>
+<alt-trans origin="machine-trans"><target/></alt-trans>
+<alt-trans origin="memsource-tm"><target/></alt-trans>
+</trans-unit>
+</group>
+<group id="21" m:para-id="21">
+<context-group>
+<context context-type="x-file-part">f1::g4</context>
+<context context-type="x-key">u22</context>
+</context-group>
+<trans-unit id="8JyDKT0odaW1A4aF1_dc2:21" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="true" m:para-id="21" m:created-at="1764247811781" m:created-by="189794" m:modified-at="1764247811781" m:modified-by="189794" m:level-edited="false">
+<source>
+            {1}A hidden gem:{2}</source>
+<target>
+            {1}A hidden gem:{2}</target>
+<alt-trans origin="machine-trans"><target/></alt-trans>
+<alt-trans origin="memsource-tm"><target/></alt-trans>
+<m:tunit-metadata>
+<m:mark id="1">
+<m:type>sc</m:type>
+<m:content>&lt;sc xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" id="1" dataRef="d1" fs:fs="strong" /&gt;</m:content>
+</m:mark>
+<m:mark id="2">
+<m:type>ec</m:type>
+<m:content>&lt;ec xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" dataRef="d2" fs:fs="strong" startRef="1" /&gt;</m:content>
+</m:mark>
+</m:tunit-metadata>
+<m:tunit-target-metadata>
+<m:mark id="1">
+<m:type>sc</m:type>
+<m:content>&lt;sc xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" id="1" dataRef="d1" fs:fs="strong" /&gt;</m:content>
+</m:mark>
+<m:mark id="2">
+<m:type>ec</m:type>
+<m:content>&lt;ec xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" dataRef="d2" fs:fs="strong" startRef="1" /&gt;</m:content>
+</m:mark>
+</m:tunit-target-metadata>
+</trans-unit>
+</group>
+<group id="22" m:para-id="22">
+<context-group>
+<context context-type="x-file-part">f1::g4</context>
+<context context-type="x-key">u23</context>
+</context-group>
+<trans-unit id="8JyDKT0odaW1A4aF1_dc2:22" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="true" m:para-id="22" m:created-at="1764247811783" m:created-by="189794" m:modified-at="1764247811783" m:modified-by="189794" m:level-edited="false">
+<source>Don't miss the little-known Chateau de Villandry, known for its Renaissance gardens. Spend a carefree day strolling through the maze of perfectly manicured flower beds, orchards and elegant vegetable gardens.</source>
+<target>Mis het weinig bekende Chateau de Villandry niet, bekend om zijn renaissancetuinen. Breng een zorgeloze dag door met een wandeling door het doolhof van perfect onderhouden bloembedden, boomgaarden en elegante moestuinen.</target>
+<alt-trans origin="machine-trans"><target/></alt-trans>
+<alt-trans origin="memsource-tm"><target/></alt-trans>
+</trans-unit>
+</group>
+<group id="23" m:para-id="23">
+<context-group>
+<context context-type="x-file-part">f1::g4</context>
+<context context-type="x-key">u24</context>
+</context-group>
+<trans-unit id="8JyDKT0odaW1A4aF1_dc2:23" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="true" m:para-id="23" m:created-at="1764247811786" m:created-by="189794" m:modified-at="1764247811786" m:modified-by="189794" m:level-edited="false">
+<source>---</source>
+<target>---</target>
+<alt-trans origin="machine-trans"><target/></alt-trans>
+<alt-trans origin="memsource-tm"><target/></alt-trans>
+</trans-unit>
+</group>
+<group id="24" m:para-id="24">
+<context-group>
+<context context-type="x-file-part">f1::g4</context>
+<context context-type="x-key">u25</context>
+</context-group>
+<trans-unit id="8JyDKT0odaW1A4aF1_dc2:24" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="true" m:para-id="24" m:created-at="1764247811788" m:created-by="189794" m:modified-at="1764247811788" m:modified-by="189794" m:level-edited="false">
+<source>Blackbird is a TMS - not a translation management system, but a transformation management system. Built as an in-memory iPaaS infrastructure, it automates, adapts and organizes content across languages, formats and platforms at scale.</source>
+<target>Blackbird is een TMS - geen vertaalbeheersysteem, maar een transformatiebeheersysteem. Het is gebouwd als een in-memory iPaaS-infrastructuur en automatiseert, past aan en organiseert content in verschillende talen, formaten en platforms op schaal.</target>
+<alt-trans origin="machine-trans"><target/></alt-trans>
+<alt-trans origin="memsource-tm"><target/></alt-trans>
+</trans-unit>
+</group>
+</body>
+</file>
+<m:extra>
+<m:users>
+<m:user id="189794" uid="KnW1n59BfQQRv2e2qtTS94" username="mathijs.sonnemans" fullname="Mathijs Sonnemans"/>
+</m:users>
+</m:extra>
+</xliff>

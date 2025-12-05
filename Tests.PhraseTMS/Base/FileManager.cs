@@ -1,5 +1,6 @@
 ﻿using Blackbird.Applications.Sdk.Common.Files;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
+using System.Text;
 
 namespace PhraseTMSTests.Base
 {
@@ -31,6 +32,13 @@ namespace PhraseTMSTests.Base
 
             var stream = new MemoryStream(bytes);
             return Task.FromResult((Stream)stream);
+        }
+
+        public string ReadOutputAsString(FileReference reference)
+        {
+            var path = Path.Combine(outputFolder, reference.Name);
+            Assert.IsTrue(File.Exists(path), $"File not found at: {path}");
+            return File.ReadAllText(path, Encoding.UTF8)!;
         }
 
         public Task<FileReference> UploadAsync(Stream stream, string contentType, string fileName)
