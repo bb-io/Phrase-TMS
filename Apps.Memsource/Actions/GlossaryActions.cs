@@ -67,7 +67,7 @@ public class GlossaryActions(InvocationContext invocationContext, IFileManagemen
     public async Task ImportGlossary([ActionParameter] ImportGlossaryRequest input)
     {
         var fileStream = await fileManagementClient.DownloadAsync(input.File);
-        var fileTbxv2Stream = await CoreTbxVersionsConverter.ConvertFromTbxV3ToV2(fileStream);
+        var fileTbxv2Stream = await CoreTbxVersionsConverter.ConvertFromTbxV3ToV2(fileStream, true);
 
         var endpointGlossaryData = $"/api2/v1/termBases/{input.GlossaryUId}/upload";
         var requestGlossaryData = new RestRequest(endpointGlossaryData.WithQuery(new{updateTerms = false}), Method.Post);
