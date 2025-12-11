@@ -1,22 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<tbx xmlns="urn:iso:std:iso:30042:ed-2"
-     type="TBX-Basic"
-     style="dca"
-     xml:lang="en">
+<tbx type="TBX-Core" style="dca" xml:lang="en" xmlns="urn:iso:std:iso:30042:ed-2">
 	<tbxHeader>
 		<fileDesc>
 			<titleStmt>
-				<title>Phrase TBX v3 DCA sample</title>
+				<title>TBX v2 sample</title>
 			</titleStmt>
 		</fileDesc>
 	</tbxHeader>
 	<text>
 		<body>
-			<conceptEntry id="6K1k2VpuAohKpWrMHhcjX0">
+			<conceptEntry id="7WXnDAKhlAp35ZA5AOqSl0">
 				<langSec xml:lang="de">
 					<termSec>
-						<term>Maschinelles Lernen</term>
-						<termNote type="termId">FQj0ymZ3bfjC0QqBryExx0</termNote>
+						<term>Maschinelles Lernen [2]</term>
+						<termNote type="termId">I7QbfNjJeva1rybGQqQ81c</termNote>
 						<termNote type="forbidden">false</termNote>
 						<termNote type="preferred">false</termNote>
 						<termNote type="exactMatch">false</termNote>
@@ -31,7 +27,7 @@
 				<langSec xml:lang="pt-br">
 					<termSec>
 						<term>Aprendizado de Máquina</term>
-						<termNote type="termId">SpLri9k9CvXCbtLcML31i4</termNote>
+						<termNote type="termId">FRqVLYGgAcFIfF676oQIB1</termNote>
 						<termNote type="forbidden">false</termNote>
 						<termNote type="preferred">false</termNote>
 						<termNote type="exactMatch">false</termNote>
@@ -46,7 +42,7 @@
 				<langSec xml:lang="en">
 					<termSec>
 						<term>Machine Learning</term>
-						<termNote type="termId">Ei71qNF3uHOQ7yh04IfvCf</termNote>
+						<termNote type="termId">kZ3ZgeR2y8V29Z6v4JHtx0</termNote>
 						<termNote type="forbidden">false</termNote>
 						<termNote type="preferred">false</termNote>
 						<termNote type="exactMatch">false</termNote>
@@ -61,7 +57,7 @@
 				<langSec xml:lang="es">
 					<termSec>
 						<term>Aprendizaje Automático</term>
-						<termNote type="termId">Vgz5MUfHLmF2chdjEFva05</termNote>
+						<termNote type="termId">0vrfpWozpzPe5GiPV0RTqa</termNote>
 						<termNote type="forbidden">false</termNote>
 						<termNote type="preferred">false</termNote>
 						<termNote type="exactMatch">false</termNote>
@@ -74,78 +70,16 @@
 					</termSec>
 				</langSec>
 			</conceptEntry>
-			<conceptEntry id="F4Z8Mm9bGUp87Bj8Yvsb02">
-				<langSec xml:lang="de">
-					<termSec>
-						<term>ROI [de]</term>
-						<termNote type="termId">rXdls0iCxThl0Qn100zuVu1</termNote>
-						<termNote type="forbidden">false</termNote>
-						<termNote type="preferred">false</termNote>
-						<termNote type="exactMatch">false</termNote>
-						<termNote type="status">Approved</termNote>
-						<termNote type="caseSensitive">false</termNote>
-						<termNote type="createdBy">alex.terekhov</termNote>
-						<termNote type="createdAt">1764264222801</termNote>
-						<termNote type="lastModifiedBy">alex.terekhov</termNote>
-						<termNote type="lastModifiedAt">1764264222801</termNote>
-					</termSec>
-				</langSec>
-				<langSec xml:lang="pt-br">
-					<termSec>
-						<term>ROI [pt]</term>
-						<termNote type="termId">bqxaUOOtjO9M49BXCPs4Y2</termNote>
-						<termNote type="forbidden">false</termNote>
-						<termNote type="preferred">false</termNote>
-						<termNote type="exactMatch">false</termNote>
-						<termNote type="status">Approved</termNote>
-						<termNote type="caseSensitive">false</termNote>
-						<termNote type="createdBy">alex.terekhov</termNote>
-						<termNote type="createdAt">1764264222803</termNote>
-						<termNote type="lastModifiedBy">alex.terekhov</termNote>
-						<termNote type="lastModifiedAt">1764264222803</termNote>
-					</termSec>
-				</langSec>
-				<langSec xml:lang="en">
-					<termSec>
-						<term>ROI</term>
-						<termNote type="termId">6NZNBxMKQzaz3pRi99GUM0</termNote>
-						<termNote type="forbidden">false</termNote>
-						<termNote type="preferred">false</termNote>
-						<termNote type="exactMatch">false</termNote>
-						<termNote type="status">Approved</termNote>
-						<termNote type="caseSensitive">false</termNote>
-						<termNote type="createdBy">alex.terekhov</termNote>
-						<termNote type="createdAt">1764264222804</termNote>
-						<termNote type="lastModifiedBy">alex.terekhov</termNote>
-						<termNote type="lastModifiedAt">1764264222804</termNote>
-					</termSec>
-				</langSec>
-				<langSec xml:lang="es">
-					<termSec>
-						<term>ROI [es]</term>
-						<termNote type="termId">RTUcC1pGR6OVbiGD615ROf</termNote>
-						<termNote type="forbidden">false</termNote>
-						<termNote type="preferred">false</termNote>
-						<termNote type="exactMatch">false</termNote>
-						<termNote type="status">Approved</termNote>
-						<termNote type="caseSensitive">false</termNote>
-						<termNote type="createdBy">alex.terekhov</termNote>
-						<termNote type="createdAt">1764264222804</termNote>
-						<termNote type="lastModifiedBy">alex.terekhov</termNote>
-						<termNote type="lastModifiedAt">1764264222804</termNote>
-					</termSec>
-				</langSec>
-			</conceptEntry>
-			<conceptEntry id="Q3TCXtMeDJEv2966KyxzJ2">
-				<descrip type="definition">Definition field</descrip>
-				<descrip type="domain">ECommerce</descrip>
+			<conceptEntry id="h6YU9pX2gAaOetLkam02u7">
+				<descrip type="definition">Definition field updated 2</descrip>
 				<descrip type="subjectField">Local subdomain</descrip>
+				<descrip type="domain">ECommerce</descrip>
+				<descrip type="conceptNote">Concept note field</descrip>
 				<note>Concept note field</note>
-
 				<langSec xml:lang="de">
 					<termSec>
 						<term>API [de]</term>
-						<termNote type="termId">pyngWDo5SCo004AYWobrS3</termNote>
+						<termNote type="termId">F6Jc5E174TTffaIbNDV0ee</termNote>
 						<termNote type="forbidden">false</termNote>
 						<termNote type="preferred">false</termNote>
 						<termNote type="exactMatch">false</termNote>
@@ -160,7 +94,7 @@
 				<langSec xml:lang="pt-br">
 					<termSec>
 						<term>API [pt]</term>
-						<termNote type="termId">PIMLC4Vuh8GHd100KSTns5</termNote>
+						<termNote type="termId">Aa5nUNYngHbfepWsRYGiv3</termNote>
 						<termNote type="forbidden">false</termNote>
 						<termNote type="preferred">false</termNote>
 						<termNote type="exactMatch">false</termNote>
@@ -175,8 +109,7 @@
 				<langSec xml:lang="en">
 					<termSec>
 						<term>API</term>
-						<termNote type="termId">Adiivo4apBFl02mevheXZ1</termNote>
-						<note>Note field</note>
+						<termNote type="termId">wTy0fR2GnxmTqOXLC89Cx5</termNote>
 						<termNote type="partOfSpeech">ADJECTIVE</termNote>
 						<termNote type="grammaticalGender">FEMININE</termNote>
 						<termNote type="grammaticalNumber">UNCOUNTABLE</termNote>
@@ -192,12 +125,13 @@
 						<termNote type="lastModifiedAt">1764348485707</termNote>
 						<termNote type="shortTranslation">Short translation field</termNote>
 						<termNote type="termType">PHRASE</termNote>
+						<note>Note field</note>
 					</termSec>
 				</langSec>
 				<langSec xml:lang="es">
 					<termSec>
 						<term>API [es]</term>
-						<termNote type="termId">kf4ntVroM39Ib5ig1ct0K1</termNote>
+						<termNote type="termId">ITV0xO8vM7QOcq8WF4zJ15</termNote>
 						<termNote type="forbidden">false</termNote>
 						<termNote type="preferred">false</termNote>
 						<termNote type="exactMatch">false</termNote>
@@ -210,7 +144,68 @@
 					</termSec>
 				</langSec>
 			</conceptEntry>
-
+			<conceptEntry id="lpvmSttWuPpcf9XBmaJT62">
+				<langSec xml:lang="de">
+					<termSec>
+						<term>ROI [de]</term>
+						<termNote type="termId">Xcox78Fk5RFzfB8hr6GzJ0</termNote>
+						<termNote type="forbidden">false</termNote>
+						<termNote type="preferred">false</termNote>
+						<termNote type="exactMatch">false</termNote>
+						<termNote type="status">Approved</termNote>
+						<termNote type="caseSensitive">false</termNote>
+						<termNote type="createdBy">alex.terekhov</termNote>
+						<termNote type="createdAt">1764264222801</termNote>
+						<termNote type="lastModifiedBy">alex.terekhov</termNote>
+						<termNote type="lastModifiedAt">1764264222801</termNote>
+					</termSec>
+				</langSec>
+				<langSec xml:lang="pt-br">
+					<termSec>
+						<term>ROI [pt]</term>
+						<termNote type="termId">t5wYmcoP1bkicOo07ExBn3</termNote>
+						<termNote type="forbidden">false</termNote>
+						<termNote type="preferred">false</termNote>
+						<termNote type="exactMatch">false</termNote>
+						<termNote type="status">Approved</termNote>
+						<termNote type="caseSensitive">false</termNote>
+						<termNote type="createdBy">alex.terekhov</termNote>
+						<termNote type="createdAt">1764264222803</termNote>
+						<termNote type="lastModifiedBy">alex.terekhov</termNote>
+						<termNote type="lastModifiedAt">1764264222803</termNote>
+					</termSec>
+				</langSec>
+				<langSec xml:lang="en">
+					<termSec>
+						<term>ROI</term>
+						<termNote type="termId">09i8gz07qxKHr4bHENges8</termNote>
+						<termNote type="forbidden">false</termNote>
+						<termNote type="preferred">false</termNote>
+						<termNote type="exactMatch">false</termNote>
+						<termNote type="status">Approved</termNote>
+						<termNote type="caseSensitive">false</termNote>
+						<termNote type="createdBy">alex.terekhov</termNote>
+						<termNote type="createdAt">1764264222804</termNote>
+						<termNote type="lastModifiedBy">alex.terekhov</termNote>
+						<termNote type="lastModifiedAt">1764264222804</termNote>
+					</termSec>
+				</langSec>
+				<langSec xml:lang="es">
+					<termSec>
+						<term>ROI [es]</term>
+						<termNote type="termId">A07q0Q8GRiHS749rhvAhc0</termNote>
+						<termNote type="forbidden">false</termNote>
+						<termNote type="preferred">false</termNote>
+						<termNote type="exactMatch">false</termNote>
+						<termNote type="status">Approved</termNote>
+						<termNote type="caseSensitive">false</termNote>
+						<termNote type="createdBy">alex.terekhov</termNote>
+						<termNote type="createdAt">1764264222804</termNote>
+						<termNote type="lastModifiedBy">alex.terekhov</termNote>
+						<termNote type="lastModifiedAt">1764264222804</termNote>
+					</termSec>
+				</langSec>
+			</conceptEntry>
 		</body>
 	</text>
 </tbx>

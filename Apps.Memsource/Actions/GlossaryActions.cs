@@ -1,16 +1,17 @@
-﻿using Blackbird.Applications.Sdk.Common.Actions;
-using Blackbird.Applications.Sdk.Common;
-using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
-using System.Net.Mime;
+﻿using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Models.Glossary.Requests;
-using Apps.PhraseTMS.Dtos;
-using Blackbird.Applications.Sdk.Utils.Extensions.String;
-using RestSharp;
+using Apps.PhraseTMS.Models.Glossary.Responses;
+using Blackbird.Applications.Sdk.Common;
+using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.Sdk.Glossaries.Utils.Converters;
 using Blackbird.Applications.Sdk.Utils.Extensions.Files;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
-using Apps.PhraseTMS.Models.Glossary.Responses;
+using Blackbird.Applications.Sdk.Utils.Extensions.String;
+using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
+using RestSharp;
+using System.Net.Mime;
+using System.Text;
 using System.Xml.Linq;
 
 namespace Apps.PhraseTMS.Actions;
@@ -67,12 +68,39 @@ public class GlossaryActions(InvocationContext invocationContext, IFileManagemen
     public async Task ImportGlossary([ActionParameter] ImportGlossaryRequest input)
     {
         var fileStream = await fileManagementClient.DownloadAsync(input.File);
-        var fileTbxv2Stream = await CoreTbxVersionsConverter.ConvertFromTbxV3ToV2(fileStream, true);
+        await using var fileTbxv2Stream = await CoreTbxVersionsConverter
+            .ConvertFromTbxV3ToV2(fileStream, true);
+
+        var updateTerms = input.UpdateExistingTerms ?? false;
+
+        var bytes = await fileTbxv2Stream.GetByteData();
+        var fileText = Encoding.UTF8.GetString(bytes);
 
         var endpointGlossaryData = $"/api2/v1/termBases/{input.GlossaryUId}/upload";
-        var requestGlossaryData = new RestRequest(endpointGlossaryData.WithQuery(new{updateTerms = false}), Method.Post);
+        var endpointWithQuery = endpointGlossaryData.WithQuery(new { updateTerms });
+
+        Console.WriteLine("=== ImportGlossary debug ===");
+        Console.WriteLine($"Glossary ID: {input.GlossaryUId}");
+        Console.WriteLine($"UpdateTerms: {updateTerms}");
+        Console.WriteLine($"Endpoint: {endpointWithQuery}");
+        Console.WriteLine($"File name: {input.File.Name}");
+        Console.WriteLine($"File size (bytes): {bytes.Length}");
+
+        var maxPreviewLength = 2000;
+        var previewLength = Math.Min(fileText.Length, maxPreviewLength);
+        var preview = fileText[..previewLength];
+
+        Console.WriteLine("TBX payload preview:");
+        Console.WriteLine(preview);
+        if (fileText.Length > maxPreviewLength)
+        {
+            Console.WriteLine("...[truncated]...");
+        }
+        Console.WriteLine("=== End ImportGlossary debug ===");
+
+        var requestGlossaryData = new RestRequest(endpointWithQuery, Method.Post);
         requestGlossaryData.AddHeader("Content-Disposition", $"filename*=UTF-8''{input.File.Name}");
-        requestGlossaryData.AddParameter("application/octet-stream", fileTbxv2Stream.GetByteData().Result, ParameterType.RequestBody);
+        requestGlossaryData.AddParameter("application/octet-stream", bytes, ParameterType.RequestBody);
 
         await Client.ExecuteWithHandling(requestGlossaryData);
     }
