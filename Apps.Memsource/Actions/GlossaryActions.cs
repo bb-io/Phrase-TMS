@@ -69,40 +69,18 @@ public class GlossaryActions(InvocationContext invocationContext, IFileManagemen
     {
         var fileStream = await fileManagementClient.DownloadAsync(input.File);
         await using var fileTbxv2Stream = await CoreTbxVersionsConverter
-            .ConvertFromTbxV3ToV2(fileStream, true);
+            .ConvertFromTbxV3ToV2(fileStream, convertAll: true);
 
         var updateTerms = input.UpdateExistingTerms ?? false;
-
+        var endpoint = $"/api2/v1/termBases/{input.GlossaryUId}/upload"
+            .WithQuery(new { updateTerms });
         var bytes = await fileTbxv2Stream.GetByteData();
-        var fileText = Encoding.UTF8.GetString(bytes);
 
-        var endpointGlossaryData = $"/api2/v1/termBases/{input.GlossaryUId}/upload";
-        var endpointWithQuery = endpointGlossaryData.WithQuery(new { updateTerms });
+        var request = new RestRequest(endpoint, Method.Post);
+        request.AddHeader("Content-Disposition", $"filename*=UTF-8''{input.File.Name}");
+        request.AddParameter("application/octet-stream", bytes, ParameterType.RequestBody);
 
-        Console.WriteLine("=== ImportGlossary debug ===");
-        Console.WriteLine($"Glossary ID: {input.GlossaryUId}");
-        Console.WriteLine($"UpdateTerms: {updateTerms}");
-        Console.WriteLine($"Endpoint: {endpointWithQuery}");
-        Console.WriteLine($"File name: {input.File.Name}");
-        Console.WriteLine($"File size (bytes): {bytes.Length}");
-
-        var maxPreviewLength = 2000;
-        var previewLength = Math.Min(fileText.Length, maxPreviewLength);
-        var preview = fileText[..previewLength];
-
-        Console.WriteLine("TBX payload preview:");
-        Console.WriteLine(preview);
-        if (fileText.Length > maxPreviewLength)
-        {
-            Console.WriteLine("...[truncated]...");
-        }
-        Console.WriteLine("=== End ImportGlossary debug ===");
-
-        var requestGlossaryData = new RestRequest(endpointWithQuery, Method.Post);
-        requestGlossaryData.AddHeader("Content-Disposition", $"filename*=UTF-8''{input.File.Name}");
-        requestGlossaryData.AddParameter("application/octet-stream", bytes, ParameterType.RequestBody);
-
-        await Client.ExecuteWithHandling(requestGlossaryData);
+        await Client.ExecuteWithHandling(request);
     }
 
     private static Stream MergeFromTbx2IntoTbx3(byte[] tbx2Bytes, Stream tbx3Stream)
