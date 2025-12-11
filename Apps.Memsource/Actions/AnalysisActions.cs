@@ -14,6 +14,7 @@ using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using RestSharp;
+using System.Net;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -165,5 +166,70 @@ public class AnalysisActions(InvocationContext invocationContext, IFileManagemen
         var request = new RestRequest($"/api2/v2/analyses/{input.AnalysisUId}", Method.Put)
             .WithJsonBody(bodyDictionary, JsonConfig.DateSettings);
         return await Client.ExecuteWithHandling<FullAnalysisDto>(request);
+    }
+
+    [Action("Delete analyses", Description = "Delete analyses")]
+    public async Task<DeleteAnalysesResponse> DeleteAnalyses(
+    [ActionParameter] ProjectRequest projectRequest,
+    [ActionParameter] JobRequest? jobRequest,
+    [ActionParameter] DeleteAnalysesRequest input)
+    {
+        var idsToDelete = input.AnalysesIds?.ToList() ?? new List<string>();
+
+        if (!idsToDelete.Any())
+        {
+            IEnumerable<AnalysisDto> analyses;
+
+            if (jobRequest is not null && !string.IsNullOrEmpty(jobRequest.JobUId))
+            {
+                var endpoint =
+                    $"/api2/v3/projects/{projectRequest.ProjectUId}/jobs/{jobRequest.JobUId}/analyses";
+
+                var listRequest = new RestRequest(endpoint, Method.Get);
+                analyses = await Client.Paginate<AnalysisDto>(listRequest);
+            }
+            else
+            {
+                var endpoint = $"/api2/v3/projects/{projectRequest.ProjectUId}/analyses";
+
+                var listRequest = new RestRequest(endpoint, Method.Get);
+                analyses = await Client.Paginate<AnalysisDto>(listRequest);
+            }
+
+            idsToDelete = analyses
+                .Where(a => !string.IsNullOrEmpty(a.UId))
+                .Select(a => a.UId!)
+                .Distinct()
+                .ToList();
+        }
+
+        var deleted = new List<string>();
+        var errors = new List<DeleteAnalysisError>();
+
+        foreach (var id in idsToDelete.Distinct())
+        {
+            var request = new RestRequest($"/api2/v1/analyses/{id}", Method.Delete);
+            request.AddQueryParameter("purge", "true");
+
+            try
+            {
+                await Client.ExecuteWithHandling(request);
+                deleted.Add(id);
+            }
+            catch (Exception ex)
+            {
+                errors.Add(new DeleteAnalysisError
+                {
+                    AnalysisId = id,
+                    Error = ex.Message
+                });
+            }
+        }
+
+        return new DeleteAnalysesResponse
+        {
+            DeletedAnalysesIds = deleted,
+            Errors = errors
+        };
     }
 }

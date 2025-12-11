@@ -537,13 +537,11 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
             if (MXLIFFHelper.IsModified(mXliffUnit))
             {
                 unit.Provenance.Translation.Tool = "Phrase TMS";
-                unit.Provenance.Translation.ToolReference = $"{Creds.Get("url").Value.Trim('/')}/web/job/{input.JobUId}/translate";
 
                 var modifiedPerson = MXLIFFHelper.GetModifiedUser(mXliffUnit, mxTransformation);
                 if (modifiedPerson is not null)
                 {
                     unit.Provenance.Translation.Person = modifiedPerson.FullName;
-                    unit.Provenance.Translation.PersonReference = modifiedPerson.Url;
                 }
 
                 if (MXLIFFHelper.IsConfirmed(mXliffUnit))

@@ -5,7 +5,7 @@
         <Nullable>enable</Nullable>
         <Product>Phrase TMS</Product>
         <Description>Previously Memsource</Description>
-        <Version>1.5.3</Version>
+        <Version>1.5.4</Version>
         <AssemblyName>Apps.PhraseTMS</AssemblyName>
     </PropertyGroup>
     <ItemGroup>
@@ -17,7 +17,7 @@
         <PackageReference Include="Blackbird.Applications.SDK.Blueprints" Version="1.0.0-rc.10308" />
         <PackageReference Include="Blackbird.Applications.SDK.Extensions.FileManagement" Version="1.0.2-alpha2" />
         <PackageReference Include="Blackbird.Applications.Sdk.Utils" Version="1.0.26" />
-        <PackageReference Include="Blackbird.Applications.Sdk.Glossaries.Utils" Version="1.0.1" />
+        <PackageReference Include="Blackbird.Applications.Sdk.Glossaries.Utils" Version="1.1.1-rc.11154" />
         <PackageReference Include="Blackbird.Filters" Version="1.1.38" />
         <PackageReference Include="HtmlAgilityPack" Version="1.12.1" />
         <PackageReference Include="MimeTypes" Version="2.5.2">
