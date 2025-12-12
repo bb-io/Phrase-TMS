@@ -68,7 +68,7 @@ public class AnalysisActions(InvocationContext invocationContext, IFileManagemen
         }
 
         if (!analysisSummaries.Any())
-            throw new PluginApplicationException("No analysis matched the provided filters.");
+            return new FullAnalysisDto();
 
         var fullAnalyses = new List<FullAnalysisDto>();
 
@@ -88,7 +88,7 @@ public class AnalysisActions(InvocationContext invocationContext, IFileManagemen
         }
 
         if (!fullAnalyses.Any())
-            throw new PluginApplicationException("No analysis matched the provided filters.");
+            return new FullAnalysisDto();
 
         var selected = fullAnalyses
             .OrderByDescending(a => a.DateCreated)
