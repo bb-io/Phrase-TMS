@@ -9,6 +9,7 @@ using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Dictionaries;
+using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
@@ -45,6 +46,58 @@ public class AnalysisActions(InvocationContext invocationContext, IFileManagemen
 
         return new ListAnalysesResponse { Analyses = result };
     }
+
+    [Action("Find analysis", Description = "Find a single analysis of a project using optional filters.")]
+    public async Task<FullAnalysisDto> FindAnalysisAsync(
+     [ActionParameter] ProjectRequest projectRequest,
+     [ActionParameter] FindAnalysisQueryRequest input,
+     [ActionParameter] ListAnalysesQueryRequest query)
+    {
+        var endpoint = $"/api2/v3/projects/{projectRequest.ProjectUId}/analyses"
+            .WithQuery(query);
+
+        var request = new RestRequest(endpoint, Method.Get);
+        var analysisSummaries = await Client.Paginate<AnalysisDto>(request);
+
+        if (!string.IsNullOrWhiteSpace(input.NameContains))
+        {
+            analysisSummaries = analysisSummaries
+                .Where(a => a.Name != null &&
+                            a.Name.Contains(input.NameContains, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+
+        if (!analysisSummaries.Any())
+            return new FullAnalysisDto();
+
+        var fullAnalyses = new List<FullAnalysisDto>();
+
+        foreach (var summary in analysisSummaries)
+        {
+            var fullRequest = new RestRequest($"/api2/v3/analyses/{summary.UId}", Method.Get);
+            var full = await Client.ExecuteWithHandling<FullAnalysisDto>(fullRequest);
+            fullAnalyses.Add(full);
+        }
+
+        if (input.OnlyMostRecent == true)
+        {
+            fullAnalyses = fullAnalyses
+                .OrderByDescending(a => a.DateCreated)
+                .Take(1)
+                .ToList();
+        }
+
+        if (!fullAnalyses.Any())
+            return new FullAnalysisDto();
+
+        var selected = fullAnalyses
+            .OrderByDescending(a => a.DateCreated)
+            .First();
+
+        return selected;
+    }
+
+
 
     [Action("Search project analyses", Description = "Search through all analyses of a specific project")]
     public async Task<ListAnalysesResponse> ListProjectAnalyses(
