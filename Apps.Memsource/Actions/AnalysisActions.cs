@@ -1,4 +1,5 @@
 ﻿using Apps.PhraseTMS.Constants;
+using Apps.PhraseTMS.DataSourceHandlers;
 using Apps.PhraseTMS.DataSourceHandlers.StaticHandlers;
 using Apps.PhraseTMS.Dtos.Analysis;
 using Apps.PhraseTMS.Dtos.Jobs;
@@ -9,6 +10,7 @@ using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Dictionaries;
+using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
@@ -224,7 +226,7 @@ public class AnalysisActions(InvocationContext invocationContext, IFileManagemen
     [Action("Delete analyses", Description = "Delete analyses")]
     public async Task<DeleteAnalysesResponse> DeleteAnalyses(
     [ActionParameter] ProjectRequest projectRequest,
-    [ActionParameter] JobRequest? jobRequest,
+    [ActionParameter, Display("Job ID"), DataSource(typeof(JobDataHandler))] string? jobId,
     [ActionParameter] DeleteAnalysesRequest input)
     {
         var idsToDelete = input.AnalysesIds?.ToList() ?? new List<string>();
@@ -233,18 +235,15 @@ public class AnalysisActions(InvocationContext invocationContext, IFileManagemen
         {
             IEnumerable<AnalysisDto> analyses;
 
-            if (jobRequest is not null && !string.IsNullOrEmpty(jobRequest.JobUId))
+            if (!string.IsNullOrEmpty(jobId))
             {
-                var endpoint =
-                    $"/api2/v3/projects/{projectRequest.ProjectUId}/jobs/{jobRequest.JobUId}/analyses";
-
+                var endpoint = $"/api2/v3/projects/{projectRequest.ProjectUId}/jobs/{jobId}/analyses";
                 var listRequest = new RestRequest(endpoint, Method.Get);
                 analyses = await Client.Paginate<AnalysisDto>(listRequest);
             }
             else
             {
                 var endpoint = $"/api2/v3/projects/{projectRequest.ProjectUId}/analyses";
-
                 var listRequest = new RestRequest(endpoint, Method.Get);
                 analyses = await Client.Paginate<AnalysisDto>(listRequest);
             }
