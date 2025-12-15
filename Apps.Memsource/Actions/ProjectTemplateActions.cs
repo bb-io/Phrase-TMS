@@ -101,14 +101,14 @@ namespace Apps.PhraseTMS.Actions
                 throw new PluginMisconfigurationException(
                     "Project template has no target languages configured. Please add target languages in Phrase TMS.");
 
-            var hasWorkflowSteps = template.WorkflowSteps != null && template.WorkflowSteps.Any();
+            var hasWorkflowSteps = input.WorkflowStepUid != null && template.WorkflowSteps != null && template.WorkflowSteps.Any();
 
             IEnumerable<ProjectTemplateWorkflowStepDto> stepsToProcess = Enumerable.Empty<ProjectTemplateWorkflowStepDto>();
 
             if (hasWorkflowSteps)
             {
-                if (!string.IsNullOrWhiteSpace(input.WorkflowStepUid))
-                {
+                //if (!string.IsNullOrWhiteSpace(input.WorkflowStepUid))
+                //{
                     stepsToProcess = template.WorkflowSteps
                         .Where(ws => StepMatches(ws, input.WorkflowStepUid!))
                         .ToList();
@@ -118,20 +118,20 @@ namespace Apps.PhraseTMS.Actions
                         throw new PluginMisconfigurationException(
                             $"Workflow step '{input.WorkflowStepUid}' does not exist in the project template.");
                     }
-                }
-                else
-                {
-                    stepsToProcess = template.WorkflowSteps;
-                }
-            }
-            else
-            {
-                if (!string.IsNullOrWhiteSpace(input.WorkflowStepUid))
-                {
-                    throw new PluginMisconfigurationException(
-                        "Workflow step UID was provided, but the project template has no workflow steps configured in Phrase TMS. " +
-                        "Please remove the workflow step selection or configure workflow steps in Phrase TMS.");
-                }
+            //    }
+            //    else
+            //    {
+            //        stepsToProcess = template.WorkflowSteps;
+            //    }
+            //}
+            //else
+            //{
+            //    if (!string.IsNullOrWhiteSpace(input.WorkflowStepUid))
+            //    {
+            //        throw new PluginMisconfigurationException(
+            //            "Workflow step UID was provided, but the project template has no workflow steps configured in Phrase TMS. " +
+            //            "Please remove the workflow step selection or configure workflow steps in Phrase TMS.");
+            //    }
             }
 
             var getTmsRequest = new RestRequest(
