@@ -362,3 +362,4 @@ healthchecksdb
 /Tests.PhraseTMS/TestFiles/Output
 /Tests.PhraseTMS/appsettings.json
 /Tests.PhraseTMS/appsettings.json
+/Tests.PhraseTMS/TestFiles/Input/sample_v3_phrase_dca_test.tbx

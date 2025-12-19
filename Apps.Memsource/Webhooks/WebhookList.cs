@@ -33,12 +33,18 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         [WebhookParameter] MultipleSubdomains subdomains,
         [WebhookParameter] MultipleDomains domains)
     {
-        var data = JsonConvert.DeserializeObject<ProjectWrapper>(webhookRequest.Body.ToString()!);
+        var requestBody = webhookRequest.Body?.ToString();
+        if (string.IsNullOrWhiteSpace(requestBody))
+        {
+            InvocationContext.Logger?.LogError("[PhraseTMSProjectCreation] Webhook body is null or empty", []);
+            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
+        }
 
+        var data = JsonConvert.DeserializeObject<ProjectWrapper>(requestBody);
         if (data is null)
         {
-            InvocationContext.Logger?.LogError($"[PhraseTMSProjectCreation] Data is null. Body: {webhookRequest.Body}", []);
-            throw new InvalidCastException(nameof(webhookRequest.Body));
+            InvocationContext.Logger?.LogError($"[PhraseTMSProjectCreation] Failed to deserialize webhook body. Body: {requestBody}", []);
+            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
         }
 
         if (!string.IsNullOrEmpty(projectCreatedRequest.ProjectNameContains) &&
@@ -89,10 +95,18 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
     public async Task<WebhookResponse<ProjectDto>> ProjectDeletion(WebhookRequest webhookRequest,
         [WebhookParameter] ProjectOptionalRequest request)
     {
-        var data = JsonConvert.DeserializeObject<ProjectWrapper>(webhookRequest.Body.ToString());
+        var requestBody = webhookRequest.Body?.ToString();
+        if (string.IsNullOrWhiteSpace(requestBody))
+        {
+            InvocationContext.Logger?.LogError("[PhraseTMSProjectDeletion] Webhook body is null or empty", []);
+            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
+        }
+
+        var data = JsonConvert.DeserializeObject<ProjectWrapper>(requestBody);
         if (data is null)
         {
-            throw new InvalidCastException(nameof(webhookRequest.Body));
+            InvocationContext.Logger?.LogError($"[PhraseTMSProjectDeletion] Failed to deserialize webhook body. Body: {requestBody}", []);
+            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
         }
 
         if (request.ProjectUId != null && data.Project.UId != request.ProjectUId)
@@ -117,10 +131,18 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
     public async Task<WebhookResponse<ProjectDto>> ProjectDueDateChanged(WebhookRequest webhookRequest,
         [WebhookParameter] ProjectOptionalRequest request)
     {
-        var data = JsonConvert.DeserializeObject<ProjectWrapper>(webhookRequest.Body.ToString());
+        var requestBody = webhookRequest.Body?.ToString();
+        if (string.IsNullOrWhiteSpace(requestBody))
+        {
+            InvocationContext.Logger?.LogError("[PhraseTMSProjectDueDateChanged] Webhook body is null or empty", []);
+            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
+        }
+
+        var data = JsonConvert.DeserializeObject<ProjectWrapper>(requestBody);
         if (data is null)
         {
-            throw new InvalidCastException(nameof(webhookRequest.Body));
+            InvocationContext.Logger?.LogError($"[PhraseTMSProjectDueDateChanged] Failed to deserialize webhook body. Body: {requestBody}", []);
+            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
         }
 
         if (request.ProjectUId != null && data.Project.UId != request.ProjectUId)
@@ -145,11 +167,18 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
     public async Task<WebhookResponse<ProjectDto>> ProjectMetadataUpdated(WebhookRequest webhookRequest,
         [WebhookParameter] ProjectOptionalRequest request)
     {
-        var data = JsonConvert.DeserializeObject<ProjectWrapper>(webhookRequest.Body.ToString());
+        var requestBody = webhookRequest.Body?.ToString();
+        if (string.IsNullOrWhiteSpace(requestBody))
+        {
+            InvocationContext.Logger?.LogError("[PhraseTMSProjectMetadataUpdated] Webhook body is null or empty", []);
+            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
+        }
+
+        var data = JsonConvert.DeserializeObject<ProjectWrapper>(requestBody);
         if (data is null)
         {
-            InvocationContext.Logger?.LogError($"[PhraseTMSProjectMetadataUpdated] Data is null. Body: {webhookRequest.Body}", []);
-            throw new InvalidCastException(nameof(webhookRequest.Body));
+            InvocationContext.Logger?.LogError($"[PhraseTMSProjectMetadataUpdated] Failed to deserialize webhook body. Body: {requestBody}", []);
+            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
         }
 
         if (request.ProjectUId != null && data.Project.UId != request.ProjectUId)
@@ -174,11 +203,18 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
     public async Task<WebhookResponse<ProjectDto>> ProjectSharedAssigned(WebhookRequest webhookRequest,
         [WebhookParameter] ProjectOptionalRequest request)
     {
-        var data = JsonConvert.DeserializeObject<ProjectWrapper>(webhookRequest.Body.ToString());
+        var requestBody = webhookRequest.Body?.ToString();
+        if (string.IsNullOrWhiteSpace(requestBody))
+        {
+            InvocationContext.Logger?.LogError("[PhraseTMSProjectSharedAssigned] Webhook body is null or empty", []);
+            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
+        }
+
+        var data = JsonConvert.DeserializeObject<ProjectWrapper>(requestBody);
         if (data is null)
         {
-            InvocationContext.Logger?.LogError($"[PhraseTMSProjectSharedAssigned] Data is null. Body: {webhookRequest.Body}", []);
-            throw new InvalidCastException(nameof(webhookRequest.Body));
+            InvocationContext.Logger?.LogError($"[PhraseTMSProjectSharedAssigned] Failed to deserialize webhook body. Body: {requestBody}", []);
+            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
         }
 
         if (request.ProjectUId != null && data.Project.UId != request.ProjectUId)
@@ -208,11 +244,18 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         [WebhookParameter] MultipleSubdomains subdomains,
         [WebhookParameter] MultipleDomains domains)
     {
-        var data = JsonConvert.DeserializeObject<ProjectWrapper>(webhookRequest.Body.ToString()!);
+        var requestBody = webhookRequest.Body?.ToString();
+        if (string.IsNullOrWhiteSpace(requestBody))
+        {
+            InvocationContext.Logger?.LogError("[PhraseTMSProjectStatusChanged] Webhook body is null or empty", []);
+            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
+        }
+
+        var data = JsonConvert.DeserializeObject<ProjectWrapper>(requestBody);
         if (data is null)
         {
-            InvocationContext.Logger?.LogError($"[PhraseTMSProjectStatusChanged] Data is null. Body: {webhookRequest.Body}", []);
-            throw new InvalidCastException($"Couldn't convert {nameof(webhookRequest.Body)} to {nameof(ProjectWrapper)}.");
+            InvocationContext.Logger?.LogError($"[PhraseTMSProjectStatusChanged] Failed to deserialize webhook body. Body: {requestBody}", []);
+            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
         }
 
         if (request.Status is not null && !request.Status.Contains(data.Project.Status))
@@ -308,10 +351,19 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
     public async Task<WebhookResponse<MultipleJobResponse>> JobCreation(WebhookRequest webhookRequest,
         [WebhookParameter] JobCreatedFilters filters)
     {
-        var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
+        var requestBody = webhookRequest.Body?.ToString();
+        if (string.IsNullOrWhiteSpace(requestBody))
+        {
+            InvocationContext.Logger?.LogError("[PhraseTMSJobCreation] Webhook body is null or empty", []);
+            return new WebhookResponse<MultipleJobResponse> { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
+        }
 
+        var data = JsonConvert.DeserializeObject<JobsWrapper>(requestBody);
         if (data?.JobParts == null || data.JobParts.Count == 0)
-            return new WebhookResponse<MultipleJobResponse> { ReceivedWebhookRequestType = WebhookRequestType.Preflight};
+        {
+            InvocationContext.Logger?.LogError($"[PhraseTMSJobCreation] No job parts found in webhook body. Body: {requestBody}", []);
+            return new WebhookResponse<MultipleJobResponse> { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
+        }
 
         var uniqueProjectUids = data.JobParts
             .Where(p => p?.Project?.Uid != null)
@@ -343,7 +395,20 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
     [Webhook("On jobs deleted", typeof(JobDeletionHandler), Description = "Triggered when any jobs are deleted")]
     public async Task<WebhookResponse<JobsWrapper>> JobDeletion(WebhookRequest webhookRequest)
     {
-        var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
+        var requestBody = webhookRequest.Body?.ToString();
+        if (string.IsNullOrWhiteSpace(requestBody))
+        {
+            InvocationContext.Logger?.LogError("[PhraseTMSJobDeletion] Webhook body is null or empty", []);
+            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
+        }
+
+        var data = JsonConvert.DeserializeObject<JobsWrapper>(requestBody);
+        if (data is null)
+        {
+            InvocationContext.Logger?.LogError($"[PhraseTMSJobDeletion] Failed to deserialize webhook body. Body: {requestBody}", []);
+            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
+        }
+
         return new()
         {
             Result = data
@@ -354,7 +419,20 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
     public async Task<WebhookResponse<MultipleJobResponse>> JobContinuousUpdated(WebhookRequest webhookRequest,
         [WebhookParameter] JobOptionalRequest request)
     {
-        var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
+        var requestBody = webhookRequest.Body?.ToString();
+        if (string.IsNullOrWhiteSpace(requestBody))
+        {
+            InvocationContext.Logger?.LogError("[PhraseTMSJobContinuousUpdated] Webhook body is null or empty", []);
+            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
+        }
+
+        var data = JsonConvert.DeserializeObject<JobsWrapper>(requestBody);
+        if (data is null)
+        {
+            InvocationContext.Logger?.LogError($"[PhraseTMSJobContinuousUpdated] Failed to deserialize webhook body. Body: {requestBody}", []);
+            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
+        }
+
         return new()
         {
             HttpResponseMessage = null,
@@ -370,7 +448,19 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         [WebhookParameter] JobAssignedRequest request,
         [WebhookParameter] OptionalJobRequest job)
     {
-        var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
+        var requestBody = webhookRequest.Body?.ToString();
+        if (string.IsNullOrWhiteSpace(requestBody))
+        {
+            InvocationContext.Logger?.LogError("[PhraseTMSJobAssigned] Webhook body is null or empty", []);
+            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
+        }
+
+        var data = JsonConvert.DeserializeObject<JobsWrapper>(requestBody);
+        if (data is null)
+        {
+            InvocationContext.Logger?.LogError($"[PhraseTMSJobAssigned] Failed to deserialize webhook body. Body: {requestBody}", []);
+            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
+        }
 
         if (request.UserId is not null && data.JobParts.FirstOrDefault().assignedTo.All(x => x.Uid != request.UserId))
         {
@@ -401,7 +491,20 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
     public async Task<WebhookResponse<MultipleJobResponse>> JobDueDateChanged(WebhookRequest webhookRequest,
         [WebhookParameter] JobOptionalRequest request)
     {
-        var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
+        var requestBody = webhookRequest.Body?.ToString();
+        if (string.IsNullOrWhiteSpace(requestBody))
+        {
+            InvocationContext.Logger?.LogError("[PhraseTMSJobDueDateChanged] Webhook body is null or empty", []);
+            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
+        }
+
+        var data = JsonConvert.DeserializeObject<JobsWrapper>(requestBody);
+        if (data is null)
+        {
+            InvocationContext.Logger?.LogError($"[PhraseTMSJobDueDateChanged] Failed to deserialize webhook body. Body: {requestBody}", []);
+            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
+        }
+
         return new()
         {
             HttpResponseMessage = null,
@@ -416,7 +519,20 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
     public async Task<WebhookResponse<MultipleJobResponse>> JobExported(WebhookRequest webhookRequest,
         [WebhookParameter] JobOptionalRequest request)
     {
-        var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
+        var requestBody = webhookRequest.Body?.ToString();
+        if (string.IsNullOrWhiteSpace(requestBody))
+        {
+            InvocationContext.Logger?.LogError("[PhraseTMSJobExported] Webhook body is null or empty", []);
+            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
+        }
+
+        var data = JsonConvert.DeserializeObject<JobsWrapper>(requestBody);
+        if (data is null)
+        {
+            InvocationContext.Logger?.LogError($"[PhraseTMSJobExported] Failed to deserialize webhook body. Body: {requestBody}", []);
+            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
+        }
+
         return new()
         {
             HttpResponseMessage = null,
@@ -431,7 +547,20 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
     public async Task<WebhookResponse<MultipleJobResponse>> JobSourceUpdated(WebhookRequest webhookRequest,
         [WebhookParameter] JobOptionalRequest request)
     {
-        var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
+        var requestBody = webhookRequest.Body?.ToString();
+        if (string.IsNullOrWhiteSpace(requestBody))
+        {
+            InvocationContext.Logger?.LogError("[PhraseTMSJobSourceUpdated] Webhook body is null or empty", []);
+            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
+        }
+
+        var data = JsonConvert.DeserializeObject<JobsWrapper>(requestBody);
+        if (data is null)
+        {
+            InvocationContext.Logger?.LogError($"[PhraseTMSJobSourceUpdated] Failed to deserialize webhook body. Body: {requestBody}", []);
+            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
+        }
+
         return new()
         {
             HttpResponseMessage = null,
@@ -469,11 +598,18 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             throw new PluginMisconfigurationException("If Source file ID is specified in the inputs you must also specify the Project ID");
         }
 
-        var data = JsonConvert.DeserializeObject<JobStatusChangedWrapper>(webhookRequest.Body.ToString()!);
+        var requestBody = webhookRequest.Body?.ToString();
+        if (string.IsNullOrWhiteSpace(requestBody))
+        {
+            InvocationContext.Logger?.LogError("[PhraseTMSJobStatusChanged] Webhook body is null or empty", []);
+            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
+        }
+
+        var data = JsonConvert.DeserializeObject<JobStatusChangedWrapper>(requestBody);
         if (data is null)
         {
-            InvocationContext.Logger?.LogError($"[PhraseTMSJobStatusChanged] Data is null. Body: {webhookRequest.Body}", []);
-            throw new InvalidCastException(nameof(webhookRequest.Body));
+            InvocationContext.Logger?.LogError($"[PhraseTMSJobStatusChanged] Failed to deserialize webhook body. Body: {requestBody}", []);
+            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
         }
 
         if (!String.IsNullOrEmpty(projectNameContains) && !data.metadata.project.Name.Contains(projectNameContains))
@@ -672,26 +808,26 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
     [DataSource(typeof(LanguageDataHandler))] string? TargetLang)
     
     {
-        var requestBody = webhookRequest.Body.ToString();
+        var requestBody = webhookRequest.Body?.ToString();
         InvocationContext.Logger?.LogInformation($"[PhraseTMS Webhook] Raw body: {Newtonsoft.Json.JsonConvert.SerializeObject(webhookRequest)}",null);
         if (string.IsNullOrWhiteSpace(requestBody))
         {
-            InvocationContext.Logger?.LogError("[PhraseTMS Webhook] Body is null or empty", null);
-            throw new InvalidCastException("Webhook request body is null or empty.");
+            InvocationContext.Logger?.LogError("[PhraseTMS Webhook] Webhook body is null or empty", null);
+            return new WebhookResponse<ListAllJobsResponse> { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
         }
 
         var jobData = JsonConvert.DeserializeObject<JobsWrapper>(requestBody);
         if (jobData is null)
         {
-            InvocationContext.Logger?.LogError("[PhraseTMS Webhook] Failed to deserialize webhook request body", null);
-            throw new InvalidCastException("Failed to deserialize webhook request body.");
+            InvocationContext.Logger?.LogError($"[PhraseTMS Webhook] Failed to deserialize webhook body. Body: {requestBody}", null);
+            return new WebhookResponse<ListAllJobsResponse> { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
         }
 
-        var primaryJob = jobData.JobParts.FirstOrDefault();
+        var primaryJob = jobData.JobParts?.FirstOrDefault();
         if (primaryJob == null)
         {
-            InvocationContext.Logger?.LogError("[PhraseTMS Webhook] Failed to retrieve a job from webhook request body", null);
-            throw new InvalidCastException("Failed to retrieve a job from webhook request body.");
+            InvocationContext.Logger?.LogError($"[PhraseTMS Webhook] No jobs found in webhook body. JobParts count: {jobData.JobParts?.Count ?? 0}", null);
+            return new WebhookResponse<ListAllJobsResponse> { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
         }
 
         InvocationContext.Logger?.LogInformation($"[PhraseTMS Webhook] Primary job: uid={primaryJob.Uid}, status={primaryJob.Status}, target={primaryJob.TargetLang}, workflowLevel={primaryJob.workflowLevel}, project={primaryJob.Project?.Uid}",null);
@@ -765,7 +901,20 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
     public async Task<WebhookResponse<JobDto>> JobTargetUpdated(WebhookRequest webhookRequest,
         [WebhookParameter] JobOptionalRequest optionalRequest)
     {
-        var data = JsonConvert.DeserializeObject<JobWrapper>(webhookRequest.Body.ToString());
+        var requestBody = webhookRequest.Body?.ToString();
+        if (string.IsNullOrWhiteSpace(requestBody))
+        {
+            InvocationContext.Logger?.LogError("[PhraseTMSJobTargetUpdated] Webhook body is null or empty", []);
+            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
+        }
+
+        var data = JsonConvert.DeserializeObject<JobWrapper>(requestBody);
+        if (data is null)
+        {
+            InvocationContext.Logger?.LogError($"[PhraseTMSJobTargetUpdated] Failed to deserialize webhook body. Body: {requestBody}", []);
+            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
+        }
+
         var request = new RestRequest($"/api2/v1/projects/{data.JobPart.Project.Uid}/jobs/{data.JobPart.Uid}", Method.Get);
         var job = await Client.ExecuteWithHandling<JobDto>(request);
 
@@ -783,7 +932,20 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
     public async Task<WebhookResponse<MultipleJobResponse>> JobUnexported(WebhookRequest webhookRequest,
         [WebhookParameter] JobOptionalRequest request)
     {
-        var data = JsonConvert.DeserializeObject<JobsWrapper>(webhookRequest.Body.ToString());
+        var requestBody = webhookRequest.Body?.ToString();
+        if (string.IsNullOrWhiteSpace(requestBody))
+        {
+            InvocationContext.Logger?.LogError("[PhraseTMSJobUnexported] Webhook body is null or empty", []);
+            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
+        }
+
+        var data = JsonConvert.DeserializeObject<JobsWrapper>(requestBody);
+        if (data is null)
+        {
+            InvocationContext.Logger?.LogError($"[PhraseTMSJobUnexported] Failed to deserialize webhook body. Body: {requestBody}", []);
+            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
+        }
+
         return new()
         {
             HttpResponseMessage = null,
@@ -892,10 +1054,18 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
     public async Task<WebhookResponse<AnalysisDto>> AnalysisCreation(WebhookRequest webhookRequest,
         [WebhookParameter] ProjectOptionalRequest projectFilter)
     {
-        var data = JsonConvert.DeserializeObject<AnalyseWrapper>(webhookRequest.Body.ToString());
+        var requestBody = webhookRequest.Body?.ToString();
+        if (string.IsNullOrWhiteSpace(requestBody))
+        {
+            InvocationContext.Logger?.LogError("[PhraseTMSAnalysisCreation] Webhook body is null or empty", []);
+            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
+        }
+
+        var data = JsonConvert.DeserializeObject<AnalyseWrapper>(requestBody);
         if (data is null)
         {
-            throw new InvalidCastException(nameof(webhookRequest.Body));
+            InvocationContext.Logger?.LogError($"[PhraseTMSAnalysisCreation] Failed to deserialize webhook body. Body: {requestBody}", []);
+            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
         }
 
         if (projectFilter != null && !String.IsNullOrEmpty(projectFilter.ProjectUId)

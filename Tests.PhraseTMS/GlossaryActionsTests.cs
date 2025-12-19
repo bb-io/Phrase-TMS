@@ -29,7 +29,11 @@ public class GlossaryActionsTests : TestBase
     {
         // Arrange
         var action = new GlossaryActions(InvocationContext, FileManager);
-        var request = new ImportGlossaryRequest { GlossaryUId = "9N18Vm34tGRFb2Yia2EKR5", File= new Blackbird.Applications.Sdk.Common.Files.FileReference { Name= "sample_v3_phrase_dca.tbx" } };
+        var request = new ImportGlossaryRequest { 
+            GlossaryUId = "9N18Vm34tGRFb2Yia2EKR5", 
+            File= new Blackbird.Applications.Sdk.Common.Files.FileReference { Name= "sample_v3_phrase_dca.tbx" } ,
+            UpdateExistingTerms= true
+        };
 
         // Act
         await action.ImportGlossary(request);

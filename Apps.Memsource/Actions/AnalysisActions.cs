@@ -1,4 +1,5 @@
 ﻿using Apps.PhraseTMS.Constants;
+using Apps.PhraseTMS.DataSourceHandlers;
 using Apps.PhraseTMS.DataSourceHandlers.StaticHandlers;
 using Apps.PhraseTMS.Dtos.Analysis;
 using Apps.PhraseTMS.Dtos.Jobs;
@@ -9,6 +10,8 @@ using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Dictionaries;
+using Blackbird.Applications.Sdk.Common.Dynamic;
+using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
@@ -45,6 +48,58 @@ public class AnalysisActions(InvocationContext invocationContext, IFileManagemen
 
         return new ListAnalysesResponse { Analyses = result };
     }
+
+    [Action("Find analysis", Description = "Find a single analysis of a project using optional filters.")]
+    public async Task<FullAnalysisDto> FindAnalysisAsync(
+     [ActionParameter] ProjectRequest projectRequest,
+     [ActionParameter] FindAnalysisQueryRequest input,
+     [ActionParameter] ListAnalysesQueryRequest query)
+    {
+        var endpoint = $"/api2/v3/projects/{projectRequest.ProjectUId}/analyses"
+            .WithQuery(query);
+
+        var request = new RestRequest(endpoint, Method.Get);
+        var analysisSummaries = await Client.Paginate<AnalysisDto>(request);
+
+        if (!string.IsNullOrWhiteSpace(input.NameContains))
+        {
+            analysisSummaries = analysisSummaries
+                .Where(a => a.Name != null &&
+                            a.Name.Contains(input.NameContains, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+
+        if (!analysisSummaries.Any())
+            return new FullAnalysisDto();
+
+        var fullAnalyses = new List<FullAnalysisDto>();
+
+        foreach (var summary in analysisSummaries)
+        {
+            var fullRequest = new RestRequest($"/api2/v3/analyses/{summary.UId}", Method.Get);
+            var full = await Client.ExecuteWithHandling<FullAnalysisDto>(fullRequest);
+            fullAnalyses.Add(full);
+        }
+
+        if (input.OnlyMostRecent == true)
+        {
+            fullAnalyses = fullAnalyses
+                .OrderByDescending(a => a.DateCreated)
+                .Take(1)
+                .ToList();
+        }
+
+        if (!fullAnalyses.Any())
+            return new FullAnalysisDto();
+
+        var selected = fullAnalyses
+            .OrderByDescending(a => a.DateCreated)
+            .First();
+
+        return selected;
+    }
+
+
 
     [Action("Search project analyses", Description = "Search through all analyses of a specific project")]
     public async Task<ListAnalysesResponse> ListProjectAnalyses(
@@ -171,7 +226,7 @@ public class AnalysisActions(InvocationContext invocationContext, IFileManagemen
     [Action("Delete analyses", Description = "Delete analyses")]
     public async Task<DeleteAnalysesResponse> DeleteAnalyses(
     [ActionParameter] ProjectRequest projectRequest,
-    [ActionParameter] JobRequest? jobRequest,
+    [ActionParameter, Display("Job ID"), DataSource(typeof(JobDataHandler))] string? jobId,
     [ActionParameter] DeleteAnalysesRequest input)
     {
         var idsToDelete = input.AnalysesIds?.ToList() ?? new List<string>();
@@ -180,18 +235,15 @@ public class AnalysisActions(InvocationContext invocationContext, IFileManagemen
         {
             IEnumerable<AnalysisDto> analyses;
 
-            if (jobRequest is not null && !string.IsNullOrEmpty(jobRequest.JobUId))
+            if (!string.IsNullOrEmpty(jobId))
             {
-                var endpoint =
-                    $"/api2/v3/projects/{projectRequest.ProjectUId}/jobs/{jobRequest.JobUId}/analyses";
-
+                var endpoint = $"/api2/v3/projects/{projectRequest.ProjectUId}/jobs/{jobId}/analyses";
                 var listRequest = new RestRequest(endpoint, Method.Get);
                 analyses = await Client.Paginate<AnalysisDto>(listRequest);
             }
             else
             {
                 var endpoint = $"/api2/v3/projects/{projectRequest.ProjectUId}/analyses";
-
                 var listRequest = new RestRequest(endpoint, Method.Get);
                 analyses = await Client.Paginate<AnalysisDto>(listRequest);
             }

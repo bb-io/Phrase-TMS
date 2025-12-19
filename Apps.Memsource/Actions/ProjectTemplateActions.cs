@@ -80,8 +80,11 @@ namespace Apps.PhraseTMS.Actions
             return await Client.ExecuteWithHandling<ProjectTemplateDto>(request);
         }
 
-        [Action("Set project template translation memory", Description = "Assign a translation memory to a project template for all target languages and workflow steps")]
-        public async Task SetProjectTemplateTranslationMemory([ActionParameter] ProjectTemplateRequest templateRequest, [ActionParameter] SetTemplateTranslationMemoryRequest input)
+        [Action( "Set project template translation memory",
+       Description = "Assign a translation memory to a project template for all target languages and workflow steps")]
+        public async Task SetProjectTemplateTranslationMemory(
+       [ActionParameter] ProjectTemplateRequest templateRequest,
+       [ActionParameter] SetTemplateTranslationMemoryRequest input)
         {
             if (string.IsNullOrWhiteSpace(templateRequest.ProjectTemplateUId))
                 throw new PluginMisconfigurationException(
@@ -101,36 +104,24 @@ namespace Apps.PhraseTMS.Actions
                 throw new PluginMisconfigurationException(
                     "Project template has no target languages configured. Please add target languages in Phrase TMS.");
 
-            var hasWorkflowSteps = template.WorkflowSteps != null && template.WorkflowSteps.Any();
+            var hasWorkflowStep =
+                !string.IsNullOrWhiteSpace(input.WorkflowStepUid) &&
+                template.WorkflowSteps != null &&
+                template.WorkflowSteps.Any();
 
             IEnumerable<ProjectTemplateWorkflowStepDto> stepsToProcess = Enumerable.Empty<ProjectTemplateWorkflowStepDto>();
 
-            if (hasWorkflowSteps)
+            if (hasWorkflowStep)
             {
-                if (!string.IsNullOrWhiteSpace(input.WorkflowStepUid))
-                {
-                    stepsToProcess = template.WorkflowSteps
-                        .Where(ws => StepMatches(ws, input.WorkflowStepUid!))
-                        .ToList();
+                stepsToProcess = template.WorkflowSteps
+                    .Where(ws => StepMatches(ws, input.WorkflowStepUid!))
+                    .Where(ws => !string.IsNullOrWhiteSpace(ws.Uid)) // defensive
+                    .ToList();
 
-                    if (!stepsToProcess.Any())
-                    {
-                        throw new PluginMisconfigurationException(
-                            $"Workflow step '{input.WorkflowStepUid}' does not exist in the project template.");
-                    }
-                }
-                else
-                {
-                    stepsToProcess = template.WorkflowSteps;
-                }
-            }
-            else
-            {
-                if (!string.IsNullOrWhiteSpace(input.WorkflowStepUid))
+                if (!stepsToProcess.Any())
                 {
                     throw new PluginMisconfigurationException(
-                        "Workflow step UID was provided, but the project template has no workflow steps configured in Phrase TMS. " +
-                        "Please remove the workflow step selection or configure workflow steps in Phrase TMS.");
+                        $"Workflow step '{input.WorkflowStepUid}' does not exist or is not active in the project template.");
                 }
             }
 
@@ -146,23 +137,75 @@ namespace Apps.PhraseTMS.Actions
 
             var dataPerContext = new List<object>();
 
-            foreach (var targetLang in template.TargetLangs)
+            if (!hasWorkflowStep)
             {
-                var langConfig = perTarget
-                    .FirstOrDefault(x =>
+                var existingTms = perTarget
+                    .Where(t => t.PttmsPerWfStep != null)
+                    .SelectMany(t => t.PttmsPerWfStep!)
+                    .Where(w => w.PttmData != null)
+                    .SelectMany(w => w.PttmData!)
+                    .ToList();
+
+                var alreadyPresent = existingTms.Any(tm =>
+                    tm.TransMemory?.Uid != null &&
+                    string.Equals(tm.TransMemory.Uid, input.TransMemoryUid,
+                        StringComparison.OrdinalIgnoreCase));
+
+                var mergedTms = existingTms
+                    .Where(tm => tm.TransMemory?.Uid != null)
+                    .Select(tm => new
+                    {
+                        transMemory = new { uid = tm.TransMemory!.Uid },
+                        readMode = tm.ReadMode,
+                        writeMode = tm.WriteMode,
+                        penalty = tm.Penalty,
+                        applyPenaltyTo101Only = tm.ApplyPenaltyTo101Only,
+                        order = tm.Order
+                    })
+                    .ToList();
+
+                if (!alreadyPresent)
+                {
+                    var nextOrder = mergedTms
+                        .Where(tm => tm.order.HasValue)
+                        .Select(tm => tm.order!.Value)
+                        .DefaultIfEmpty(0)
+                        .Max() + 1;
+
+                    mergedTms.Add(new
+                    {
+                        transMemory = new { uid = input.TransMemoryUid },
+                        readMode = true,
+                        writeMode = true,
+                        penalty = (int?)null,
+                        applyPenaltyTo101Only = (bool?)null,
+                        order = (int?)nextOrder
+                    });
+                }
+
+                if (mergedTms.Any())
+                {
+                    dataPerContext.Add(new
+                    {
+                        transMemories = mergedTms
+                    });
+                }
+            }
+            else
+            {
+                foreach (var targetLang in template.TargetLangs)
+                {
+                    var langConfig = perTarget.FirstOrDefault(x =>
                         string.Equals(x.TargetLang, targetLang, StringComparison.OrdinalIgnoreCase));
 
-                if (hasWorkflowSteps)
-                {
                     var wfConfigs = langConfig?.PttmsPerWfStep
                                     ?? Enumerable.Empty<ProjectTemplateTmsPerWfStepDto>();
 
                     foreach (var step in stepsToProcess)
                     {
-                        var wfConfig = wfConfigs
-                            .FirstOrDefault(w =>
-                                string.Equals(w.WfStep?.Uid, step.Uid, StringComparison.OrdinalIgnoreCase) ||
-                                string.Equals(w.WfStep?.Id, step.Id, StringComparison.OrdinalIgnoreCase));
+                        var wfConfig = wfConfigs.FirstOrDefault(w =>
+                            string.Equals(w.WfStep?.Uid, step.Uid, StringComparison.OrdinalIgnoreCase) ||
+                            string.Equals(w.WfStep?.Id, step.Id, StringComparison.OrdinalIgnoreCase));
 
                         var existingTms = wfConfig?.PttmData
                                           ?? Enumerable.Empty<ProjectTemplateTmDataDto>();
@@ -186,9 +229,9 @@ namespace Apps.PhraseTMS.Actions
 
                         if (!alreadyPresent)
                         {
-                            var nextOrder = existingTms
-                                .Where(tm => tm.Order.HasValue)
-                                .Select(tm => tm.Order!.Value)
+                            var nextOrder = mergedTms
+                                .Where(tm => tm.order.HasValue)
+                                .Select(tm => tm.order!.Value)
                                 .DefaultIfEmpty(0)
                                 .Max() + 1;
 
@@ -218,63 +261,6 @@ namespace Apps.PhraseTMS.Actions
                             orderEnabled = true
                         });
                     }
-                }
-                else
-                {
-                    var wfConfigs = langConfig?.PttmsPerWfStep
-                                    ?? Enumerable.Empty<ProjectTemplateTmsPerWfStepDto>();
-
-                    var existingTms = wfConfigs
-                        .Where(w => w.PttmData != null)
-                        .SelectMany(w => w.PttmData!)
-                        .ToList();
-
-                    var alreadyPresent = existingTms.Any(tm =>
-                        tm.TransMemory?.Uid != null &&
-                        string.Equals(tm.TransMemory.Uid, input.TransMemoryUid,
-                            StringComparison.OrdinalIgnoreCase));
-
-                    var mergedTms = existingTms
-                        .Where(tm => tm.TransMemory?.Uid != null)
-                        .Select(tm => new
-                        {
-                            transMemory = new { uid = tm.TransMemory!.Uid },
-                            readMode = tm.ReadMode,
-                            writeMode = tm.WriteMode,
-                            penalty = tm.Penalty,
-                            applyPenaltyTo101Only = tm.ApplyPenaltyTo101Only,
-                            order = tm.Order
-                        })
-                        .ToList();
-
-                    if (!alreadyPresent)
-                    {
-                        var nextOrder = existingTms
-                            .Where(tm => tm.Order.HasValue)
-                            .Select(tm => tm.Order!.Value)
-                            .DefaultIfEmpty(0)
-                            .Max() + 1;
-
-                        mergedTms.Add(new
-                        {
-                            transMemory = new { uid = input.TransMemoryUid },
-                            readMode = true,
-                            writeMode = true,
-                            penalty = (int?)null,
-                            applyPenaltyTo101Only = (bool?)null,
-                            order = (int?)nextOrder
-                        });
-                    }
-
-                    if (!mergedTms.Any())
-                        continue;
-
-                    dataPerContext.Add(new
-                    {
-                        transMemories = mergedTms,
-                        targetLang = targetLang,
-                        orderEnabled = true
-                    });
                 }
             }
 

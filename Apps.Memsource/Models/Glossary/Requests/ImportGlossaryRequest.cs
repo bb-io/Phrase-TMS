@@ -13,4 +13,9 @@ public class ImportGlossaryRequest
 
     [Display("Glossary file", Description = "Glossary file exported from other Blackbird apps")]
     public FileReference File { get; set; }
+
+    [Display("Update existing terms",
+        Description = "If enabled, existing terms in the term base will be updated. " +
+                      "If disabled or not set, new terms will be created.")]
+    public bool? UpdateExistingTerms { get; set; }
 }

@@ -1,16 +1,17 @@
-﻿using Blackbird.Applications.Sdk.Common.Actions;
-using Blackbird.Applications.Sdk.Common;
-using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
-using System.Net.Mime;
+﻿using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Models.Glossary.Requests;
-using Apps.PhraseTMS.Dtos;
-using Blackbird.Applications.Sdk.Utils.Extensions.String;
-using RestSharp;
+using Apps.PhraseTMS.Models.Glossary.Responses;
+using Blackbird.Applications.Sdk.Common;
+using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.Sdk.Glossaries.Utils.Converters;
 using Blackbird.Applications.Sdk.Utils.Extensions.Files;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
-using Apps.PhraseTMS.Models.Glossary.Responses;
+using Blackbird.Applications.Sdk.Utils.Extensions.String;
+using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
+using RestSharp;
+using System.Net.Mime;
+using System.Text;
 using System.Xml.Linq;
 
 namespace Apps.PhraseTMS.Actions;
@@ -67,14 +68,19 @@ public class GlossaryActions(InvocationContext invocationContext, IFileManagemen
     public async Task ImportGlossary([ActionParameter] ImportGlossaryRequest input)
     {
         var fileStream = await fileManagementClient.DownloadAsync(input.File);
-        var fileTbxv2Stream = await CoreTbxVersionsConverter.ConvertFromTbxV3ToV2(fileStream, true);
+        await using var fileTbxv2Stream = await CoreTbxVersionsConverter
+            .ConvertFromTbxV3ToV2(fileStream, convertAll: true);
 
-        var endpointGlossaryData = $"/api2/v1/termBases/{input.GlossaryUId}/upload";
-        var requestGlossaryData = new RestRequest(endpointGlossaryData.WithQuery(new{updateTerms = false}), Method.Post);
-        requestGlossaryData.AddHeader("Content-Disposition", $"filename*=UTF-8''{input.File.Name}");
-        requestGlossaryData.AddParameter("application/octet-stream", fileTbxv2Stream.GetByteData().Result, ParameterType.RequestBody);
+        var updateTerms = input.UpdateExistingTerms ?? false;
+        var endpoint = $"/api2/v1/termBases/{input.GlossaryUId}/upload"
+            .WithQuery(new { updateTerms });
+        var bytes = await fileTbxv2Stream.GetByteData();
 
-        await Client.ExecuteWithHandling(requestGlossaryData);
+        var request = new RestRequest(endpoint, Method.Post);
+        request.AddHeader("Content-Disposition", $"filename*=UTF-8''{input.File.Name}");
+        request.AddParameter("application/octet-stream", bytes, ParameterType.RequestBody);
+
+        await Client.ExecuteWithHandling(request);
     }
 
     private static Stream MergeFromTbx2IntoTbx3(byte[] tbx2Bytes, Stream tbx3Stream)
