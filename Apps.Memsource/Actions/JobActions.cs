@@ -291,62 +291,92 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
     }
 
     // Should be removed in a couple of updates when people adjust.
-    [Action("Create job (use this instead: Upload source file)", Description = "Will be removed in a future version. Use 'Upload source file (create jobs)' instead.")]
-    public async Task<CreatedJobDto> CreateJob(
-        [ActionParameter] ProjectRequest projectRequest,
-        [ActionParameter] CreateJobRequest input)
+    //[Action("Create job (use this instead: Upload source file)", Description = "Will be removed in a future version. Use 'Upload source file (create jobs)' instead.")]
+    //public async Task<CreatedJobDto> CreateJob(
+    //    [ActionParameter] ProjectRequest projectRequest,
+    //    [ActionParameter] CreateJobRequest input)
+    //{
+    //    var fileName = input.File.Name;
+    //    string fileNameForHeader = fileName;
+    //    if (!IsOnlyAscii(fileName))
+    //    {
+    //        fileNameForHeader = Uri.EscapeDataString(fileName);
+    //    }
+
+
+    //    if (string.IsNullOrWhiteSpace(projectRequest.ProjectUId))
+    //    {
+    //        throw new PluginMisconfigurationException("Project ID is not provided. Please specify a valid Project ID.");
+    //    }
+
+    //    if (input.File == null)
+    //    {
+    //        throw new PluginMisconfigurationException("File is not provided. Please upload a file.");
+    //    }
+
+    //    var request = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs", Method.Post);
+
+    //    var bodyJson = JsonConvert.SerializeObject(new
+    //    {
+    //        targetLangs = new List<string> { input.TargetLanguage },
+    //        preTranslate = input.preTranslate ?? false,
+    //        useProjectFileImportSettings = input.useProjectFileImportSettings ?? true,
+    //        due = input.DueDate
+    //    });
+
+    //    request
+    //     .AddHeader("Memsource", bodyJson)
+    //     .AddHeader("Content-Disposition", $"filename*=UTF-8''{fileNameForHeader}")
+    //     .AddHeader("Content-Type", "application/octet-stream");
+
+    //    var fileStream = await fileManagementClient.DownloadAsync(input.File);
+    //    using (var memoryStream = new MemoryStream())
+    //    {
+    //        await fileStream.CopyToAsync(memoryStream);
+    //        memoryStream.Position = 0;
+
+    //        if (memoryStream.ReadByte() == -1)
+    //        {
+    //            throw new PluginMisconfigurationException("The provided file is empty. Please check your file input and try again");
+    //        }
+
+    //        memoryStream.Position = 0;
+    //        var fileBytes = memoryStream.ToArray();
+    //        request.AddParameter("application/octet-stream", fileBytes, ParameterType.RequestBody);
+    //    }
+
+    //    var jobs = await Client.ExecuteWithHandling<JobResponseWrapper>(request);
+    //    return jobs.Jobs.FirstOrDefault();
+    //}
+
+    private const string BlackbirdImportSettingsName = "Blackbird XLIFF 2.x";
+
+    private async Task<ImportSettingDto> GetBlackbirdImportSettings()
     {
-        var fileName = input.File.Name;
-        string fileNameForHeader = fileName;
-        if (!IsOnlyAscii(fileName))
+        var request = new RestRequest($"/api2/v1/importSettings", Method.Get);
+        var result = await Client.Paginate<ImportSettingDto>(request);
+
+        var blackbirdImportSettings = result.FirstOrDefault(x => x.name == BlackbirdImportSettingsName);        
+
+        if (blackbirdImportSettings is not null) return blackbirdImportSettings;
+
+        var newImportRequest = new RestRequest($"/api2/v1/importSettings", Method.Post);
+        var body = new
         {
-            fileNameForHeader = Uri.EscapeDataString(fileName);
-        }
-
-
-        if (string.IsNullOrWhiteSpace(projectRequest.ProjectUId))
-        {
-            throw new PluginMisconfigurationException("Project ID is not provided. Please specify a valid Project ID.");
-        }
-
-        if (input.File == null)
-        {
-            throw new PluginMisconfigurationException("File is not provided. Please upload a file.");
-        }
-
-        var request = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs", Method.Post);
-
-        var bodyJson = JsonConvert.SerializeObject(new
-        {
-            targetLangs = new List<string> { input.TargetLanguage },
-            preTranslate = input.preTranslate ?? false,
-            useProjectFileImportSettings = input.useProjectFileImportSettings ?? true,
-            due = input.DueDate
-        });
-
-        request
-         .AddHeader("Memsource", bodyJson)
-         .AddHeader("Content-Disposition", $"filename*=UTF-8''{fileNameForHeader}")
-         .AddHeader("Content-Type", "application/octet-stream");
-
-        var fileStream = await fileManagementClient.DownloadAsync(input.File);
-        using (var memoryStream = new MemoryStream())
-        {
-            await fileStream.CopyToAsync(memoryStream);
-            memoryStream.Position = 0;
-
-            if (memoryStream.ReadByte() == -1)
+            name = BlackbirdImportSettingsName,
+            fileImportSettings = new
             {
-                throw new PluginMisconfigurationException("The provided file is empty. Please check your file input and try again");
+                xlf2 = new
+                {
+                    preserveWhitespace = false,
+                    skipImportRules = "state=final",
+                    importAsConfirmedRules = "state=reviewed",
+                }
             }
+        };
 
-            memoryStream.Position = 0;
-            var fileBytes = memoryStream.ToArray();
-            request.AddParameter("application/octet-stream", fileBytes, ParameterType.RequestBody);
-        }
-
-        var jobs = await Client.ExecuteWithHandling<JobResponseWrapper>(request);
-        return jobs.Jobs.FirstOrDefault();
+        newImportRequest.AddJsonBody(body);
+        return await Client.ExecuteWithHandling<ImportSettingDto>(newImportRequest);
     }
 
     [Action("Upload source file (create jobs)", Description = "Given a new file, create jobs for the different workflow steps and target languages")]
@@ -369,23 +399,60 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
             var _projectRequest = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}", Method.Get);
             var project = await Client.ExecuteWithHandling<ProjectDto>(_projectRequest);
             input.TargetLanguages = project.TargetLangs;
-        }
+        }        
 
         var request = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs", Method.Post);
 
+        var fileStream = await fileManagementClient.DownloadAsync(input.File);
+        var fileBytes = await fileStream.GetByteData();
+
+        if (fileBytes.Length == 0)
+        {
+            throw new PluginMisconfigurationException("The provided file is empty. Please check your file input and try again");
+        }
+
+        ImportSettingDto? settings = null;
+
+        // Phrase TMS doesn't support xliff v2.1 or newer as of September 2025,
+        // so we need to convert it to v2.0 if the user uploads a newer version.
+        if (input.File.Name.EndsWith(".xlf", StringComparison.OrdinalIgnoreCase) ||
+            input.File.Name.EndsWith(".xliff", StringComparison.OrdinalIgnoreCase))
+        {
+            try
+            {
+                var fileContent = Encoding.UTF8.GetString(fileBytes);
+
+                if (Xliff2Serializer.IsXliff2(fileContent) && Xliff2Serializer.TryGetXliffVersion(fileContent, out var version))
+                {
+                    if (version != "2.0")
+                    {
+                        var transformation = Transformation.Parse(fileContent, input.File.Name);
+                        var xliffV20 = Xliff2Serializer.Serialize(transformation, Xliff2Version.Xliff20);
+                        fileBytes = Encoding.UTF8.GetBytes(xliffV20);
+                    }
+                    settings = await GetBlackbirdImportSettings();
+                }
+            }
+            catch (Exception)
+            {
+                // If deserialization fails, we pass file to Phrase TMS as is
+            }
+        }
+
         var memsourceHeader = JsonConvert.SerializeObject(
-       new
-       {
-           targetLangs = input.TargetLanguages,
-           preTranslate = input.preTranslate ?? false,
-           useProjectFileImportSettings = input.useProjectFileImportSettings ?? true,
-           due = input.DueDate?.ToUniversalTime().ToString("yyyy-MM-dd'T'HH:mm:ssK")
-       },
-       new JsonSerializerSettings
-       {
-           NullValueHandling = NullValueHandling.Ignore,
-           StringEscapeHandling = StringEscapeHandling.EscapeNonAscii
-       });
+           new
+           {
+               targetLangs = input.TargetLanguages,
+               preTranslate = input.preTranslate ?? false,
+               useProjectFileImportSettings = settings is null ? input.useProjectFileImportSettings ?? true : false,
+               due = input.DueDate?.ToUniversalTime().ToString("yyyy-MM-dd'T'HH:mm:ssK"),
+               importSettings = settings,
+           },
+           new JsonSerializerSettings
+           {
+               NullValueHandling = NullValueHandling.Ignore,
+               StringEscapeHandling = StringEscapeHandling.EscapeNonAscii
+           });
 
 
         var rawName = (input.File.Name ?? "upload")
@@ -403,37 +470,6 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
             .AddHeader("Memsource", memsourceHeader)
             .AddHeader("Content-Disposition",
                 $"attachment; filename=\"{quotedAscii}\"; filename*=UTF-8''{encodedName}");
-
-        var fileStream = await fileManagementClient.DownloadAsync(input.File);
-        var fileBytes = await fileStream.GetByteData();
-
-        if (fileBytes.Length == 0)
-        {
-            throw new PluginMisconfigurationException("The provided file is empty. Please check your file input and try again");
-        }
-
-        // Phrase TMS doesn't support xliff v2.1 or newer as of September 2025,
-        // so we need to convert it to v2.0 if the user uploads a newer version.
-        if (input.File.Name.EndsWith(".xlf", StringComparison.OrdinalIgnoreCase) ||
-            input.File.Name.EndsWith(".xliff", StringComparison.OrdinalIgnoreCase))
-        {
-            try
-            {
-                var fileContent = System.Text.Encoding.UTF8.GetString(fileBytes);
-
-                if (Xliff2Serializer.TryGetXliffVersion(fileContent, out var version)
-                    && version != "2.0")
-                {
-                    var transformation = Transformation.Parse(fileContent, input.File.Name);
-                    var xliffV20 = Xliff2Serializer.Serialize(transformation, Xliff2Version.Xliff20);
-                    fileBytes = System.Text.Encoding.UTF8.GetBytes(xliffV20);
-                }
-            }
-            catch (Exception)
-            {
-                // If deserialization fails, we pass file to Phrase TMS as is
-            }
-        }
 
         request.AddParameter("application/octet-stream", fileBytes, ParameterType.RequestBody);
 

@@ -1,0 +1,410 @@
+<xliff srcLang="en-US" trgLang="nl" version="2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" xmlns:its="http://www.w3.org/2005/11/its" xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" xmlns:slr="urn:oasis:names:tc:xliff:sizerestriction:2.0" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file id="f1" its:revPerson="Vitalii Bezuhlyi" its:revTool="Contentful">
+    <skeleton>&lt;html lang="en-US"&gt;&lt;head&gt;&lt;meta name="blackbird-entry-id" content="5746dLKTkEZjOQX21HX2KI"&gt;&lt;meta name="blackbird-locale" content="en-US"&gt;&lt;meta name="blackbird-ucid" content="5746dLKTkEZjOQX21HX2KI"&gt;&lt;meta name="blackbird-content-name" content="The Loire Valley"&gt;&lt;meta name="blackbird-admin-url" content="https://app.contentful.com/spaces/12ktqqmw656e/entries/5746dLKTkEZjOQX21HX2KI"&gt;&lt;meta name="blackbird-system-name" content="Contentful"&gt;&lt;meta name="blackbird-system-ref" content="https://www.contentful.com"&gt;&lt;/head&gt;&lt;body its-rev-tool="Contentful" its-rev-tool-ref="https://www.contentful.com" its-rev-person="Vitalii Bezuhlyi"&gt;&lt;div data-contentful-entry-id="5746dLKTkEZjOQX21HX2KI"&gt;&lt;h1 data-contentful-field-type="Symbol" data-contentful-field-id="title" data-blackbird-key="5746dLKTkEZjOQX21HX2KI-title" data-blackbird-size="256"&gt;The Loire Valley&lt;/h1&gt;&lt;div data-contentful-field-type="Array" data-contentful-field-id="content" data-blackbird-key="5746dLKTkEZjOQX21HX2KI-content" data-contentful-link-type="Entry" data-contentful-link-ids="4avSNl953GJYUmIZ8cJg6S,Tp9LF4pw5n3ydWs58YvOc" data-contentful-localized="True"&gt;&lt;/div&gt;&lt;div data-contentful-field-type="Link" data-contentful-field-id="footer" data-blackbird-key="5746dLKTkEZjOQX21HX2KI-footer" data-contentful-link-type="Entry" data-contentful-link-id="6eZfQFZIjT5p5uHqYqMGQZ" data-contentful-localized="True"&gt;&lt;/div&gt;&lt;/div&gt;&lt;div data-contentful-entry-id="6eZfQFZIjT5p5uHqYqMGQZ"&gt;&lt;h1 data-contentful-field-type="Symbol" data-contentful-field-id="title" data-blackbird-key="6eZfQFZIjT5p5uHqYqMGQZ-title" data-blackbird-size="256"&gt;Ready to discover the magic of the Loire Valley?&lt;/h1&gt;&lt;div data-contentful-field-type="RichText" data-contentful-field-id="text" data-blackbird-key="6eZfQFZIjT5p5uHqYqMGQZ-text"&gt;&lt;p&gt;Embark on an unforgettable journey through France's most enchanting countryside. Wander through majestic castles, taste the finest Loire wines, and immerse yourself in picturesque villages. Whether you're a history buff, a wine connoisseur, or just a fan of beautiful scenery, the Loire Valley offers an unrivaled travel experience.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Book a trip to the Loire Valley today and immerse yourself in a world where fairy tales come to life! &lt;/strong&gt;&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;div data-contentful-entry-id="4avSNl953GJYUmIZ8cJg6S"&gt;&lt;h1 data-contentful-field-type="Symbol" data-contentful-field-id="title" data-blackbird-key="4avSNl953GJYUmIZ8cJg6S-title" data-blackbird-size="256"&gt;A day in the heart of the Loire: castles and vineyards&lt;/h1&gt;&lt;div data-contentful-field-type="RichText" data-contentful-field-id="text" data-blackbird-key="4avSNl953GJYUmIZ8cJg6S-text"&gt;&lt;p&gt;&lt;strong&gt;Morning: Chateau de Chambord&lt;/strong&gt; Start your day with a visit to the legendary Chateau de Chambord, a masterpiece of French Renaissance architecture. This huge castle with 400 rooms, the legendary double spiral staircase and wooded grounds was created for King Francis I as a farming lodge. Wander the grand halls and rooftop terraces, which offer stunning views of the Loire countryside. Arrive early or not and well to enjoy the quiet and nice grandeur of the chateau before the crowds arrive.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Afternoon: Lunch in Blois&lt;/strong&gt; Just a short drive away is the town of Blois, where you can experience the typical charm of the Loire Valley. Explore the medieval center, its winding streets and the palatial Château de Blois, known for its eclectic mix of architectural styles. Stop for lunch at a local bistro where you can enjoy Loire specialties such as goat cheese tartine or rillettes. Snack on a glass of crisp Sancerre wine, grown just a few kilometers away.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Evening: Amboise and the legacy of Leonardo da Vinci&lt;/strong&gt; Head to the Chateau of Amboise, which overlooks the Loire River and was once home to kings and dreamers. Stroll through the royal apartments, visit the Gothic chapel where Leonardo da Vinci is buried, and enjoy panoramic views of the river and city below. Just up the hill is the Clo Lucet Mansion, where da Vinci lived out his final years. Inside you'll find intricate models of his inventions, bringing the Renaissance genius to life.&lt;/p&gt;&lt;p&gt;You can read more about the Loire Valley in this book:&lt;/p&gt;&lt;p&gt;&lt;span&gt;&lt;/span&gt;&lt;a id="embedded-entry-inline_3MvZ2M38zOBdztgQJAzw0B" href="https://app.contentful.com/spaces/12ktqqmw656e/entries/3MvZ2M38zOBdztgQJAzw0B"&gt;&lt;/a&gt;&lt;span&gt;&lt;/span&gt;&lt;/p&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;div data-contentful-entry-id="3MvZ2M38zOBdztgQJAzw0B"&gt;&lt;div data-contentful-field-type="RichText" data-contentful-field-id="description" data-blackbird-key="3MvZ2M38zOBdztgQJAzw0B-description"&gt;&lt;p&gt;Embark on a journey through &lt;i&gt;France Unveiled: A Journey Through Culture, Cuisine, and Countryside&lt;/i&gt;, a unique travel guide that weaves together the romantic charm of Paris, the sun-soaked allure of Provence, and the vineyard-laden trails of Bordeaux. This guide goes beyond the usual tourist stops to introduce you to hidden villages, local markets, and timeworn chateaux where history and modern French life blend seamlessly.&lt;/p&gt;&lt;p&gt;Whether sipping coffee in a quiet Marais café, wandering through medieval streets in Alsace, or savoring fresh seafood along the Côte d'Azur, &lt;i&gt;France Unveiled&lt;/i&gt; offers insights, local tips, and immersive experiences for travelers who want to explore like a local. Packed with detailed itineraries, insider recommendations, and stories that bring each region to life, this guide will help you uncover the heart of France—from its iconic sites to its best-kept secrets.&lt;/p&gt;&lt;p&gt;&lt;i&gt;Perfect for first-time visitors and seasoned Francophiles alike, this guide will make every trip unforgettable&lt;/i&gt;&lt;/p&gt;&lt;/div&gt;&lt;img src="https://images.ctfassets.net/12ktqqmw656e/7jS4PhCf07nFGDbM2Xj5fT/513a21df5f6493964373bf152a6fd2bb/tower.jfif" data-contentful-field-type="Link" data-contentful-field-id="file" data-contentful-link-type="Asset" data-contentful-link-id="7jS4PhCf07nFGDbM2Xj5fT" data-blackbird-key="3MvZ2M38zOBdztgQJAzw0B-file" alt="Eiffel tower"&gt;&lt;h1 data-contentful-field-type="Symbol" data-contentful-field-id="title" data-blackbird-key="3MvZ2M38zOBdztgQJAzw0B-title" data-blackbird-size="256"&gt;France Unveiled: A Journey Through Culture, Cuisine, and Countryside&lt;/h1&gt;&lt;/div&gt;&lt;div data-contentful-entry-id="Tp9LF4pw5n3ydWs58YvOc"&gt;&lt;h1 data-contentful-field-type="Symbol" data-contentful-field-id="title" data-blackbird-key="Tp9LF4pw5n3ydWs58YvOc-title" data-blackbird-size="256"&gt;Discover the wines of the Loire&lt;/h1&gt;&lt;div data-contentful-field-type="RichText" data-contentful-field-id="text" data-blackbird-key="Tp9LF4pw5n3ydWs58YvOc-text"&gt;&lt;p&gt;The Loire Valley is known for its diverse wine offerings, from crisp whites to delicate reds. To get to know the region's viticulture, visit a local winery near Vouvray or Chinon, where family-run wineries offer tastings and tours. Here you can taste the famous Loire Chenin Blanc, earthy Cabernet Franc and refreshing Rosé, often accompanied by local cheeses and breads. It's a truly fascinating way to get in touch with the region's rich farming traditions and taste the Loire Valley terroir.&lt;/p&gt;&lt;h3&gt;&lt;strong&gt;Local tips for exploring the Loire Valley&lt;/strong&gt;&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;&lt;p&gt;&lt;strong&gt;The best time to visit:&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;In spring and autumn, the weather is pleasant and there are fewer crowds, and in summer the region comes alive with festivals and open-air concerts.&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;strong&gt;Transportation:&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Renting a bike is a great way to explore the scenic Loire à Vélo cycling routes that connect many of the region's top attractions.&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;strong&gt;A hidden gem:&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Don't miss the little-known Chateau de Villandry, known for its Renaissance gardens. Spend a carefree day strolling through the maze of perfectly manicured flower beds, orchards and elegant vegetable gardens.&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;&lt;br&gt;&lt;p&gt;---&lt;/p&gt;&lt;p&gt;Blackbird is a TMS - not a translation management system, but a transformation management system. Built as an in-memory iPaaS infrastructure, it automates, adapts and organizes content across languages, formats and platforms at scale.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</skeleton>
+    <mda:metadata>
+      <mda:metaGroup category="blackbird">
+        <mda:meta type="original-name">The Loire Valley_en-US.html</mda:meta>
+        <mda:meta type="original-media-type">text/html</mda:meta>
+        <mda:meta type="source-ucid">5746dLKTkEZjOQX21HX2KI</mda:meta>
+        <mda:meta type="source-content-name">The Loire Valley</mda:meta>
+        <mda:meta type="source-admin-url">https://app.contentful.com/spaces/12ktqqmw656e/entries/5746dLKTkEZjOQX21HX2KI</mda:meta>
+        <mda:meta type="source-system-name">Contentful</mda:meta>
+        <mda:meta type="source-system-ref">https://www.contentful.com</mda:meta>
+        <mda:meta type="original-name">The Loire Valley_en-US.html</mda:meta>
+        <mda:meta type="original-media-type">text/html</mda:meta>
+      </mda:metaGroup>
+    </mda:metadata>
+    <slr:profiles generalProfile="xliff:codepoints" storageProfile="" />
+    <unit id="u1" name="/html[1]/body[1]/div[1]/h1[1]" fs:fs="h1" slr:sizeRestriction="256">
+      <mda:metadata>
+        <mda:metaGroup category="blackbird">
+          <mda:meta type="key">5746dLKTkEZjOQX21HX2KI-title</mda:meta>
+        </mda:metaGroup>
+        <mda:metaGroup category="Blacklake">
+          <mda:meta type="resourceHash"></mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final">
+        <source>The Loire Valley</source>
+        <target>Het Loiredal</target>
+      </segment>
+    </unit>
+    <unit id="u2" name="/html[1]/body[1]/div[2]/h1[1]" fs:fs="h1" slr:sizeRestriction="256">
+      <mda:metadata>
+        <mda:metaGroup category="blackbird">
+          <mda:meta type="key">6eZfQFZIjT5p5uHqYqMGQZ-title</mda:meta>
+        </mda:metaGroup>
+        <mda:metaGroup category="Blacklake">
+          <mda:meta type="resourceHash"></mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final">
+        <source>Ready to discover the magic of the Loire Valley?</source>
+        <target>Klaar om de magie van de Loirevallei te ontdekken?</target>
+      </segment>
+    </unit>
+    <group id="g1">
+      <mda:metadata>
+        <mda:metaGroup category="blackbird">
+          <mda:meta type="key">6eZfQFZIjT5p5uHqYqMGQZ-text</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <unit id="u3" name="/html[1]/body[1]/div[2]/div[1]/p[1]" fs:fs="p">
+        <mda:metadata>
+          <mda:metaGroup category="Blacklake">
+            <mda:meta type="resourceHash"></mda:meta>
+          </mda:metaGroup>
+        </mda:metadata>
+        <segment state="final">
+          <source>Embark on an unforgettable journey through France's most enchanting countryside. Wander through majestic castles, taste the finest Loire wines, and immerse yourself in picturesque villages. Whether you're a history buff, a wine connoisseur, or just a fan of beautiful scenery, the Loire Valley offers an unrivaled travel experience.</source>
+          <target>Ga op een onvergetelijke reis door het meest betoverende landschap van Frankrijk. Dwaal door majestueuze kastelen, proef de beste Loire-wijnen en dompel jezelf onder in pittoreske dorpjes. Of je nu een geschiedenisliefhebber, wijnkenner of gewoon een fan van prachtige landschappen bent, de Loirevallei biedt een ongeëvenaarde reiservaring.</target>
+        </segment>
+      </unit>
+      <unit id="u4" name="/html[1]/body[1]/div[2]/div[1]/p[2]" fs:fs="p">
+        <mda:metadata>
+          <mda:metaGroup category="Blacklake">
+            <mda:meta type="resourceHash"></mda:meta>
+          </mda:metaGroup>
+        </mda:metadata>
+        <originalData>
+          <data id="d1">&lt;strong&gt;</data>
+          <data id="d2">&lt;/strong&gt;</data>
+        </originalData>
+        <segment state="final">
+          <source>
+            <sc id="1" dataRef="d1" fs:fs="strong" />Book a trip to the Loire Valley today and immerse yourself in a world where fairy tales come to life! <ec dataRef="d2" startRef="1" /></source>
+          <target>
+            <sc id="1" dataRef="d1" fs:fs="strong" />Boek vandaag nog een reis naar de Loirevallei en dompel jezelf onder in een wereld waar sprookjes tot leven komen! <ec dataRef="d2" startRef="1" /></target>
+        </segment>
+      </unit>
+    </group>
+    <unit id="u5" name="/html[1]/body[1]/div[3]/h1[1]" fs:fs="h1" slr:sizeRestriction="256">
+      <mda:metadata>
+        <mda:metaGroup category="blackbird">
+          <mda:meta type="key">4avSNl953GJYUmIZ8cJg6S-title</mda:meta>
+        </mda:metaGroup>
+        <mda:metaGroup category="Blacklake">
+          <mda:meta type="resourceHash"></mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final">
+        <source>A day in the heart of the Loire: castles and vineyards</source>
+        <target>Een dag in het hart van de Loire: kastelen en wijngaarden</target>
+      </segment>
+    </unit>
+    <group id="g2">
+      <mda:metadata>
+        <mda:metaGroup category="blackbird">
+          <mda:meta type="key">4avSNl953GJYUmIZ8cJg6S-text</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <unit id="u6" name="/html[1]/body[1]/div[3]/div[1]/p[1]" its:tool="DeepL" fs:fs="p">
+        <mda:metadata>
+          <mda:metaGroup category="Blacklake">
+            <mda:meta type="resourceHash"></mda:meta>
+          </mda:metaGroup>
+          <mda:metaGroup category="blackbird">
+            <mda:metaGroup category="usage">
+              <mda:metaGroup category="DeepL">
+                <mda:meta type="value">490</mda:meta>
+                <mda:meta type="unit">characters</mda:meta>
+              </mda:metaGroup>
+            </mda:metaGroup>
+          </mda:metaGroup>
+        </mda:metadata>
+        <originalData>
+          <data id="d1">&lt;strong&gt;</data>
+          <data id="d2">&lt;/strong&gt;</data>
+        </originalData>
+        <segment state="translated">
+          <source>
+            <sc id="1" dataRef="d1" fs:fs="strong" />Morning: Chateau de Chambord<ec dataRef="d2" startRef="1" /> Start your day with a visit to the legendary Chateau de Chambord, a masterpiece of French Renaissance architecture. This huge castle with 400 rooms, the legendary double spiral staircase and wooded grounds was created for King Francis I as a farming lodge. Wander the grand halls and rooftop terraces, which offer stunning views of the Loire countryside. Arrive early or not and well to enjoy the quiet and nice grandeur of the chateau before the crowds arrive.</source>
+          <target>
+            <sc id="1" dataRef="d1" fs:fs="strong" />Ochtend: Chateau de Chambord<ec dataRef="d2" startRef="1" /> Begin uw dag met een bezoek aan het legendarische Chateau de Chambord, een meesterwerk van de Franse renaissancearchitectuur. Dit enorme kasteel met 400 kamers, de legendarische dubbele wenteltrap en het bosrijke terrein werd gebouwd voor koning Frans I als landhuis. Dwaal door de grote zalen en over de dakterrassen, die een prachtig uitzicht bieden op het platteland van de Loire. Kom vroeg of laat, zodat u kunt genieten van de rust en de prachtige grandeur van het kasteel voordat de drukte begint.</target>
+        </segment>
+      </unit>
+      <unit id="u7" name="/html[1]/body[1]/div[3]/div[1]/p[2]" fs:fs="p">
+        <mda:metadata>
+          <mda:metaGroup category="Blacklake">
+            <mda:meta type="resourceHash"></mda:meta>
+          </mda:metaGroup>
+        </mda:metadata>
+        <originalData>
+          <data id="d1">&lt;strong&gt;</data>
+          <data id="d2">&lt;/strong&gt;</data>
+        </originalData>
+        <segment state="final">
+          <source>
+            <sc id="1" dataRef="d1" fs:fs="strong" />Afternoon: Lunch in Blois<ec dataRef="d2" startRef="1" /> Just a short drive away is the town of Blois, where you can experience the typical charm of the Loire Valley. Explore the medieval center, its winding streets and the palatial Château de Blois, known for its eclectic mix of architectural styles. Stop for lunch at a local bistro where you can enjoy Loire specialties such as goat cheese tartine or rillettes. Snack on a glass of crisp Sancerre wine, grown just a few kilometers away.</source>
+          <target>
+            <sc id="1" dataRef="d1" fs:fs="strong" />Middag: Lunch in Blois<ec dataRef="d2" startRef="1" /> Op slechts een klein eindje rijden ligt de stad Blois, waar u de typische charme van de Loirevallei kunt ervaren. Verken het middeleeuwse centrum, de kronkelende straatjes en het paleisachtige Château de Blois, bekend om zijn eclectische mix van architecturale stijlen. Stop voor de lunch bij een lokale bistro waar u kunt genieten van specialiteiten uit de Loire, zoals tartine met geitenkaas of rillettes. Geniet van een glas frisse Sancerre-wijn, die op slechts enkele kilometers afstand wordt verbouwd.</target>
+        </segment>
+      </unit>
+      <unit id="u8" name="/html[1]/body[1]/div[3]/div[1]/p[3]" fs:fs="p">
+        <mda:metadata>
+          <mda:metaGroup category="Blacklake">
+            <mda:meta type="resourceHash"></mda:meta>
+          </mda:metaGroup>
+        </mda:metadata>
+        <originalData>
+          <data id="d1">&lt;strong&gt;</data>
+          <data id="d2">&lt;/strong&gt;</data>
+        </originalData>
+        <segment state="final">
+          <source>
+            <sc id="1" dataRef="d1" fs:fs="strong" />Evening: Amboise and the legacy of Leonardo da Vinci<ec dataRef="d2" startRef="1" /> Head to the Chateau of Amboise, which overlooks the Loire River and was once home to kings and dreamers. Stroll through the royal apartments, visit the Gothic chapel where Leonardo da Vinci is buried, and enjoy panoramic views of the river and city below. Just up the hill is the Clo Lucet Mansion, where da Vinci lived out his final years. Inside you'll find intricate models of his inventions, bringing the Renaissance genius to life.</source>
+          <target>
+            <sc id="1" dataRef="d1" fs:fs="strong" />Avond: Amboise en de nalatenschap van Leonardo da Vinci<ec dataRef="d2" startRef="1" /> Ga naar het kasteel van Amboise, dat uitkijkt over de Loire en ooit de thuisbasis was van koningen en dromers. Wandel door de koninklijke vertrekken, bezoek de gotische kapel waar Leonardo da Vinci begraven ligt en geniet van het panoramische uitzicht op de rivier en de stad beneden. Net boven op de heuvel ligt het Clo Lucet-herenhuis, waar da Vinci zijn laatste jaren doorbracht. Binnen vindt u gedetailleerde modellen van zijn uitvindingen, die het renaissancistische genie tot leven brengen.</target>
+        </segment>
+      </unit>
+      <unit id="u9" name="/html[1]/body[1]/div[3]/div[1]/p[4]" fs:fs="p">
+        <mda:metadata>
+          <mda:metaGroup category="Blacklake">
+            <mda:meta type="resourceHash"></mda:meta>
+          </mda:metaGroup>
+        </mda:metadata>
+        <segment state="final">
+          <source>You can read more about the Loire Valley in this book:</source>
+          <target>Je kunt meer lezen over de Loirevallei in dit boek:</target>
+        </segment>
+      </unit>
+    </group>
+    <group id="g3">
+      <mda:metadata>
+        <mda:metaGroup category="blackbird">
+          <mda:meta type="key">3MvZ2M38zOBdztgQJAzw0B-description</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <unit id="u10" name="/html[1]/body[1]/div[4]/div[1]/p[1]" fs:fs="p">
+        <mda:metadata>
+          <mda:metaGroup category="Blacklake">
+            <mda:meta type="resourceHash"></mda:meta>
+          </mda:metaGroup>
+        </mda:metadata>
+        <originalData>
+          <data id="d1">&lt;i&gt;</data>
+          <data id="d2">&lt;/i&gt;</data>
+        </originalData>
+        <segment state="final">
+          <source>Embark on a journey through <sc id="1" dataRef="d1" fs:fs="i" />France Unveiled: A Journey Through Culture, Cuisine, and Countryside<ec dataRef="d2" startRef="1" />, a unique travel guide that weaves together the romantic charm of Paris, the sun-soaked allure of Provence, and the vineyard-laden trails of Bordeaux. This guide goes beyond the usual tourist stops to introduce you to hidden villages, local markets, and timeworn chateaux where history and modern French life blend seamlessly.</source>
+          <target>Ga op reis door <sc id="1" dataRef="d1" fs:fs="i" />Frankrijk met France Unveiled: A Journey Through Culture, Cuisine, and Countryside<ec dataRef="d2" startRef="1" />, een unieke reisgids die de romantische charme van Parijs, de zonovergoten allure van de Provence en de met wijngaarden bezaaide paden van Bordeaux met elkaar verweeft. Deze gids gaat verder dan de gebruikelijke toeristische trekpleisters en laat u kennismaken met verborgen dorpjes, lokale markten en door de tijd getekende kastelen waar geschiedenis en het moderne Franse leven naadloos in elkaar overvloeien.</target>
+        </segment>
+      </unit>
+      <unit id="u11" name="/html[1]/body[1]/div[4]/div[1]/p[2]" fs:fs="p">
+        <mda:metadata>
+          <mda:metaGroup category="Blacklake">
+            <mda:meta type="resourceHash"></mda:meta>
+          </mda:metaGroup>
+        </mda:metadata>
+        <originalData>
+          <data id="d1">&lt;i&gt;</data>
+          <data id="d2">&lt;/i&gt;</data>
+        </originalData>
+        <segment state="final">
+          <source>Whether sipping coffee in a quiet Marais café, wandering through medieval streets in Alsace, or savoring fresh seafood along the Côte d'Azur, <sc id="1" dataRef="d1" fs:fs="i" />France Unveiled<ec dataRef="d2" startRef="1" /> offers insights, local tips, and immersive experiences for travelers who want to explore like a local. Packed with detailed itineraries, insider recommendations, and stories that bring each region to life, this guide will help you uncover the heart of France—from its iconic sites to its best-kept secrets.</source>
+          <target>Of u nu koffie drinkt in een rustig café in de Marais, door middeleeuwse straatjes in de Elzas slentert of geniet van verse zeevruchten aan de Côte d'Azur, <sc id="1" dataRef="d1" fs:fs="i" />France Unveiled<ec dataRef="d2" startRef="1" /> biedt inzichten, lokale tips en meeslepende ervaringen voor reizigers die het land willen verkennen als een local. Deze gids staat boordevol gedetailleerde reisroutes, aanbevelingen van insiders en verhalen die elke regio tot leven brengen, en helpt u het hart van Frankrijk te ontdekken – van iconische bezienswaardigheden tot de best bewaarde geheimen.</target>
+        </segment>
+      </unit>
+      <unit id="u12" name="/html[1]/body[1]/div[4]/div[1]/p[3]" fs:fs="p">
+        <mda:metadata>
+          <mda:metaGroup category="Blacklake">
+            <mda:meta type="resourceHash"></mda:meta>
+          </mda:metaGroup>
+        </mda:metadata>
+        <originalData>
+          <data id="d1">&lt;i&gt;</data>
+          <data id="d2">&lt;/i&gt;</data>
+        </originalData>
+        <segment state="final">
+          <source>
+            <sc id="1" dataRef="d1" fs:fs="i" />Perfect for first-time visitors and seasoned Francophiles alike, this guide will make every trip unforgettable<ec dataRef="d2" startRef="1" /></source>
+          <target>
+            <sc id="1" dataRef="d1" fs:fs="i" />Deze gids is perfect voor zowel nieuwe bezoekers als doorgewinterde francofielen en maakt elke reis onvergetelijk.<ec dataRef="d2" startRef="1" /></target>
+        </segment>
+      </unit>
+    </group>
+    <unit id="u13" name="/html[1]/body[1]/div[4]/img[1]/@alt[1]" fs:fs="img" fs:subFs="src,https://images.ctfassets.net/12ktqqmw656e/7jS4PhCf07nFGDbM2Xj5fT/513a21df5f6493964373bf152a6fd2bb/tower.jfif\alt,Eiffel tower">
+      <mda:metadata>
+        <mda:metaGroup category="blackbird">
+          <mda:meta type="key">3MvZ2M38zOBdztgQJAzw0B-file</mda:meta>
+        </mda:metaGroup>
+        <mda:metaGroup category="Blacklake">
+          <mda:meta type="resourceHash"></mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final">
+        <source>Eiffel tower</source>
+        <target>Eiffel tower</target>
+      </segment>
+    </unit>
+    <unit id="u14" name="/html[1]/body[1]/div[4]/h1[1]" fs:fs="h1" slr:sizeRestriction="256">
+      <mda:metadata>
+        <mda:metaGroup category="blackbird">
+          <mda:meta type="key">3MvZ2M38zOBdztgQJAzw0B-title</mda:meta>
+        </mda:metaGroup>
+        <mda:metaGroup category="Blacklake">
+          <mda:meta type="resourceHash"></mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final">
+        <source>France Unveiled: A Journey Through Culture, Cuisine, and Countryside</source>
+        <target>Frankrijk onthuld: een reis door cultuur, keuken en platteland</target>
+      </segment>
+    </unit>
+    <unit id="u15" name="/html[1]/body[1]/div[5]/h1[1]" fs:fs="h1" slr:sizeRestriction="256">
+      <mda:metadata>
+        <mda:metaGroup category="blackbird">
+          <mda:meta type="key">Tp9LF4pw5n3ydWs58YvOc-title</mda:meta>
+        </mda:metaGroup>
+        <mda:metaGroup category="Blacklake">
+          <mda:meta type="resourceHash"></mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final">
+        <source>Discover the wines of the Loire</source>
+        <target>Ontdek de wijnen van de Loire</target>
+      </segment>
+    </unit>
+    <group id="g4">
+      <mda:metadata>
+        <mda:metaGroup category="blackbird">
+          <mda:meta type="key">Tp9LF4pw5n3ydWs58YvOc-text</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <unit id="u16" name="/html[1]/body[1]/div[5]/div[1]/p[1]" fs:fs="p">
+        <mda:metadata>
+          <mda:metaGroup category="Blacklake">
+            <mda:meta type="resourceHash"></mda:meta>
+          </mda:metaGroup>
+        </mda:metadata>
+        <segment state="final">
+          <source>The Loire Valley is known for its diverse wine offerings, from crisp whites to delicate reds. To get to know the region's viticulture, visit a local winery near Vouvray or Chinon, where family-run wineries offer tastings and tours. Here you can taste the famous Loire Chenin Blanc, earthy Cabernet Franc and refreshing Rosé, often accompanied by local cheeses and breads. It's a truly fascinating way to get in touch with the region's rich farming traditions and taste the Loire Valley terroir.</source>
+          <target>De Loirevallei staat bekend om zijn gevarieerde wijnassortiment, van frisse witte wijnen tot delicate rode wijnen. Om kennis te maken met de wijnbouw in de regio kunt u een bezoek brengen aan een lokale wijnmakerij in de buurt van Vouvray of Chinon, waar familiebedrijven proeverijen en rondleidingen aanbieden. Hier kunt u de beroemde Loire Chenin Blanc, aardse Cabernet Franc en verfrissende rosé proeven, vaak vergezeld van lokale kazen en brood. Het is een fascinerende manier om kennis te maken met de rijke landbouwtradities van de regio en het terroir van de Loirevallei te proeven.</target>
+        </segment>
+      </unit>
+      <unit id="u17" name="/html[1]/body[1]/div[5]/div[1]/h3[1]" fs:fs="h3">
+        <mda:metadata>
+          <mda:metaGroup category="Blacklake">
+            <mda:meta type="resourceHash"></mda:meta>
+          </mda:metaGroup>
+        </mda:metadata>
+        <originalData>
+          <data id="d1">&lt;strong&gt;</data>
+          <data id="d2">&lt;/strong&gt;</data>
+        </originalData>
+        <segment state="final">
+          <source>
+            <sc id="1" dataRef="d1" fs:fs="strong" />Local tips for exploring the Loire Valley<ec dataRef="d2" startRef="1" /></source>
+          <target>
+            <sc id="1" dataRef="d1" fs:fs="strong" />Lokale tips voor het verkennen van de Loirevallei<ec dataRef="d2" startRef="1" /></target>
+        </segment>
+      </unit>
+      <unit id="u18" name="/html[1]/body[1]/div[5]/div[1]/ul[1]/li[1]/p[1]" fs:fs="p">
+        <mda:metadata>
+          <mda:metaGroup category="Blacklake">
+            <mda:meta type="resourceHash"></mda:meta>
+          </mda:metaGroup>
+        </mda:metadata>
+        <originalData>
+          <data id="d1">&lt;strong&gt;</data>
+          <data id="d2">&lt;/strong&gt;</data>
+        </originalData>
+        <segment state="final">
+          <source>
+            <sc id="1" dataRef="d1" fs:fs="strong" />The best time to visit:<ec dataRef="d2" startRef="1" /></source>
+          <target>
+            <sc id="1" dataRef="d1" fs:fs="strong" />De beste tijd om te bezoeken:<ec dataRef="d2" startRef="1" /></target>
+        </segment>
+      </unit>
+      <unit id="u19" name="/html[1]/body[1]/div[5]/div[1]/ul[1]/li[1]/p[2]" fs:fs="p">
+        <mda:metadata>
+          <mda:metaGroup category="Blacklake">
+            <mda:meta type="resourceHash"></mda:meta>
+          </mda:metaGroup>
+        </mda:metadata>
+        <segment state="final">
+          <source>In spring and autumn, the weather is pleasant and there are fewer crowds, and in summer the region comes alive with festivals and open-air concerts.</source>
+          <target>In de lente en herfst is het weer aangenaam en zijn er minder mensen, en in de zomer komt de regio tot leven met festivals en openluchtconcerten.</target>
+        </segment>
+      </unit>
+      <unit id="u20" name="/html[1]/body[1]/div[5]/div[1]/ul[1]/li[2]/p[1]" fs:fs="p">
+        <mda:metadata>
+          <mda:metaGroup category="Blacklake">
+            <mda:meta type="resourceHash"></mda:meta>
+          </mda:metaGroup>
+        </mda:metadata>
+        <originalData>
+          <data id="d1">&lt;strong&gt;</data>
+          <data id="d2">&lt;/strong&gt;</data>
+        </originalData>
+        <segment state="final">
+          <source>
+            <sc id="1" dataRef="d1" fs:fs="strong" />Transportation:<ec dataRef="d2" startRef="1" /></source>
+          <target>
+            <sc id="1" dataRef="d1" fs:fs="strong" />Vervoer:<ec dataRef="d2" startRef="1" /></target>
+        </segment>
+      </unit>
+      <unit id="u21" name="/html[1]/body[1]/div[5]/div[1]/ul[1]/li[2]/p[2]" fs:fs="p">
+        <mda:metadata>
+          <mda:metaGroup category="Blacklake">
+            <mda:meta type="resourceHash"></mda:meta>
+          </mda:metaGroup>
+        </mda:metadata>
+        <segment state="final">
+          <source>Renting a bike is a great way to explore the scenic Loire à Vélo cycling routes that connect many of the region's top attractions.</source>
+          <target>Een fiets huren is een geweldige manier om de schilderachtige fietsroutes van Loire à Vélo te verkennen, die veel van de belangrijkste bezienswaardigheden van de regio met elkaar verbinden.</target>
+        </segment>
+      </unit>
+      <unit id="u22" name="/html[1]/body[1]/div[5]/div[1]/ul[1]/li[3]/p[1]" fs:fs="p">
+        <mda:metadata>
+          <mda:metaGroup category="Blacklake">
+            <mda:meta type="resourceHash"></mda:meta>
+          </mda:metaGroup>
+        </mda:metadata>
+        <originalData>
+          <data id="d1">&lt;strong&gt;</data>
+          <data id="d2">&lt;/strong&gt;</data>
+        </originalData>
+        <segment state="final">
+          <source>
+            <sc id="1" dataRef="d1" fs:fs="strong" />A hidden gem:<ec dataRef="d2" startRef="1" /></source>
+          <target>
+            <sc id="1" dataRef="d1" fs:fs="strong" />A hidden gem:<ec dataRef="d2" startRef="1" /></target>
+        </segment>
+      </unit>
+      <unit id="u23" name="/html[1]/body[1]/div[5]/div[1]/ul[1]/li[3]/p[2]" fs:fs="p">
+        <mda:metadata>
+          <mda:metaGroup category="Blacklake">
+            <mda:meta type="resourceHash"></mda:meta>
+          </mda:metaGroup>
+        </mda:metadata>
+        <segment state="final">
+          <source>Don't miss the little-known Chateau de Villandry, known for its Renaissance gardens. Spend a carefree day strolling through the maze of perfectly manicured flower beds, orchards and elegant vegetable gardens.</source>
+          <target>Mis het weinig bekende Chateau de Villandry niet, dat bekend staat om zijn renaissancetuinen. Breng een zorgeloze dag door met een wandeling door het doolhof van perfect onderhouden bloembedden, boomgaarden en elegante moestuinen.</target>
+        </segment>
+      </unit>
+      <unit id="u24" name="/html[1]/body[1]/div[5]/div[1]/p[2]" fs:fs="p">
+        <mda:metadata>
+          <mda:metaGroup category="Blacklake">
+            <mda:meta type="resourceHash"></mda:meta>
+          </mda:metaGroup>
+        </mda:metadata>
+        <segment state="final">
+          <source>---</source>
+          <target>---</target>
+        </segment>
+      </unit>
+      <unit id="u25" name="/html[1]/body[1]/div[5]/div[1]/p[3]" fs:fs="p">
+        <mda:metadata>
+          <mda:metaGroup category="Blacklake">
+            <mda:meta type="resourceHash"></mda:meta>
+          </mda:metaGroup>
+        </mda:metadata>
+        <segment state="final">
+          <source>Blackbird is a TMS - not a translation management system, but a transformation management system. Built as an in-memory iPaaS infrastructure, it automates, adapts and organizes content across languages, formats and platforms at scale.</source>
+          <target>Blackbird is een TMS – geen vertaalbeheersysteem, maar een transformatiebeheersysteem. Het is gebouwd als een in-memory iPaaS-infrastructuur en automatiseert, past aan en organiseert content op grote schaal in verschillende talen, formaten en platforms.</target>
+        </segment>
+      </unit>
+    </group>
+  </file>
+</xliff>
