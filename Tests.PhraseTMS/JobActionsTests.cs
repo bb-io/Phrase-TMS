@@ -93,6 +93,23 @@ namespace Tests.PhraseTMS
         }
 
         [TestMethod]
+        public async Task Create_job_with_xliff2_import_settings()
+        {
+            var projectRequest = new ProjectRequest { ProjectUId = "ltRSUSNtQ3qt7JuW8x14b6" };
+            var createJobsRequest = new CreateJobsRequest
+            {
+                preTranslate = true,
+                File = new FileReference { Name = "The Loire Valley_en-US.html.xlf" },
+                useProjectFileImportSettings = true,
+            };
+
+            var result = await _jobActions.CreateJobs(projectRequest, createJobsRequest);
+
+            PrintResponse(result);
+            Assert.IsTrue(result.Jobs.Select(x => x.SourceFileUid).All(x => x == result.SourceFileUid));
+        }
+
+        [TestMethod]
         public async Task CreateJobs_FromInteroperableXliff_works()
         {
             var projectRequest = new ProjectRequest { ProjectUId = PROJECT_ID };

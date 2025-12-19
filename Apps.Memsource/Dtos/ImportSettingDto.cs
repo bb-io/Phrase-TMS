@@ -7,6 +7,6 @@ using System.Threading.Tasks;
 namespace Apps.PhraseTMS.Dtos;
 public class ImportSettingDto
 {
-    public string Uid { get; set; }
-    public string Name { get; set; }
+    public string uid { get; set; }
+    public string name { get; set; }
 }
