@@ -168,8 +168,8 @@ public class DataSources : TestBase
     public async Task SegmentDataHanlder_ReturnsSegments()
     {
         // Arrange
-        var jobRequest = new JobRequest { JobUId = "S1Lng7SgldQMeiwPm2srx3" };
-        var projectRequest = new ProjectRequest { ProjectUId = EMPTY_PROJECT_ID };
+        var jobRequest = new JobRequest { JobUId = "dtdm5mE4e3pu25KiCbTiL3" };
+        var projectRequest = new ProjectRequest { ProjectUId = "0SBo723Ge0wHfk0A1k1XWn0" };
         var handler = new SegmentDataHandler(InvocationContext, jobRequest, projectRequest);
 
         // Act

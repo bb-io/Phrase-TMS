@@ -950,6 +950,100 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         return await Client.ExecuteWithHandling<JobDto>(requestRemove);
     }
 
+    [Action("Split job", Description = "Splits a job into multiple parts. Only one split method can be used at a time.")]
+    public async Task<JobResponseWrapper> SplitJob(
+        [ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] JobRequest jobRequest,
+        [ActionParameter] SplitJobRequest input)
+    {
+        if (string.IsNullOrWhiteSpace(projectRequest?.ProjectUId))
+            throw new PluginMisconfigurationException("Project ID is null or empty. Please check your input and try again.");
+
+        if (string.IsNullOrWhiteSpace(jobRequest?.JobUId))
+            throw new PluginMisconfigurationException("Job ID is null or empty. Please check your input and try again.");
+
+        var hasSegmentOrdinals = input.SegmentOrdinals?.Any(x => !string.IsNullOrWhiteSpace(x)) == true;
+        var hasPartCount = !string.IsNullOrWhiteSpace(input.PartCount);
+        var hasPartSize = !string.IsNullOrWhiteSpace(input.PartSize);
+        var hasWordCount = !string.IsNullOrWhiteSpace(input.WordCount);
+        var hasByDocumentParts = input.ByDocumentParts == true;
+
+        var selectedCount =
+            (hasSegmentOrdinals ? 1 : 0) +
+            (hasPartCount ? 1 : 0) +
+            (hasPartSize ? 1 : 0) +
+            (hasWordCount ? 1 : 0) +
+            (hasByDocumentParts ? 1 : 0);
+
+        if (selectedCount == 0)
+            throw new PluginMisconfigurationException(
+                "You must select exactly one split option: Segment ordinals, Part count, Part size, Word count, or By document parts.");
+
+        if (selectedCount > 1)
+            throw new PluginMisconfigurationException(
+                "Only one split option is allowed. Please provide only ONE of: Segment ordinals, Part count, Part size, Word count, By document parts.");
+
+        var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/{jobRequest.JobUId}/split";
+        var request = new RestRequest(endpoint, Method.Post);
+
+        var body = new Dictionary<string, object>();
+
+        if (hasSegmentOrdinals)
+        {
+            var ordinals = new List<long>();
+            foreach (var raw in input.SegmentOrdinals!)
+            {
+                var s = raw?.Trim();
+                if (string.IsNullOrWhiteSpace(s))
+                    continue;
+
+                if (!long.TryParse(s, out var ordinal) || ordinal <= 0)
+                    throw new PluginMisconfigurationException("Segment ordinals must contain only positive integers.");
+
+                ordinals.Add(ordinal);
+            }
+
+            if (ordinals.Count == 0)
+                throw new PluginMisconfigurationException("Segment ordinals are empty. Please provide at least one ordinal.");
+
+            body["segmentOrdinals"] = ordinals;
+        }
+
+        if (hasPartCount)
+        {
+            var s = input.PartCount!.Trim();
+            if (!int.TryParse(s, out var partCount) || partCount <= 0)
+                throw new PluginMisconfigurationException("Part count must be a positive integer.");
+
+            body["partCount"] = partCount;
+        }
+
+        if (hasPartSize)
+        {
+            var s = input.PartSize!.Trim();
+            if (!int.TryParse(s, out var partSize) || partSize <= 0)
+                throw new PluginMisconfigurationException("Part size must be a positive integer.");
+
+            body["partSize"] = partSize;
+        }
+
+        if (hasWordCount)
+        {
+            var s = input.WordCount!.Trim();
+            if (!int.TryParse(s, out var wordCount) || wordCount <= 0)
+                throw new PluginMisconfigurationException("Word count must be a positive integer.");
+
+            body["wordCount"] = wordCount;
+        }
+
+        if (hasByDocumentParts)
+        {
+            body["byDocumentPart"] = true;
+        }
+
+        request.WithJsonBody(body, JsonConfig.Settings);
+        return await Client.ExecuteWithHandling<JobResponseWrapper>(request);
+    }
 
     public static bool IsOnlyAscii(string input)
     {
