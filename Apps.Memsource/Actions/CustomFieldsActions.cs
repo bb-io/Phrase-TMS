@@ -69,11 +69,17 @@ public class CustomFieldsActions(InvocationContext invocationContext) : PhraseIn
         var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/customFields/";
         var request = new RestRequest(endpoint, Method.Get);
         var projectCustomFields = await Client.Paginate<ProjectCustomFieldDto>(request);
-        if (projectCustomFields.Any(x => x.customField.uid == input.FieldUId))
-        {
-            return projectCustomFields.FirstOrDefault(x => x.customField.uid == input.FieldUId).selectedOptions.First().value;
-        }
-        return null;
+        var field = projectCustomFields
+        ?.FirstOrDefault(x => x?.customField?.uid == input.FieldUId);
+
+        if (field == null)
+            return null;
+
+        var selectedValue = field.selectedOptions?
+            .FirstOrDefault()?
+            .value;
+
+        return string.IsNullOrWhiteSpace(selectedValue) ? null : selectedValue;
     }
 
     [Action("Get project URL custom field value", Description = "Gets the URL value of a project custom field")]
