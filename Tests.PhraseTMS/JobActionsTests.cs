@@ -247,5 +247,24 @@ namespace Tests.PhraseTMS
 
             Assert.IsTrue(true);
         }
+
+        [TestMethod]
+        public async Task SplitJob_IsSuccess()
+        {
+            var projectRequest = new ProjectRequest { ProjectUId = "0SBo723Ge0wHfk0A1k1XWn0" };
+            var jobRequest = new JobRequest { JobUId = "K4V6MO5RDBoDaFSdfxLqz1" };
+            var split = new SplitJobRequest
+            {
+                //SegmentOrdinals = ["1", "5"],
+                //PartCount = "2",
+                //PartSize = "30",
+                //WordCount = "20",
+
+            };
+
+            await _jobActions.SplitJob(projectRequest, jobRequest, split);
+
+            Assert.IsTrue(true);
+        }
     }
 }

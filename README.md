@@ -90,6 +90,7 @@ Custom fields are associated with a specific type, e.g. date, number, text, etc.
 - **Remove assigned providers from job** Removes all assigned providers from a job.
 - **Get segments count** returns the number of segments in a job
 - **Get aggregated segments count (multiple jobs)** Gets aggregated segment counts for specified jobs in a project
+- **Split job** splits a job into multiple jobs based on the specified segment numbers
 
 The following actions download job files in either their original format or as a bilingual file.
 - **Download target file**
