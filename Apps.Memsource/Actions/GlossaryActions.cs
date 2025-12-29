@@ -11,7 +11,6 @@ using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using RestSharp;
 using System.Net.Mime;
-using System.Text;
 using System.Xml.Linq;
 
 namespace Apps.PhraseTMS.Actions;
@@ -80,6 +79,13 @@ public class GlossaryActions(InvocationContext invocationContext, IFileManagemen
         request.AddHeader("Content-Disposition", $"filename*=UTF-8''{input.File.Name}");
         request.AddParameter("application/octet-stream", bytes, ParameterType.RequestBody);
 
+        await Client.ExecuteWithHandling(request);
+    }
+
+    [Action("Remove all terms from glossary", Description = "Delete all terms in a glossary")]
+    public async Task ClearGlossary([ActionParameter] ClearGlossaryRequest input)
+    {
+        var request = new RestRequest($"/api2/v1/termBases/{input.GlossaryUId}/terms", Method.Delete);
         await Client.ExecuteWithHandling(request);
     }
 

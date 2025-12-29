@@ -22,8 +22,6 @@ public class GlossaryActionsTests : TestBase
 		Assert.IsNotNull(result);
 	}
 
-    //
-
     [TestMethod]
     public async Task ImportGlossary_CorrectRequest_ReturnsGlossary()
     {
@@ -40,5 +38,16 @@ public class GlossaryActionsTests : TestBase
 
         // Assert
         Assert.IsNotNull(true);
+    }
+
+    [TestMethod]
+    public async Task ClearGlossary_CorrectRequest_IsSuccess()
+    {
+        // Arrange
+        var actions = new GlossaryActions(InvocationContext, FileManager);
+        var input = new ClearGlossaryRequest { GlossaryUId = "uTHNqoRE5BVA1qLUvBC9H1" };
+
+        // Act
+        await actions.ClearGlossary(input);
     }
 }

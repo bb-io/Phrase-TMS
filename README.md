@@ -74,6 +74,7 @@ Custom fields are associated with a specific type, e.g. date, number, text, etc.
 - **Create glossary** creates a new glossary in your Phrase instance that you can then fill manually or through the _Import glossary_ action.
 - **Export glossary** returns the glossary as a Blackbird interchangable file (standard TBX) that can be imported into any other app.
 - **Import glossary** takes a glossary from any other Blackbird app and imports it into a specific Phrase glossary.
+- **Remove all terms from glossary** deletes all terms in a glossary.
 
 ### Job
 
