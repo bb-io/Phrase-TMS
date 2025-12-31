@@ -1,31 +1,39 @@
+using PhraseTMSTests.Base;
 using Apps.PhraseTMS.Connections;
 using Blackbird.Applications.Sdk.Common.Authentication;
-using PhraseTMSTests.Base;
 
 namespace Tests.PhraseTMS;
 
 [TestClass]
-public class ConnectionValidatorTests : TestBase
+public class ConnectionValidatorTests : TestBaseMultipleConnections
 {
     [TestMethod]
-    public async Task ValidateConnection_ValidData_ShouldBeSuccessful()
+    public async Task ValidatesCorrectConnection()
     {
+        // Arrange
         var validator = new ConnectionValidator();
-        
-        var result = await validator.ValidateConnection(Creds, CancellationToken.None);
-        Console.WriteLine(result.Message);
-        Assert.IsTrue(result.IsValid);
+
+        // Act
+        var tasks = CredsGroups.Select(x => validator.ValidateConnection(x, CancellationToken.None).AsTask());
+        var results = await Task.WhenAll(tasks);
+
+        // Assert
+        Assert.IsTrue(results.All(x => x.IsValid));
     }
 
     [TestMethod]
-    public async Task ValidateConnection_InvalidData_ShouldFail()
+    public async Task DoesNotValidateIncorrectConnection()
     {
+        // Arrange
         var validator = new ConnectionValidator();
-        var newCredentials = Creds
-            .Select(x => new AuthenticationCredentialsProvider(x.KeyName, x.Value + "_incorrect"));
-        
-        var result = await validator.ValidateConnection(newCredentials, CancellationToken.None);
-        Console.WriteLine(result.Message);
+        var newCreds = CredsGroups.First().Select(
+            x => new AuthenticationCredentialsProvider(x.KeyName, x.Value + "_incorrect")
+        );
+
+        // Act
+        var result = await validator.ValidateConnection(newCreds, CancellationToken.None);
+
+        // Assert
         Assert.IsFalse(result.IsValid);
     }
 }

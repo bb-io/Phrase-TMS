@@ -1,12 +1,14 @@
-﻿using Apps.PhraseTMS.Dtos;
+﻿using Apps.PhraseTMS.Constants;
+using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Dtos.Async;
 using Apps.PhraseTMS.Models;
+using Apps.PhraseTMS.Models.Auth;
 using Apps.PhraseTMS.Models.Responses;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Exceptions;
-using Blackbird.Applications.Sdk.Common.Invocation;
+using Blackbird.Applications.Sdk.Utils.Extensions.Http;
+using Blackbird.Applications.Sdk.Utils.Extensions.Sdk;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
-using DocumentFormat.OpenXml.Bibliography;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
 using RestSharp;
@@ -20,9 +22,22 @@ public class PhraseTmsClient : RestClient
         base(new RestClientOptions
             { BaseUrl = GetUri(authenticationCredentialsProviders), MaxTimeout=600000 })
     {
-        var authorization = authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value;
-        this.AddDefaultHeader("Authorization", authorization);
-        this.AddDefaultHeader("accept", "*/*");
+        string connectionType = authenticationCredentialsProviders.Get(CredsNames.ConnectionType).Value;
+        switch (connectionType)
+        {
+            case ConnectionTypes.OAuth2:
+                var authorization = authenticationCredentialsProviders.Get("Authorization").Value;
+                this.AddDefaultHeader("Authorization", authorization);
+                this.AddDefaultHeader("accept", "*/*");
+                break;
+            case ConnectionTypes.Credentials:
+                string userName = authenticationCredentialsProviders.Get(CredsNames.Username).Value;
+                string password = authenticationCredentialsProviders.Get(CredsNames.Password).Value;
+                string token = GetTokenFromCredentials(userName, password).GetAwaiter().GetResult();
+                this.AddDefaultHeader("Authorization", token);
+                this.AddDefaultHeader("accept", "*/*");
+                break;
+        }
     }
 
     public async Task<AsyncRequest?> PerformAsyncRequest(RestRequest request)
@@ -221,7 +236,7 @@ public class PhraseTmsClient : RestClient
         return response.WorkflowSteps.Select(x => x.WorkflowLevel).Max();
     }
 
-    private string ExtractHtmlErrorMessage(string html)
+    private static string ExtractHtmlErrorMessage(string html)
     {
         if (string.IsNullOrEmpty(html)) return "N/A";
 
@@ -273,5 +288,19 @@ public class PhraseTmsClient : RestClient
         }
 
         return null;
+    }
+
+    private async Task<string> GetTokenFromCredentials(string userName, string password)
+    {
+        var request = new RestRequest("/api2/v1/auth/login", Method.Post)
+            .WithJsonBody(
+                new
+                {
+                    userName,
+                    password
+                }
+            );
+        var response = await ExecuteWithHandling<LoginResponse>(request);
+        return $"ApiToken {response.Token}";
     }
 }
