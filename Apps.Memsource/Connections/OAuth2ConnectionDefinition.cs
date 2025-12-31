@@ -54,11 +54,11 @@ public class OAuth2ConnectionDefinition : IConnectionDefinition
     public IEnumerable<AuthenticationCredentialsProvider> CreateAuthorizationCredentialsProviders(
         Dictionary<string, string> values)
     {
-        var token = values.First(v => v.Key == CredsNames.AccessToken);
-        var providers = new List<AuthenticationCredentialsProvider>
-        {
-            new("Authorization", $"Bearer {token.Value}")
-        };
+        var providers = new List<AuthenticationCredentialsProvider>();
+
+        string? token = values.FirstOrDefault(v => v.Key == CredsNames.AccessToken).Value;
+        if (token != null)
+            providers.Add(new("Authorization", $"Bearer {token}"));        
 
         foreach (var kv in values.Where(x => x.Key != CredsNames.AccessToken))
             providers.Add(new AuthenticationCredentialsProvider(kv.Key, kv.Value));
