@@ -18,27 +18,39 @@ namespace Apps.PhraseTMS;
 
 public class PhraseTmsClient : RestClient
 {
+    private readonly IEnumerable<AuthenticationCredentialsProvider> _credsProviders; 
+    private bool _isAuthenticated = false;
+
     public PhraseTmsClient(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders) :
         base(new RestClientOptions
-            { BaseUrl = GetUri(authenticationCredentialsProviders), MaxTimeout=600000 })
+        {
+            BaseUrl = GetUri(authenticationCredentialsProviders),
+            MaxTimeout = 600000
+        })
     {
-        string connectionType = authenticationCredentialsProviders.Get(CredsNames.ConnectionType).Value;
+        _credsProviders = authenticationCredentialsProviders;
+        this.AddDefaultHeader("accept", "*/*");
+    }
+
+    private async Task EnsureAuthenticated()
+    {
+        if (_isAuthenticated) return;
+        string connectionType = _credsProviders.Get(CredsNames.ConnectionType).Value;
         switch (connectionType)
         {
             case ConnectionTypes.OAuth2:
-                var authorization = authenticationCredentialsProviders.Get("Authorization").Value;
+                var authorization = _credsProviders.Get("Authorization").Value;
                 this.AddDefaultHeader("Authorization", authorization);
-                this.AddDefaultHeader("accept", "*/*");
                 break;
             case ConnectionTypes.Credentials:
-                string userName = authenticationCredentialsProviders.Get(CredsNames.Username).Value;
-                string password = authenticationCredentialsProviders.Get(CredsNames.Password).Value;
-                string token = GetTokenFromCredentials(userName, password).GetAwaiter().GetResult();
+                string userName = _credsProviders.Get(CredsNames.Username).Value;
+                string password = _credsProviders.Get(CredsNames.Password).Value;
+                string token = await GetTokenFromCredentials(userName, password);
                 this.AddDefaultHeader("Authorization", token);
-                this.AddDefaultHeader("accept", "*/*");
                 break;
         }
-    }
+        _isAuthenticated = true;
+    }    
 
     public async Task<AsyncRequest?> PerformAsyncRequest(RestRequest request)
     {
@@ -90,6 +102,10 @@ public class PhraseTmsClient : RestClient
 
     public async Task<RestResponse> ExecuteWithHandling(RestRequest request)
     {
+        bool isLoginRequest = request.Resource.Contains("/auth/login");
+        if (!isLoginRequest)
+            await EnsureAuthenticated();
+
         int[] retryDelaysInMs = { 2000, 4000, 8000 };
         RestResponse response = null;
 
@@ -131,7 +147,7 @@ public class PhraseTmsClient : RestClient
         }
         return response!;
     }
-        
+
     public async Task<List<T>> Paginate<T>(RestRequest request)
     {
         var pageNumber = 0;

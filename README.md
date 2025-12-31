@@ -41,9 +41,8 @@ Navigate to apps and search for Phrase. Click _Add Connection_ and name your con
 1. Select the _Credentials_ connection type from the dropdown.
 2. Fill in the _username_ and _password_ of your Phrase account.
 3. Select the data center your Phrase instance is hosted on. You can select between the US and EU data centers.
-4. Click _Authorize connection_.
-5. Follow the instructions that Phrase gives you, authorizing Blackbird.io to act on your behalf.
-6. When you return to Blackbird, confirm that the connection has appeared and the status is _Connected_.
+4. Click _Connect_.
+5. Wait for the process to complete, confirm that the connection has appeared and the status is _Connected_.
 
 ![Connecting using credentials](image/README/credentials_conn.png)
 
