@@ -1,36 +1,34 @@
 ﻿using Apps.PhraseTMS.Actions;
 using Apps.PhraseTMS.Models.Clients.Requests;
-using Newtonsoft.Json;
+using Blackbird.Applications.Sdk.Common.Invocation;
 using PhraseTMSTests.Base;
 
-namespace Tests.PhraseTMS
+namespace Tests.PhraseTMS;
+
+[TestClass]
+public class ClientTests : TestBaseMultipleConnections
 {
-    [TestClass]
-    public class ClientTests : TestBase
+    public const string CLIENT_ID = "qdEcGUaxnLrs4d6z4B89c0";
+
+    [TestMethod, ContextDataSource]
+    public async Task Search_clients_works(InvocationContext context)
     {
-        public const string CLIENT_ID = "qdEcGUaxnLrs4d6z4B89c0";
+        var actions = new ClientActions(context);
 
-        [TestMethod]
-        public async Task Search_clients_works()
-        {
-            var actions = new ClientActions(InvocationContext);
+        var result = await actions.ListClients(new ListClientsQuery { });
 
-            var result = await actions.ListClients(new ListClientsQuery { });
+        PrintResult(result);
+        Assert.IsTrue(result.Clients.Any() && result.Clients.All(x => x.UId != null));
+    }
 
-            Assert.IsTrue(result.Clients.Any() && result.Clients.All(x => x.UId != null));
-            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-        }
+    [TestMethod, ContextDataSource]
+    public async Task Get_client_works(InvocationContext context)
+    {
+        var actions = new ClientActions(context);
 
-        [TestMethod]
-        public async Task Get_client_works()
-        {
-            var actions = new ClientActions(InvocationContext);
+        var result = await actions.GetClient(new ClientRequest { ClientUid = CLIENT_ID });
 
-            var result = await actions.GetClient(new ClientRequest { ClientUid = CLIENT_ID });
-
-            Assert.IsTrue(result.UId != null);
-            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-        }
-
+        PrintResult(result);
+        Assert.IsNotNull(result);
     }
 }

@@ -1,179 +1,170 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Apps.PhraseTMS.Actions;
+﻿using Apps.PhraseTMS.Actions;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Newtonsoft.Json;
 using PhraseTMSTests.Base;
 
-namespace Tests.PhraseTMS
+namespace Tests.PhraseTMS;
+
+[TestClass]
+public class ProjectActionsTests : TestBaseMultipleConnections
 {
-    [TestClass]
-    public class ProjectActionsTests : TestBase
+    public const string PROJECT_ID = "ayB1FFffK7hD0AXUAX9cPa";//"hGStrg0MLYmQtG0f66mj6f";
+
+    [TestMethod, ContextDataSource]
+    public async Task CreateProject_ValidData_Success(InvocationContext context)
     {
-        public const string PROJECT_ID = "ayB1FFffK7hD0AXUAX9cPa";//"hGStrg0MLYmQtG0f66mj6f";
+        var actions = new ProjectActions(context, FileManager);
 
-        [TestMethod]
-        public async Task CreateProject_ValidData_Success()
+        var targetLangs = new List<string>();
+        targetLangs.Add("en");
+
+        var workflow = new List<string>();
+        workflow.Add("lxHYoo7KWvWN6R7Ca99mz3");
+        workflow.Add("NeLxbybjmGHy69Dq0QAsR0");
+
+        var input = new CreateProjectRequest { SourceLanguage = "hu", TargetLanguages = targetLangs, Name = "this name", WorkflowSteps = workflow};
+
+        var result = await actions.CreateProject(input);
+
+        PrintResult(result);
+        Assert.IsNotNull(result);
+        Assert.IsFalse(string.IsNullOrEmpty(result.UId));
+    }
+
+    [TestMethod, ContextDataSource]
+    public async Task CreateProjectFromTemplate_ValidData_Success(InvocationContext context)
+    {
+        var actions = new ProjectActions(context, FileManager);
+
+        var targetLangs = new List<string>();
+        targetLangs.Add("en");
+
+        var workflow = new List<string>();
+        workflow.Add("lxHYoo7KWvWN6R7Ca99mz3");
+        workflow.Add("NeLxbybjmGHy69Dq0QAsR0");
+
+        var input = new CreateFromTemplateRequest {SourceLanguage = "hu", 
+            TargetLanguages=targetLangs,
+            TemplateUId= "lG56tOurwL9u21kRlsXgy3", 
+            Name="template project with date with neccesary timezone", 
+        };
+
+        var result = await actions.CreateProjectFromTemplate(input);
+
+        PrintResult(result);
+        Assert.IsNotNull(result);
+        Assert.IsFalse(string.IsNullOrEmpty(result.UId));
+    }
+
+    [TestMethod, ContextDataSource]
+    public async Task Search_projects_works(InvocationContext context)
+    {
+        var actions = new ProjectActions(context, FileManager);
+        var result = await actions.ListAllProjects(new ListAllProjectsQuery { CreatedInLastHours = 0.5});
+
+        PrintResult(result);
+        Assert.IsNotNull(result);
+        Assert.IsTrue(result.Projects.Any());
+    }
+
+    [TestMethod, ContextDataSource]
+    public async Task SearchTranslationMemories_works(InvocationContext context)
+    {
+        var actions = new TranslationMemoryActions(context, FileManager);
+        var result = await actions.SearchTranslationMemories(new Apps.PhraseTMS.Models.TranslationMemories.Requests.SearchTranslationMemoryRequest { });
+
+        PrintResult(result);
+        Assert.IsNotNull(result);
+    }
+
+    [TestMethod, ContextDataSource]
+    public async Task Get_project_works(InvocationContext context)
+    {
+        var actions = new ProjectActions(context, FileManager);
+        var result = await actions.GetProject(new ProjectRequest { ProjectUId = "0SBo723Ge0wHfk0A1k1XWn0" });
+
+        PrintResult(result);
+        Assert.IsNotNull(result);
+        Assert.IsTrue(result.Name != null);
+    }
+
+    [TestMethod, ContextDataSource]
+    public async Task EditProjectTranslationMemories_works(InvocationContext context)
+    {
+        var actions = new TranslationMemoryActions(context, FileManager);
+
+        //var reqLangReadWrite = new Apps.PhraseTMS.Models.TranslationMemories.Requests.EditProjectTransMemoriesRequest
+        //{
+        //    TransMemoryUids = new[] { "w1pV1izYniDtTQjV4iPD1s" }
+        //};
+
+        var reqLangReadWrite = new Apps.PhraseTMS.Models.TranslationMemories.Requests.EditProjectTransMemoriesRequest
         {
-            var actions = new ProjectActions(InvocationContext, FileManager);
+            TargetLanguage = "de",
+            TransMemoryUids = new[] { "w1pV1izYniDtTQjV4iPD1s" },
+            ReadModes = new[] { true },
+            WriteModes = new[] { true },
+            Penalties = new[] { 2 },
+            Orders = new[] { 1 },
+        };
 
-            var targetLangs = new List<string>();
-            targetLangs.Add("en");
+        var input = reqLangReadWrite;
 
-            var workflow = new List<string>();
-            workflow.Add("lxHYoo7KWvWN6R7Ca99mz3");
-            workflow.Add("NeLxbybjmGHy69Dq0QAsR0");
+        var result = await actions.EditProjectTranslationMemories(
+            new ProjectRequest { ProjectUId = "0SBo723Ge0wHfk0A1k1XWn0" },
+            input
+        );
 
-            var input = new CreateProjectRequest { SourceLanguage = "hu", TargetLanguages = targetLangs, Name = "this name", WorkflowSteps = workflow};
+        PrintResult(result);
+        Assert.IsNotNull(result);
+    }
 
-            var result = await actions.CreateProject(input);
+    [TestMethod, ContextDataSource]
+    public async Task Search_project_templates_works(InvocationContext context)
+    {
+        var actions = new ProjectTemplateActions(context);
+        var result = await actions.SearchProjectTemplates(new SearchProjectTemplatesQuery { });
 
-            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-            Assert.IsNotNull(result);
-            Assert.IsFalse(string.IsNullOrEmpty(result.UId));
-        }
+        PrintResult(result);
+        Assert.IsNotNull(result);
+    }
 
-        [TestMethod]
-        public async Task CreateProjectFromTemplate_ValidData_Success()
-        {
-            var actions = new ProjectActions(InvocationContext, FileManager);
+    [TestMethod, ContextDataSource]
+    public async Task Search_termBase_templates_works(InvocationContext context)
+    {
+        var actions = new ProjectActions(context, FileManager);
+        var result = await actions.SearchTermBases(new() { });
 
-            var targetLangs = new List<string>();
-            targetLangs.Add("en");
+        PrintResult(result);
+        Assert.IsNotNull(result);
+    }
 
-            var workflow = new List<string>();
-            workflow.Add("lxHYoo7KWvWN6R7Ca99mz3");
-            workflow.Add("NeLxbybjmGHy69Dq0QAsR0");
+    [TestMethod, ContextDataSource]
+    public async Task CreateProjectTemplate_ValidData_Success(InvocationContext context)
+    {
+        var actions = new ProjectTemplateActions(context);
+        var result = await actions.CreateProjectTemplate(new ProjectRequest { ProjectUId= "0SBo723Ge0wHfk0A1k1XWn0" },
+            new CreateProjectTemplateRequest { Name="Testing template" });
 
-            var input = new CreateFromTemplateRequest {SourceLanguage = "hu", 
-                TargetLanguages=targetLangs,
-                TemplateUId= "lG56tOurwL9u21kRlsXgy3", 
-                Name="template project with date with neccesary timezone", 
-            };
+        PrintResult(result);
+        Assert.IsNotNull(result);
+        Assert.IsFalse(string.IsNullOrEmpty(result.UId));
+    }
 
-            var result = await actions.CreateProjectFromTemplate(input);
+    [TestMethod, ContextDataSource]
+    public async Task TemplateTermBasesProjectTemplate_ValidData_Success(InvocationContext context)
+    {
+        var actions = new ProjectTemplateActions(context);
+        await actions.SetProjectTemplateTermBases(new ProjectTemplateRequest { ProjectTemplateUId = "hrNgeVe66AHkadtUCNjWm0" },
+            new SetTemplateTermBasesRequest { TermBaseId= "EaZpWNsRTmbP9NEDxHlMl1", WorkflowStepId= "7445" });
+    }
 
-            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-            Assert.IsNotNull(result);
-            Assert.IsFalse(string.IsNullOrEmpty(result.UId));
-        }
-
-        [TestMethod]
-        public async Task Search_projects_works()
-        {
-            var actions = new ProjectActions(InvocationContext, FileManager);
-            var result = await actions.ListAllProjects(new ListAllProjectsQuery { CreatedInLastHours = 0.5});
-
-            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-            Assert.IsNotNull(result);
-            Assert.IsTrue(result.Projects.Any());
-        }
-
-        [TestMethod]
-        public async Task SearchTranslationMemories_works()
-        {
-            var actions = new TranslationMemoryActions(InvocationContext, FileManager);
-            var result = await actions.SearchTranslationMemories(new Apps.PhraseTMS.Models.TranslationMemories.Requests.SearchTranslationMemoryRequest { });
-
-            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-            Assert.IsNotNull(result);
-        }
-
-        [TestMethod]
-        public async Task Get_project_works()
-        {
-            var actions = new ProjectActions(InvocationContext, FileManager);
-            var result = await actions.GetProject(new ProjectRequest { ProjectUId = "0SBo723Ge0wHfk0A1k1XWn0" });
-
-            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-            Assert.IsNotNull(result);
-            Assert.IsTrue(result.Name != null);
-        }
-
-
-        [TestMethod]
-        public async Task EditProjectTranslationMemories_works()
-        {
-            var actions = new TranslationMemoryActions(InvocationContext, FileManager);
-
-            //var reqLangReadWrite = new Apps.PhraseTMS.Models.TranslationMemories.Requests.EditProjectTransMemoriesRequest
-            //{
-            //    TransMemoryUids = new[] { "w1pV1izYniDtTQjV4iPD1s" }
-            //};
-
-            var reqLangReadWrite = new Apps.PhraseTMS.Models.TranslationMemories.Requests.EditProjectTransMemoriesRequest
-            {
-                TargetLanguage = "de",
-                TransMemoryUids = new[] { "w1pV1izYniDtTQjV4iPD1s" },
-                ReadModes = new[] { true },
-                WriteModes = new[] { true },
-                Penalties = new[] { 2 },
-                Orders = new[] { 1 },
-            };
-
-            var input = reqLangReadWrite;
-
-            var result = await actions.EditProjectTranslationMemories(
-                new ProjectRequest { ProjectUId = "0SBo723Ge0wHfk0A1k1XWn0" },
-                input
-            );
-
-            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-            Assert.IsNotNull(result);
-        }
-
-        [TestMethod]
-        public async Task Search_project_templates_works()
-        {
-            var actions = new ProjectTemplateActions(InvocationContext);
-            var result = await actions.SearchProjectTemplates(new SearchProjectTemplatesQuery { });
-
-            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-            Assert.IsNotNull(result);
-        }
-
-        [TestMethod]
-        public async Task Search_termBase_templates_works()
-        {
-            var actions = new ProjectActions(InvocationContext, FileManager);
-            var result = await actions.SearchTermBases(new() { });
-
-            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-            Assert.IsNotNull(result);
-        }
-
-        [TestMethod]
-        public async Task CreateProjectTemplate_ValidData_Success()
-        {
-            var actions = new ProjectTemplateActions(InvocationContext);
-            var result = await actions.CreateProjectTemplate(new ProjectRequest { ProjectUId= "0SBo723Ge0wHfk0A1k1XWn0" },
-                new CreateProjectTemplateRequest { Name="Testing template" });
-
-            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-            Assert.IsNotNull(result);
-            Assert.IsFalse(string.IsNullOrEmpty(result.UId));
-        }
-
-        [TestMethod]
-        public async Task TemplateTermBasesProjectTemplate_ValidData_Success()
-        {
-            var actions = new ProjectTemplateActions(InvocationContext);
-            await actions.SetProjectTemplateTermBases(new ProjectTemplateRequest { ProjectTemplateUId = "hrNgeVe66AHkadtUCNjWm0" },
-                new SetTemplateTermBasesRequest { TermBaseId= "EaZpWNsRTmbP9NEDxHlMl1", WorkflowStepId= "7445" });
-
-        }
-
-        [TestMethod]
-        public async Task TemplateTranslationMemoryProjectTemplate_ValidData_Success()
-        {
-            var actions = new ProjectTemplateActions(InvocationContext);
-            await actions.SetProjectTemplateTranslationMemory(new ProjectTemplateRequest { ProjectTemplateUId = "hrNgeVe66AHkadtUCNjWm0" },
-                new SetTemplateTranslationMemoryRequest { TransMemoryUid= "w1pV1izYniDtTQjV4iPD1s", WorkflowStepUid = "7446" });
-            Assert.IsTrue(true);
-        }
+    [TestMethod, ContextDataSource]
+    public async Task TemplateTranslationMemoryProjectTemplate_ValidData_Success(InvocationContext context)
+    {
+        var actions = new ProjectTemplateActions(context);
+        await actions.SetProjectTemplateTranslationMemory(new ProjectTemplateRequest { ProjectTemplateUId = "hrNgeVe66AHkadtUCNjWm0" },
+            new SetTemplateTranslationMemoryRequest { TransMemoryUid= "w1pV1izYniDtTQjV4iPD1s", WorkflowStepUid = "7446" });
     }
 }

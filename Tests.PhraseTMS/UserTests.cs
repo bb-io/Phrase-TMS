@@ -1,29 +1,28 @@
 ﻿using Apps.PhraseTMS.Actions;
 using Apps.PhraseTMS.Models.Users.Requests;
-using Newtonsoft.Json;
+using Blackbird.Applications.Sdk.Common.Invocation;
 using PhraseTMSTests.Base;
 
-namespace Tests.PhraseTMS
-{
-    [TestClass]
-    public class UserTests : TestBase
-    {
-        [TestMethod]
-        public async Task SearchUsers_IsSuccess()
-        {
-            var actions = new UserActions(InvocationContext);
-            var result = await actions.ListAllUsers(new ListAllUsersQuery { role = ["ADMIN"], includeDeleted = false });
-            Assert.IsNotNull(result);
-            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-        }
+namespace Tests.PhraseTMS;
 
-        [TestMethod]
-        public async Task FindUser_IsSuccess()
-        {
-            var actions = new UserActions(InvocationContext);
-            var result = await actions.FindUser(new ListAllUsersQuery { role = ["ADMIN"], includeDeleted = false });
-            Assert.IsNotNull(result);
-            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-        }
+[TestClass]
+public class UserTests : TestBaseMultipleConnections
+{
+    [TestMethod]
+    public async Task SearchUsers_IsSuccess(InvocationContext context)
+    {
+        var actions = new UserActions(context);
+        var result = await actions.ListAllUsers(new ListAllUsersQuery { role = ["ADMIN"], includeDeleted = false });
+        Assert.IsNotNull(result);
+        PrintResult(result);
+    }
+
+    [TestMethod]
+    public async Task FindUser_IsSuccess(InvocationContext context)
+    {
+        var actions = new UserActions(context);
+        var result = await actions.FindUser(new ListAllUsersQuery { role = ["ADMIN"], includeDeleted = false });
+        Assert.IsNotNull(result);
+        PrintResult(result);
     }
 }

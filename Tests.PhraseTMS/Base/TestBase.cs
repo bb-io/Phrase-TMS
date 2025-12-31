@@ -2,22 +2,16 @@
 using Apps.PhraseTMS.Models.Auth;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Invocation;
-using Blackbird.Applications.Sdk.Utils.Extensions.Sdk;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 using RestSharp;
 
 namespace PhraseTMSTests.Base;
 
 public class TestBase
 {
-    public IEnumerable<AuthenticationCredentialsProvider> Creds { get; set; }
-
     public List<InvocationContext> InvocationContexts { get; set; }
 
     public List<IEnumerable<AuthenticationCredentialsProvider>> CredsGroups { get; set; }
-
-    public InvocationContext InvocationContext { get; set; }
 
     public FileManager FileManager { get; set; }
 
@@ -83,11 +77,5 @@ public class TestBase
         if (context == null)
             throw new Exception($"Invocation context was not found for this connection type: {connectionType}");
         else return context;
-    }
-
-    [Obsolete("Inherit from TestBaseMultipleConnections and use PrintResult instead")]
-    public static void PrintResponse(object response)
-    {
-        Console.WriteLine(JsonConvert.SerializeObject(response, Formatting.Indented));
     }
 }    

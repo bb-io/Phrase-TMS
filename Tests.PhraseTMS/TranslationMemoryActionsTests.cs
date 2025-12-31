@@ -1,20 +1,20 @@
 using Apps.PhraseTMS.Actions;
 using Apps.PhraseTMS.Models.TranslationMemories.Requests;
 using Blackbird.Applications.Sdk.Common.Files;
+using Blackbird.Applications.Sdk.Common.Invocation;
 using PhraseTMSTests.Base;
 
 namespace Tests.PhraseTMS;
 
 [TestClass]
-public class TranslationMemoryActionsTests : TestBase
+public class TranslationMemoryActionsTests : TestBaseMultipleConnections
 {
-    private TranslationMemoryActions TranslationMemoryActions => new(InvocationContext, FileManager);
-
     private const string TranslationMemoryId = "Hv9w0ZZz9DPimGmJJSU7g0";
 
-    [TestMethod]
-    public async Task UpdateTmInsertSegmentsFromFile_BasicXliffFile_Success()
+    [TestMethod, ContextDataSource]
+    public async Task UpdateTmInsertSegmentsFromFile_BasicXliffFile_Success(InvocationContext context)
     {
+        var actions = new TranslationMemoryActions(context, FileManager);
         var updateTmRequest = new UpdateTmRequest
         {
             TranslationMemoryUId = TranslationMemoryId,
@@ -22,12 +22,13 @@ public class TranslationMemoryActionsTests : TestBase
             TargetLanguage = "fr"
         };
 
-        await TranslationMemoryActions.UpdateTmInsertSegmentsFromFile(updateTmRequest);
+        await actions.UpdateTmInsertSegmentsFromFile(updateTmRequest);
     }
-    
-    [TestMethod]
-    public async Task UpdateTmInsertSegmentsFromFile_ComplexXliffFile_Success()
+
+    [TestMethod, ContextDataSource]
+    public async Task UpdateTmInsertSegmentsFromFile_ComplexXliffFile_Success(InvocationContext context)
     {
+        var actions = new TranslationMemoryActions(context, FileManager);
         var updateTmRequest = new UpdateTmRequest
         {
             TranslationMemoryUId = TranslationMemoryId,
@@ -35,12 +36,13 @@ public class TranslationMemoryActionsTests : TestBase
             TargetLanguage = "fr"
         };
 
-        await TranslationMemoryActions.UpdateTmInsertSegmentsFromFile(updateTmRequest);
+        await actions.UpdateTmInsertSegmentsFromFile(updateTmRequest);
     }
 
-    [TestMethod]
-    public async Task UpdateTmInsertSegmentsFromFile_FilterSegments_Success()
+    [TestMethod, ContextDataSource]
+    public async Task UpdateTmInsertSegmentsFromFile_FilterSegments_Success(InvocationContext context)
     {
+        var actions = new TranslationMemoryActions(context, FileManager);
         var updateTmRequest = new UpdateTmRequest
         {
             TranslationMemoryUId = TranslationMemoryId,
@@ -48,6 +50,6 @@ public class TranslationMemoryActionsTests : TestBase
             SegmentStates = ["initial"],
         };
 
-        await TranslationMemoryActions.UpdateTmInsertSegmentsFromFile(updateTmRequest);
+        await actions.UpdateTmInsertSegmentsFromFile(updateTmRequest);
     }
 }
