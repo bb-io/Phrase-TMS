@@ -1,35 +1,39 @@
 ﻿using Apps.PhraseTMS.Actions;
 using Apps.PhraseTMS.Models.CustomFields;
 using Apps.PhraseTMS.Models.Projects.Requests;
+using Blackbird.Applications.Sdk.Common.Invocation;
 using PhraseTMSTests.Base;
 
-namespace Tests.PhraseTMS
+namespace Tests.PhraseTMS;
+
+[TestClass]
+public class CustomFieldTests : TestBaseMultipleConnections
 {
-    [TestClass]
-    public class CustomFieldTests : TestBase
+    [TestMethod, ContextDataSource]
+    public async Task GetCustomUrlField_IsSuccess(InvocationContext context)
     {
-        [TestMethod]
-        public async Task GetCustomUrlField_IsSuccess()
-        {
-            var action = new CustomFieldsActions(InvocationContext);
+        // Arrange
+        var action = new CustomFieldsActions(context);
+        var project = new ProjectRequest { ProjectUId = "B1hg3UPb3dQoqaIheND4D5" };
+        var customField = new UrlCustomFieldRequest { FieldUId = "qUTQ7vF7YpoP9Rhewu2lg0" };
 
-            var response = await action.GetUrlCustomField(new ProjectRequest { ProjectUId= "B1hg3UPb3dQoqaIheND4D5" },new UrlCustomFieldRequest { FieldUId= "qUTQ7vF7YpoP9Rhewu2lg0" });
+        // Act
+        string? response = await action.GetUrlCustomField(project, customField);
 
-            var json = Newtonsoft.Json.JsonConvert.SerializeObject(response, Newtonsoft.Json.Formatting.Indented);
-            Console.WriteLine(json);
+        // Assert
+        TestContext.WriteLine(response);
+        Assert.IsNotNull(response);
+    }
 
-            Assert.IsNotNull(response);
-        }
+    [TestMethod, ContextDataSource]
+    public async Task SetUrlCustomField_IsSuccess(InvocationContext context)
+    {
+        // Arrange
+        var action = new CustomFieldsActions(context);
+        var project = new ProjectRequest { ProjectUId = "B1hg3UPb3dQoqaIheND4D5" };
+        var customField = new UrlCustomFieldRequest { FieldUId = "qUTQ7vF7YpoP9Rhewu2lg0" };
 
-        [TestMethod]
-        public async Task SetUrlCustomField_IsSuccess()
-        {
-            var action = new CustomFieldsActions(InvocationContext);
-
-            await action.SetUrlCustomField(new ProjectRequest { ProjectUId = "B1hg3UPb3dQoqaIheND4D5" }, new UrlCustomFieldRequest { FieldUId = "qUTQ7vF7YpoP9Rhewu2lg0" },
-                "https://www.larksuite.com/hc/en-US/articles/test");
-
-            Assert.IsTrue(true);
-        }
+        // Act
+        await action.SetUrlCustomField(project, customField, "https://www.larksuite.com/hc/en-US/articles/test");
     }
 }

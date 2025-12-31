@@ -1,12 +1,14 @@
-﻿using Apps.PhraseTMS.Dtos;
+﻿using Apps.PhraseTMS.Constants;
+using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Dtos.Async;
 using Apps.PhraseTMS.Models;
+using Apps.PhraseTMS.Models.Auth;
 using Apps.PhraseTMS.Models.Responses;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Exceptions;
-using Blackbird.Applications.Sdk.Common.Invocation;
+using Blackbird.Applications.Sdk.Utils.Extensions.Http;
+using Blackbird.Applications.Sdk.Utils.Extensions.Sdk;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
-using DocumentFormat.OpenXml.Bibliography;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
 using RestSharp;
@@ -16,14 +18,39 @@ namespace Apps.PhraseTMS;
 
 public class PhraseTmsClient : RestClient
 {
+    private readonly IEnumerable<AuthenticationCredentialsProvider> _credsProviders; 
+    private bool _isAuthenticated = false;
+
     public PhraseTmsClient(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders) :
         base(new RestClientOptions
-            { BaseUrl = GetUri(authenticationCredentialsProviders), MaxTimeout=600000 })
+        {
+            BaseUrl = GetUri(authenticationCredentialsProviders),
+            MaxTimeout = 600000
+        })
     {
-        var authorization = authenticationCredentialsProviders.First(p => p.KeyName == "Authorization").Value;
-        this.AddDefaultHeader("Authorization", authorization);
+        _credsProviders = authenticationCredentialsProviders;
         this.AddDefaultHeader("accept", "*/*");
     }
+
+    private async Task EnsureAuthenticated()
+    {
+        if (_isAuthenticated) return;
+        string connectionType = _credsProviders.Get(CredsNames.ConnectionType).Value;
+        switch (connectionType)
+        {
+            case ConnectionTypes.OAuth2:
+                var authorization = _credsProviders.Get("Authorization").Value;
+                this.AddDefaultHeader("Authorization", authorization);
+                break;
+            case ConnectionTypes.Credentials:
+                string userName = _credsProviders.Get(CredsNames.Username).Value;
+                string password = _credsProviders.Get(CredsNames.Password).Value;
+                string token = await GetTokenFromCredentials(userName, password);
+                this.AddDefaultHeader("Authorization", token);
+                break;
+        }
+        _isAuthenticated = true;
+    }    
 
     public async Task<AsyncRequest?> PerformAsyncRequest(RestRequest request)
     {
@@ -75,6 +102,10 @@ public class PhraseTmsClient : RestClient
 
     public async Task<RestResponse> ExecuteWithHandling(RestRequest request)
     {
+        bool isLoginRequest = request.Resource.Contains("/auth/login");
+        if (!isLoginRequest)
+            await EnsureAuthenticated();
+
         int[] retryDelaysInMs = { 2000, 4000, 8000 };
         RestResponse response = null;
 
@@ -116,7 +147,7 @@ public class PhraseTmsClient : RestClient
         }
         return response!;
     }
-        
+
     public async Task<List<T>> Paginate<T>(RestRequest request)
     {
         var pageNumber = 0;
@@ -221,7 +252,7 @@ public class PhraseTmsClient : RestClient
         return response.WorkflowSteps.Select(x => x.WorkflowLevel).Max();
     }
 
-    private string ExtractHtmlErrorMessage(string html)
+    private static string ExtractHtmlErrorMessage(string html)
     {
         if (string.IsNullOrEmpty(html)) return "N/A";
 
@@ -273,5 +304,19 @@ public class PhraseTmsClient : RestClient
         }
 
         return null;
+    }
+
+    private async Task<string> GetTokenFromCredentials(string userName, string password)
+    {
+        var request = new RestRequest("/api2/v1/auth/login", Method.Post)
+            .WithJsonBody(
+                new
+                {
+                    userName,
+                    password
+                }
+            );
+        var response = await ExecuteWithHandling<LoginResponse>(request);
+        return $"ApiToken {response.Token}";
     }
 }

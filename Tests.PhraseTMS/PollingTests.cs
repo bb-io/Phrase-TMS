@@ -1,35 +1,38 @@
 ﻿using Apps.PhraseTMS.Models.Users.Requests;
 using Apps.PhraseTMS.Polling;
 using Apps.PhraseTMS.Polling.Models;
+using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.Sdk.Common.Polling;
 using PhraseTMSTests.Base;
 
-namespace Tests.PhraseTMS
+namespace Tests.PhraseTMS;
+
+[TestClass]
+public class PollingTests : TestBaseMultipleConnections
 {
-    [TestClass]
-    public class PollingTests : TestBase
+    [TestMethod, ContextDataSource]
+    public async Task OnUsersCreated_IsSuccess(InvocationContext context)
     {
-        [TestMethod]
-        public async Task OnUsersCreated_IsSuccess()
+        // Arrange
+        var polling = new UserPollingList(context);
+        var input = new ListAllUsersQuery
         {
-            var polling = new UserPollingList(InvocationContext);
-            var input = new ListAllUsersQuery
+            role = ["ADMIN"],
+            includeDeleted = false
+        };
+        var memory = new PollingEventRequest<PollingMemory>
+        {
+            Memory = new PollingMemory
             {
-                role = ["ADMIN"],
-                includeDeleted = false
-            };
+                LastPollingTime = DateTime.UtcNow.AddMonths(-10)
+            },
+        };
 
-            var result = await polling.OnUsersCreated(new PollingEventRequest<PollingMemory>
-            {
-                Memory = new PollingMemory
-                {
-                    LastPollingTime = DateTime.UtcNow.AddMonths(-10)
-                },
-            }, input);
+        // Act
+        var result = await polling.OnUsersCreated(memory, input);
 
-            var json = Newtonsoft.Json.JsonConvert.SerializeObject(result, Newtonsoft.Json.Formatting.Indented);
-            Console.WriteLine(json);
-            Assert.IsNotNull(result);
-        }
+        // Assert
+        PrintResult(result);
+        Assert.IsNotNull(result);
     }
 }

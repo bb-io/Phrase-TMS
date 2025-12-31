@@ -13,6 +13,9 @@ Phrase TMS is a software as a service platform designed to automate and streamli
 Before you can connect you need to make sure that:
 
 - You have a Phrase TMS account on the instance you want to connect to.
+
+In order to connect using the _OAuth2_ connection type, ensure that:
+
 - You have permission to create and modify Registered OAuth apps.
 - In Phrase go to Settings > Registered OAuth apps and click _New_.
 - Fill in any name and description. For Redirect URI fill in: `https://bridge.blackbird.io/api/AuthorizationCode` and click _Save_.
@@ -20,16 +23,28 @@ Before you can connect you need to make sure that:
 
 ## Connecting
 
-1. Navigate to apps and search for Phrase.
-2. Click _Add Connection_.
-3. Name your connection for future reference e.g. 'My Phrase connection'.
-4. Fill in the _Client ID_ that you copied from Phrase.
-5. Select the data center your Phrase instance is hosted on. You can select between the US and EU data centers.
-6. Click _Authorize connection_.
-7. Follow the instructions that Phrase gives you, authorizing Blackbird.io to act on your behalf.
-8. When you return to Blackbird, confirm that the connection has appeared and the status is _Connected_.
+Navigate to apps and search for Phrase. Click _Add Connection_ and name your connection for future reference e.g. 'My Phrase connection'.
 
-![1741020881890](image/README/1741020881890.png)
+### OAuth2
+
+1. Select the _OAuth2_ connection type from the dropdown.
+2. Fill in the _Client ID_ that you copied from Phrase.
+3. Select the data center your Phrase instance is hosted on. You can select between the US and EU data centers.
+4. Click _Authorize connection_.
+5. Follow the instructions that Phrase gives you, authorizing Blackbird.io to act on your behalf.
+6. When you return to Blackbird, confirm that the connection has appeared and the status is _Connected_.
+
+![OAuth2 connection](image/README/oauth_conn.png)
+
+### Credentials
+
+1. Select the _Credentials_ connection type from the dropdown.
+2. Fill in the _username_ and _password_ of your Phrase account.
+3. Select the data center your Phrase instance is hosted on. You can select between the US and EU data centers.
+4. Click _Connect_.
+5. Wait for the process to complete, confirm that the connection has appeared and the status is _Connected_.
+
+![Connecting using credentials](image/README/credentials_conn.png)
 
 ## Actions
 

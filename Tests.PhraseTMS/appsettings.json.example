@@ -1,8 +1,17 @@
 {
-  "ConnectionDefinition": {
-    "username": "",
-    "password": "",
-    "url": "https://us.cloud.memsource.com"
-  },
+  "ConnectionDefinition": [
+    {
+      "connection_type": "Credentials",
+      "username": "",
+      "password": "",
+      "url": "https://us.cloud.memsource.com"
+    },
+    {
+      "connection_type": "OAuth2",
+      "username": "",
+      "password": "",
+      "url": "https://us.cloud.memsource.com"
+    }
+  ],
   "TestFolder": "TestFiles"
 }

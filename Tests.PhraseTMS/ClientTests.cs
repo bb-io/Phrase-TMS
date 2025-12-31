@@ -1,70 +1,91 @@
-﻿using Apps.PhraseTMS.Actions;
-using Apps.PhraseTMS.Models.Analysis.Requests;
+﻿using PhraseTMSTests.Base;
+using Apps.PhraseTMS.Actions;
+using Apps.PhraseTMS.Constants;
 using Apps.PhraseTMS.Models.CustomFields;
 using Apps.PhraseTMS.Models.Jobs.Requests;
+using Apps.PhraseTMS.Models.Analysis.Requests;
 using Apps.PhraseTMS.Models.Projects.Requests;
-using Newtonsoft.Json;
-using PhraseTMSTests.Base;
+using Blackbird.Applications.Sdk.Common.Invocation;
 
-namespace Tests.PhraseTMS
+namespace Tests.PhraseTMS;
+
+[TestClass]
+public class AnalysisTests : TestBaseMultipleConnections
 {
-    [TestClass]
-    public class AnalysisTests : TestBase
+    public const string PROJECT_ID = "INLIOpS573UU4BbFBzs9v0";
+    public const string JOB_ID = "UkZvUPhvw1QItyADWZIPp3";
+    public const string ANALYSIS_ID = "JyaYpAIr8pF65xLsLfOOZ1";
+
+    [TestMethod, ContextDataSource(ConnectionTypes.Credentials)]
+    public async Task Create_analysis_works(InvocationContext context)
     {
-        public const string PROJECT_ID = "INLIOpS573UU4BbFBzs9v0";
-        public const string JOB_ID = "UkZvUPhvw1QItyADWZIPp3";
-        public const string ANALYSIS_ID = "JyaYpAIr8pF65xLsLfOOZ1";
+        // Arrange
+        var actions = new AnalysisActions(context, FileManager);
+        var projectRequest = new ProjectRequest { ProjectUId = PROJECT_ID };
+        var analysis = new CreateAnalysisInput { JobsUIds = new List<string> { JOB_ID } };
+        var workflowStep = new WorkflowStepOptionalRequest { };
+        var jobsQuery = new ListAllJobsQuery { };
 
-        [TestMethod]
-        public async Task Create_analysis_works()
-        {
-            var actions = new AnalysisActions(InvocationContext, FileManager);
-            var projectRequest = new ProjectRequest { ProjectUId= PROJECT_ID };
+        // Act
+        var result = await actions.CreateAnalysis(projectRequest, analysis, workflowStep, jobsQuery);
 
-            var result = await actions.CreateAnalysis(projectRequest, new CreateAnalysisInput { JobsUIds = new List<string> { JOB_ID } }, new WorkflowStepOptionalRequest { }, new ListAllJobsQuery { });
+        // Assert
+        PrintResult(result);
+        Assert.IsTrue(result.Analyses.Any() && result.Analyses.All(x => x.Uid != null));
+    }
 
-            Assert.IsTrue(result.Analyses.Any() && result.Analyses.All(x => x.Uid != null));
-            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-        }
+    [TestMethod, ContextDataSource]
+    public async Task Search_project_analyses_works(InvocationContext context)
+    {
+        // Arrange
+        var actions = new AnalysisActions(context, FileManager);
+        var projectRequest = new ProjectRequest { ProjectUId = PROJECT_ID };
 
-        [TestMethod]
-        public async Task Search_project_analyses_works()
-        {
-            var actions = new AnalysisActions(InvocationContext, FileManager);
-            var projectRequest = new ProjectRequest { ProjectUId = PROJECT_ID };
+        // Act
+        var result = await actions.ListProjectAnalyses(projectRequest, new ListAnalysesQueryRequest { });
 
-            var result = await actions.ListProjectAnalyses(projectRequest, new ListAnalysesQueryRequest { });
+        // Assert
+        PrintResult(result);
+        Assert.IsTrue(result.Analyses.Any() && result.Analyses.All(x => x.Uid != null), "Project has no analyses");
+    }
 
-            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-            Assert.IsTrue(result.Analyses.Any() && result.Analyses.All(x => x.Uid != null), "Project has no analyses");
-        }
+    [TestMethod, ContextDataSource]
+    public async Task Get_analysis_works(InvocationContext context)
+    {
+        // Arrange
+        var actions = new AnalysisActions(context, FileManager);
 
-        [TestMethod]
-        public async Task Get_analysis_works()
-        {
-            var actions = new AnalysisActions(InvocationContext, FileManager);
+        // Act
+        var result = await actions.GetJobAnalysis(new GetAnalysisRequest { AnalysisUId = ANALYSIS_ID });
 
-            var result = await actions.GetJobAnalysis(new GetAnalysisRequest { AnalysisUId = ANALYSIS_ID });
-            Assert.IsTrue(result.Uid != null);
-            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-        }
+        // Assert
+        PrintResult(result);
+        Assert.IsTrue(result.Uid != null);
+    }
 
-        [TestMethod]
-        public async Task Download_analysis_file_works()
-        {
-            var actions = new AnalysisActions(InvocationContext, FileManager);
+    [TestMethod, ContextDataSource]
+    public async Task Download_analysis_file_works(InvocationContext context)
+    {
+        // Arrange
+        var actions = new AnalysisActions(context, FileManager);
 
-            var result = await actions.DownloadAnalysis(new GetAnalysisRequest { AnalysisUId = ANALYSIS_ID }, "JSON", null);
-            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-        }
+        // Act
+        var result = await actions.DownloadAnalysis(new GetAnalysisRequest { AnalysisUId = ANALYSIS_ID }, "JSON", null);
 
-        [TestMethod]
-        public async Task SetDateCustomField_works()
-        {
-            var actions = new CustomFieldsActions(InvocationContext);
-            var date = DateTime.UtcNow.AddDays(15);
-            await actions.SetDateCustomField(new ProjectRequest { ProjectUId= "0SBo723Ge0wHfk0A1k1XWn0" },new DateCustomFieldRequest {  FieldUId= "gtCnCd6aZ0SkaGXu8wETa1" }, date);
-            Assert.IsTrue(true);
-        }
+        // Assert
+        PrintResult(result);
+    }
+
+    [TestMethod, ContextDataSource]
+    public async Task SetDateCustomField_works(InvocationContext context)
+    {
+        // Arrange
+        var actions = new CustomFieldsActions(context);
+        var date = DateTime.UtcNow.AddDays(15);
+        var project = new ProjectRequest { ProjectUId = "0SBo723Ge0wHfk0A1k1XWn0" };
+        var dateCustomField = new DateCustomFieldRequest { FieldUId = "gtCnCd6aZ0SkaGXu8wETa1" };
+
+        // Act
+        await actions.SetDateCustomField(project, dateCustomField, date);
     }
 }

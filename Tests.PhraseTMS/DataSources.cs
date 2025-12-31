@@ -4,12 +4,13 @@ using Apps.PhraseTMS.Models.Jobs.Requests;
 using Apps.PhraseTMS.Models.ProjectReferenceFiles.Requests;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.Sdk.Common.Dynamic;
+using Blackbird.Applications.Sdk.Common.Invocation;
 using PhraseTMSTests.Base;
 
 namespace Tests.PhraseTMS;
 
 [TestClass]
-public class DataSources : TestBase
+public class DataSources : TestBaseMultipleConnections
 {
     public const string EMPTY_PROJECT_ID = "YWxQLsQXtwbN2FnxwoSFx0";
 
@@ -18,11 +19,8 @@ public class DataSources : TestBase
         // Act
         var response = await handler.GetDataAsync(new DataSourceContext { SearchString = search }, CancellationToken.None);
 
-        Console.WriteLine($"Total: {response.Count()}");
-        foreach (var item in response)
-        {
-            Console.WriteLine($"{item.Value}: {item.DisplayName}");
-        }
+        TestContext.WriteLine($"Total: {response.Count()}");
+        PrintDataHandlerResult(response);
 
         // Assert
         Assert.IsNotNull(response, "Response should not be null");
@@ -31,177 +29,151 @@ public class DataSources : TestBase
             Assert.IsTrue(response.Any(), "Response should return at least 1 value");
     }
 
-    [TestMethod]
-    public async Task Business_units_returns_values() => await Test(new BusinessUnitDataHandler(InvocationContext));
+    [TestMethod, ContextDataSource]
+    public async Task Business_units_returns_values(InvocationContext context) 
+        => await Test(new BusinessUnitDataHandler(context));
 
-    [TestMethod]
-    public async Task Business_units_with_query_returns_values() => await Test(new BusinessUnitDataHandler(InvocationContext), "test");
+    [TestMethod, ContextDataSource]
+    public async Task Business_units_with_query_returns_values(InvocationContext context) 
+        => await Test(new BusinessUnitDataHandler(context), "test");
 
-    [TestMethod]
-    public async Task Client_returns_values() => await Test(new ClientDataHandler(InvocationContext));
+    [TestMethod, ContextDataSource]
+    public async Task Client_returns_values(InvocationContext context) 
+        => await Test(new ClientDataHandler(context));
 
-    [TestMethod]
-    public async Task Client_with_query_returns_values() => await Test(new ClientDataHandler(InvocationContext), "test");
+    [TestMethod, ContextDataSource]
+    public async Task Client_with_query_returns_values(InvocationContext context) 
+        => await Test(new ClientDataHandler(context), "test");
 
-    [TestMethod]
-    public async Task Domain_returns_values() => await Test(new DomainDataHandler(InvocationContext));
+    [TestMethod, ContextDataSource]
+    public async Task Domain_returns_values(InvocationContext context) 
+        => await Test(new DomainDataHandler(context));
 
-    [TestMethod]
-    public async Task Domain_with_query_returns_values() => await Test(new DomainDataHandler(InvocationContext), "test");
+    [TestMethod, ContextDataSource]
+    public async Task Domain_with_query_returns_values(InvocationContext context) 
+        => await Test(new DomainDataHandler(context), "test");
 
-    [TestMethod]
-    public async Task Job_query_returns_values() => await Test(new JobDataHandler(InvocationContext, new ProjectRequest { ProjectUId = "OHocQVUqGBFacBtS7HYhq2" }));
+    [TestMethod, ContextDataSource]
+    public async Task Job_query_returns_values(InvocationContext context) 
+        => await Test(new JobDataHandler(context, new ProjectRequest { ProjectUId = "OHocQVUqGBFacBtS7HYhq2" }));
 
-    [TestMethod]
-    public async Task Language_returns_values() => await Test(new LanguageDataHandler(InvocationContext));
+    [TestMethod, ContextDataSource]
+    public async Task Language_returns_values(InvocationContext context) 
+        => await Test(new LanguageDataHandler(context));
 
-    [TestMethod]
-    public async Task Language_with_query_returns_values() => await Test(new LanguageDataHandler(InvocationContext), "english");
+    [TestMethod, ContextDataSource]
+    public async Task Language_with_query_returns_values(InvocationContext context) 
+        => await Test(new LanguageDataHandler(context), "english");
 
-    [TestMethod]
-    public async Task Lqa_returns_values() => await Test(new LqaProfileDataHandler(InvocationContext));
+    [TestMethod, ContextDataSource]
+    public async Task Lqa_returns_values(InvocationContext context) 
+        => await Test(new LqaProfileDataHandler(context));
 
-    [TestMethod]
-    public async Task Lqa_with_query_returns_values() => await Test(new LqaProfileDataHandler(InvocationContext), "test");
+    [TestMethod, ContextDataSource]
+    public async Task Lqa_with_query_returns_values(InvocationContext context) 
+        => await Test(new LqaProfileDataHandler(context), "test");
 
-    [TestMethod]
-    public async Task Netrate_returns_values() => await Test(new NetRateSchemeDataHandler(InvocationContext));
+    [TestMethod, ContextDataSource]
+    public async Task Netrate_returns_values(InvocationContext context) 
+        => await Test(new NetRateSchemeDataHandler(context));
 
-    [TestMethod]
-    public async Task Netrate_with_query_returns_values() => await Test(new NetRateSchemeDataHandler(InvocationContext), "test");
+    [TestMethod, ContextDataSource]
+    public async Task Netrate_with_query_returns_values(InvocationContext context) 
+        => await Test(new NetRateSchemeDataHandler(context), "test");
 
-    [TestMethod]
-    public async Task Pricelist_returns_values() => await Test(new PriceListDataHandler(InvocationContext));
+    [TestMethod, ContextDataSource]
+    public async Task Pricelist_returns_values(InvocationContext context) 
+        => await Test(new PriceListDataHandler(context));
 
-    [TestMethod]
-    public async Task Project_returns_values() => await Test(new ProjectDataHandler(InvocationContext));
+    [TestMethod, ContextDataSource]
+    public async Task Project_returns_values(InvocationContext context) 
+        => await Test(new ProjectDataHandler(context));
 
-    [TestMethod]
-    public async Task Project_with_query_returns_values() => await Test(new ProjectDataHandler(InvocationContext), "test");
+    [TestMethod, ContextDataSource]
+    public async Task Project_with_query_returns_values(InvocationContext context) 
+        => await Test(new ProjectDataHandler(context), "test");
 
-    [TestMethod]
-    public async Task Project_template_returns_values() => await Test(new ProjectTemplateDataHandler(InvocationContext));
+    [TestMethod, ContextDataSource]
+    public async Task Project_template_returns_values(InvocationContext context) 
+        => await Test(new ProjectTemplateDataHandler(context));
 
-    [TestMethod]
-    public async Task Project_template_with_query_returns_values() => await Test(new ProjectTemplateDataHandler(InvocationContext), "test");
+    [TestMethod, ContextDataSource]
+    public async Task Project_template_with_query_returns_values(InvocationContext context) 
+        => await Test(new ProjectTemplateDataHandler(context), "test");
 
-    [TestMethod]
-    public async Task CustomFields_returns_values() => await Test(new CustomFieldTextDataHandler(InvocationContext));
+    [TestMethod, ContextDataSource]
+    public async Task CustomFields_returns_values(InvocationContext context) 
+        => await Test(new CustomFieldTextDataHandler(context));
 
-    [TestMethod]
-    public async Task Reference_file_returns_values() => await Test(new ReferenceFileDataHandler(InvocationContext, new ReferenceFileRequest { ProjectUId = EMPTY_PROJECT_ID }));
+    [TestMethod, ContextDataSource]
+    public async Task Reference_file_returns_values(InvocationContext context) 
+        => await Test(new ReferenceFileDataHandler(context, new ReferenceFileRequest { ProjectUId = EMPTY_PROJECT_ID }));
 
-    [TestMethod]
-    public async Task Subdomain_returns_values() => await Test(new SubdomainDataHandler(InvocationContext));
+    [TestMethod, ContextDataSource]
+    public async Task Subdomain_returns_values(InvocationContext context) 
+        => await Test(new SubdomainDataHandler(context));
 
-    [TestMethod]
-    public async Task Subdomain_with_query_returns_values() => await Test(new SubdomainDataHandler(InvocationContext), "test");
+    [TestMethod, ContextDataSource]
+    public async Task Subdomain_with_query_returns_values(InvocationContext context) 
+        => await Test(new SubdomainDataHandler(context), "test");
 
-    [TestMethod]
-    public async Task Termbase_returns_values() => await Test(new TermBaseDataHandler(InvocationContext));
+    [TestMethod, ContextDataSource]
+    public async Task Termbase_returns_values(InvocationContext context) 
+        => await Test(new TermBaseDataHandler(context));
 
-    [TestMethod]
-    public async Task Termbase_with_query_returns_values() => await Test(new TermBaseDataHandler(InvocationContext), "test");
+    [TestMethod, ContextDataSource]
+    public async Task Termbase_with_query_returns_values(InvocationContext context) 
+        => await Test(new TermBaseDataHandler(context), "test");
 
-    [TestMethod]
-    public async Task Tm_returns_values() => await Test(new TmDataHandler(InvocationContext));
+    [TestMethod, ContextDataSource]
+    public async Task Tm_returns_values(InvocationContext context) 
+        => await Test(new TmDataHandler(context));
 
-    [TestMethod]
-    public async Task Tm_with_query_returns_values() => await Test(new TmDataHandler(InvocationContext), "test");
+    [TestMethod, ContextDataSource]
+    public async Task Tm_with_query_returns_values(InvocationContext context) 
+        => await Test(new TmDataHandler(context), "test");
 
-    [TestMethod]
-    public async Task User_returns_values() => await Test(new UserDataHandler(InvocationContext));
+    [TestMethod, ContextDataSource]
+    public async Task User_returns_values(InvocationContext context) 
+        => await Test(new UserDataHandler(context));
 
-    [TestMethod]
-    public async Task User_with_query_returns_values() => await Test(new UserDataHandler(InvocationContext), "");
+    [TestMethod, ContextDataSource]
+    public async Task User_with_query_returns_values(InvocationContext context) 
+        => await Test(new UserDataHandler(context), "");
 
-    [TestMethod]
-    public async Task Vendor_returns_values() => await Test(new VendorDataHandler(InvocationContext));
+    [TestMethod, ContextDataSource]
+    public async Task Vendor_returns_values(InvocationContext context) 
+        => await Test(new VendorDataHandler(context));
 
-    [TestMethod]
-    public async Task Workflow_returns_values() => await Test(new WorkflowStepDataHandler(InvocationContext));
+    [TestMethod, ContextDataSource]
+    public async Task Workflow_returns_values(InvocationContext context) 
+        => await Test(new WorkflowStepDataHandler(context));
 
-    [TestMethod]
-    public async Task Workflow_with_query_returns_values() => await Test(new WorkflowStepDataHandler(InvocationContext), "Translation");
+    [TestMethod, ContextDataSource]
+    public async Task Workflow_with_query_returns_values(InvocationContext context) 
+        => await Test(new WorkflowStepDataHandler(context), "Translation");
 
-    [TestMethod]
-    public async Task ConversationDataHandler_ReturnsConversations()
-    {
-        // Arrange
-        var handler = new ConversationDataHandler(InvocationContext, new JobRequest { JobUId = "S1Lng7SgldQMeiwPm2srx3" });
+    [TestMethod, ContextDataSource]
+    public async Task ConversationDataHandler_ReturnsConversations(InvocationContext context)
+        => await Test(new ConversationDataHandler(context, new JobRequest { JobUId = "S1Lng7SgldQMeiwPm2srx3" }));
 
-        // Act
-        var response = await handler.GetDataAsync(new DataSourceContext { SearchString = "" }, CancellationToken.None);
+    [TestMethod, ContextDataSource]
+    public async Task CommentDataHandler_ReturnsComments(InvocationContext context)
+        => await Test(new CommentDataHandler(
+            context,
+            new JobRequest { JobUId = "S1Lng7SgldQMeiwPm2srx3" }, 
+            new ConversationRequest { ConversationUId = "9ae3cc29_cfd8_47d9_b17e_c3a71781e1b8" }
+        ));
 
-        // Assert
-        Console.WriteLine($"Total: {response.Count()}");
-        foreach (var item in response)
-        {
-            Console.WriteLine($"{item.Value}: {item.DisplayName}");
-        }
+    [TestMethod, ContextDataSource]
+    public async Task SegmentDataHanlder_ReturnsSegments(InvocationContext context)
+        => await Test(new SegmentDataHandler(
+            context,
+            new JobRequest { JobUId = "dtdm5mE4e3pu25KiCbTiL3" },
+            new ProjectRequest { ProjectUId = "0SBo723Ge0wHfk0A1k1XWn0" }
+        ));
 
-        Assert.IsNotNull(response);
-    }
-
-    [TestMethod]
-    public async Task CommentDataHandler_ReturnsComments()
-    {
-        // Arrange
-        var jobRequest = new JobRequest { JobUId = "S1Lng7SgldQMeiwPm2srx3" };
-        var conversationRequest = new ConversationRequest { ConversationUId = "9ae3cc29_cfd8_47d9_b17e_c3a71781e1b8" };
-        var handler = new CommentDataHandler(InvocationContext, jobRequest, conversationRequest);
-
-        // Act
-        var response = await handler.GetDataAsync(new DataSourceContext { SearchString = "" }, CancellationToken.None);
-
-        // Assert
-        Console.WriteLine($"Total: {response.Count()}");
-        foreach (var item in response)
-        {
-            Console.WriteLine($"{item.Value}: {item.DisplayName}");
-        }
-
-        Assert.IsNotNull(response);
-    }
-
-    [TestMethod]
-    public async Task SegmentDataHanlder_ReturnsSegments()
-    {
-        // Arrange
-        var jobRequest = new JobRequest { JobUId = "dtdm5mE4e3pu25KiCbTiL3" };
-        var projectRequest = new ProjectRequest { ProjectUId = "0SBo723Ge0wHfk0A1k1XWn0" };
-        var handler = new SegmentDataHandler(InvocationContext, jobRequest, projectRequest);
-
-        // Act
-        var response = await handler.GetDataAsync(new DataSourceContext { SearchString = "" }, CancellationToken.None);
-
-        // Assert
-        Console.WriteLine($"Total: {response.Count()}");
-        foreach (var item in response)
-        {
-            Console.WriteLine($"{item.Value}: {item.DisplayName}");
-        }
-
-        Assert.IsNotNull(response);
-    }
-
-    [TestMethod]
-    public async Task CustomFieldUrlDataHandler_ReturnsFields()
-    {
-        // Arrange
-        //var projectRequest = new ProjectRequest { ProjectUId = "B1hg3UPb3dQoqaIheND4D5" };
-        var handler = new CustomFieldUrlDataHandler(InvocationContext);
-
-        // Act
-        var response = await handler.GetDataAsync(new DataSourceContext { SearchString = "" }, CancellationToken.None);
-
-        // Assert
-        Console.WriteLine($"Total: {response.Count()}");
-        foreach (var item in response)
-        {
-            Console.WriteLine($"{item.Value}: {item.DisplayName}");
-        }
-
-        Assert.IsNotNull(response);
-    }
+    [TestMethod, ContextDataSource]
+    public async Task CustomFieldUrlDataHandler_ReturnsFields(InvocationContext context)
+        => await Test(new CustomFieldUrlDataHandler(context));
 }
