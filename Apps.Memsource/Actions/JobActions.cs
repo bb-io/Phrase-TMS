@@ -412,11 +412,23 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         }
 
         ImportSettingDto? settings = null;
+        var fileName = input.File.Name;
+
+        // Convert HTML to XLIFF if requested
+        if (input.ImportAsXliff == true && 
+            (fileName.EndsWith(".html", StringComparison.OrdinalIgnoreCase) || 
+             fileName.EndsWith(".htm", StringComparison.OrdinalIgnoreCase)))
+        {
+            var conversionResult = await ConvertHtmlToXliff(fileBytes, fileName);
+            fileBytes = conversionResult.FileBytes;
+            fileName = conversionResult.FileName;
+            settings = conversionResult.Settings;
+        }
 
         // Phrase TMS doesn't support xliff v2.1 or newer as of September 2025,
         // so we need to convert it to v2.0 if the user uploads a newer version.
-        if (input.File.Name.EndsWith(".xlf", StringComparison.OrdinalIgnoreCase) ||
-            input.File.Name.EndsWith(".xliff", StringComparison.OrdinalIgnoreCase))
+        if (fileName.EndsWith(".xlf", StringComparison.OrdinalIgnoreCase) ||
+            fileName.EndsWith(".xliff", StringComparison.OrdinalIgnoreCase))
         {
             try
             {
@@ -455,7 +467,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
            });
 
 
-        var rawName = (input.File.Name ?? "upload")
+        var rawName = (fileName ?? "upload")
         .Replace("\n", string.Empty)
         .Replace("\r", string.Empty)
         .Trim();
@@ -1064,6 +1076,30 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         catch
         {
             return null;
+        }
+    }
+    
+    private async Task<ConversionResult> ConvertHtmlToXliff(byte[] fileBytes, string fileName)
+    {
+        try
+        {
+            var fileContent = Encoding.UTF8.GetString(fileBytes);
+            var transformation = Transformation.Parse(fileContent, fileName);
+            var xliffV20 = Xliff2Serializer.Serialize(transformation, Xliff2Version.Xliff20);
+            var convertedBytes = Encoding.UTF8.GetBytes(xliffV20);
+            var convertedFileName = Path.ChangeExtension(fileName, ".xlf");
+            var settings = await GetBlackbirdImportSettings();
+
+            return new ConversionResult
+            {
+                FileBytes = convertedBytes,
+                FileName = convertedFileName,
+                Settings = settings
+            };
+        }
+        catch (Exception ex)
+        {
+            throw new PluginApplicationException($"Failed to convert HTML to XLIFF: {ex.Message}", ex);
         }
     }
 }
