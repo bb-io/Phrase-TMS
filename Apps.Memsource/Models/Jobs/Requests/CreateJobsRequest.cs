@@ -24,4 +24,7 @@ public class CreateJobsRequest
 
     [Display("Use project file import settings?")]
     public bool? useProjectFileImportSettings { get; set; }
+
+    [Display("Import as XLIFF", Description = "If enabled, HTML files will be converted to XLIFF format with size restrictions preserved")]
+    public bool? ImportAsXliff { get; set; }
 }
