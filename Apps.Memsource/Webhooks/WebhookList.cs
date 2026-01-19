@@ -587,7 +587,6 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         [WebhookParameter][Display("Project note doesn't contain")] string? projectNoteDoesntContains,
         [WebhookParameter] MultipleSubdomains subdomains)
     {
-        InvocationContext.Logger?.LogError($"[PhraseTMSJobStatusChanged] Invocation webhook", []);
         if (job?.JobUId != null && projectOptionalRequest?.ProjectUId == null)
         {          
             throw new PluginMisconfigurationException("If Job ID is specified in the inputs you must also specify the Project ID");
