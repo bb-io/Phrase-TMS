@@ -583,8 +583,8 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         [WebhookParameter] [Display("Last workflow level?")] bool? lastWorkflowLevel,
         [WebhookParameter] [Display("Project name contains")] string? projectNameContains,
         [WebhookParameter] [Display("Project name doesn't contains")] string? projectNameDoesntContains,
-        [WebhookParameter][Display("Project note contains")] string? projectNoteContains,
-        [WebhookParameter][Display("Project note doesn't contain")] string? projectNoteDoesntContains,
+        [WebhookParameter] [Display("Project note contains")] string? projectNoteContains,
+        [WebhookParameter] [Display("Project note doesn't contain")] string? projectNoteDoesntContains,
         [WebhookParameter] MultipleSubdomains subdomains)
     {
         if (job?.JobUId != null && projectOptionalRequest?.ProjectUId == null)
@@ -683,14 +683,14 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         {
             foreach (var stepId in multipleWorkflowSteps.WorkflowStepIds.Where(x => !string.IsNullOrWhiteSpace(x)))
             {
-                var level = await Client.GetWorkflowstepLevel(projectId, stepId);
+                var level = await Client.GetWorkflowstepLevel(projectId, stepId, false);
                 if (level > 0) workflowLevels.Add(level);
             }
         }
 
         if (!string.IsNullOrWhiteSpace(workflowStepRequest?.WorkflowStepId))
         {
-            var singleLevel = await Client.GetWorkflowstepLevel(projectId, workflowStepRequest.WorkflowStepId);
+            var singleLevel = await Client.GetWorkflowstepLevel(projectId, workflowStepRequest.WorkflowStepId, false);
             if (singleLevel > 0) workflowLevels.Add(singleLevel);
         }
 
