@@ -1,47 +1,49 @@
 {
   "jobParts": [
     {
-      "id": 2790819,
-      "uid": "AtSGZSMriZbu8F4L9Li7U1",
-      "internalId": "1",
-      "task": "DYUA0BGUhKcb3oVP0_dc2",
-      "fileName": "test.txt",
-      "targetLang": "de",
+      "id": 604393366,
+      "uid": "uFgunvQBiAF3aBY7McdNd0",
+      "internalId": "2",
+      "task": "005Ez5hdzd7H6zyF1_dc9",
+      "fileName": "PRA.docx",
+      "targetLang": "en",
       "workflowLevel": 1,
-      "status": "ACCEPTED",
-      "wordsCount": 347,
+      "status": "ASSIGNED",
+      "wordsCount": 101,
       "beginIndex": 0,
-      "endIndex": 25,
+      "endIndex": 19,
       "isParentJobSplit": false,
-      "dateCreated": "2025-03-07T14:24:21Z",
+      "dateDue": "2026-02-10T18:00:00Z",
+      "dateCreated": "2026-02-09T19:12:42Z",
       "project": {
-        "id": 1519158,
-        "uid": "hGStrg0MLYmQtG0f66mj6f",
+        "id": 34691877,
+        "uid": "mxrnbCvihqVS2N8Md3In06",
         "lastWorkflowLevel": 1
       },
-      "assignedTo": []
+      "assignedTo": [
+        {
+          "linguist": {
+            "uid": "2X0JlsiF0oE0b8ukcgW40A"           
+          }
+        }
+      ]
     }
   ],
   "metadata": {
     "project": {
-      "id": 1519158,
-      "uid": "hGStrg0MLYmQtG0f66mj6f",
-      "name": "Single document mulitple languages",
-      "sourceLang": "en",
-      "status": "NEW",
+      "id": 34691877,
+      "uid": "mxrnbCvihqVS2N8Md3In06",
+      "name": "O-112",
+      "sourceLang": "pt_br",
+      "status": "ASSIGNED",
       "createdBy": {
-        "id": 189794,
-        "uid": "KnW1n59BfQQRv2e2qtTS94",
-        "username": "mathijs.sonnemans"
-      },
-      "owner": {
-        "id": 189794,
-        "uid": "KnW1n59BfQQRv2e2qtTS94",
-        "username": "mathijs.sonnemans"
+        "id": 1609502,
+        "uid": "Jzj10ffgfxw224iDCN2PS5",
+        "username": "phrase-plunet"
       }
     }
   },
   "event": "JOB_STATUS_CHANGED",
-  "timestamp": 1741359288,
-  "eventUid": "BWcGqrdYq1TP4asQ6oxMa3"
+  "timestamp": 1770664466,
+  "eventUid": "7BINzznVAw8v5Nm4m7JrO1"
 }
