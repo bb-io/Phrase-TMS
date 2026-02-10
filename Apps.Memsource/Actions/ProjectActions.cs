@@ -49,7 +49,7 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
     }
 
     [Action("Get project", Description = "Get global project data for a specific project")]
-    public async Task<ProjectDto> GetProject([ActionParameter] ProjectRequest input)
+    public async Task<GetProjectResponse> GetProject([ActionParameter] ProjectRequest input)
     {
         if (string.IsNullOrWhiteSpace(input.ProjectUId))
         {
@@ -57,7 +57,8 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
         }
 
         var request = new RestRequest($"/api2/v1/projects/{input.ProjectUId}?with=owners", Method.Get);
-        return await Client.ExecuteWithHandling<ProjectDto>(request);
+        var project = await Client.ExecuteWithHandling<ProjectDto>(request);
+        return new GetProjectResponse(project);
     }
 
     [Action("Create project", Description = "Create a new project")]
