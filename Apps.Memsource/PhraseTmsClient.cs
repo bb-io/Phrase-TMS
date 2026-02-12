@@ -73,46 +73,51 @@ public class PhraseTmsClient : RestClient
         var isLoginRequest = request.Resource.Contains("/auth/login");
         if (!isLoginRequest)
         {
-            await EnsureAuthenticated();
+            var (success, authResponse) = await TryEnsureAuthenticatedWithoutThrowing();
+            if (!success && authResponse != null)
+            {
+                return authResponse;
+            }
         }
         
         return await ExecuteAsync(request, cancellationToken);
     }
 
-    public async Task<T> ExecuteWithHandling<T>(RestRequest request)
+    public async Task<T> ExecuteWithHandling<T>(RestRequest request, bool enableRetries = true)
     {
-        var response = await ExecuteWithHandling(request);
+        var response = await ExecuteWithHandling(request, enableRetries);
         return JsonConvert.DeserializeObject<T>(response.Content);
     }
 
-    public async Task<RestResponse> ExecuteWithHandling(RestRequest request)
+    public async Task<RestResponse> ExecuteWithHandling(RestRequest request, bool enableRetries = true)
     {
         bool isLoginRequest = request.Resource.Contains("/auth/login");
         if (!isLoginRequest)
         {
-            await EnsureAuthenticated();
+            await EnsureAuthenticated(enableRetries);
         }
 
         int[] retryDelaysInMs = { 2000, 4000, 8000 };
         RestResponse response = null;
+        int maxAttempts = enableRetries ? retryDelaysInMs.Length : 0;
 
-        for (int attempt = 0; attempt <= retryDelaysInMs.Length; attempt++)
+        for (int attempt = 0; attempt <= maxAttempts; attempt++)
         {
             try
             {
                 response = await ExecuteAsync(request);
             }
-            catch (TaskCanceledException tce) when (!tce.CancellationToken.IsCancellationRequested && attempt < retryDelaysInMs.Length)
+            catch (TaskCanceledException tce) when (!tce.CancellationToken.IsCancellationRequested && enableRetries && attempt < retryDelaysInMs.Length)
             {
                 await Task.Delay(retryDelaysInMs[attempt]);
                 continue;
             }
-            catch (HttpRequestException) when (attempt < retryDelaysInMs.Length)
+            catch (HttpRequestException) when (enableRetries && attempt < retryDelaysInMs.Length)
             {
                 await Task.Delay(retryDelaysInMs[attempt]);
                 continue;
             }
-            catch (IOException) when (attempt < retryDelaysInMs.Length)
+            catch (IOException) when (enableRetries && attempt < retryDelaysInMs.Length)
             {
                 await Task.Delay(retryDelaysInMs[attempt]);
                 continue;
@@ -121,7 +126,7 @@ public class PhraseTmsClient : RestClient
             if (response is { IsSuccessful: true })
                 return response;
 
-            if (ShouldRetry(response))
+            if (enableRetries && ShouldRetry(response))
             {
                 if (attempt < retryDelaysInMs.Length)
                 {
@@ -269,6 +274,11 @@ public class PhraseTmsClient : RestClient
         if (status == 0 || (status >= 500 && status < 600) || status == 429)
             return true;
 
+        if (status == 401)
+        {
+            return false;
+        }
+
         if (resp.ErrorException is HttpRequestException) return true;
         if (resp.ErrorException is IOException) return true;
 
@@ -299,7 +309,7 @@ public class PhraseTmsClient : RestClient
         return null;
     }
 
-    private async Task<string> GetTokenFromCredentials(string userName, string password)
+    private async Task<string> GetTokenFromCredentials(string userName, string password, bool enableRetries)
     {
         var request = new RestRequest("/api2/v1/auth/login", Method.Post)
             .WithJsonBody(
@@ -309,11 +319,11 @@ public class PhraseTmsClient : RestClient
                     password
                 }
             );
-        var response = await ExecuteWithHandling<LoginResponse>(request);
+        var response = await ExecuteWithHandling<LoginResponse>(request, enableRetries);
         return $"ApiToken {response.Token}";
     }
 
-    private async Task EnsureAuthenticated()
+    private async Task EnsureAuthenticated(bool enableRetries = true)
     {
         if (_isAuthenticated) return;
         string connectionType = _credsProviders.Get(CredsNames.ConnectionType).Value;
@@ -326,10 +336,48 @@ public class PhraseTmsClient : RestClient
             case ConnectionTypes.Credentials:
                 string userName = _credsProviders.Get(CredsNames.Username).Value;
                 string password = _credsProviders.Get(CredsNames.Password).Value;
-                string token = await GetTokenFromCredentials(userName, password);
+                string token = await GetTokenFromCredentials(userName, password, enableRetries);
                 this.AddDefaultHeader("Authorization", token);
                 break;
         }
         _isAuthenticated = true;
-    }    
+    }
+
+    private async Task<(bool success, RestResponse? failureResponse)> TryEnsureAuthenticatedWithoutThrowing()
+    {
+        if (_isAuthenticated) return (true, null);
+        
+        string connectionType = _credsProviders.Get(CredsNames.ConnectionType).Value;
+        switch (connectionType)
+        {
+            case ConnectionTypes.OAuth2:
+                var authorization = _credsProviders.Get("Authorization").Value;
+                this.AddDefaultHeader("Authorization", authorization);
+                _isAuthenticated = true;
+                return (true, null);
+                
+            case ConnectionTypes.Credentials:
+                string userName = _credsProviders.Get(CredsNames.Username).Value;
+                string password = _credsProviders.Get(CredsNames.Password).Value;
+                
+                var request = new RestRequest("/api2/v1/auth/login", Method.Post)
+                    .WithJsonBody(new { userName, password });
+                
+                var response = await ExecuteAsync(request);
+                if (!response.IsSuccessful)
+                {
+                    return (false, response);
+                }
+                
+                var loginResponse = JsonConvert.DeserializeObject<LoginResponse>(response.Content);
+                var token = $"ApiToken {loginResponse.Token}";
+                this.AddDefaultHeader("Authorization", token);
+                _isAuthenticated = true;
+                return (true, null);
+                
+            default:
+                _isAuthenticated = true;
+                return (true, null);
+        }
+    }
 }
