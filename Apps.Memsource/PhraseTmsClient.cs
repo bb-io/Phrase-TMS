@@ -32,26 +32,6 @@ public class PhraseTmsClient : RestClient
         this.AddDefaultHeader("accept", "*/*");
     }
 
-    private async Task EnsureAuthenticated()
-    {
-        if (_isAuthenticated) return;
-        string connectionType = _credsProviders.Get(CredsNames.ConnectionType).Value;
-        switch (connectionType)
-        {
-            case ConnectionTypes.OAuth2:
-                var authorization = _credsProviders.Get("Authorization").Value;
-                this.AddDefaultHeader("Authorization", authorization);
-                break;
-            case ConnectionTypes.Credentials:
-                string userName = _credsProviders.Get(CredsNames.Username).Value;
-                string password = _credsProviders.Get(CredsNames.Password).Value;
-                string token = await GetTokenFromCredentials(userName, password);
-                this.AddDefaultHeader("Authorization", token);
-                break;
-        }
-        _isAuthenticated = true;
-    }    
-
     public async Task<AsyncRequest?> PerformAsyncRequest(RestRequest request)
     {
         var asyncRequestResponse = await ExecuteWithHandling<AsyncRequestResponse>(request);
@@ -87,11 +67,16 @@ public class PhraseTmsClient : RestClient
 
         return asyncRequests;
     }
-
-    private static Uri GetUri(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+    
+    public async Task<RestResponse> ExecuteWithoutHandlingAsync(RestRequest request, CancellationToken cancellationToken = default)
     {
-        var url = authenticationCredentialsProviders.First(p => p.KeyName == "url").Value;
-        return new(url.TrimEnd('/') + "/web");
+        var isLoginRequest = request.Resource.Contains("/auth/login");
+        if (!isLoginRequest)
+        {
+            await EnsureAuthenticated();
+        }
+        
+        return await ExecuteAsync(request, cancellationToken);
     }
 
     public async Task<T> ExecuteWithHandling<T>(RestRequest request)
@@ -104,7 +89,9 @@ public class PhraseTmsClient : RestClient
     {
         bool isLoginRequest = request.Resource.Contains("/auth/login");
         if (!isLoginRequest)
+        {
             await EnsureAuthenticated();
+        }
 
         int[] retryDelaysInMs = { 2000, 4000, 8000 };
         RestResponse response = null;
@@ -252,6 +239,12 @@ public class PhraseTmsClient : RestClient
         return response.WorkflowSteps.Select(x => x.WorkflowLevel).Max();
     }
 
+    private static Uri GetUri(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders)
+    {
+        var url = authenticationCredentialsProviders.First(p => p.KeyName == "url").Value;
+        return new(url.TrimEnd('/') + "/web");
+    }
+
     private static string ExtractHtmlErrorMessage(string html)
     {
         if (string.IsNullOrEmpty(html)) return "N/A";
@@ -319,4 +312,24 @@ public class PhraseTmsClient : RestClient
         var response = await ExecuteWithHandling<LoginResponse>(request);
         return $"ApiToken {response.Token}";
     }
+
+    private async Task EnsureAuthenticated()
+    {
+        if (_isAuthenticated) return;
+        string connectionType = _credsProviders.Get(CredsNames.ConnectionType).Value;
+        switch (connectionType)
+        {
+            case ConnectionTypes.OAuth2:
+                var authorization = _credsProviders.Get("Authorization").Value;
+                this.AddDefaultHeader("Authorization", authorization);
+                break;
+            case ConnectionTypes.Credentials:
+                string userName = _credsProviders.Get(CredsNames.Username).Value;
+                string password = _credsProviders.Get(CredsNames.Password).Value;
+                string token = await GetTokenFromCredentials(userName, password);
+                this.AddDefaultHeader("Authorization", token);
+                break;
+        }
+        _isAuthenticated = true;
+    }    
 }
