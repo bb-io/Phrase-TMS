@@ -269,6 +269,8 @@ public class PhraseTmsClient : RestClient
         if (status == 0 || (status >= 500 && status < 600) || status == 429)
             return true;
 
+        if (status == 401) return false;
+
         if (resp.ErrorException is HttpRequestException) return true;
         if (resp.ErrorException is IOException) return true;
 
