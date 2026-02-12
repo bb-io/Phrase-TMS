@@ -3,21 +3,22 @@ using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Models.Jobs.Requests;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Apps.PhraseTMS.Models.Projects.Responses;
+using Apps.PhraseTMS.Models.TranslationMemories.Responses;
 using Apps.PhraseTMS.Utils;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Authentication;
+using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Common.Files;
-using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
+using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
-using RestSharp;
-using Newtonsoft.Json;
-using System.Text.Json.Nodes;
+using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using DocumentFormat.OpenXml.Drawing.Diagrams;
-using Blackbird.Applications.Sdk.Common.Exceptions;
-using Blackbird.Applications.Sdk.Common.Invocation;
+using Newtonsoft.Json;
+using RestSharp;
 using System.Globalization;
+using System.Text.Json.Nodes;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -156,7 +157,7 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
     }
 
     [Action("Update project", Description = "Update project with specified details")]
-    public Task EditProject([ActionParameter] ProjectRequest projectRequest, [ActionParameter] EditProjectRequest input)
+    public async Task EditProject([ActionParameter] ProjectRequest projectRequest, [ActionParameter] EditProjectRequest input)
     {
         if (input == null || input.GetType().GetProperties().All(p => p.GetValue(input) == null))
         {
@@ -225,10 +226,27 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
             bodyDictionary.Add("archived", input.Archived);
         }
 
-        var request = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}", Method.Patch)
-            .WithJsonBody(bodyDictionary, JsonConfig.DateSettings);
+        if (bodyDictionary.Any())
+        {
+            var patchRequest = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}", Method.Patch)
+                .WithJsonBody(bodyDictionary, JsonConfig.DateSettings);
 
-        return Client.ExecuteWithHandling(request);
+            await Client.ExecuteWithHandling(patchRequest);
+        }
+
+        if (!string.IsNullOrEmpty(input.MtSettingsId))
+        {
+            var mtRequest = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/mtSettings", Method.Put)
+                .WithJsonBody(new
+                {
+                    machineTranslateSettings = new
+                    {
+                        id = input.MtSettingsId
+                    }
+                });
+
+            await Client.ExecuteWithHandling(mtRequest);
+        }
     }
 
     [Action("Delete project", Description = "Delete specific project")]
@@ -348,5 +366,113 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
         }
 
         return matchingTermbase.TermBase;
+    }
+
+    [Action("Set project translation memories", Description = "Set translation memories for a project")]
+    public async Task<EditProjectTransMemoriesResponse> SetProjectTranslationMemories(
+       [ActionParameter] ProjectRequest projectRequest,
+       [ActionParameter] SetProjectTranslationMemoriesRequest input)
+    {
+        if (string.IsNullOrWhiteSpace(projectRequest.ProjectUId))
+            throw new PluginMisconfigurationException("Project ID cannot be empty or null. Please check your input and try again");
+
+        var tmUids = (input.TranslationMemoryUids ?? Array.Empty<string>())
+            .Where(x => !string.IsNullOrWhiteSpace(x))
+            .ToArray();
+
+        if (tmUids.Length == 0)
+            throw new PluginMisconfigurationException("At least one Translation memory UID is required.");
+
+        if (input.Order is { Length: > 0 } && input.Order.Length != tmUids.Length)
+            throw new PluginMisconfigurationException("Order array length must match Translation memory UIDs length.");
+
+        var transMemories = new List<Dictionary<string, object>>();
+
+        for (int i = 0; i < tmUids.Length; i++)
+        {
+            var tmItem = new Dictionary<string, object>
+            {
+                ["transMemory"] = new { uid = tmUids[i] }
+            };
+
+            if (input.ReadMode.HasValue) tmItem["readMode"] = input.ReadMode.Value;
+            if (input.WriteMode.HasValue) tmItem["writeMode"] = input.WriteMode.Value;
+            if (input.Penalty.HasValue) tmItem["penalty"] = input.Penalty.Value;
+            if (input.ApplyPenaltyTo101Only.HasValue) tmItem["applyPenaltyTo101Only"] = input.ApplyPenaltyTo101Only.Value;
+
+            if (input.Order is { Length: > 0 })
+                tmItem["order"] = input.Order![i];
+
+            transMemories.Add(tmItem);
+        }
+
+        var context = new Dictionary<string, object>
+        {
+            ["transMemories"] = transMemories
+        };
+
+        if (!string.IsNullOrWhiteSpace(input.TargetLang))
+            context["targetLang"] = input.TargetLang!;
+
+        if (!string.IsNullOrWhiteSpace(input.WorkflowStepUid))
+            context["workflowStep"] = new { uid = input.WorkflowStepUid! };
+
+        if (input.OrderEnabled.HasValue)
+            context["orderEnabled"] = input.OrderEnabled.Value;
+
+        var body = new Dictionary<string, object>
+        {
+            ["dataPerContext"] = new[] { context }
+        };
+
+        var request = new RestRequest($"/api2/v3/projects/{projectRequest.ProjectUId}/transMemories", Method.Put)
+            .WithJsonBody(body);
+
+        return await Client.ExecuteWithHandling<EditProjectTransMemoriesResponse>(request);
+    }
+
+    [Action("Set project term bases", Description = "Set term bases for a project (optionally per target language)")]
+    public async Task<TermbaseResponse> SetProjectTermBases(
+        [ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] SetProjectTermBasesRequest input)
+    {
+        if (string.IsNullOrWhiteSpace(projectRequest.ProjectUId))
+            throw new PluginMisconfigurationException("Project ID cannot be empty or null. Please check your input and try again");
+
+        var readIds = (input.ReadTermBaseIds ?? Array.Empty<string>())
+            .Where(x => !string.IsNullOrWhiteSpace(x))
+            .ToArray();
+
+        var qaIds = (input.QualityAssuranceTermBaseIds ?? Array.Empty<string>())
+            .Where(x => !string.IsNullOrWhiteSpace(x))
+            .ToArray();
+
+        var hasAny =
+            readIds.Length > 0 ||
+            qaIds.Length > 0 ||
+            !string.IsNullOrWhiteSpace(input.WriteTermBaseId) ||
+            !string.IsNullOrWhiteSpace(input.TargetLang);
+
+        if (!hasAny)
+            throw new PluginMisconfigurationException("At least one value must be provided (read/write/qa term base IDs or target language).");
+
+        var body = new Dictionary<string, object>();
+
+        if (readIds.Length > 0)
+            body["readTermBases"] = readIds.Select(id => new { id }).ToArray();
+
+        if (!string.IsNullOrWhiteSpace(input.WriteTermBaseId))
+            body["writeTermBase"] = new { id = input.WriteTermBaseId };
+
+        if (qaIds.Length > 0)
+            body["qualityAssuranceTermBases"] = qaIds.Select(id => new { id }).ToArray();
+
+        if (!string.IsNullOrWhiteSpace(input.TargetLang))
+            body["targetLang"] = input.TargetLang;
+
+        var request = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/termBases", Method.Put)
+            .WithJsonBody(body);
+
+        return await Client.ExecuteWithHandling<TermbaseResponse>(request);
     }
 }

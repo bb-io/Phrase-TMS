@@ -32,4 +32,7 @@ public class EditProjectRequest
     public string? OwnerId { get; set; }
 
     public bool? Archived { get; set; }
+
+    [Display("Machine translate settings ID")]
+    public string? MtSettingsId { get; set; }
 }

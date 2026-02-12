@@ -167,4 +167,25 @@ public class ProjectActionsTests : TestBaseMultipleConnections
         await actions.SetProjectTemplateTranslationMemory(new ProjectTemplateRequest { ProjectTemplateUId = "hrNgeVe66AHkadtUCNjWm0" },
             new SetTemplateTranslationMemoryRequest { TransMemoryUid= "w1pV1izYniDtTQjV4iPD1s", WorkflowStepUid = "7446" });
     }
+
+    [TestMethod, ContextDataSource]
+    public async Task SetProjectTermBases_ValidData_Success(InvocationContext context)
+    {
+        var actions = new ProjectActions(context, FileManager);
+        var result = await actions.SetProjectTermBases(new ProjectRequest { ProjectUId = "OQpwhSXsFoq5a9f4bVuuV0" },
+            new SetProjectTermBasesRequest { ReadTermBaseIds= ["9N18Vm34tGRFb2Yia2EKR5"], WriteTermBaseId= "9N18Vm34tGRFb2Yia2EKR5", TargetLang = "de" });
+        Console.WriteLine(JsonConvert.SerializeObject(result));
+    }
+
+    [TestMethod, ContextDataSource]
+    public async Task SetProjectTranslationMemories_ValidData_Success(InvocationContext context)
+    {
+        var actions = new ProjectActions(context, FileManager);
+        var result = await actions.SetProjectTranslationMemories(new ProjectRequest { ProjectUId = "OQpwhSXsFoq5a9f4bVuuV0" },
+            new SetProjectTranslationMemoriesRequest { TranslationMemoryUids = ["w1pV1izYniDtTQjV4iPD1s"], TargetLang = "de" ,ReadMode = true,
+                WriteMode = true
+            });
+        Console.WriteLine(JsonConvert.SerializeObject(result));
+    }
+
 }
