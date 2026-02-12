@@ -73,7 +73,11 @@ public class PhraseTmsClient : RestClient
         var isLoginRequest = request.Resource.Contains("/auth/login");
         if (!isLoginRequest)
         {
-            await EnsureAuthenticated(enableRetries: false);
+            var (success, authResponse) = await TryEnsureAuthenticatedWithoutThrowing();
+            if (!success && authResponse != null)
+            {
+                return authResponse;
+            }
         }
         
         return await ExecuteAsync(request, cancellationToken);
@@ -337,5 +341,43 @@ public class PhraseTmsClient : RestClient
                 break;
         }
         _isAuthenticated = true;
-    }    
+    }
+
+    private async Task<(bool success, RestResponse? failureResponse)> TryEnsureAuthenticatedWithoutThrowing()
+    {
+        if (_isAuthenticated) return (true, null);
+        
+        string connectionType = _credsProviders.Get(CredsNames.ConnectionType).Value;
+        switch (connectionType)
+        {
+            case ConnectionTypes.OAuth2:
+                var authorization = _credsProviders.Get("Authorization").Value;
+                this.AddDefaultHeader("Authorization", authorization);
+                _isAuthenticated = true;
+                return (true, null);
+                
+            case ConnectionTypes.Credentials:
+                string userName = _credsProviders.Get(CredsNames.Username).Value;
+                string password = _credsProviders.Get(CredsNames.Password).Value;
+                
+                var request = new RestRequest("/api2/v1/auth/login", Method.Post)
+                    .WithJsonBody(new { userName, password });
+                
+                var response = await ExecuteAsync(request);
+                if (!response.IsSuccessful)
+                {
+                    return (false, response);
+                }
+                
+                var loginResponse = JsonConvert.DeserializeObject<LoginResponse>(response.Content);
+                var token = $"ApiToken {loginResponse.Token}";
+                this.AddDefaultHeader("Authorization", token);
+                _isAuthenticated = true;
+                return (true, null);
+                
+            default:
+                _isAuthenticated = true;
+                return (true, null);
+        }
+    }
 }
