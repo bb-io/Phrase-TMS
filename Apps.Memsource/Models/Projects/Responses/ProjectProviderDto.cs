@@ -1,15 +1,19 @@
-﻿using Newtonsoft.Json;
+﻿using Blackbird.Applications.Sdk.Common;
+using Newtonsoft.Json;
 
 namespace Apps.PhraseTMS.Models.Projects.Responses
 {
     public class ProjectProviderDto
     {
+        [Display("Type")]
         [JsonProperty("type")]
         public string? Type { get; set; }
 
+        [Display("ID")]
         [JsonProperty("id")]
         public string? Id { get; set; }
 
+        [Display("UID")]
         [JsonProperty("uid")]
         public string? Uid { get; set; }
     }
@@ -39,7 +43,7 @@ namespace Apps.PhraseTMS.Models.Projects.Responses
     {
         public List<ProjectProviderDto> Providers { get; set; } = new();
 
+        [Display("Total quantity")]
         public int? TotalElements { get; set; }
-        public int? TotalPages { get; set; }
     }
 }

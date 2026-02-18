@@ -513,7 +513,6 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
         {
             Providers = providers,
             TotalElements = pageResponse?.TotalElements,
-            TotalPages = pageResponse?.TotalPages
         };
     }
 }
