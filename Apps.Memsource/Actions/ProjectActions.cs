@@ -475,4 +475,45 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
 
         return await Client.ExecuteWithHandling<TermbaseResponse>(request);
     }
+
+    [Action("Get project providers", Description = "List all providers assigned to a project")]
+    public async Task<GetProjectProvidersResponse> GetProjectProviders(
+    [ActionParameter] ProjectRequest projectRequest,
+    [ActionParameter] ListProjectProvidersQuery query)
+    {
+        if (string.IsNullOrWhiteSpace(projectRequest.ProjectUId))
+            throw new PluginMisconfigurationException("Project ID cannot be empty or null. Please check your input and try again");
+
+        var endpoint = $"/api2/v1/projects/{projectRequest.ProjectUId}/providers";
+
+        const int pageSize = 50;
+        var providers = new List<ProjectProviderDto>();
+        var pageNumber = 0;
+
+        ProjectProvidersPageResponse? pageResponse;
+        do
+        {
+            var request = new RestRequest(endpoint, Method.Get)
+                .AddQueryParameter("pageNumber", pageNumber.ToString())
+                .AddQueryParameter("pageSize", pageSize.ToString());
+
+            if (!string.IsNullOrWhiteSpace(query?.ProviderName))
+                request.AddQueryParameter("providerName", query.ProviderName);
+
+            pageResponse = await Client.ExecuteWithHandling<ProjectProvidersPageResponse>(request);
+
+            if (pageResponse?.Content?.Any() == true)
+                providers.AddRange(pageResponse.Content);
+
+            pageNumber++;
+        }
+        while (pageResponse != null && pageNumber < pageResponse.TotalPages);
+
+        return new GetProjectProvidersResponse
+        {
+            Providers = providers,
+            TotalElements = pageResponse?.TotalElements,
+            TotalPages = pageResponse?.TotalPages
+        };
+    }
 }

@@ -82,11 +82,23 @@ public class ProjectActionsTests : TestBaseMultipleConnections
     public async Task Get_project_works(InvocationContext context)
     {
         var actions = new ProjectActions(context, FileManager);
-        var result = await actions.GetProject(new ProjectRequest { ProjectUId = "0SBo723Ge0wHfk0A1k1XWn0" });
+        var result = await actions.GetProject(new ProjectRequest { ProjectUId = "OQpwhSXsFoq5a9f4bVuuV0" });
 
         PrintResult(result);
         Assert.IsNotNull(result);
         Assert.IsTrue(result.Name != null);
+    }
+
+
+    [TestMethod, ContextDataSource]
+    public async Task GetProjectProviders_works(InvocationContext context)
+    {
+        var actions = new ProjectActions(context, FileManager);
+        var result = await actions.GetProjectProviders(new ProjectRequest { ProjectUId = "OQpwhSXsFoq5a9f4bVuuV0" },
+            new ListProjectProvidersQuery { });
+
+        PrintResult(result);
+        Assert.IsNotNull(result);
     }
 
     [TestMethod, ContextDataSource]
