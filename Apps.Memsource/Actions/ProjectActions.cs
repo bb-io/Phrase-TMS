@@ -512,6 +512,7 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
         return new GetProjectProvidersResponse
         {
             Providers = providers,
+            ProviderIds = providers is not null? providers.Select(x => x.Uid).ToList() : null,
             TotalElements = pageResponse?.TotalElements,
         };
     }

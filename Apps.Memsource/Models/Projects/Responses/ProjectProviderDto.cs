@@ -43,7 +43,10 @@ namespace Apps.PhraseTMS.Models.Projects.Responses
     {
         public List<ProjectProviderDto> Providers { get; set; } = new();
 
+        [Display("Provider IDs")]
+        public List<string>? ProviderIds { get; set; } = new();
+
         [Display("Total quantity")]
-        public int? TotalElements { get; set; }
+        public double? TotalElements { get; set; }
     }
 }
