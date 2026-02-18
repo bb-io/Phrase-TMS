@@ -23,6 +23,7 @@ using Blackbird.Filters.Constants;
 using Blackbird.Filters.Enums;
 using Blackbird.Filters.Extensions;
 using Blackbird.Filters.Transformations;
+using Blackbird.Filters.Xliff.Xliff1;
 using Blackbird.Filters.Xliff.Xliff2;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Newtonsoft.Json;
@@ -716,7 +717,9 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
     [Action("Upload job bilingual file", Description = "Upload bilingual file to update job")]
     public async Task UploadBilingualFile([ActionParameter] UploadBilingualFileRequest input)
     {
-        var fileBytes = fileManagementClient.DownloadAsync(input.File).Result.GetByteData().Result;
+        var file = await fileManagementClient.DownloadAsync(input.File);
+        var fileBytes = await file.GetByteData();
+
         var request = new RestRequest($"/api2/v2/bilingualFiles", Method.Post);
         if (!String.IsNullOrEmpty(input.saveToTransMemory))
         {
@@ -729,6 +732,14 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         }
 
         request.AlwaysMultipartFormData = true;
+
+        var content = Encoding.UTF8.GetString(fileBytes);
+        if (Xliff2Serializer.IsXliff2(content))
+        {
+            var transformation = Transformation.Parse(content, input.File.Name);
+            fileBytes = Encoding.UTF8.GetBytes(Xliff1Serializer.Serialize(transformation));
+        }
+
         request.AddFile("file", fileBytes, input.File.Name);
 
         await Client.ExecuteWithHandling(request);
