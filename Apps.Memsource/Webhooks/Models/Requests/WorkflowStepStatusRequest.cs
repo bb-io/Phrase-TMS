@@ -7,7 +7,7 @@ using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.PhraseTMS.Webhooks.Models.Requests;
 
-public class WorkflowStepStatusRequest : ProjectRequest
+public class WorkflowStepStatusRequest : ProjectWebhookRequest
 {
     [Display("Workflow step ID")]
     [DataSource(typeof(WorkflowStepDataHandler))]
