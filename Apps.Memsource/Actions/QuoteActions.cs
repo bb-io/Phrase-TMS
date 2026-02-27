@@ -9,6 +9,7 @@ using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Apps.PhraseTMS.Models.Jobs.Requests;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.Sdk.Common.Invocation;
+using Apps.PhraseTMS.Models.Quotes.Responses;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -22,6 +23,54 @@ public class QuoteActions(InvocationContext invocationContext) : PhraseInvocable
         var response = await Client.ExecuteWithHandling(request);
             
         return JsonConvert.DeserializeObject<QuoteDto>(response.Content);
+    }
+
+    [Action("Search quotes", Description = "List quotes for a specific project with optional name and status filtering")]
+    public async Task<SearchQuotesResponse> SearchQuotes([ActionParameter] ProjectRequest project,
+    [ActionParameter] SearchQuotesRequest input)
+    {
+        var request = new RestRequest($"/api2/v1/projects/{project.ProjectUId}/quotes", Method.Get);
+
+        if (!string.IsNullOrEmpty(input.Name))
+            request.AddQueryParameter("name", input.Name);
+
+        var quotes = await Client.Paginate<QuoteDto>(request);
+
+        if (!string.IsNullOrEmpty(input.Status))
+            quotes = quotes
+                .Where(q => string.Equals(q.Status, input.Status, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+        return new SearchQuotesResponse { Quotes = quotes};
+    }
+
+    [Action("Find quote", Description = "Find a single quote in a project using filtering criteria")]
+    public async Task<QuoteDto> FindQuote([ActionParameter] ProjectRequest project,
+    [ActionParameter] FindQuoteRequest input)
+    {
+        var request = new RestRequest($"/api2/v1/projects/{project.ProjectUId}/quotes", Method.Get);
+
+        if (!string.IsNullOrEmpty(input.Name))
+            request.AddQueryParameter("name", input.Name);
+
+        var quotes = await Client.Paginate<QuoteDto>(request);
+
+        if (!string.IsNullOrEmpty(input.Status))
+            quotes = quotes
+                .Where(q => string.Equals(q.Status, input.Status, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+        if (!string.IsNullOrEmpty(input.QuoteType))
+            quotes = quotes
+                .Where(q => string.Equals(q.QuoteType, input.QuoteType, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+        if (!string.IsNullOrEmpty(input.NameContains))
+            quotes = quotes
+                .Where(q => q.Name.Contains(input.NameContains, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+        return quotes.FirstOrDefault();
     }
 
     // Todo: add more inputs
