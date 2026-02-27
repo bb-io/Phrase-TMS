@@ -168,8 +168,10 @@ The following actions update a job's file (source or target) from their original
 
 ### Quote
 
+- **Search quotes**
 - **Get quote** gets information about a quote
 - **Create quote** creates a new quote from a project
+- **Find quote**
 - **Delete quote** deletes a quote
 
 ### Translation

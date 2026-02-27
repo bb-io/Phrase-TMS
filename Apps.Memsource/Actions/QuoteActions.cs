@@ -26,10 +26,10 @@ public class QuoteActions(InvocationContext invocationContext) : PhraseInvocable
     }
 
     [Action("Search quotes", Description = "List quotes for a specific project with optional name and status filtering")]
-    public async Task<SearchQuotesResponse> SearchQuotes(
+    public async Task<SearchQuotesResponse> SearchQuotes([ActionParameter] ProjectRequest project,
     [ActionParameter] SearchQuotesRequest input)
     {
-        var request = new RestRequest($"/api2/v1/projects/{input.ProjectUid}/quotes", Method.Get);
+        var request = new RestRequest($"/api2/v1/projects/{project.ProjectUId}/quotes", Method.Get);
 
         if (!string.IsNullOrEmpty(input.Name))
             request.AddQueryParameter("name", input.Name);
@@ -45,10 +45,10 @@ public class QuoteActions(InvocationContext invocationContext) : PhraseInvocable
     }
 
     [Action("Find quote", Description = "Find a single quote in a project using filtering criteria")]
-    public async Task<QuoteDto> FindQuote(
+    public async Task<QuoteDto> FindQuote([ActionParameter] ProjectRequest project,
     [ActionParameter] FindQuoteRequest input)
     {
-        var request = new RestRequest($"/api2/v1/projects/{input.ProjectUid}/quotes", Method.Get);
+        var request = new RestRequest($"/api2/v1/projects/{project.ProjectUId}/quotes", Method.Get);
 
         if (!string.IsNullOrEmpty(input.Name))
             request.AddQueryParameter("name", input.Name);

@@ -6,9 +6,6 @@ namespace Apps.PhraseTMS.Models.Quotes.Requests;
 
 public class FindQuoteRequest
 {
-    [Display("Project ID")]
-    public string ProjectUid { get; set; }
-
     public string? Name { get; set; }
 
     [Display("Quote status")]
