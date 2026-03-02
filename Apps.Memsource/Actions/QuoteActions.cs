@@ -70,6 +70,12 @@ public class QuoteActions(InvocationContext invocationContext) : PhraseInvocable
                 .Where(q => q.Name.Contains(input.NameContains, StringComparison.OrdinalIgnoreCase))
                 .ToList();
 
+        if (input.MostRecent.HasValue && input.MostRecent.Value)
+        {
+            return quotes.OrderByDescending(q => q.DateCreated)
+            .FirstOrDefault();
+        }
+
         return quotes.FirstOrDefault();
     }
 
