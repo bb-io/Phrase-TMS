@@ -18,4 +18,8 @@ public class FindQuoteRequest
 
     [Display("Quote name contains")]
     public string? NameContains { get; set; }
+
+    [Display("Most recent")]
+
+    public bool? MostRecent { get; set; }
 }
