@@ -50,191 +50,202 @@ Navigate to apps and search for Phrase. Click _Add Connection_ and name your con
 
 ### Analysis
 
-- **Search job analyses** searches through all analyses that were created for a specific job
-- **Search project analyses** searches through all analyses that were created for a specific project
-- **Get analysis data** returns the full details of a specific analysis.
-- **Create analyses** create one or multiple analyses for jobs in a given project
-- **Download analysis file** download an analysis file in specified format, you can choose from CSV, JSON and LOG
-- **Update analysis** Assign provider and net rate scheme to analysis
+- **Search job analyses** Search analyses for a specific job.
+- **Find analysis** Find a single project analysis using optional filters.
+- **Search project analyses** Search analyses for a specific project.
+- **Get analysis data** Get full details for a specific analysis.
+- **Create analyses** Create one or more analyses for jobs in a project.
+- **Download analysis file** Download an analysis file.
+- **Update analysis** Update provider and net rate scheme for an analysis.
+- **Delete analyses** Delete one or more analyses.
 
 ### Clients
 
-- **Search clients** searches for clients on your instance matching certain criteria
-- **Get client** get information about a single client
-- **Create client** creates a new client in your Phrase instance
-- **Update client** updates the information related to a specific client
-- **Delete client** deletes a client
+- **Search clients** Search clients on your instance.
+- **Get client** Get details for a specific client.
+- **Create client** Create a new client.
+- **Update client** Update a specific client.
+- **Delete client** Delete a specific client.
+
+### Conversations
+
+- **Get conversation** Get a plain conversation.
+- **Search conversations** Search conversations.
+- **Delete conversation** Delete a plain conversation.
+- **Edit conversation** Edit a plain conversation.
+- **Create conversation** Create a plain conversation.
+- **Add plain comment** Add a plain comment.
+- **Edit plain comment** Edit a plain comment.
+- **Delete plain comment** Delete a plain comment.
 
 ### Custom fields
 
 Custom project field actions allow you to get and set the value of fields that you have created in Phrase.
-Custom fields are associated with a specific type, e.g. date, number, text, etc. In Blackbird it's important to be 'type-safe', that's why every type has its own action pair.
+Custom fields are associated with a specific type, for example date, number, or text. Each type has its own action.
 
-- **Get project date custom field value**
+- **Get project text custom field value**
 - **Get project numeric custom field value**
+- **Get project project date custom field value**
 - **Get project single select custom field value**
 - **Get project multi select custom field value**
-- **Get project text custom field value**
 - **Get project URL custom field value**
-- **Set project date custom field value**
-- **Set project numeric custom field value**
-- **Set project single select custom field value**
 - **Set project text custom field value**
+- **Set project numeric custom field value**
 - **Set project URL custom field value**
+- **Set project date custom field value**
+- **Set project single select custom field value**
 
 > If a Custom field is not present in a project, it will be added as part of the `Set` action.
 
-### Glossary
+### Glossaries
 
-- **Create glossary** creates a new glossary in your Phrase instance that you can then fill manually or through the _Import glossary_ action.
-- **Export glossary** returns the glossary as a Blackbird interchangable file (standard TBX) that can be imported into any other app.
-- **Import glossary** takes a glossary from any other Blackbird app and imports it into a specific Phrase glossary.
-- **Remove all terms from glossary** deletes all terms in a glossary.
+- **Create glossary** Create a new glossary.
+- **Export glossary** Export a glossary.
+- **Import glossary** Import a glossary.
+- **Remove all terms from glossary** Delete all terms in a glossary.
 
-### Job
+### Jobs
 
-- **Search jobs** returns a list of jobs in the project based on specified parameters
-- **Get job** get all job information for a specific job
-- **Create job** == DEPRECATED == will be removed in a future update. Use the action below.
-- **Upload source file (create jobs)** uploads a source file to the project and creates relevant jobs for these files. This action will return multiple jobs as its output. It will also return a single Source file ID. See instructions below on how to use this in combination with 'On job status changed'. This action supports uploading XLIFF file as source v2.1 and v2.2 by converting them to v2.0.
-- **Find job from source file ID** given a source file ID, a workflow step ID and a language, returns the job.
-- **Find job from server task ID** given a server task ID, a workflow step ID and a project ID, returns the job.
-- **Delete job** Deletes jobs from a project
-- **Update job** Updates a job's global data
-- **Pre-translate job** Pre-translates a job in the project
-- **Export jobs to online repository** Exports jobs to online repository
-- **Remove assigned providers from job** Removes all assigned providers from a job.
-- **Get segments count** returns the number of segments in a job
-- **Get aggregated segments count (multiple jobs)** Gets aggregated segment counts for specified jobs in a project
-- **Split job** splits a job into multiple jobs based on the specified segment numbers
+- **Search jobs** Search jobs in a project using specified filters.
+- **Export jobs to online repository** Export jobs to an online repository.
+- **Get job** Get all information for a specific job.
+- **Find job from source file ID** Find a job using a source file ID, workflow step ID, and language.
+- **Find job from server task ID** Find a job using a server task ID, workflow step ID, and project ID.
+- **Upload source file (create jobs)** Upload a new source file and create jobs for the configured target languages and workflow steps.
+- **Delete jobs** Delete jobs from a project.
+- **Update job** Update a job's global data.
+- **Download job target file** Download the target file of a job.
+- **Download job original file** Download the original file of a job.
+- **Upload job target file** Upload and update the target file of a job.
+- **Download job bilingual file** Download the bilingual file of a job.
+- **Upload job bilingual file** Upload a bilingual file to update a job.
+- **Pre-translate job** Pre-translate a job in a project.
+- **Upload job source file** Upload and update the source file of a job in a project.
+- **Get segments count** Get segment counts for a specific job.
+- **Get aggregated segments count (multiple jobs)** Get aggregated segment counts for specific jobs in a project.
+  Advanced settings:
+  - **LQA Score null?**: Filter jobs by whether the LQA score is null.
+  - **Last workflow step**: Filter jobs to the last workflow step.
+- **Remove assigned providers from job** Remove assigned providers from a job.
+- **Split job** Split a job into multiple parts.
 
-The following actions download job files in either their original format or as a bilingual file.
-- **Download target file**
-- **Download original file**
-- **Download bilingual file**
+### Miscellaneous
 
-The following actions update a job's file (source or target) from their original format or from a bilingual file.
-- **Upload bilingual file**
-- **Upload job source file**
-- **Upload job target file**
+- **Delete all project translations** Delete all translations for selected jobs in a project.
+- **Debug** Run a debug action.
 
-### Project
+### Projects
 
-- **Search projects** search for projects matching the filters of the input parameters
-- **Find project** given the same parameters as _Search projects_, only returns the first matching project
-- **Get project** get global project data for a specific project
-- **Create project** Create a new project. It has the following special inputs:
-- **Propagate Translations**: Propagate translations to lower workflows when the source updates
-- **Create project from template** same as the previous action, however in this action you can use an existing project template
-- **Add project target language** adds a target language to the project
-- **Update project** updates a project with specified details
-- **Delete project** delete the specified project
-- **Download project original files** download all the original source files (in the jobs) of a project
-- **Download project target files** download all the translated files (in the jobs) of a project
-- **Assign providers from template** assigns providers to the project or specific jobs who were predefined on a certain template
-- **Find project termbase** get the termbase linked to a project based on optional filters
+- **Search projects** Search projects using the provided filters.
+- **Find project** Find the first project matching the same filters as Search projects.
+- **Get project** Get global data for a specific project.
+- **Create project** Create a new project.
+  Advanced settings:
+  - **Propagate Translations**: Propagate translations to lower workflows when the source updates.
+- **Create project from template** Create a new project from a template.
+- **Search term bases** Search term bases using the provided filters.
+- **Add project target language** Add a target language to a project.
+- **Update project** Update project details.
+- **Delete project** Delete a specific project.
+- **Download project original files** Download project source files.
+- **Download project target files** Download project target files.
+  Advanced settings:
+  - **Source file ID**: Download files only for a specific source file.
+- **Assign project providers from template** Assign providers to a project or specific jobs from a template.
+- **Find project termbase** Get the term base linked to a project based on optional filters.
+- **Set project translation memories** Set translation memories for a project.
+- **Set project term bases** Set term bases for a project, optionally per target language.
+- **Get project providers** Get providers assigned to a project.
 
 ### Project templates
 
-- **Search project templates** searches through all project templates
-- **Create project template** creates a new project template
-- **Set project template translation memory** sets a translation memory to a project template
-- **Set project template term bases** sets term bases to a project template
-
-### Project reference file
-
-- **Search project reference files** searches through all project reference files
-- **Create project reference files** add new project reference files. In case no file parts are sent, only 1 reference is created with the given note. Either at least one file must be sent or the note must be specified.
-- **Download project reference file** download project reference file
-- **Delete project reference file** delete a specific project reference file
+- **Search project templates** Search project templates using filters.
+- **Create project template** Create a project template from an existing project.
+- **Set project template translation memory** Assign a translation memory to a project template for all target languages and workflow steps.
+- **Set project template term bases** Assign a term base to a project template for a specific target language and workflow step.
 
 ### Quality assurance
 
-- **Run auto LQA** runs Auto LQA for specified job parts or all jobs in a given workflow step
-- **Download LQA assessment** downloads a single xlsx report based on specific job ID
-- **Get LQA assessment** get a specific LQA assessment
-- **Run quality assurance** Run quality checks on job part
+- **Download LQA assessment** Download a single LQA report for a specific job ID.
+- **Get LQA assessment** Get a specific LQA assessment.
+- **Run auto LQA** Run auto LQA for specific job parts or all jobs in a workflow step.
+- **Run quality assurance** Run quality checks on a job part.
+  Advanced settings:
+  - **Maximum warning count**: Limit the number of warnings returned, from 1 to 100.
 
-### Conversation
+### Quotes
 
-- **Search conversations** searches through all conversations in a project
-- **Get conversation** get information about a specific conversation
-- **Delete conversation** deletes a plain conversation
-- **Edit conversation** edits plain conversation
-- **Create conversation** creates a new plain conversation
-- **Add plain comment** adds a plain comment
-- **Edit plain comment** edits the content of an existing plain comment
-- **Delete plain comment** removes a plain comment
+- **Get quote** Get a quote by ID.
+- **Search quotes** Search quotes in a project using optional name and status filters.
+- **Find quote** Find a single quote in a project using filters.
+- **Create quote** Create a new project quote.
+- **Delete quote** Delete a specific quote.
 
-### Quote
+### Reference files
 
-- **Search quotes**
-- **Get quote** gets information about a quote
-- **Create quote** creates a new quote from a project
-- **Find quote**
-- **Delete quote** deletes a quote
-
-### Translation
-
-- **Delete all translations** deletes all translations by project ID for the given jobs
+- **Search project reference files** Search project reference files.
+- **Add project reference files** Add project reference files.
+- **Download project reference file** Download a project reference file.
+- **Delete project reference file** Delete a specific project reference file.
 
 ### Translation memory
 
-- **Search translation memories** Get all translation memories that match th specified search criteria
-- **Create translation memory** create a new translation memory
-- **Get translation memory** get information about a specific translation memory
-- **Import TMX file** imports a new TMX file into the translation memory
-- **Export translation memory** exports the selected translation memory as either a TMX or an XLSX
-- **Insert segment into memory** insert a new segment into the translation memory
-- **Delete translation memory** deletes the entire translation memory
-- **Edit translation memories** edits the name and description of a translation memory
-- **Update TM (insert segments from xliff)** updates the translation memory by inserting segments from an XLIFF file
+- **Search TM** Get translation memories that match search criteria.
+- **Create TM** Create a new translation memory.
+- **Get TM** Get a specific translation memory.
+- **Import TMX file into TM** Import a TMX file into a translation memory.
+- **Export TM** Export a translation memory.
+- **Update TM from XLIFF** Update a translation memory by inserting segments from an XLIFF file.
+- **Insert text into TM** Insert a segment into a translation memory.
+- **Delete TM** Delete a selected translation memory.
+- **Edit TMs** Edit translation memories.
 
-### User
+### Users
 
-- **Search users** search through all users active on this Phrase instance
-- **Find user** given the search parameters, returns the first matching user
-- **Get user** get user information by ID
-- **Add user** adds a new user
-- **Update user** updates a specific user
-- **Delete user** deletes a specific user
+- **Search users** Search users using optional filters.
+- **Find user** Find the first user matching the search filters.
+- **Get user** Get user information by ID.
+- **Add user** Add a new user.
+- **Update user** Update a specific user.
+- **Delete user** Delete a specific user.
 
 ## Events
 
-### Project
+### Miscellaneous
 
-- **On project created**
-- **On project deleted**
-- **On project due date changed**
-- **On project metadata updated**
-- **On shared project assigned**
-- **On project status changed**
+- **On project created** Triggered when a project is created.
+- **On project deleted** Triggered when a project is deleted.
+- **On project due date changed** Triggered when a project due date changes.
+- **On project metadata updated** Triggered when project metadata is updated.
+- **On shared project assigned** Triggered when a shared project is assigned.
+- **On project status changed** Triggered when a project status changes.
+- **On jobs created** Triggered when new jobs are created.
+- **On jobs deleted** Triggered when jobs are deleted.
+- **On continuous jobs updated** Triggered when continuous jobs are updated.
+- **On jobs assigned** Triggered when jobs are assigned.
+- **On jobs due date changed** Triggered when job due dates change.
+- **On jobs exported** Triggered when jobs are exported.
+- **On jobs source updated** Triggered when job source files are updated.
+- **On job status changed** Triggered when a job status changes. For reliable checkpoint behavior, set optional filters such as Project ID, and use either Job ID or Source file ID with workflow step filters.
+  Advanced settings:
+  - **Project name contains**: Trigger only when the project name contains a specific text.
+  - **Project name doesn't contains**: Exclude projects where the name contains a specific text.
+  - **Project note contains**: Trigger only when the project note contains a specific text.
+  - **Project note doesn't contain**: Exclude projects where the project note contains a specific text.
+- **On all jobs in workflow step reached status** Triggered when all jobs in a specific workflow step reach any specified statuses and outputs only jobs in that workflow step.
+  Advanced settings:
+  - **Target language**: Restrict the trigger to a specific target language.
+- **On job target updated** Triggered when a job target is updated.
+- **On jobs unexported** Triggered when jobs are unexported.
+- **On analysis created** Triggered when a new analysis is created.
 
-### Job
+### Users
 
-- **On jobs created** Triggered when new jobs are created
-- **On jobs deleted** Triggered when any jobs are deleted
-- **On continuous jobs updated** Triggered when continuous jobs are updated
-- **On jobs assigned** Triggered when any jobs are assigned
-- **On jobs due date changed** Triggered when the due date of jobs are changed
-- **On jobs exported** Triggered when any jobs are exported
-- **On jobs source updated** Triggered when the source file of the jobs are updated
-- **On job status changed** If you are using checkpoints, please fill all optional inputs (including Project ID). It will work even without a specified Project ID, but using it will allow us to check if the job already has the specified status. The status "Completed by linguist" will also trigger the event if the optional status "Completed" is set. In a checkpoint it works with either "Job ID" or "Source file ID" in combination with the workflow step or last workflow step. For more details see below.
-- **On job target updated** Triggered when a job's target has been updated
-- **On jobs unexported** Triggered when jobs are exported
-- **On all jobs in workflow step reached status** Triggered when all jobs in a specific workflow step reach any of specified statuses. Returns only jobs in the specified workflow step. Please be aware that this event might trigger multiple times if several jobs are updated simultaneously, for example, through a bulk action or in very quick succession.
-
-### User
-
-- **On users created** Triggered when a new users have been created
-
-### Analysis
-
-- **On analysis created** Trigered when a new analysis has been created
+- **On users created** Triggered when new users are added.
 
 ### Quality assurance
 
-- **On LQA reports created** Triggered when new reports can be downloaded within a specific project(Polling event)
+- **On LQA reports created** Triggered when new LQA reports are available in a specific project.
 
 ## Examples 
 

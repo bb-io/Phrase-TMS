@@ -25,7 +25,7 @@ namespace Apps.PhraseTMS.Actions;
 public class AnalysisActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : PhraseInvocable(invocationContext)
 {
 
-    [Action("Search job analyses", Description = "Search through all analyses of a specific job")]
+    [Action("Search job analyses", Description = "Search analyses for a specific job")]
     public async Task<ListAnalysesResponse> ListAnalyses(
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] JobRequest jobRequest,
@@ -49,7 +49,7 @@ public class AnalysisActions(InvocationContext invocationContext, IFileManagemen
         return new ListAnalysesResponse { Analyses = result };
     }
 
-    [Action("Find analysis", Description = "Find a single analysis of a project using optional filters.")]
+    [Action("Find analysis", Description = "Find a single project analysis using optional filters")]
     public async Task<FullAnalysisDto> FindAnalysisAsync(
      [ActionParameter] ProjectRequest projectRequest,
      [ActionParameter] FindAnalysisQueryRequest input,
@@ -101,7 +101,7 @@ public class AnalysisActions(InvocationContext invocationContext, IFileManagemen
 
 
 
-    [Action("Search project analyses", Description = "Search through all analyses of a specific project")]
+    [Action("Search project analyses", Description = "Search analyses for a specific project")]
     public async Task<ListAnalysesResponse> ListProjectAnalyses(
     [ActionParameter] ProjectRequest projectRequest,
     [ActionParameter] ListAnalysesQueryRequest query)
@@ -124,7 +124,7 @@ public class AnalysisActions(InvocationContext invocationContext, IFileManagemen
         return new ListAnalysesResponse { Analyses = result };
     }
 
-    [Action("Get analysis data", Description = "Returns the full details of a specific analysis")]
+    [Action("Get analysis data", Description = "Get full details for a specific analysis")]
     public async Task<FullAnalysisDto> GetJobAnalysis(
         [ActionParameter] GetAnalysisRequest input)
     {
@@ -132,7 +132,7 @@ public class AnalysisActions(InvocationContext invocationContext, IFileManagemen
         return await Client.ExecuteWithHandling<FullAnalysisDto>(request);
     }
 
-    [Action("Create analyses", Description = "Create one or multiple analyses for jobs in a given project")]
+    [Action("Create analyses", Description = "Create one or more analyses for jobs in a project")]
     public async Task<ListAnalysesResponse> CreateAnalysis(
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] CreateAnalysisInput input,
@@ -169,7 +169,7 @@ public class AnalysisActions(InvocationContext invocationContext, IFileManagemen
         return new ListAnalysesResponse { Analyses = result };
     }
 
-    [Action("Download analysis file", Description = "Download analysis file in specified format")]
+    [Action("Download analysis file", Description = "Download an analysis file")]
     public async Task<AnalysisFileResponse> DownloadAnalysis(
         [ActionParameter] GetAnalysisRequest analysisRequest,
         [ActionParameter, Display("Format"), StaticDataSource(typeof(FormatDataHandler))]
@@ -192,7 +192,7 @@ public class AnalysisActions(InvocationContext invocationContext, IFileManagemen
         return new AnalysisFileResponse { AnalysisFile = fileReference };
     }
 
-    [Action("Update analysis", Description = "Assign provider and net rate scheme to analysis")]
+    [Action("Update analysis", Description = "Update provider and net rate scheme for an analysis")]
     public async Task<FullAnalysisDto> UpdateAnalysis(
         [ActionParameter] GetAnalysisRequest input,
         [ActionParameter] EditAnalysisRequest analysisData)
@@ -223,7 +223,7 @@ public class AnalysisActions(InvocationContext invocationContext, IFileManagemen
         return await Client.ExecuteWithHandling<FullAnalysisDto>(request);
     }
 
-    [Action("Delete analyses", Description = "Delete analyses")]
+    [Action("Delete analyses", Description = "Delete one or more analyses")]
     public async Task<DeleteAnalysesResponse> DeleteAnalyses(
     [ActionParameter] ProjectRequest projectRequest,
     [ActionParameter, Display("Job ID"), DataSource(typeof(JobDataHandler))] string? jobId,

@@ -17,7 +17,7 @@ namespace Apps.PhraseTMS.Polling
     [PollingEventList("Users")]
     public class UserPollingList(InvocationContext invocationContext) : PhraseInvocable(invocationContext)
     {
-        [PollingEvent("On users created", "Triggered when new users are created")]
+        [PollingEvent("On users created", "Triggered when new users are added")]
         public async Task<PollingEventResponse<PollingMemory, ListAllUsersResponse>> OnUsersCreated(
         PollingEventRequest<PollingMemory> request,
         [PollingEventParameter] ListAllUsersQuery query)
