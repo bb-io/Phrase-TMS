@@ -14,7 +14,7 @@ namespace Apps.PhraseTMS.Polling;
 [PollingEventList("Quality assurance")]
 public class LqaPollingList(InvocationContext invocationContext) : PhraseInvocable(invocationContext)
 {
-    [PollingEvent("On LQA reports created", "Triggered when new reports can be downloaded within a specific project")]
+    [PollingEvent("On LQA reports created", "Triggered when new LQA reports are available in a specific project")]
     public async Task<PollingEventResponse<PollingMemory, SearchLqaResponse>> OnLqaReportsCreated(
         PollingEventRequest<PollingMemory> request,
         [PollingEventParameter] ProjectRequest projectRequest,

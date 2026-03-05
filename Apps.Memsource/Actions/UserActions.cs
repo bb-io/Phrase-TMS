@@ -15,7 +15,7 @@ namespace Apps.PhraseTMS.Actions;
 [ActionList("Users")]
 public class UserActions(InvocationContext invocationContext) : PhraseInvocable(invocationContext)
 {
-    [Action("Search users", Description = "Search through all users active on this Phrase instance")]
+    [Action("Search users", Description = "Search users using optional filters")]
     public async Task<ListAllUsersResponse> ListAllUsers([ActionParameter] ListAllUsersQuery query)
     {
         var request = new RestRequest("/api2/v1/users", Method.Get);
@@ -52,7 +52,7 @@ public class UserActions(InvocationContext invocationContext) : PhraseInvocable(
         return new() { Users = users };
     }
 
-    [Action("Find user", Description = "Given the search parameters, returns the first matching user")]
+    [Action("Find user", Description = "Find the first user matching the search filters")]
     public async Task<UserDto> FindUser([ActionParameter] ListAllUsersQuery query)
     {
         var request = new RestRequest("/api2/v1/users", Method.Get);

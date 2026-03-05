@@ -27,7 +27,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
 {
     #region ProjectWebhooks
 
-    [Webhook("On project created", typeof(ProjectCreationHandler), Description = "On a new project created")]
+    [Webhook("On project created", typeof(ProjectCreationHandler), Description = "Triggered when a project is created")]
     public async Task<WebhookResponse<ProjectDto>> ProjectCreation(WebhookRequest webhookRequest,
         [WebhookParameter] ProjectCreatedRequest projectCreatedRequest,
         [WebhookParameter] MultipleSubdomains subdomains,
@@ -91,7 +91,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         };
     }
 
-    [Webhook("On project deleted", typeof(ProjectDeletionHandler), Description = "On any project deleted")]
+    [Webhook("On project deleted", typeof(ProjectDeletionHandler), Description = "Triggered when a project is deleted")]
     public async Task<WebhookResponse<ProjectDto>> ProjectDeletion(WebhookRequest webhookRequest,
         [WebhookParameter] ProjectOptionalRequest request)
     {
@@ -127,7 +127,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
     }
 
     [Webhook("On project due date changed", typeof(ProjectDueDateChangedHandler),
-        Description = "On any project due date changed")]
+        Description = "Triggered when a project due date changes")]
     public async Task<WebhookResponse<ProjectDto>> ProjectDueDateChanged(WebhookRequest webhookRequest,
         [WebhookParameter] ProjectOptionalRequest request)
     {
@@ -163,7 +163,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
     }
 
     [Webhook("On project metadata updated", typeof(ProjectMetadataUpdatedHandler),
-        Description = "On any project metadata updated")]
+        Description = "Triggered when project metadata is updated")]
     public async Task<WebhookResponse<ProjectDto>> ProjectMetadataUpdated(WebhookRequest webhookRequest,
         [WebhookParameter] ProjectOptionalRequest request)
     {
@@ -199,7 +199,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
     }
 
     [Webhook("On shared project assigned", typeof(ProjectSharedAssignedHandler),
-        Description = "On any shared project assigned")]
+        Description = "Triggered when a shared project is assigned")]
     public async Task<WebhookResponse<ProjectDto>> ProjectSharedAssigned(WebhookRequest webhookRequest,
         [WebhookParameter] ProjectOptionalRequest request)
     {
@@ -235,7 +235,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
     }
 
     [Webhook("On project status changed", typeof(ProjectStatusChangedHandler),
-        Description = "On any project status changed")]
+        Description = "Triggered when a project status changes")]
     public async Task<WebhookResponse<ProjectDto>> ProjectStatusChanged(WebhookRequest webhookRequest,
         [WebhookParameter] ProjectStatusChangedRequest request,
         [WebhookParameter] ProjectOptionalRequest project,
@@ -487,7 +487,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         };
     }
 
-    [Webhook("On jobs due date changed", typeof(JobDueDateChangedHandler), Description = "Triggered when the due date of jobs are changed")]
+    [Webhook("On jobs due date changed", typeof(JobDueDateChangedHandler), Description = "Triggered when job due dates change")]
     public async Task<WebhookResponse<MultipleJobResponse>> JobDueDateChanged(WebhookRequest webhookRequest,
         [WebhookParameter] JobOptionalRequest request)
     {
@@ -543,7 +543,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         };
     }
 
-    [Webhook("On jobs source updated", typeof(JobSourceUpdatedHandler), Description = "Triggered when the source file of the jobs are updated")]
+    [Webhook("On jobs source updated", typeof(JobSourceUpdatedHandler), Description = "Triggered when job source files are updated")]
     public async Task<WebhookResponse<MultipleJobResponse>> JobSourceUpdated(WebhookRequest webhookRequest,
         [WebhookParameter] JobOptionalRequest request)
     {
@@ -571,7 +571,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         };
     }
 
-    [Webhook("On job status changed", typeof(JobStatusChangedHandler), Description = "On any job status changed")]
+    [Webhook("On job status changed", typeof(JobStatusChangedHandler), Description = "Triggered when a job status changes")]
     public async Task<WebhookResponse<JobResponse>> JobStatusChanged(WebhookRequest webhookRequest,
         [WebhookParameter] JobStatusChangedRequest request,
         [WebhookParameter] ProjectOptionalRequest projectOptionalRequest,
@@ -801,7 +801,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
 
     [Webhook("On all jobs in workflow step reached status", typeof(AllJobsReachedStatusHandler),
         Description =
-            "Triggered when all jobs in a specific workflow step reach any of specified statuses. Returns only jobs in the specified workflow step")]
+            "Triggered when all jobs in a specific workflow step reach any of the specified statuses. Outputs only jobs in that workflow step")]
     public async Task<WebhookResponse<ListAllJobsResponse>> HandleAllJobsReachedStatusAsync(WebhookRequest webhookRequest,
         [WebhookParameter] WorkflowStepStatusRequest workflowStepStatusRequest, [WebhookParameter] [Display("Target language")]
     [DataSource(typeof(LanguageDataHandler))] string? TargetLang)
@@ -927,7 +927,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         };
     }
 
-    [Webhook("On jobs unexported", typeof(JobUnexportedHandler), Description = "Triggered when jobs are exported")]
+    [Webhook("On jobs unexported", typeof(JobUnexportedHandler), Description = "Triggered when jobs are unexported")]
     public async Task<WebhookResponse<MultipleJobResponse>> JobUnexported(WebhookRequest webhookRequest,
         [WebhookParameter] JobOptionalRequest request)
     {
@@ -1049,7 +1049,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
 
     #region OtherWebhooks
 
-    [Webhook("On analysis created", typeof(AnalysisCreationHandler), Description = "Trigered when a new analysis has been created")]
+    [Webhook("On analysis created", typeof(AnalysisCreationHandler), Description = "Triggered when a new analysis is created")]
     public async Task<WebhookResponse<AnalysisDto>> AnalysisCreation(WebhookRequest webhookRequest,
         [WebhookParameter] ProjectOptionalRequest projectFilter)
     {

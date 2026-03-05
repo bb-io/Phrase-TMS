@@ -38,7 +38,7 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
         };
     }
 
-    [Action("Find project", Description = "Given the same parameters as 'Search projects', only returns the first matching project")]
+    [Action("Find project", Description = "Find the first project matching the same filters as Search projects")]
     public async Task<ProjectDto> FindProject([ActionParameter] ListAllProjectsQuery query)
     {
         var endpoint = "/api2/v1/projects";
@@ -476,7 +476,7 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
         return await Client.ExecuteWithHandling<TermbaseResponse>(request);
     }
 
-    [Action("Get project providers", Description = "List all providers assigned to a project")]
+    [Action("Get project providers", Description = "Get providers assigned to a project")]
     public async Task<GetProjectProvidersResponse> GetProjectProviders(
     [ActionParameter] ProjectRequest projectRequest,
     [ActionParameter] ListProjectProvidersQuery query)

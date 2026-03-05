@@ -38,7 +38,7 @@ namespace Apps.PhraseTMS.Actions;
 [ActionList("Jobs")]
 public class JobActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : PhraseInvocable(invocationContext)
 {
-    [Action("Search jobs", Description = "Returns a list of jobs in the project based on specified parameters")]
+    [Action("Search jobs", Description = "Search jobs in a project using specified filters")]
     public async Task<ListAllJobsResponse> ListAllJobs(
         [ActionParameter] ProjectRequest input,
         [ActionParameter] ListAllJobsQuery query,
@@ -237,7 +237,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         return await Client.ExecuteWithHandling<JobDto>(request);
     }
 
-    [Action("Find job from source file ID", Description = "Given a source file ID, a workflow step ID and a language, returns the job.")]
+    [Action("Find job from source file ID", Description = "Find a job using a source file ID, workflow step ID, and language")]
     public async Task<JobDto> FindJob(
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] [Display("Source file ID")] string sourceFileId,
@@ -272,7 +272,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         }        
     }
 
-    [Action("Find job from server task ID", Description = "Given a server task ID, a workflow step ID and a project ID, returns the job.")]
+    [Action("Find job from server task ID", Description = "Find a job using a server task ID, workflow step ID, and project ID")]
     public async Task<JobDto> FindJobFromTask(
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter][Display("Server task ID")] string serverTaskId,

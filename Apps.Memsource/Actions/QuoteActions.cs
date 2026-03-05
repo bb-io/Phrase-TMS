@@ -25,7 +25,7 @@ public class QuoteActions(InvocationContext invocationContext) : PhraseInvocable
         return JsonConvert.DeserializeObject<QuoteDto>(response.Content);
     }
 
-    [Action("Search quotes", Description = "List quotes for a specific project with optional name and status filtering")]
+    [Action("Search quotes", Description = "Search quotes in a project using optional name and status filters")]
     public async Task<SearchQuotesResponse> SearchQuotes([ActionParameter] ProjectRequest project,
     [ActionParameter] SearchQuotesRequest input)
     {
