@@ -20,6 +20,9 @@ public class ProjectDto
     [Display("Target languages")] 
     public List<string> TargetLangs { get; set; }
 
+    [Display("Project number")]
+    public string? internalId { get; set; }
+
     [Display("Due date")] 
     public DateTime? DateDue { get; set; }
 
