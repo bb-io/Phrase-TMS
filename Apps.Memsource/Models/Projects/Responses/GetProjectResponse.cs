@@ -12,6 +12,7 @@ public class GetProjectResponse : ProjectDto
     {
         Name = dto.Name;
         UId = dto.UId;
+        internalId = dto.internalId;
         DateCreated = dto.DateCreated;
         SourceLang = dto.SourceLang;
         TargetLangs = dto.TargetLangs;
