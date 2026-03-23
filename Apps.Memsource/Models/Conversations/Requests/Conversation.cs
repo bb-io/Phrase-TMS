@@ -40,6 +40,10 @@ public class Conversation
 
     [JsonProperty("references")]
     public ConversationReferences? References { get; set; }
+
+    [JsonProperty("lqaDescription")]
+    [Display("LQA description")]
+    public string? LqaDescription { get; set; }
 }
 
 public class UserInfo
@@ -174,6 +178,9 @@ public class ConversationReferences
     [JsonProperty("correlation")]
     [Display("Correlation")]
     public CorrelationRef? Correlation { get; set; }
+
+    [JsonProperty("lqa")]
+    public List<LqaConversationReference>? Lqa { get; set; }
 }
 
 public class CorrelationRef
@@ -185,4 +192,31 @@ public class CorrelationRef
     [JsonProperty("role")]
     [Display("Correlation role")]
     public string? Role { get; set; }
+}
+
+public class LqaConversationReference
+{
+    [JsonProperty("errorCategoryId")]
+    [Display("Error category ID")]
+    public int? ErrorCategoryId { get; set; }
+
+    [JsonProperty("severityId")]
+    [Display("Severity ID")]
+    public int? SeverityId { get; set; }
+
+    [JsonProperty("user")]
+    public LqaConversationUserReference? User { get; set; }
+
+    [JsonProperty("repeated")]
+    public string? Repeated { get; set; }
+
+    [JsonProperty("origin")]
+    public string? Origin { get; set; }
+}
+
+public class LqaConversationUserReference
+{
+    [JsonProperty("id")]
+    [Display("User ID")]
+    public string? Id { get; set; }
 }
