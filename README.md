@@ -74,6 +74,7 @@ Navigate to apps and search for Phrase. Click _Add Connection_ and name your con
 - **Delete conversation** Delete a plain conversation.
 - **Edit conversation** Edit a plain conversation.
 - **Create conversation** Create a plain conversation.
+- **Create LQA conversation** Create an LQA conversation.
 - **Add plain comment** Add a plain comment.
 - **Edit plain comment** Edit a plain comment.
 - **Delete plain comment** Delete a plain comment.
@@ -168,6 +169,8 @@ Custom fields are associated with a specific type, for example date, number, or 
 
 - **Download LQA assessment** Download a single LQA report for a specific job ID.
 - **Get LQA assessment** Get a specific LQA assessment.
+- **Start LQA assessment** Start LQA assessment for a specific job part.
+- **Finish LQA assessment** Finish LQA assessment for a specific job part.
 - **Run auto LQA** Run auto LQA for specific job parts or all jobs in a workflow step.
 - **Run quality assurance** Run quality checks on a job part.
   Advanced settings:

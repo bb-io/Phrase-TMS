@@ -46,6 +46,22 @@ public class QualityAssuranceActions(InvocationContext invocationContext, IFileM
         return await Client.ExecuteWithHandling<LQAAssessmentDto>(request);
     }
 
+    [Action("Start LQA assessment", Description = "Starts LQA assessment for a specific job part")]
+    public async Task<StartLqaAssessmentResponse> StartLqaAssessment([ActionParameter] JobRequest input)
+    {
+        var request = new RestRequest($"/api2/v1/lqa/assessments/{input.JobUId}", Method.Post);
+        return await Client.ExecuteWithHandling<StartLqaAssessmentResponse>(request);
+    }
+
+    [Action("Finish LQA assessment", Description = "Finishes LQA assessment for a specific job part and calculates score")]
+    public async Task<AssessmentResult> FinishLqaAssessment([ActionParameter] JobRequest jobRequest,
+        [ActionParameter] FinishLqaAssessmentRequest input)
+    {
+        var request = new RestRequest($"/api2/v1/lqa/assessments/{jobRequest.JobUId}/scorings", Method.Put);
+        request.AddJsonBody(input);
+        return await Client.ExecuteWithHandling<AssessmentResult>(request);
+    }
+
     [Action("Run auto LQA", Description = "Runs Auto LQA for specified job parts or all jobs in a given workflow step")]
     public Task RunAutoLQA([ActionParameter] ProjectRequest projectRequest, [ActionParameter] AutoLQARequest input)
     {

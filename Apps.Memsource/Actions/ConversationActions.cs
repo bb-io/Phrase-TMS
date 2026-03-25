@@ -5,6 +5,7 @@ using Apps.PhraseTMS.Models.Jobs.Requests;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
+using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using RestSharp;
 using System.Globalization;
@@ -94,6 +95,68 @@ public class ConversationActions(InvocationContext invocationContext) : PhraseIn
             References = new ConversationReferencesRequestDto(references)
         };
         request.AddJsonBody(dto);
+
+        var response = await Client.ExecuteWithHandling<Conversation>(request);
+        return response;
+    }
+
+    [Action("Create LQA conversation", Description = "Creates LQA conversation")]
+    public async Task<Conversation> CreateLqaConversation([ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] JobRequest jobRequest,
+        [ActionParameter] CreateLqaConversationRequest input)
+    {
+        var endpoint = $"/api2/v2/jobs/{jobRequest.JobUId}/conversations/lqas";
+        var request = new RestRequest(endpoint, Method.Post);
+        var errorCategoryIds = input.ErrorCategoryIds.Select(int.Parse).ToList();
+        var severityIds = input.SeverityIds.Select(int.Parse).ToList();
+        var userIds = input.UserIds?.ToList();
+        var repeatedValues = input.RepeatedValues?.ToList();
+        var originValues = input.OriginValues?.ToList();
+
+        if (!errorCategoryIds.Any())
+            throw new PluginMisconfigurationException("At least one Error category ID must be provided.");
+
+        if (errorCategoryIds.Count != severityIds.Count)
+            throw new PluginMisconfigurationException("Error category IDs and Severity IDs must have the same number of items.");
+
+        if (userIds?.Any() == true && userIds.Count != errorCategoryIds.Count)
+            throw new PluginMisconfigurationException("User IDs must have the same number of items as Error category IDs.");
+
+        if (repeatedValues?.Any() == true && repeatedValues.Count != errorCategoryIds.Count)
+            throw new PluginMisconfigurationException("Repeated values must have the same number of items as Error category IDs.");
+
+        if (originValues?.Any() == true && originValues.Count != errorCategoryIds.Count)
+            throw new PluginMisconfigurationException("Origin values must have the same number of items as Error category IDs.");
+
+        var body = new
+        {
+            lqaDescription = input.LqaDescription,
+            references = new
+            {
+                transGroupId = input.TransGroupId,
+                segmentId = input.SegmentId,
+                conversationTitle = input.ConversationTitle,
+                conversationTitleOffset = input.ConversationTitleOffset,
+                commentedText = input.CommentedText,
+                correlation = string.IsNullOrWhiteSpace(input.CorrelationUid) && string.IsNullOrWhiteSpace(input.CorrelationRole)
+                    ? null
+                    : new
+                    {
+                        uid = input.CorrelationUid,
+                        role = input.CorrelationRole
+                    },
+                lqa = errorCategoryIds.Select((errorCategoryId, index) => new
+                {
+                    errorCategoryId,
+                    severityId = severityIds[index],
+                    user = userIds?.Any() == true && !string.IsNullOrWhiteSpace(userIds[index]) ? new { id = userIds[index] } : null,
+                    repeated = repeatedValues?.Any() == true ? repeatedValues[index] : null,
+                    origin = originValues?.Any() == true ? originValues[index] : null
+                }).ToList()
+            }
+        };
+
+        request.AddJsonBody(body);
 
         var response = await Client.ExecuteWithHandling<Conversation>(request);
         return response;
