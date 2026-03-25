@@ -202,7 +202,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         Description = "Triggered when a shared project is assigned")]
     public async Task<WebhookResponse<ProjectDto>> ProjectSharedAssigned(WebhookRequest webhookRequest,
         [WebhookParameter] ProjectOptionalRequest request,
-        [WebhookParameter] MultipleDomains domains)
+        [WebhookParameter] string? Domain)
     {
         var requestBody = webhookRequest.Body?.ToString();
         if (string.IsNullOrWhiteSpace(requestBody))
@@ -228,8 +228,8 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             };
         }
 
-        if (domains != null && domains.Domains != null
-         && !domains.Domains.Contains(data.Project.Domain?.Uid))
+        if (!String.IsNullOrEmpty(Domain)
+         && Domain != (data.Project.Domain?.Name))
         {
             return new()
             {
