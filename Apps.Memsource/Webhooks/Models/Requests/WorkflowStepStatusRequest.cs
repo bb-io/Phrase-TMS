@@ -11,7 +11,10 @@ public class WorkflowStepStatusRequest : ProjectWebhookRequest
 {
     [Display("Workflow step ID")]
     [DataSource(typeof(WorkflowStepDataHandler))]
-    public string WorkflowStepId { get; set; } = string.Empty;
+    public string? WorkflowStepId { get; set; } = string.Empty;
+
+    [Display("Workflow level")]
+    public int? WorkflowLevel { get; set; }
 
     [Display("Job statuses", Description = "Start an event if all jobs are in any of the selected statuses.")]
     [StaticDataSource(typeof(JobWebhookStatusDataHandler))]

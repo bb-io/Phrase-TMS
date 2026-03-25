@@ -235,7 +235,7 @@ Custom fields are associated with a specific type, for example date, number, or 
   - **Project name doesn't contains**: Exclude projects where the name contains a specific text.
   - **Project note contains**: Trigger only when the project note contains a specific text.
   - **Project note doesn't contain**: Exclude projects where the project note contains a specific text.
-- **On all jobs in workflow step reached status** Triggered when all jobs in a specific workflow step reach any specified statuses and outputs only jobs in that workflow step.
+- **On all jobs in workflow step reached status** Triggered when all jobs in a specific workflow step reach any specified statuses and outputs only jobs in that workflow step. Either Workflow level or workflow step needs to be provided.
   Advanced settings:
   - **Target language**: Restrict the trigger to a specific target language.
 - **On job target updated** Triggered when a job target is updated.

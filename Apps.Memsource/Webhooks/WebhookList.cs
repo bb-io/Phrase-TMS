@@ -863,7 +863,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             };
         }
 
-        if (primaryJob.Project.Uid != workflowStepStatusRequest.ProjectUId)
+        if (workflowStepStatusRequest.ProjectUId != null && primaryJob.Project.Uid != workflowStepStatusRequest.ProjectUId)
         {
             return new WebhookResponse<ListAllJobsResponse>
             {
@@ -879,7 +879,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             };
         }
 
-        var jobsEndpoint = $"/api2/v2/projects/{workflowStepStatusRequest.ProjectUId}/jobs";
+        var jobsEndpoint = $"/api2/v2/projects/{workflowStepStatusRequest.ProjectUId ?? primaryJob.Project?.Uid}/jobs";
         var apiRequest = new RestRequest(jobsEndpoint, Method.Get);
         apiRequest.AddQueryParameter("workflowLevel", primaryJob.workflowLevel);
         if (!String.IsNullOrEmpty(TargetLang))
@@ -897,7 +897,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         }
 
         var relevantJobs = allJobs
-            .Where(job => job.WorkflowStep?.Id == workflowStepStatusRequest.WorkflowStepId)
+            .Where(job => (job.WorkflowStep?.Id == workflowStepStatusRequest.WorkflowStepId) || (job.WorkflowStep?.WorkflowLevel == workflowStepStatusRequest.WorkflowLevel))
             .Where(job => workflowStepStatusRequest.JobStatuses.Contains(job.Status))
             .ToList();
 
