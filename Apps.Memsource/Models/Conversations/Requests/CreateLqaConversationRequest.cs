@@ -32,11 +32,9 @@ public class CreateLqaConversationRequest
     public string? CorrelationRole { get; set; }
 
     [Display("Error category IDs")]
-    [DataSource(typeof(LqaErrorCategoryDataHandler))]
     public IEnumerable<string> ErrorCategoryIds { get; set; } = Array.Empty<string>();
 
     [Display("Severity IDs")]
-    [DataSource(typeof(LqaSeverityDataHandler))]
     public IEnumerable<string> SeverityIds { get; set; } = Array.Empty<string>();
 
     [Display("User IDs")]
