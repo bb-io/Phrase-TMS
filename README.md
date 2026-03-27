@@ -120,6 +120,7 @@ Custom fields are associated with a specific type, for example date, number, or 
 - **Upload job target file** Upload and update the target file of a job.
 - **Download job bilingual file** Download the bilingual file of a job.
 - **Upload job bilingual file** Upload a bilingual file to update a job.
+- **Lock segments from MXLIFF** Copy locked segment IDs from an input MXLIFF file to a specific job by downloading that job's bilingual file, applying the same locks, and re-importing it.
 - **Pre-translate job** Pre-translate a job in a project.
 - **Upload job source file** Upload and update the source file of a job in a project.
 - **Get segments count** Get segment counts for a specific job.
@@ -274,6 +275,18 @@ Here's an example to demonstrate this feature between the Phrase and XTRF apps:
 ![phrase-xtrf-2](image/README/phrase-xtrf-2.png)
 
 ![phrase-xtrf-2](image/README/phrase-xtrf-3.png)
+
+### Propagate locked segments to another workflow step
+
+Use **Lock segments from MXLIFF** when you need a later job or workflow step to inherit the locked segments from an earlier Phrase MXLIFF file.
+
+Typical flow:
+
+1. Download or otherwise obtain the source MXLIFF from the earlier workflow step.
+2. Run **Lock segments from MXLIFF** with that bilingual file plus the destination Project ID and Job ID.
+3. The action reads all locked translation unit IDs from the source MXLIFF, downloads the destination job's bilingual file, applies the same locked IDs there, and uploads the updated bilingual file back to Phrase.
+
+This is especially useful in continuous projects where locked status does not automatically propagate to the next workflow step.
 
 ## Missing features
 
