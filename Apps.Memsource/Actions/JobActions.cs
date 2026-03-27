@@ -676,6 +676,49 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         return new() { File = file };
     }
 
+    [Action("Lock segments from MXLIFF", Description = "Locks segments in a job based on the locked segment IDs from an input MXLIFF file")]
+    public async Task<LockSegmentsFromMxliffResponse> LockSegmentsFromMxliff(
+        [ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] JobRequest jobRequest,
+        [ActionParameter] LockSegmentsFromMxliffRequest input)
+    {
+        if (input.File == null)
+        {
+            throw new PluginMisconfigurationException("File is not provided. Please upload an MXLIFF bilingual file.");
+        }
+
+        var sourceFileStream = await fileManagementClient.DownloadAsync(input.File);
+        var sourceFileBytes = await sourceFileStream.GetByteData();
+        if (sourceFileBytes.Length == 0)
+        {
+            throw new PluginMisconfigurationException("The provided file is empty. Please check your file input and try again");
+        }
+
+        var sourceContent = Encoding.UTF8.GetString(sourceFileBytes);
+        var sourceTransformation = Transformation.Parse(sourceContent, input.File.Name);
+        var lockedUnitIds = MXLIFFHelper.GetLockedUnitIds(sourceTransformation);
+
+        if (lockedUnitIds.Count == 0)
+        {
+            return new LockSegmentsFromMxliffResponse();
+        }
+
+        var (destinationFileData, destinationFileName, _) = await GetBilingualFile(projectRequest, jobRequest, new BilingualRequest());
+        var destinationContent = Encoding.UTF8.GetString(destinationFileData ?? []);
+        var destinationTransformation = Transformation.Parse(destinationContent, destinationFileName ?? "job.mxliff");
+
+        var appliedLockedSegmentsCount = MXLIFFHelper.LockUnits(destinationTransformation, lockedUnitIds);
+        var updatedFileBytes = Encoding.UTF8.GetBytes(destinationTransformation.Serialize());
+
+        await UploadBilingualFile(updatedFileBytes, destinationFileName ?? input.File.Name);
+
+        return new LockSegmentsFromMxliffResponse
+        {
+            SourceLockedSegmentsCount = lockedUnitIds.Count,
+            AppliedLockedSegmentsCount = appliedLockedSegmentsCount
+        };
+    }
+
     private async Task<(byte[]? fileData, string? fileName, string? contentType)> GetBilingualFile(
         ProjectRequest projectRequest, 
         JobRequest jobRequest, 
@@ -720,13 +763,22 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         var file = await fileManagementClient.DownloadAsync(input.File);
         var fileBytes = await file.GetByteData();
 
+        await UploadBilingualFile(fileBytes, input.File.Name, input.saveToTransMemory, input.setCompleted);
+    }
+
+    private async Task UploadBilingualFile(
+        byte[] fileBytes,
+        string fileName,
+        string? saveToTransMemory = null,
+        bool? setCompleted = null)
+    {
         var request = new RestRequest($"/api2/v2/bilingualFiles", Method.Post);
-        if (!String.IsNullOrEmpty(input.saveToTransMemory))
+        if (!String.IsNullOrEmpty(saveToTransMemory))
         {
-            request.AddQueryParameter("saveToTransMemory", input.saveToTransMemory);
+            request.AddQueryParameter("saveToTransMemory", saveToTransMemory);
         }
 
-        if (input.setCompleted != null && input.setCompleted is true)
+        if (setCompleted != null && setCompleted is true)
         {
             request.AddQueryParameter("setCompleted", true);
         }
@@ -736,11 +788,11 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         var content = Encoding.UTF8.GetString(fileBytes);
         if (Xliff2Serializer.IsXliff2(content))
         {
-            var transformation = Transformation.Parse(content, input.File.Name);
+            var transformation = Transformation.Parse(content, fileName);
             fileBytes = Encoding.UTF8.GetBytes(Xliff1Serializer.Serialize(transformation));
         }
 
-        request.AddFile("file", fileBytes, input.File.Name);
+        request.AddFile("file", fileBytes, fileName);
 
         await Client.ExecuteWithHandling(request);
     }

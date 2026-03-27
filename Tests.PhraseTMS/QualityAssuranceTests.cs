@@ -17,9 +17,9 @@ public class QualityAssuranceTests : TestBaseMultipleConnections
         // Arrange
         var actions = new QualityAssuranceActions(context, FileManager);
         var jobRequest = new JobRequest { JobUId = "1d9PrdgW6wjEsq1v18hlVu" };
-
+        var project = new ProjectRequest{ ProjectUId= ""};
         // Act
-        var result = await actions.StartLqaAssessment(jobRequest);
+        var result = await actions.StartLqaAssessment(project,jobRequest);
 
         // Assert
         PrintResult(result);
@@ -32,8 +32,9 @@ public class QualityAssuranceTests : TestBaseMultipleConnections
         // Arrange
         var actions = new QualityAssuranceActions(context, FileManager);
         var jobRequest = new JobRequest { JobUId = "1d9PrdgW6wjEsq1v18hlVu" };
+        var project = new ProjectRequest{ ProjectUId= ""};
 
-        await actions.StartLqaAssessment(jobRequest);
+        await actions.StartLqaAssessment(project,jobRequest);
 
         var input = new FinishLqaAssessmentRequest
         {
@@ -41,7 +42,7 @@ public class QualityAssuranceTests : TestBaseMultipleConnections
         };
 
         // Act
-        var result = await actions.FinishLqaAssessment(jobRequest, input);
+        var result = await actions.FinishLqaAssessment(project,jobRequest, input);
 
         // Assert
         PrintResult(result);

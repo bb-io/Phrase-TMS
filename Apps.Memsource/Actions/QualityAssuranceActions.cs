@@ -47,14 +47,14 @@ public class QualityAssuranceActions(InvocationContext invocationContext, IFileM
     }
 
     [Action("Start LQA assessment", Description = "Starts LQA assessment for a specific job part")]
-    public async Task<StartLqaAssessmentResponse> StartLqaAssessment([ActionParameter] JobRequest input)
+    public async Task<StartLqaAssessmentResponse> StartLqaAssessment([ActionParameter] ProjectRequest project, [ActionParameter] JobRequest input)
     {
         var request = new RestRequest($"/api2/v1/lqa/assessments/{input.JobUId}", Method.Post);
         return await Client.ExecuteWithHandling<StartLqaAssessmentResponse>(request);
     }
 
     [Action("Finish LQA assessment", Description = "Finishes LQA assessment for a specific job part and calculates score")]
-    public async Task<AssessmentResult> FinishLqaAssessment([ActionParameter] JobRequest jobRequest,
+    public async Task<AssessmentResult> FinishLqaAssessment([ActionParameter] ProjectRequest project, [ActionParameter] JobRequest jobRequest,
         [ActionParameter] FinishLqaAssessmentRequest input)
     {
         var request = new RestRequest($"/api2/v1/lqa/assessments/{jobRequest.JobUId}/scorings", Method.Put);
