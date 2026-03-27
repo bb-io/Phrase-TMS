@@ -50,11 +50,49 @@ public class MXLIFFHelper(string baseUrl)
 
     public bool IsLocked(Unit unit)
     {
-        return GetMetadata(unit, MXLIFFMetadataKeys.Locked) == "true";
+        var value = GetMetadata(unit, MXLIFFMetadataKeys.Locked);
+        return IsTruthy(value);
     }
     public void SetLocked(Unit unit, bool locked)
     {
-        SetMetadata(unit, MXLIFFMetadataKeys.Locked, locked ? "true" : "false");
+        var currentValue = GetMetadata(unit, MXLIFFMetadataKeys.Locked);
+        var serializedValue = UsesNumericBoolean(currentValue)
+            ? (locked ? "1" : "0")
+            : (locked ? "true" : "false");
+
+        SetMetadata(unit, MXLIFFMetadataKeys.Locked, serializedValue);
+    }
+
+    public IReadOnlyCollection<string> GetLockedUnitIds(Transformation transformation)
+    {
+        return transformation.GetUnits()
+            .Where(IsLocked)
+            .Select(x => x.Id)
+            .Where(x => !string.IsNullOrWhiteSpace(x))
+            .Distinct()
+            .ToArray();
+    }
+
+    public int LockUnits(Transformation transformation, IEnumerable<string> unitIds)
+    {
+        var unitIdSet = unitIds
+            .Where(x => !string.IsNullOrWhiteSpace(x))
+            .ToHashSet(StringComparer.Ordinal);
+
+        if (unitIdSet.Count == 0)
+        {
+            return 0;
+        }
+
+        var lockedUnitsCount = 0;
+
+        foreach (var unit in transformation.GetUnits().Where(x => unitIdSet.Contains(x.Id)))
+        {
+            SetLocked(unit, true);
+            lockedUnitsCount++;
+        }
+
+        return lockedUnitsCount;
     }
 
     public MXLIFFUser? GetModifiedUser(Unit unit, Transformation transformation)
@@ -68,7 +106,12 @@ public class MXLIFFHelper(string baseUrl)
     public void SetMetadata(Unit unit, XName key, object value)
     {
         var attribute = unit.Other.FirstOrDefault(x => x is XAttribute attribute && attribute.Name == key) as XAttribute;
-        if (attribute is null) return;
+        if (attribute is null)
+        {
+            unit.Other.Add(new XAttribute(key, value));
+            return;
+        }
+
         attribute.SetValue(value);
     }
 
@@ -86,5 +129,15 @@ public class MXLIFFHelper(string baseUrl)
         }
 
         return null;
+    }
+
+    private static bool IsTruthy(string? value)
+    {
+        return string.Equals(value, "true", StringComparison.OrdinalIgnoreCase) || value == "1";
+    }
+
+    private static bool UsesNumericBoolean(string? value)
+    {
+        return value == "1" || value == "0";
     }
 }
