@@ -230,7 +230,14 @@ public class PhraseTmsClient : RestClient
     {
         var request = new RestRequest($"/api2/v1/projects/{projectId}", Method.Get);
         var response = await ExecuteWithHandling<ProjectDto>(request);
-        if (response.WorkflowSteps.Count() == 0) return 1;
+
+        if (!response.WorkflowSteps.Any())
+        {
+            if (throwOnFailure) 
+                throw new PluginMisconfigurationException("The project has no workflow steps configured.");
+            return 0;
+        }
+
         var workflow = response.WorkflowSteps.FirstOrDefault(x => x.InnerWorkflowStep.Id == workflowStepId);
         if (workflow == null && throwOnFailure) throw new PluginMisconfigurationException("The workflow step selected does not exist on the current project. Please select an existing workflow step or leave this input empty.");
         return workflow?.WorkflowLevel ?? 0;
