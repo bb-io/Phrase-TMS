@@ -15,7 +15,6 @@ using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.Sdk.Common.Webhooks;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
-using DocumentFormat.OpenXml.Spreadsheet;
 using Newtonsoft.Json;
 using RestSharp;
 using System.Data;
@@ -625,58 +624,29 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         if (string.IsNullOrWhiteSpace(requestBody))
         {
             InvocationContext.Logger?.LogError("[PhraseTMSJobStatusChanged] Webhook body is null or empty", []);
-            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
+            return Preflight<JobResponse>();
         }
 
         var data = JsonConvert.DeserializeObject<JobStatusChangedWrapper>(requestBody);
         if (data is null)
         {
             InvocationContext.Logger?.LogError($"[PhraseTMSJobStatusChanged] Failed to deserialize webhook body. Body: {requestBody}", []);
-            return new() { ReceivedWebhookRequestType = WebhookRequestType.Preflight };
+            return Preflight<JobResponse>();
         }
 
-        if (!String.IsNullOrEmpty(projectNameContains) && !data.metadata.project.Name.Contains(projectNameContains))
-        {
-            return new()
-            {
-                HttpResponseMessage = null,
-                Result = null,
-                ReceivedWebhookRequestType = WebhookRequestType.Preflight
-            };
-        }
+        if (!string.IsNullOrEmpty(projectNameContains) && !data.metadata.project.Name.Contains(projectNameContains))
+            return Preflight<JobResponse>();
 
-        if (!String.IsNullOrEmpty(projectNameDoesntContains) && data.metadata.project.Name.Contains(projectNameDoesntContains))
-        {
-            return new()
-            {
-                HttpResponseMessage = null,
-                Result = null,
-                ReceivedWebhookRequestType = WebhookRequestType.Preflight
-            };
-        }
+        if (!string.IsNullOrEmpty(projectNameDoesntContains) && data.metadata.project.Name.Contains(projectNameDoesntContains))
+            return Preflight<JobResponse>();
 
-        if (projectOptionalRequest != null && !String.IsNullOrEmpty(projectOptionalRequest?.ProjectUId) && data.metadata.project.Uid != projectOptionalRequest.ProjectUId)
-        {
-            return new()
-            {
-                HttpResponseMessage = null,
-                Result = null,
-                ReceivedWebhookRequestType = WebhookRequestType.Preflight
-            };
-        }
+        if (projectOptionalRequest != null && !string.IsNullOrEmpty(projectOptionalRequest?.ProjectUId) && data.metadata.project.Uid != projectOptionalRequest.ProjectUId)
+            return Preflight<JobResponse>();
 
         if (subdomains != null && subdomains.Subdomains != null && !subdomains.Subdomains.Contains(data.metadata.project.subDomain.subDomainUid))
-        {
-            return new()
-            {
-                HttpResponseMessage = null,
-                Result = null,
-                ReceivedWebhookRequestType = WebhookRequestType.Preflight
-            };
-        }
+            return Preflight<JobResponse>();
 
-        if (!string.IsNullOrWhiteSpace(projectNoteContains) ||
-        !string.IsNullOrWhiteSpace(projectNoteDoesntContains))
+        if (!string.IsNullOrWhiteSpace(projectNoteContains) || !string.IsNullOrWhiteSpace(projectNoteDoesntContains))
         {
             var projectIdForNote = data.metadata.project.Uid;
             var note = (await GetProjectNote(projectIdForNote)) ?? string.Empty;
@@ -689,76 +659,66 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
                 pass &= note.IndexOf(projectNoteDoesntContains, StringComparison.OrdinalIgnoreCase) < 0;
 
             if (!pass)
-            {
-                return new()
-                {
-                    HttpResponseMessage = null,
-                    Result = null,
-                    ReceivedWebhookRequestType = WebhookRequestType.Preflight
-                };
-            }
+                return Preflight<JobResponse>();
         }
 
         IEnumerable<JobPart> selectedJobs = data.JobParts;
         var projectId = data.metadata.project.Uid;
+
+        bool hasWorkflowStepFilter = 
+            (multipleWorkflowSteps?.WorkflowStepIds?.Any() == true) ||
+            (!string.IsNullOrWhiteSpace(workflowStepRequest?.WorkflowStepId)) ||
+            (lastWorkflowLevel == true);
         var workflowLevels = new HashSet<int>();
 
         if (multipleWorkflowSteps?.WorkflowStepIds?.Any() == true)
         {
             foreach (var stepId in multipleWorkflowSteps.WorkflowStepIds.Where(x => !string.IsNullOrWhiteSpace(x)))
             {
-                var level = await Client.GetWorkflowstepLevel(projectId, stepId, false);
+                int level = await Client.GetWorkflowstepLevel(projectId, stepId, false);
                 if (level > 0) workflowLevels.Add(level);
             }
         }
 
         if (!string.IsNullOrWhiteSpace(workflowStepRequest?.WorkflowStepId))
         {
-            var singleLevel = await Client.GetWorkflowstepLevel(projectId, workflowStepRequest.WorkflowStepId, false);
+            int singleLevel = await Client.GetWorkflowstepLevel(projectId, workflowStepRequest.WorkflowStepId, false);
             if (singleLevel > 0) workflowLevels.Add(singleLevel);
         }
 
         if (lastWorkflowLevel == true)
         {
-            var lastLevel = await Client.GetLastWorkflowstepLevel(projectId);
+            int lastLevel = await Client.GetLastWorkflowstepLevel(projectId);
             if (lastLevel > 0) workflowLevels.Add(lastLevel);
         }
 
-        if (string.IsNullOrEmpty(job?.JobUId) && workflowLevels.Count > 0)
+        if (string.IsNullOrEmpty(job?.JobUId) && hasWorkflowStepFilter)
         {
+            if (workflowLevels.Count == 0)
+                return Preflight<JobResponse>();
+
             selectedJobs = selectedJobs.Where(x => workflowLevels.Contains(x.workflowLevel));
 
             if (!selectedJobs.Any())
-            {
-                return new()
-                {
-                    HttpResponseMessage = null,
-                    Result = null,
-                    ReceivedWebhookRequestType = WebhookRequestType.Preflight
-                };
-            }
+                return Preflight<JobResponse>();
         }
 
         if (!string.IsNullOrEmpty(job?.JobUId) && !string.IsNullOrEmpty(projectId))
         {
             selectedJobs = data.JobParts.Where(x => x.Uid == job.JobUId);
 
-            if (workflowLevels.Count > 0)
+            if (hasWorkflowStepFilter)
             {
                 var single = selectedJobs.FirstOrDefault();
                 if (single == null || !workflowLevels.Contains(single.workflowLevel))
-                {
-                    return new()
-                    {
-                        HttpResponseMessage = null,
-                        Result = null,
-                        ReceivedWebhookRequestType = WebhookRequestType.Preflight
-                    };
-                }
+                    return Preflight<JobResponse>();
             }
         }
         else if (!string.IsNullOrEmpty(sourceFileId?.SourceFileId) && !string.IsNullOrEmpty(projectId))
         {
+            if (hasWorkflowStepFilter && workflowLevels.Count == 0)
+                return Preflight<JobResponse>();
+
             var endpoint = $"/api2/v2/projects/{projectId}/jobs";
             var listJobsRequest = new RestRequest(endpoint.WithQuery(jobsQuery), Method.Get);
 
@@ -793,14 +753,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
 
         var selectedJob = selectedJobs.FirstOrDefault();
         if (selectedJob == null)
-        {
-            return new()
-            {
-                HttpResponseMessage = null,
-                Result = null,
-                ReceivedWebhookRequestType = WebhookRequestType.Preflight
-            };
-        }
+            return Preflight<JobResponse>();
 
         var projectRequest = new RestRequest($"/api2/v1/projects/{selectedJob.Project.Uid}?with=owners", Method.Get);
         var projectResponse = await Client.ExecuteWithHandling<ProjectDto>(projectRequest);
@@ -976,6 +929,16 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             ReceivedWebhookRequestType = request.JobUId != null && data.JobParts.All(x => x.Uid != request.JobUId)
                 ? WebhookRequestType.Preflight
                 : WebhookRequestType.Default
+        };
+    }
+
+    private static WebhookResponse<T> Preflight<T>() where T : class
+    {
+        return new WebhookResponse<T>()
+        {
+            HttpResponseMessage = null,
+            Result = null,
+            ReceivedWebhookRequestType = WebhookRequestType.Preflight
         };
     }
 
