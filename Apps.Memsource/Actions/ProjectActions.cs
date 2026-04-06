@@ -368,6 +368,34 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
         return matchingTermbase.TermBase;
     }
 
+    [Action("Get project translation memories", Description = "Get translation memories linked to a project using optional filters")]
+    public async Task<EditProjectTransMemoriesResponse> SearchProjectTranslationMemories(
+        [ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] SearchProjectTranslationMemoriesRequest input)
+    {
+        if (string.IsNullOrWhiteSpace(projectRequest.ProjectUId))
+            throw new PluginMisconfigurationException("Project ID cannot be empty or null. Please check your input and try again");
+
+        var request = new RestRequest($"/api2/v3/projects/{projectRequest.ProjectUId}/transMemories", Method.Get);
+
+        if (!string.IsNullOrWhiteSpace(input.TargetLang))
+            request.AddQueryParameter("targetLang", input.TargetLang);
+
+        if (!string.IsNullOrWhiteSpace(input.WorkflowStepUid))
+            request.AddQueryParameter("wfStepUid", input.WorkflowStepUid);
+
+        var response = await Client.ExecuteWithHandling<EditProjectTransMemoriesResponse>(request);
+
+        if (input.WriteMode.HasValue)
+        {
+            response.TransMemories = response.TransMemories?
+                .Where(x => x.WriteMode == input.WriteMode.Value)
+                .ToList();
+        }
+
+        return response;
+    }
+
     [Action("Set project translation memories", Description = "Set translation memories for a project")]
     public async Task<EditProjectTransMemoriesResponse> SetProjectTranslationMemories(
        [ActionParameter] ProjectRequest projectRequest,
