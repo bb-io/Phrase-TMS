@@ -218,6 +218,23 @@ public class JobActionsTests : TestBaseMultipleConnections
     }
 
     [TestMethod, ContextDataSource]
+    public async Task DownloadBilingualFile_IsSuccess(InvocationContext context)
+    {
+        // Arrange
+        var actions = new JobActions(context, FileManager);
+        var project = new ProjectRequest { ProjectUId = "US0OhBPgmLiHqaAHE37Cd0" };
+        var job = new JobRequest { JobUId = "AwhDGTFHBiEEapcpCiEsI2" };
+        var bilingual = new BilingualRequest { };
+
+        // Act
+        var result = await actions.DownloadBilingualFile(project, job, bilingual);
+
+        // Assert
+        Console.WriteLine(result.File.Name);
+        Assert.IsNotNull(result.File.Name);
+    }
+
+    [TestMethod, ContextDataSource]
     public async Task ExportJobsToOnlineRepository_Success(InvocationContext context)
     {
         var actions = new JobActions(context, FileManager);
