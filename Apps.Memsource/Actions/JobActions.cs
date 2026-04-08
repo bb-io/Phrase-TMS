@@ -3,6 +3,7 @@ using Apps.PhraseTMS.DataSourceHandlers;
 using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Dtos.Async;
 using Apps.PhraseTMS.Dtos.Jobs;
+using Apps.PhraseTMS.Extensions;
 using Apps.PhraseTMS.Models;
 using Apps.PhraseTMS.Models.Jobs.Requests;
 using Apps.PhraseTMS.Models.Jobs.Responses;
@@ -10,14 +11,11 @@ using Apps.PhraseTMS.Models.Projects.Requests;
 using Apps.PhraseTMS.Models.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
-using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.Sdk.Utils.Extensions.Files;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
-using Blackbird.Applications.Sdk.Utils.Extensions.Sdk;
-using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Blackbird.Filters.Constants;
 using Blackbird.Filters.Enums;
@@ -25,10 +23,8 @@ using Blackbird.Filters.Extensions;
 using Blackbird.Filters.Transformations;
 using Blackbird.Filters.Xliff.Xliff1;
 using Blackbird.Filters.Xliff.Xliff2;
-using DocumentFormat.OpenXml.Wordprocessing;
 using Newtonsoft.Json;
 using RestSharp;
-using System.Net.Http.Headers;
 using System.Net.Mime;
 using System.Text;
 using System.Text.Json;
@@ -560,8 +556,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         var responseDownload = await Client.ExecuteWithHandling(requestDownload);
 
         var fileData = responseDownload.RawBytes;
-        var filenameHeader = responseDownload?.ContentHeaders?.FirstOrDefault(h => h.Name == "Content-Disposition");
-        var filename = Uri.UnescapeDataString(filenameHeader?.Value?.ToString()?.Split(';')[1].Split("\'\'")[1] ?? "");
+        string filename = responseDownload.GetFilenameFromHeader("default_target_file");
 
         var fileString = Encoding.UTF8.GetString(fileData ?? []);
         if (!Xliff2Serializer.IsXliff2(fileString))
@@ -618,8 +613,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         var responseDownload = await Client.ExecuteWithHandling(requestFile);
 
         var fileData = responseDownload.RawBytes;
-        var filenameHeader = responseDownload.ContentHeaders.First(h => h.Name == "Content-Disposition");
-        var filename = Uri.UnescapeDataString(filenameHeader.Value.ToString().Split(';')[1].Split("\'\'")[1]);
+        string filename = responseDownload.GetFilenameFromHeader("default_target_file");
 
         using var stream = new MemoryStream(fileData);
         var file = await fileManagementClient.UploadAsync(stream, responseDownload.ContentType, filename);
@@ -752,19 +746,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         var responseDownload = await Client.ExecuteWithHandling(requestFile);
 
         var fileData = responseDownload.RawBytes;
-        var filenameHeader = responseDownload.ContentHeaders?
-            .FirstOrDefault(h => h.Name!.Equals("Content-Disposition", StringComparison.OrdinalIgnoreCase));
-
-        string fileName = string.Empty;
-        if (filenameHeader != null && 
-            ContentDispositionHeaderValue.TryParse(filenameHeader.Value?.ToString(), out var contentDisposition))
-        {
-            fileName = contentDisposition.FileNameStar ?? contentDisposition.FileName ?? "default_filename";
-            fileName = fileName.Trim('\"');
-        }
-
-        if (!string.IsNullOrEmpty(fileName))
-            fileName = Uri.UnescapeDataString(fileName);
+        string fileName = responseDownload.GetFilenameFromHeader("default_target_file");
 
         return (fileData, fileName, responseDownload.ContentType);
     }
