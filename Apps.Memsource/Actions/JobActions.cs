@@ -28,6 +28,7 @@ using Blackbird.Filters.Xliff.Xliff2;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Newtonsoft.Json;
 using RestSharp;
+using System.Net.Http.Headers;
 using System.Net.Mime;
 using System.Text;
 using System.Text.Json;
@@ -751,8 +752,19 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         var responseDownload = await Client.ExecuteWithHandling(requestFile);
 
         var fileData = responseDownload.RawBytes;
-        var filenameHeader = responseDownload.ContentHeaders.First(h => h.Name == "Content-Disposition");
-        var fileName = Uri.UnescapeDataString(filenameHeader.Value.ToString().Split(';')[1].Split("\'\'")[1]);
+        var filenameHeader = responseDownload.ContentHeaders?
+            .FirstOrDefault(h => h.Name!.Equals("Content-Disposition", StringComparison.OrdinalIgnoreCase));
+
+        string fileName = string.Empty;
+        if (filenameHeader != null && 
+            ContentDispositionHeaderValue.TryParse(filenameHeader.Value?.ToString(), out var contentDisposition))
+        {
+            fileName = contentDisposition.FileNameStar ?? contentDisposition.FileName ?? "default_filename";
+            fileName = fileName.Trim('\"');
+        }
+
+        if (!string.IsNullOrEmpty(fileName))
+            fileName = Uri.UnescapeDataString(fileName);
 
         return (fileData, fileName, responseDownload.ContentType);
     }
