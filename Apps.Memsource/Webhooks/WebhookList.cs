@@ -865,14 +865,14 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             request = new
             {
                 method = webhookRequest.HttpMethod?.Method,
-                body = Truncate(requestBody, 8000)
+                body = Utils.StringExtensions.Truncate(requestBody, 8000)
             }
         };
 
         var diagnosticJson = JsonConvert.SerializeObject(diagnosticPayload, Formatting.Indented);
         InvocationContext.Logger?.LogError(
             $"[{webhookName}] Webhook processing failed. Request method: {webhookRequest.HttpMethod?.Method}; " +
-            $"Request body: {Truncate(requestBody, 4000)}; Exception type: {exception.GetType().FullName}; " +
+            $"Request body: {Utils.StringExtensions.Truncate(requestBody, 4000)}; Exception type: {exception.GetType().FullName}; " +
             $"Exception message: {exception.Message}; Stack trace: {exception.StackTrace}", [exception.Message]);
 
         var httpResponse = new HttpResponseMessage(HttpStatusCode.BadRequest)
@@ -886,16 +886,6 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             Result = null,
             ReceivedWebhookRequestType = WebhookRequestType.Preflight
         };
-    }
-
-    private static string? Truncate(string? value, int maxLength)
-    {
-        if (string.IsNullOrEmpty(value) || value.Length <= maxLength)
-        {
-            return value;
-        }
-
-        return $"{value[..maxLength]}... (truncated)";
     }
 
     private async Task<string?> GetProjectNote(string projectUid)
