@@ -73,8 +73,16 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         int workflowLevel = 1;
         if (workflowStepRequest != null && !String.IsNullOrEmpty(workflowStepRequest.WorkflowStepId))
         {
-            workflowLevel = await Client.GetWorkflowstepLevel(input.ProjectUId, workflowStepRequest.WorkflowStepId); 
-        }
+            try
+            {
+                workflowLevel = await Client.GetWorkflowstepLevel(input.ProjectUId, workflowStepRequest.WorkflowStepId);
+
+            }
+            catch 
+                {
+                    workflowLevel = Int32.Parse(workflowStepRequest.WorkflowStepId);
+                }
+            }
         else 
         {
             if (LastWfStep.HasValue && LastWfStep.Value)

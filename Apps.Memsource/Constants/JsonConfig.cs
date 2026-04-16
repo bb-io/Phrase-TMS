@@ -13,6 +13,16 @@ public static class JsonConfig
         },
         Formatting = Formatting.Indented
     };
+
+    public static readonly JsonSerializerSettings IgnoreNullSettings = new()
+    {
+        ContractResolver = new DefaultContractResolver
+        {
+            NamingStrategy = new CamelCaseNamingStrategy()
+        },
+        Formatting = Formatting.Indented,
+        NullValueHandling = NullValueHandling.Ignore
+    };
     
     public static readonly JsonSerializerSettings DateSettings = new()
     {

@@ -155,7 +155,7 @@ Custom fields are associated with a specific type, for example date, number, or 
   - **Source file ID**: Download files only for a specific source file.
 - **Assign project providers from template** Assign providers to a project or specific jobs from a template.
 - **Find project termbase** Get the term base linked to a project based on optional filters.
-- **Set project translation memories** Set translation memories for a project.
+- **Set project translation memories** Set translation memories for a project. Provide TM UIDs plus one or more parallel configuration arrays (`Read modes`, `Write modes`, `Penalties`, `Apply penalty to 101%-only`, `Orders`); any provided array must match the TM UID count.
 - **Set project term bases** Set term bases for a project, optionally per target language.
 - **Get project providers** Get providers assigned to a project.
 

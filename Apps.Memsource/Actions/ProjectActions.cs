@@ -411,8 +411,24 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
         if (tmUids.Length == 0)
             throw new PluginMisconfigurationException("At least one Translation memory UID is required.");
 
-        if (input.Order is { Length: > 0 } && input.Order.Length != tmUids.Length)
-            throw new PluginMisconfigurationException("Order array length must match Translation memory UIDs length.");
+        var hasAdvancedConfiguration =
+            input.ReadModes is { Length: > 0 } ||
+            input.WriteModes is { Length: > 0 } ||
+            input.Penalties is { Length: > 0 } ||
+            input.ApplyPenaltyTo101Only is { Length: > 0 } ||
+            input.Orders is { Length: > 0 };
+
+        if (!hasAdvancedConfiguration)
+            throw new PluginMisconfigurationException("Provide at least one TM configuration array: Read modes, Write modes, Penalties, Apply penalty to 101%-only, or Orders.");
+
+        ValidateArrayLength(input.ReadModes, tmUids.Length, "Read modes");
+        ValidateArrayLength(input.WriteModes, tmUids.Length, "Write modes");
+        ValidateArrayLength(input.Penalties, tmUids.Length, "Penalties");
+        ValidateArrayLength(input.ApplyPenaltyTo101Only, tmUids.Length, "Apply penalty to 101%-only");
+        ValidateArrayLength(input.Orders, tmUids.Length, "Orders");
+
+        if (input.Penalties != null && input.Penalties.Any(p => p < 0 || p > 100))
+            throw new PluginMisconfigurationException("Penalties must be between 0 and 100.");
 
         var transMemories = new List<Dictionary<string, object>>();
 
@@ -423,13 +439,11 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
                 ["transMemory"] = new { uid = tmUids[i] }
             };
 
-            if (input.ReadMode.HasValue) tmItem["readMode"] = input.ReadMode.Value;
-            if (input.WriteMode.HasValue) tmItem["writeMode"] = input.WriteMode.Value;
-            if (input.Penalty.HasValue) tmItem["penalty"] = input.Penalty.Value;
-            if (input.ApplyPenaltyTo101Only.HasValue) tmItem["applyPenaltyTo101Only"] = input.ApplyPenaltyTo101Only.Value;
-
-            if (input.Order is { Length: > 0 })
-                tmItem["order"] = input.Order![i];
+            TryAdd(tmItem, "readMode", GetAt(input.ReadModes, i));
+            TryAdd(tmItem, "writeMode", GetAt(input.WriteModes, i));
+            TryAdd(tmItem, "penalty", GetAt(input.Penalties, i));
+            TryAdd(tmItem, "applyPenaltyTo101Only", GetAt(input.ApplyPenaltyTo101Only, i));
+            TryAdd(tmItem, "order", GetAt(input.Orders, i));
 
             transMemories.Add(tmItem);
         }
@@ -454,9 +468,23 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
         };
 
         var request = new RestRequest($"/api2/v3/projects/{projectRequest.ProjectUId}/transMemories", Method.Put)
-            .WithJsonBody(body);
+            .WithJsonBody(body, JsonConfig.IgnoreNullSettings);
 
         return await Client.ExecuteWithHandling<EditProjectTransMemoriesResponse>(request);
+
+        static T? GetAt<T>(T[]? arr, int index) => arr != null && index < arr.Length ? arr[index] : default;
+
+        static void TryAdd<T>(Dictionary<string, object> item, string key, T? value)
+        {
+            if (value is not null)
+                item[key] = value;
+        }
+
+        static void ValidateArrayLength<T>(T[]? array, int expectedLength, string fieldName)
+        {
+            if (array != null && array.Length != expectedLength)
+                throw new PluginMisconfigurationException($"{fieldName} array length must match Translation memory UIDs length.");
+        }
     }
 
     [Action("Set project term bases", Description = "Set term bases for a project (optionally per target language)")]

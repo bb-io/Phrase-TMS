@@ -194,10 +194,61 @@ public class ProjectActionsTests : TestBaseMultipleConnections
     {
         var actions = new ProjectActions(context, FileManager);
         var result = await actions.SetProjectTranslationMemories(new ProjectRequest { ProjectUId = "OQpwhSXsFoq5a9f4bVuuV0" },
-            new SetProjectTranslationMemoriesRequest { TranslationMemoryUids = ["w1pV1izYniDtTQjV4iPD1s"], TargetLang = "de" ,ReadMode = true,
-                WriteMode = true
+            new SetProjectTranslationMemoriesRequest
+            {
+                TranslationMemoryUids = ["w1pV1izYniDtTQjV4iPD1s"],
+                TargetLang = "de",
+                ReadModes = [true],
+                WriteModes = [true]
             });
         Console.WriteLine(JsonConvert.SerializeObject(result));
+    }
+
+    [TestMethod, ContextDataSource]
+    public async Task SetProjectTranslationMemories_WithoutAdvancedArrays_ThrowsValidationError(InvocationContext context)
+    {
+        var actions = new ProjectActions(context, FileManager);
+
+        await Assert.ThrowsExceptionAsync<Blackbird.Applications.Sdk.Common.Exceptions.PluginMisconfigurationException>(() =>
+            actions.SetProjectTranslationMemories(
+                new ProjectRequest { ProjectUId = "OQpwhSXsFoq5a9f4bVuuV0" },
+                new SetProjectTranslationMemoriesRequest
+                {
+                    TranslationMemoryUids = ["w1pV1izYniDtTQjV4iPD1s"],
+                    TargetLang = "de"
+                }));
+    }
+
+    [TestMethod, ContextDataSource]
+    public async Task SetProjectTranslationMemories_WithMismatchedArrayLength_ThrowsValidationError(InvocationContext context)
+    {
+        var actions = new ProjectActions(context, FileManager);
+
+        await Assert.ThrowsExceptionAsync<Blackbird.Applications.Sdk.Common.Exceptions.PluginMisconfigurationException>(() =>
+            actions.SetProjectTranslationMemories(
+                new ProjectRequest { ProjectUId = "OQpwhSXsFoq5a9f4bVuuV0" },
+                new SetProjectTranslationMemoriesRequest
+                {
+                    TranslationMemoryUids = ["w1pV1izYniDtTQjV4iPD1s", "Hv9w0ZZz9DPimGmJJSU7g0"],
+                    TargetLang = "de",
+                    ReadModes = [true]
+                }));
+    }
+
+    [TestMethod, ContextDataSource]
+    public async Task SetProjectTranslationMemories_WithPenaltyOutOfRange_ThrowsValidationError(InvocationContext context)
+    {
+        var actions = new ProjectActions(context, FileManager);
+
+        await Assert.ThrowsExceptionAsync<Blackbird.Applications.Sdk.Common.Exceptions.PluginMisconfigurationException>(() =>
+            actions.SetProjectTranslationMemories(
+                new ProjectRequest { ProjectUId = "OQpwhSXsFoq5a9f4bVuuV0" },
+                new SetProjectTranslationMemoriesRequest
+                {
+                    TranslationMemoryUids = ["w1pV1izYniDtTQjV4iPD1s"],
+                    TargetLang = "de",
+                    Penalties = [101]
+                }));
     }
 
 }
