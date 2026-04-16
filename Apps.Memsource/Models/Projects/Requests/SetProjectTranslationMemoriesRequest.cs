@@ -18,22 +18,22 @@ namespace Apps.PhraseTMS.Models.Projects.Requests
         [DataSource(typeof(WorkflowStepDataHandler))]
         public string? WorkflowStepUid { get; set; }
 
-        [Display("Read mode")]
-        public bool? ReadMode { get; set; }
+        [Display("Read modes")]
+        public bool[]? ReadModes { get; set; }
 
-        [Display("Write mode")]
-        public bool? WriteMode { get; set; }
+        [Display("Write modes")]
+        public bool[]? WriteModes { get; set; }
 
-        [Display("Penalty")]
-        public int? Penalty { get; set; }
+        [Display("Penalties 0-100")]
+        public int[]? Penalties { get; set; }
 
-        [Display("Apply penalty to 101% only")]
-        public bool? ApplyPenaltyTo101Only { get; set; }
+        [Display("Apply penalty to 101%-only")]
+        public bool[]? ApplyPenaltyTo101Only { get; set; }
 
         [Display("Order enabled")]
         public bool? OrderEnabled { get; set; }
 
-        [Display("Order")]
-        public int[]? Order { get; set; }
+        [Display("Orders")]
+        public int[]? Orders { get; set; }
     }
 }
