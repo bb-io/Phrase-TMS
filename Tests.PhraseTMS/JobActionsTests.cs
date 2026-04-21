@@ -104,7 +104,7 @@ public class JobActionsTests : TestBaseMultipleConnections
     {
         // Arrange
         var actions = new JobActions(context, FileManager);
-        var projectRequest = new ProjectRequest { ProjectUId = "ltRSUSNtQ3qt7JuW8x14b6" };
+        var projectRequest = new ProjectRequest { ProjectUId = "7OCjWj1HenPngi09GhiJG3" };
         var createJobsRequest = new CreateJobsRequest
         {
             preTranslate = true,

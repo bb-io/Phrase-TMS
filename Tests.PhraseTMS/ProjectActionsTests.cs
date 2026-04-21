@@ -193,13 +193,16 @@ public class ProjectActionsTests : TestBaseMultipleConnections
     public async Task SetProjectTranslationMemories_ValidData_Success(InvocationContext context)
     {
         var actions = new ProjectActions(context, FileManager);
-        var result = await actions.SetProjectTranslationMemories(new ProjectRequest { ProjectUId = "OQpwhSXsFoq5a9f4bVuuV0" },
+        var result = await actions.SetProjectTranslationMemories(new ProjectRequest { ProjectUId = "7OCjWj1HenPngi09GhiJG3" },
             new SetProjectTranslationMemoriesRequest
             {
-                TranslationMemoryUids = ["w1pV1izYniDtTQjV4iPD1s"],
+                TranslationMemoryUids = ["E0uVR4YJ8oke62rqEbcJH6", "tBrDiKFJrs93fBn4jqNjj1"],
                 TargetLang = "de",
-                ReadModes = [true],
-                WriteModes = [true]
+                ReadModes = [true, true],
+                WriteModes = [false, true],
+                Penalties = [0, 5],
+                Orders = [1, 2],
+                OrderEnabled = true
             });
         Console.WriteLine(JsonConvert.SerializeObject(result));
     }
@@ -211,10 +214,10 @@ public class ProjectActionsTests : TestBaseMultipleConnections
 
         await Assert.ThrowsExceptionAsync<Blackbird.Applications.Sdk.Common.Exceptions.PluginMisconfigurationException>(() =>
             actions.SetProjectTranslationMemories(
-                new ProjectRequest { ProjectUId = "OQpwhSXsFoq5a9f4bVuuV0" },
+                new ProjectRequest { ProjectUId = "7OCjWj1HenPngi09GhiJG3" },
                 new SetProjectTranslationMemoriesRequest
                 {
-                    TranslationMemoryUids = ["w1pV1izYniDtTQjV4iPD1s"],
+                    TranslationMemoryUids = ["E0uVR4YJ8oke62rqEbcJH6"],
                     TargetLang = "de"
                 }));
     }
@@ -226,10 +229,10 @@ public class ProjectActionsTests : TestBaseMultipleConnections
 
         await Assert.ThrowsExceptionAsync<Blackbird.Applications.Sdk.Common.Exceptions.PluginMisconfigurationException>(() =>
             actions.SetProjectTranslationMemories(
-                new ProjectRequest { ProjectUId = "OQpwhSXsFoq5a9f4bVuuV0" },
+                new ProjectRequest { ProjectUId = "7OCjWj1HenPngi09GhiJG3" },
                 new SetProjectTranslationMemoriesRequest
                 {
-                    TranslationMemoryUids = ["w1pV1izYniDtTQjV4iPD1s", "Hv9w0ZZz9DPimGmJJSU7g0"],
+                    TranslationMemoryUids = ["E0uVR4YJ8oke62rqEbcJH6", "tBrDiKFJrs93fBn4jqNji1"],
                     TargetLang = "de",
                     ReadModes = [true]
                 }));
@@ -242,10 +245,10 @@ public class ProjectActionsTests : TestBaseMultipleConnections
 
         await Assert.ThrowsExceptionAsync<Blackbird.Applications.Sdk.Common.Exceptions.PluginMisconfigurationException>(() =>
             actions.SetProjectTranslationMemories(
-                new ProjectRequest { ProjectUId = "OQpwhSXsFoq5a9f4bVuuV0" },
+                new ProjectRequest { ProjectUId = "7OCjWj1HenPngi09GhiJG3" },
                 new SetProjectTranslationMemoriesRequest
                 {
-                    TranslationMemoryUids = ["w1pV1izYniDtTQjV4iPD1s"],
+                    TranslationMemoryUids = ["E0uVR4YJ8oke62rqEbcJH6"],
                     TargetLang = "de",
                     Penalties = [101]
                 }));
