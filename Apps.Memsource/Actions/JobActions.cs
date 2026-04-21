@@ -465,6 +465,10 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
                useProjectFileImportSettings = settings is null ? input.useProjectFileImportSettings ?? true : false,
                due = input.DueDate?.ToUniversalTime().ToString("yyyy-MM-dd'T'HH:mm:ssK"),
                importSettings = settings,
+               sourceData = new
+               {
+                   clientType = "BLACKBIRD"
+               }
            },
            new JsonSerializerSettings
            {

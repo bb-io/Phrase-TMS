@@ -2,17 +2,18 @@ using PhraseTMSTests.Base;
 using Apps.PhraseTMS.Connections;
 using Apps.PhraseTMS.Constants;
 using Blackbird.Applications.Sdk.Common.Authentication;
+using Blackbird.Applications.Sdk.Common.Invocation;
 
 namespace Tests.PhraseTMS;
 
 [TestClass]
 public class ConnectionValidatorTests : TestBaseMultipleConnections
 {
-    [TestMethod]
-    public async Task ValidatesCorrectConnection()
+    [TestMethod, ContextDataSource]
+    public async Task ValidatesCorrectConnection(InvocationContext context)
     {
         // Arrange
-        var validator = new ConnectionValidator(InvocationContexts.First());
+        var validator = new ConnectionValidator(context);
 
         // Act
         var tasks = CredsGroups.Select(x => validator.ValidateConnection(x, CancellationToken.None).AsTask());
