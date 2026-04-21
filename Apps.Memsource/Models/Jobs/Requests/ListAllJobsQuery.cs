@@ -1,7 +1,5 @@
 ﻿using Apps.PhraseTMS.DataSourceHandlers;
-using Apps.PhraseTMS.DataSourceHandlers.StaticHandlers;
 using Blackbird.Applications.Sdk.Common;
-using Blackbird.Applications.Sdk.Common.Dictionaries;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 using Newtonsoft.Json;
 
@@ -9,7 +7,8 @@ namespace Apps.PhraseTMS.Models.Jobs.Requests;
 
 public class ListAllJobsQuery
 {
-    [Display("Assigned users ID"), JsonProperty("assignedUser")]
+    [Display("Assigned users ID (not UID)"), JsonProperty("assignedUser")]
+    [DataSource(typeof(UserLegacyIdDataHandler))]
     public IEnumerable<int>? AssignedUsers { get; set; }
 
     [Display("Due in hours"), JsonProperty("dueInHours")]
@@ -22,7 +21,7 @@ public class ListAllJobsQuery
     [DataSource(typeof(LanguageDataHandler))]
     public string? TargetLang { get; set; }
 
-    [Display("Assigned vendor ID"), JsonProperty("assignedVendor")]
+    [Display("Assigned vendor ID (not UID)"), JsonProperty("assignedVendor")]
     public int? AssignedVendor { get; set; }
 
     [Display("Project note contains", Description ="Checks the project note")]
