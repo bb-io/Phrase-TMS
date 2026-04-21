@@ -142,6 +142,14 @@ public class DataSources : TestBaseMultipleConnections
         => await Test(new UserDataHandler(context), "");
 
     [TestMethod, ContextDataSource]
+    public async Task UserLegacyId_returns_values(InvocationContext context)
+        => await Test(new UserLegacyIdDataHandler(context));
+
+    [TestMethod, ContextDataSource]
+    public async Task UserLegacyId_with_query_returns_values(InvocationContext context)
+        => await Test(new UserLegacyIdDataHandler(context), "a");
+
+    [TestMethod, ContextDataSource]
     public async Task Vendor_returns_values(InvocationContext context) 
         => await Test(new VendorDataHandler(context));
 
