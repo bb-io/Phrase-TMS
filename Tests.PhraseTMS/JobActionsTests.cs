@@ -304,4 +304,14 @@ public class JobActionsTests : TestBaseMultipleConnections
 
         await actions.SplitJob(projectRequest, jobRequest, split);
     }
+
+    [TestMethod, ContextDataSource]
+    public async Task UploadBilingualFile_WhileLocking_IsSuccess(InvocationContext context)
+    {
+        var actions = new JobActions(context, FileManager);
+        var input = new UploadBilingualFileRequest { File = new FileReference { Name = "estimated.mxliff" }};
+        var updateState = new UpdateSegmentStatesRequest { LockSegmentsWithState = "final" };
+
+        await actions.UploadBilingualFile(input, updateState);
+    }
 }

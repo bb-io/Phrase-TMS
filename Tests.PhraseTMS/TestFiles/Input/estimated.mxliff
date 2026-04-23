@@ -1,0 +1,180 @@
+ <xliff srcLang="en" trgLang="uk" version="2.2" xmlns:m="http://www.memsource.com/mxlf/2.0" m:version="2.15" m:level="1" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" xmlns:its="http://www.w3.org/2005/11/its" xmlns="urn:oasis:names:tc:xliff:document:2.2">
+  <m:extra>
+    <m:users>
+      <m:user id="1732186" uid="xdhlcxmlTcop89QQF4AGN0" username="alex.terekhov@blackbird.io" fullname="Alex Terekhov" />
+    </m:users>
+  </m:extra>
+  <file id="f1" original="Sample text.html" datatype="x-undefined" m:file-format="HTML" m:task-id="wsOvbO51s05clzWF1_dc10" m:begin-group-id="0" m:end-group-id="4" m:transmem-ignore-tag-metadata="yes" m:project-uid="k0AU8tl13nEpRkITEBIb28" m:job-uid="0FNRxLWYzXQU225jwmpk90">
+    <m:in-ctx-preview-skel bilingual="false"><![CDATA[<h1><span id="m-tgroup_0" class="m-tgroup"></span></h1>
+<p><span id="m-tgroup_1" class="m-tgroup"></span> <span id="m-tgroup_2" class="m-tgroup"></span></p>
+<span id="m-tgroup_3" class="m-tgroup"></span><p><span id="m-tgroup_4" class="m-tgroup"></span></p>]]></m:in-ctx-preview-skel>
+    <group id="0" m:para-id="0">
+      <unit id="wsOvbO51s05clzWF1_dc10:0" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="false" m:para-id="0" m:created-at="1776956807500" m:created-by="1732186" m:modified-at="1776956807500" m:modified-by="1732186" m:level-edited="false" its:locQualityRatingScore="0.2947799861431122" its:locQualityRatingScoreThreshold="0.6000000238418579" its:locQualityRatingProfileRef="https://api.taus.net/2.0/estimate">
+        <mda:metadata>
+          <mda:metaGroup category="blackbird">
+            <mda:metaGroup category="usage">
+              <mda:metaGroup category="TAUS QE">
+                <mda:meta type="value">67</mda:meta>
+                <mda:meta type="unit">characters</mda:meta>
+              </mda:metaGroup>
+            </mda:metaGroup>
+          </mda:metaGroup>
+        </mda:metadata>
+        <alt-trans origin="machine-trans" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+          <target />
+        </alt-trans>
+        <alt-trans origin="memsource-tm" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+          <target />
+        </alt-trans>
+        <m:editing-stats>
+          <m:editing-time>43063</m:editing-time>
+          <m:thinking-time>34163</m:thinking-time>
+        </m:editing-stats>
+        <segment id="wsOvbO51s05clzWF1_dc10:0">
+          <source>Governance for Multilingual Content Operations</source>
+          <target>Управління операціями</target>
+        </segment>
+      </unit>
+    </group>
+    <group id="1" m:para-id="1">
+      <unit id="wsOvbO51s05clzWF1_dc10:1" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="false" m:para-id="1" m:created-at="1776956821488" m:created-by="1732186" m:modified-at="1776956821488" m:modified-by="1732186" m:level-edited="false" its:locQualityRatingScore="0.8666099905967712" its:locQualityRatingScoreThreshold="0.6000000238418579" its:locQualityRatingProfileRef="https://api.taus.net/2.0/estimate">
+        <mda:metadata>
+          <mda:metaGroup category="blackbird">
+            <mda:metaGroup category="usage">
+              <mda:metaGroup category="TAUS QE">
+                <mda:meta type="value">162</mda:meta>
+                <mda:meta type="unit">characters</mda:meta>
+              </mda:metaGroup>
+            </mda:metaGroup>
+          </mda:metaGroup>
+        </mda:metadata>
+        <alt-trans origin="machine-trans" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+          <target />
+        </alt-trans>
+        <alt-trans origin="memsource-tm" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+          <target />
+        </alt-trans>
+        <m:editing-stats>
+          <m:editing-time>14442</m:editing-time>
+          <m:thinking-time>11014</m:thinking-time>
+        </m:editing-stats>
+        <segment id="wsOvbO51s05clzWF1_dc10:1" state="final">
+          <source>Blackbird unifies content, context, and automation into one orchestration layer.</source>
+          <target>Blackbird об'єднує контент, контекст та автоматизацію в єдиний рівень координації.</target>
+        </segment>
+      </unit>
+    </group>
+    <group id="2" m:para-id="1">
+      <unit id="wsOvbO51s05clzWF1_dc10:2" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="false" m:para-id="1" m:created-at="1776956851644" m:created-by="1732186" m:modified-at="1776956851644" m:modified-by="1732186" m:level-edited="false" its:locQualityRatingScore="0.5998700261116028" its:locQualityRatingScoreThreshold="0.6000000238418579" its:locQualityRatingProfileRef="https://api.taus.net/2.0/estimate">
+        <mda:metadata>
+          <mda:metaGroup category="blackbird">
+            <mda:metaGroup category="usage">
+              <mda:metaGroup category="TAUS QE">
+                <mda:meta type="value">312</mda:meta>
+                <mda:meta type="unit">characters</mda:meta>
+              </mda:metaGroup>
+            </mda:metaGroup>
+          </mda:metaGroup>
+        </mda:metadata>
+        <alt-trans origin="machine-trans" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+          <target />
+        </alt-trans>
+        <alt-trans origin="memsource-tm" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+          <target />
+        </alt-trans>
+        <m:editing-stats>
+          <m:editing-time>30300</m:editing-time>
+          <m:thinking-time>12651</m:thinking-time>
+        </m:editing-stats>
+        <segment id="wsOvbO51s05clzWF1_dc10:2">
+          <source>Built on iPaaS infrastructure with a data fabric and a persistent memory layer, it adapts, transforms, and governs enterprise content at scale.</source>
+          <target>Ця система, побудована на базі інфраструктури iPaaS з використанням архітектури Data Fabric забезпечує адаптацію та управління корпоративним контентом у великих обсягах.</target>
+        </segment>
+      </unit>
+    </group>
+    <group id="3" m:para-id="2">
+      <m:in-ctx-preview-metadata>
+        <m:mark id="1">
+          <m:open-mark-content><![CDATA[<button>]]></m:open-mark-content>
+        </m:mark>
+        <m:mark id="2">
+          <m:open-mark-content><![CDATA[<button>]]></m:open-mark-content>
+        </m:mark>
+      </m:in-ctx-preview-metadata>
+      <unit id="wsOvbO51s05clzWF1_dc10:3" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="false" m:para-id="2" m:created-at="1776956876698" m:created-by="1732186" m:modified-at="1776956876698" m:modified-by="1732186" m:level-edited="false" its:locQualityRatingScore="0.6745399832725525" its:locQualityRatingScoreThreshold="0.6000000238418579" its:locQualityRatingProfileRef="https://api.taus.net/2.0/estimate">
+        <mda:metadata>
+          <mda:metaGroup category="blackbird">
+            <mda:metaGroup category="usage">
+              <mda:metaGroup category="TAUS QE">
+                <mda:meta type="value">34</mda:meta>
+                <mda:meta type="unit">characters</mda:meta>
+              </mda:metaGroup>
+            </mda:metaGroup>
+          </mda:metaGroup>
+        </mda:metadata>
+        <alt-trans origin="machine-trans" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+          <target />
+        </alt-trans>
+        <alt-trans origin="memsource-tm" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+          <target />
+        </alt-trans>
+        <m:tunit-metadata>
+          <m:mark id="1">
+            <m:type>button</m:type>
+            <m:content>&lt;button&gt;</m:content>
+          </m:mark>
+          <m:mark id="2">
+            <m:type>button</m:type>
+            <m:content>&lt;button&gt;</m:content>
+          </m:mark>
+        </m:tunit-metadata>
+        <m:tunit-target-metadata>
+          <m:mark id="1">
+            <m:type>button</m:type>
+            <m:content>&lt;button&gt;</m:content>
+          </m:mark>
+          <m:mark id="2">
+            <m:type>button</m:type>
+            <m:content>&lt;button&gt;</m:content>
+          </m:mark>
+        </m:tunit-target-metadata>
+        <m:editing-stats>
+          <m:editing-time>25041</m:editing-time>
+          <m:thinking-time>6365</m:thinking-time>
+        </m:editing-stats>
+        <segment id="wsOvbO51s05clzWF1_dc10:3" state="final">
+          <source>{1}Book a Demo{2}</source>
+          <target>{1}Забронюйте!{2}</target>
+        </segment>
+      </unit>
+    </group>
+    <group id="4" m:para-id="3">
+      <unit id="wsOvbO51s05clzWF1_dc10:4" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="false" m:para-id="3" m:created-at="1776956936306" m:created-by="1732186" m:modified-at="1776956936306" m:modified-by="1732186" m:level-edited="false" its:locQualityRatingScore="0.7738400101661682" its:locQualityRatingScoreThreshold="0.6000000238418579" its:locQualityRatingProfileRef="https://api.taus.net/2.0/estimate">
+        <mda:metadata>
+          <mda:metaGroup category="blackbird">
+            <mda:metaGroup category="usage">
+              <mda:metaGroup category="TAUS QE">
+                <mda:meta type="value">403</mda:meta>
+                <mda:meta type="unit">characters</mda:meta>
+              </mda:metaGroup>
+            </mda:metaGroup>
+          </mda:metaGroup>
+        </mda:metadata>
+        <alt-trans origin="machine-trans" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+          <target />
+        </alt-trans>
+        <alt-trans origin="memsource-tm" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+          <target />
+        </alt-trans>
+        <m:editing-stats>
+          <m:editing-time>59103</m:editing-time>
+          <m:thinking-time>15867</m:thinking-time>
+        </m:editing-stats>
+        <segment id="wsOvbO51s05clzWF1_dc10:4" state="final">
+          <source>From raw content to multilingual experiences — Blackbird transforms how global teams orchestrate, adapt, and automate content with AI, interoperability, and human-in-the-loop control.</source>
+          <target>Від необробленого контенту до багфторівневих рішень — Blackbird змінює підхід глобальних команд до координації, адаптації та автоматизації контенту за допомогою штучного інтелекту, сумісності та контролю з участю людини.</target>
+        </segment>
+      </unit>
+    </group>
+  </file>
+</xliff>

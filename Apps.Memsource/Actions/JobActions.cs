@@ -764,10 +764,18 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
     }
 
     [Action("Upload job bilingual file", Description = "Upload bilingual file to update job")]
-    public async Task UploadBilingualFile([ActionParameter] UploadBilingualFileRequest input)
+    public async Task UploadBilingualFile(
+        [ActionParameter] UploadBilingualFileRequest input,
+        [ActionParameter] UpdateSegmentStatesRequest updateSegmentStatesRequest)
     {
         var file = await fileManagementClient.DownloadAsync(input.File);
         var fileBytes = await file.GetByteData();
+
+        if (!string.IsNullOrEmpty(updateSegmentStatesRequest.ConfirmSegmentsWithState)
+            || !string.IsNullOrEmpty(updateSegmentStatesRequest.LockSegmentsWithState))
+        {
+            fileBytes = UpdateSegmentStates(fileBytes, input.File.Name, updateSegmentStatesRequest);
+        }
 
         await UploadBilingualFile(fileBytes, input.File.Name, input.saveToTransMemory, input.setCompleted);
     }
@@ -803,6 +811,37 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         await Client.ExecuteWithHandling(request);
     }
 
+    private byte[] UpdateSegmentStates(
+        byte[] fileBytes,
+        string fileName,
+        UpdateSegmentStatesRequest updateSegmentStatesRequest)
+    {
+        var content = Encoding.UTF8.GetString(fileBytes);
+        var transformation = Transformation.Parse(content, fileName);
+
+        foreach (var unit in transformation.GetUnits())
+        {
+            foreach (var segment in unit.Segments)
+            {
+                if (segment.State is null)
+                continue;
+
+                if (!string.IsNullOrEmpty(updateSegmentStatesRequest.LockSegmentsWithState)
+                    && segment.State == SegmentStateHelper.ToSegmentState(updateSegmentStatesRequest.LockSegmentsWithState))
+                {
+                    MXLIFFHelper.SetLocked(unit, true);
+                }
+
+                if (!string.IsNullOrEmpty(updateSegmentStatesRequest.ConfirmSegmentsWithState)
+                    && segment.State == SegmentStateHelper.ToSegmentState(updateSegmentStatesRequest.ConfirmSegmentsWithState))
+                {
+                    MXLIFFHelper.SetConfirmed(unit, true);
+                }
+            }
+        }
+
+        return Encoding.UTF8.GetBytes(transformation.Serialize());
+    }
 
     [Action("Pre-translate job", Description = "Pre-translate a job in the project")]
     public async Task PreTranslateJob(
