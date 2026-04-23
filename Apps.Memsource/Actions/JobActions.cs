@@ -771,8 +771,8 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         var file = await fileManagementClient.DownloadAsync(input.File);
         var fileBytes = await file.GetByteData();
 
-        if (string.IsNullOrEmpty(updateSegmentStatesRequest.ConfirmSegmentsWithState)
-            || string.IsNullOrEmpty(updateSegmentStatesRequest.LockSegmentsWithState))
+        if (!string.IsNullOrEmpty(updateSegmentStatesRequest.ConfirmSegmentsWithState)
+            || !string.IsNullOrEmpty(updateSegmentStatesRequest.LockSegmentsWithState))
         {
             fileBytes = UpdateSegmentStates(fileBytes, input.File.Name, updateSegmentStatesRequest);
         }
