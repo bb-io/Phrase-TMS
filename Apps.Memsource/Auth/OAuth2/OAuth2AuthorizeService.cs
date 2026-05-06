@@ -14,7 +14,7 @@ public class OAuth2AuthorizeService : BaseInvocable, IOAuth2AuthorizeService
     public string GetAuthorizationUrl(Dictionary<string, string> values)
     {
         string bridgeOauthUrl = $"{InvocationContext.UriInfo.BridgeServiceUrl.ToString().TrimEnd('/')}/oauth";
-        var oauthUrl = values["url"].TrimEnd('/') + "/web/oauth/authorize";
+        var oauthUrl = values["url"].TrimEnd('/') + "/internal/v1/oauth/authorize";
         var parameters = new Dictionary<string, string>
         {
             { "client_id", values["client_id"] },
