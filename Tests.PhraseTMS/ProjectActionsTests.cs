@@ -106,11 +106,6 @@ public class ProjectActionsTests : TestBaseMultipleConnections
     {
         var actions = new TranslationMemoryActions(context, FileManager);
 
-        //var reqLangReadWrite = new Apps.PhraseTMS.Models.TranslationMemories.Requests.EditProjectTransMemoriesRequest
-        //{
-        //    TransMemoryUids = new[] { "w1pV1izYniDtTQjV4iPD1s" }
-        //};
-
         var reqLangReadWrite = new Apps.PhraseTMS.Models.TranslationMemories.Requests.EditProjectTransMemoriesRequest
         {
             TargetLanguage = "de",
@@ -193,18 +188,16 @@ public class ProjectActionsTests : TestBaseMultipleConnections
     public async Task SetProjectTranslationMemories_ValidData_Success(InvocationContext context)
     {
         var actions = new ProjectActions(context, FileManager);
-        var result = await actions.SetProjectTranslationMemories(new ProjectRequest { ProjectUId = "7OCjWj1HenPngi09GhiJG3" },
+        var result = await actions.SetProjectTranslationMemories(new ProjectRequest { ProjectUId = "eSJtb3AgGa8WbFURNc1Zb4" },
             new SetProjectTranslationMemoriesRequest
             {
-                TranslationMemoryUids = ["E0uVR4YJ8oke62rqEbcJH6", "tBrDiKFJrs93fBn4jqNjj1"],
+                TranslationMemoryUids = ["KJOpp7FVgBFkbJNJf11Zza"],
+                WorkflowStepUid = "lxHYoo7KWvWN6R7Ca99mz3",
                 TargetLang = "de",
-                ReadModes = [true, true],
-                WriteModes = [false, true],
-                Penalties = [0, 5],
-                Orders = [1, 2],
-                OrderEnabled = true
+                ReadModes = [true]
             });
-        Console.WriteLine(JsonConvert.SerializeObject(result));
+        
+        PrintResult(result);
     }
 
     [TestMethod, ContextDataSource]

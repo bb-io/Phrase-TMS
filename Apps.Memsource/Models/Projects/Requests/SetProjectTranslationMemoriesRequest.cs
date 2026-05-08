@@ -15,7 +15,7 @@ namespace Apps.PhraseTMS.Models.Projects.Requests
         public string? TargetLang { get; set; }
 
         [Display("Workflow step UID")]
-        [DataSource(typeof(WorkflowStepDataHandler))]
+        [DataSource(typeof(WorkflowStepUidDataHandler))]
         public string? WorkflowStepUid { get; set; }
 
         [Display("Read modes")]
