@@ -1,4 +1,5 @@
-﻿using Apps.PhraseTMS.Dtos.Conversations;
+﻿using System.Collections.Concurrent;
+using Apps.PhraseTMS.Dtos.Conversations;
 using Apps.PhraseTMS.Models.Conversations.Requests;
 using Apps.PhraseTMS.Models.Conversations.Responses;
 using Apps.PhraseTMS.Models.Jobs.Requests;
@@ -15,7 +16,6 @@ namespace Apps.PhraseTMS.Actions;
 [ActionList("Conversations")]
 public class ConversationActions(InvocationContext invocationContext) : PhraseInvocable(invocationContext)
 {
-
     [Action("Get conversation", Description = "Gets plain conversation")]
     public async Task<Conversation> GetConversation([ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] JobRequest jobRequest,
@@ -49,7 +49,6 @@ public class ConversationActions(InvocationContext invocationContext) : PhraseIn
 
         return response;
     }
-
 
     [Action("Delete conversation", Description = "Deletes plain conversation")]
     public async Task DeleteConversation([ActionParameter] ProjectRequest projectRequest,
@@ -98,6 +97,38 @@ public class ConversationActions(InvocationContext invocationContext) : PhraseIn
 
         var response = await Client.ExecuteWithHandling<Conversation>(request);
         return response;
+    }
+    
+    [Action("Create multiple conversations", Description = "Creates multiple plain conversations")]
+    public async Task<CreateMultipleConversationsResponse> CreateMultipleConversations(
+        [ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] JobRequest jobRequest,
+        [ActionParameter] CreateMultipleConversationsRequest input)
+    {
+        input.Validate();
+
+        var conversations = new ConcurrentBag<Conversation>();
+        var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 15 };
+
+        await Parallel.ForEachAsync(
+            Enumerable.Range(0, input.SegmentIds.Count), 
+            parallelOptions, 
+            async (index, cancellationToken) =>
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var references = new ConversationReferencesRequest
+                {
+                    SegmentId = input.SegmentIds[index],
+                    ConversationTitle = input.ConversationTitles?[index]
+                };
+                var text = new AddEditPlainCommentRequest { Text = input.Texts[index] };
+        
+                var conversation = await CreateConversation(projectRequest, jobRequest, references, text);
+                conversations.Add(conversation);
+            });
+
+        return new CreateMultipleConversationsResponse(conversations.ToList());
     }
 
     [Action("Create LQA conversation", Description = "Creates LQA conversation")]

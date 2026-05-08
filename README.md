@@ -74,6 +74,7 @@ Navigate to apps and search for Phrase. Click _Add Connection_ and name your con
 - **Delete conversation** Delete a plain conversation.
 - **Edit conversation** Edit a plain conversation.
 - **Create conversation** Create a plain conversation.
+- **Create multiple conversations** Create multiple plain conversations.
 - **Create LQA conversation** Create an LQA conversation.
 - **Add plain comment** Add a plain comment.
 - **Edit plain comment** Edit a plain comment.
