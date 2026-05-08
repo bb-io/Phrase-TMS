@@ -1,17 +1,17 @@
 ﻿using Blackbird.Applications.Sdk.Common;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Apps.PhraseTMS.Dtos.Jobs;
+
 public class WorkflowStepDto
 {
     [Display("Workflow step ID")]
     [JsonProperty("id")]
     public string Id { get; set; }
+    
+    [Display("Workflow step UID")]
+    [JsonProperty("uid")]
+    public string Uid { get; set; }
 
     [Display("Name")]
     [JsonProperty("name")]

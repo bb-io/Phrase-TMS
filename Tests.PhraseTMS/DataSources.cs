@@ -162,6 +162,10 @@ public class DataSources : TestBaseMultipleConnections
         => await Test(new WorkflowStepDataHandler(context), "Translation");
 
     [TestMethod, ContextDataSource]
+    public async Task WorkflowStepUidDataHandler_ReturnsWorkflowSteps(InvocationContext context)
+        => await Test(new WorkflowStepUidDataHandler(context));
+    
+    [TestMethod, ContextDataSource]
     public async Task ConversationDataHandler_ReturnsConversations(InvocationContext context)
         => await Test(new ConversationDataHandler(context, new JobRequest { JobUId = "S1Lng7SgldQMeiwPm2srx3" }));
 
