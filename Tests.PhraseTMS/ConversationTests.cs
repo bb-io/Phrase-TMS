@@ -150,4 +150,25 @@ public class ConversationTests : TestBaseMultipleConnections
         // Act & Assert
         await actions.DeletePlainComment(projectRequest, jobRequest, conversationRequest, commentRequest);
     }
+
+    [TestMethod, ContextDataSource]
+    public async Task CreateMultipleConversations_ReturnsMultipleConversations(InvocationContext context)
+    {
+        // Arrange
+        var actions = new ConversationActions(context);
+        var project = new ProjectRequest { ProjectUId = "xc5XRBM51xQG9aaFBzUKp6" };
+        var job = new JobRequest { JobUId = "PBpFKurDk1g1t4DF27BfUc" };
+        var input = new CreateMultipleConversationsRequest
+        {
+            SegmentIds = ["BwMRqexZaWkjRSvq_dc10:0", "BwMRqexZaWkjRSvq_dc10:1", "BwMRqexZaWkjRSvq_dc10:2" ],
+            Texts = ["123", "456", "789"]
+        };
+
+        // Act
+        var result = await actions.CreateMultipleConversations(project, job, input);
+
+        // Assert
+        PrintResult(result);
+        Assert.IsNotNull(result);
+    }
 }

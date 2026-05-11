@@ -20,6 +20,7 @@ public class PhraseTmsClient : RestClient
 {
     private readonly IEnumerable<AuthenticationCredentialsProvider> _credsProviders; 
     private bool _isAuthenticated = false;
+    private string _cachedToken = string.Empty;
 
     public PhraseTmsClient(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders) :
         base(new RestClientOptions
@@ -95,6 +96,9 @@ public class PhraseTmsClient : RestClient
         if (!isLoginRequest)
         {
             await EnsureAuthenticated(enableRetries);
+            
+            if (!string.IsNullOrEmpty(_cachedToken))
+                request.AddOrUpdateHeader("Authorization", _cachedToken);
         }
 
         int[] retryDelaysInMs = { 2000, 4000, 8000 };
@@ -332,21 +336,22 @@ public class PhraseTmsClient : RestClient
 
     private async Task EnsureAuthenticated(bool enableRetries = true)
     {
-        if (_isAuthenticated) return;
+        if (_isAuthenticated) 
+            return;
+        
         string connectionType = _credsProviders.Get(CredsNames.ConnectionType).Value;
         switch (connectionType)
         {
             case ConnectionTypes.OAuth2:
-                var authorization = _credsProviders.Get("Authorization").Value;
-                this.AddDefaultHeader("Authorization", authorization);
+                _cachedToken = _credsProviders.Get("Authorization").Value;
                 break;
             case ConnectionTypes.Credentials:
                 string userName = _credsProviders.Get(CredsNames.Username).Value;
                 string password = _credsProviders.Get(CredsNames.Password).Value;
-                string token = await GetTokenFromCredentials(userName, password, enableRetries);
-                this.AddDefaultHeader("Authorization", token);
+                _cachedToken = await GetTokenFromCredentials(userName, password, enableRetries);
                 break;
         }
+
         _isAuthenticated = true;
     }
 
