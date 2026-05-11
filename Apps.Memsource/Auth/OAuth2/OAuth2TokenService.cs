@@ -1,19 +1,15 @@
 ﻿using System.Text.Json;
+using Apps.PhraseTMS.Constants;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication.OAuth2;
 using Blackbird.Applications.Sdk.Common.Invocation;
+using Blackbird.Applications.Sdk.Utils.Extensions.Sdk;
 
 namespace Apps.PhraseTMS.Auth.OAuth2;
 
-public class OAuth2TokenService : BaseInvocable, IOAuth2TokenService
+public class OAuth2TokenService(InvocationContext invocationContext) 
+    : BaseInvocable(invocationContext), IOAuth2TokenService
 {
-    private const string ExpiresAtKeyName = "expires_at";
-    private const string TokenUrl = "https://us.cloud.memsource.com/web/oauth/token";
-
-    public OAuth2TokenService(InvocationContext invocationContext) : base(invocationContext)
-    {
-    }
-
     public bool IsRefreshToken(Dictionary<string, string> values)
     {
         return false;
@@ -30,17 +26,37 @@ public class OAuth2TokenService : BaseInvocable, IOAuth2TokenService
         Dictionary<string, string> values, 
         CancellationToken cancellationToken)
     {
-        const string grantType = "authorization_code";
-
-        var bodyParameters = new Dictionary<string, string>
+        var resultDict = new Dictionary<string, string?>();
+        
+        switch (invocationContext.AuthenticationCredentialsProviders.Get(CredsNames.ConnectionType).Value)
         {
-            { "grant_type", grantType },
-            { "client_id", values["client_id"] },
-            { "redirect_uri", $"{InvocationContext.UriInfo.BridgeServiceUrl.ToString().TrimEnd('/')}/AuthorizationCode" },
-            { "code", code }
-        };
-        var url = values["url"].TrimEnd('/') + "/web/oauth/token";
-        return await RequestToken(bodyParameters, url, cancellationToken);
+            case ConnectionTypes.OAuth2:
+                var codeBodyParameters = new Dictionary<string, string>
+                {
+                    { "grant_type", "authorization_code" },
+                    { "client_id", values["client_id"] },
+                    { "redirect_uri", $"{InvocationContext.UriInfo.BridgeServiceUrl.ToString().TrimEnd('/')}/AuthorizationCode" },
+                    { "code", code }
+                };
+                
+                var oauthUrl = values["url"].TrimEnd('/') + "/web/oauth/token";
+                resultDict = await RequestToken(codeBodyParameters, oauthUrl, cancellationToken);
+                break;
+            case ConnectionTypes.ApiToken:
+                var tokenBodyParameters = new Dictionary<string, string>
+                {
+                    { "grant_type", "urn:ietf:params:oauth:grant-type:token-exchange" },
+                    { "subject_token", invocationContext.AuthenticationCredentialsProviders.Get(CredsNames.ApiToken).Value },
+                    { "subject_token_type", "urn:phrase:params:oauth:token-type:api_token" },
+                    { "requested_token_type", "urn:ietf:params:oauth:token-type:access_token" }
+                };
+                
+                var tokenUrl = values["url"].TrimEnd('/') + "/idm/oauth/token";
+                resultDict = await RequestToken(tokenBodyParameters, tokenUrl, cancellationToken);
+                break;
+        }
+
+        return resultDict;
     }
 
     public Task RevokeToken(Dictionary<string, string> values)
@@ -57,9 +73,7 @@ public class OAuth2TokenService : BaseInvocable, IOAuth2TokenService
         var responseContent = await response.Content.ReadAsStringAsync();
         var resultDictionary = JsonSerializer.Deserialize<Dictionary<string, object>>(responseContent)?.ToDictionary(r => r.Key, r => r.Value?.ToString())
                                ?? throw new InvalidOperationException($"Invalid response content: {responseContent}");
-        //var expriresIn = int.Parse(resultDictionary["expires_in"]);
-        //var expiresAt = utcNow.AddSeconds(expriresIn);
-        //resultDictionary.Add(ExpiresAtKeyName, expiresAt.ToString());
+        
         return resultDictionary;
     }
 }

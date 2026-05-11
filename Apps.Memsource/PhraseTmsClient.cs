@@ -343,6 +343,7 @@ public class PhraseTmsClient : RestClient
         switch (connectionType)
         {
             case ConnectionTypes.OAuth2:
+            case ConnectionTypes.ApiToken:
                 _cachedToken = _credsProviders.Get("Authorization").Value;
                 break;
             case ConnectionTypes.Credentials:

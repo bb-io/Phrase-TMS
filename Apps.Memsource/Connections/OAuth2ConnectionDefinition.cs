@@ -10,6 +10,25 @@ public class OAuth2ConnectionDefinition : IConnectionDefinition
     {
         new()
         {
+            Name = ConnectionTypes.ApiToken,
+            AuthenticationType = ConnectionAuthenticationType.OAuth2,
+            ConnectionProperties = new List<ConnectionProperty>
+            {
+                new(CredsNames.ApiToken) { DisplayName = "API Token" },
+                new(CredsNames.Url) 
+                { 
+                    DisplayName = "Base Url",
+                    Description = "Select the base URL according to your Phrase data center",
+                    DataItems = 
+                    [
+                        new("https://cloud.memsource.com/", "EU data center"),
+                        new("https://us.cloud.memsource.com/","US data center")
+                    ]
+                }
+            }
+        },
+        new()
+        {
             Name = ConnectionTypes.OAuth2,
             AuthenticationType = ConnectionAuthenticationType.OAuth2,
             ConnectionProperties = new List<ConnectionProperty>
