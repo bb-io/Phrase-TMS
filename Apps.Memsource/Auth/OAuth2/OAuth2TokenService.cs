@@ -5,15 +5,9 @@ using Blackbird.Applications.Sdk.Common.Invocation;
 
 namespace Apps.PhraseTMS.Auth.OAuth2;
 
-public class OAuth2TokenService : BaseInvocable, IOAuth2TokenService
+public class OAuth2TokenService(InvocationContext invocationContext) 
+    : BaseInvocable(invocationContext), IOAuth2TokenService
 {
-    private const string ExpiresAtKeyName = "expires_at";
-    private const string TokenUrl = "https://us.cloud.memsource.com/web/oauth/token";
-
-    public OAuth2TokenService(InvocationContext invocationContext) : base(invocationContext)
-    {
-    }
-
     public bool IsRefreshToken(Dictionary<string, string> values)
     {
         return false;
@@ -30,17 +24,16 @@ public class OAuth2TokenService : BaseInvocable, IOAuth2TokenService
         Dictionary<string, string> values, 
         CancellationToken cancellationToken)
     {
-        const string grantType = "authorization_code";
-
-        var bodyParameters = new Dictionary<string, string>
+        var codeBodyParameters = new Dictionary<string, string>
         {
-            { "grant_type", grantType },
+            { "grant_type", "authorization_code" },
             { "client_id", values["client_id"] },
             { "redirect_uri", $"{InvocationContext.UriInfo.BridgeServiceUrl.ToString().TrimEnd('/')}/AuthorizationCode" },
             { "code", code }
         };
-        var url = values["url"].TrimEnd('/') + "/web/oauth/token";
-        return await RequestToken(bodyParameters, url, cancellationToken);
+        
+        var oauthUrl = values["url"].TrimEnd('/') + "/web/oauth/token";
+        return await RequestToken(codeBodyParameters, oauthUrl, cancellationToken);
     }
 
     public Task RevokeToken(Dictionary<string, string> values)
@@ -57,9 +50,7 @@ public class OAuth2TokenService : BaseInvocable, IOAuth2TokenService
         var responseContent = await response.Content.ReadAsStringAsync();
         var resultDictionary = JsonSerializer.Deserialize<Dictionary<string, object>>(responseContent)?.ToDictionary(r => r.Key, r => r.Value?.ToString())
                                ?? throw new InvalidOperationException($"Invalid response content: {responseContent}");
-        //var expriresIn = int.Parse(resultDictionary["expires_in"]);
-        //var expiresAt = utcNow.AddSeconds(expriresIn);
-        //resultDictionary.Add(ExpiresAtKeyName, expiresAt.ToString());
+        
         return resultDictionary;
     }
 }

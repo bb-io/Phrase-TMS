@@ -20,6 +20,7 @@ public class PhraseTmsClient : RestClient
 {
     private readonly IEnumerable<AuthenticationCredentialsProvider> _credsProviders; 
     private bool _isAuthenticated = false;
+    private string _cachedToken = string.Empty;
 
     public PhraseTmsClient(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders) :
         base(new RestClientOptions
@@ -70,7 +71,9 @@ public class PhraseTmsClient : RestClient
     
     public async Task<RestResponse> ExecuteWithoutHandlingAsync(RestRequest request, CancellationToken cancellationToken = default)
     {
-        var isLoginRequest = request.Resource.Contains("/auth/login");
+        var isLoginRequest = request.Resource.Contains("/auth/login")|| 
+                             request.Resource.Contains("/oauth/token");
+        
         if (!isLoginRequest)
         {
             var (success, authResponse) = await TryEnsureAuthenticatedWithoutThrowing();
@@ -91,10 +94,14 @@ public class PhraseTmsClient : RestClient
 
     public async Task<RestResponse> ExecuteWithHandling(RestRequest request, bool enableRetries = true)
     {
-        bool isLoginRequest = request.Resource.Contains("/auth/login");
+        var isLoginRequest = request.Resource.Contains("/auth/login")|| 
+                             request.Resource.Contains("/oauth/token");
         if (!isLoginRequest)
         {
             await EnsureAuthenticated(enableRetries);
+            
+            if (!string.IsNullOrEmpty(_cachedToken))
+                request.AddOrUpdateHeader("Authorization", _cachedToken);
         }
 
         int[] retryDelaysInMs = { 2000, 4000, 8000 };
@@ -330,23 +337,62 @@ public class PhraseTmsClient : RestClient
         return $"ApiToken {response.Token}";
     }
 
+    private async Task<RestResponse> ExecuteGetJwtFromApiToken(string baseUrl, string apiToken)
+    {
+        string oauthBaseUrl = baseUrl switch
+        {
+            not null when baseUrl.StartsWith(Urls.Eu.TrimEnd('/')) => "https://eu.phrase.com/idm/oauth/token",
+            not null when baseUrl.StartsWith(Urls.Us.TrimEnd('/')) => "https://us.phrase.com/idm/oauth/token",
+            _ => string.Empty
+        };
+
+        if (string.IsNullOrEmpty(oauthBaseUrl))
+            throw new Exception($"Unsupported base URL for API token exchange: {baseUrl}");
+
+        using var tokenClient = new RestClient();
+        
+        var request = new RestRequest(oauthBaseUrl, Method.Post);
+        request.AddParameter("grant_type", "urn:ietf:params:oauth:grant-type:token-exchange", ParameterType.GetOrPost);
+        request.AddParameter("subject_token", apiToken, ParameterType.GetOrPost);
+        request.AddParameter("subject_token_type", "urn:phrase:params:oauth:token-type:api_token", ParameterType.GetOrPost);
+        request.AddParameter("requested_token_type", "urn:ietf:params:oauth:token-type:access_token", ParameterType.GetOrPost);
+        
+        return await ExecuteAsync(request);
+    }
+    
+    private async Task<string> GetTokenFromApiToken(string baseUrl, string apiToken)
+    {
+        var response = await ExecuteGetJwtFromApiToken(baseUrl, apiToken);
+        if (!response.IsSuccessful)
+            throw new Exception($"Failed to exchange API token: {response.ErrorMessage ?? response.Content}");
+
+        var tokenResponse = JsonConvert.DeserializeObject<AccessTokenResponse>(response.Content);
+        return $"Bearer {tokenResponse.AccessToken}";
+    }
+    
     private async Task EnsureAuthenticated(bool enableRetries = true)
     {
-        if (_isAuthenticated) return;
+        if (_isAuthenticated) 
+            return;
+        
         string connectionType = _credsProviders.Get(CredsNames.ConnectionType).Value;
         switch (connectionType)
         {
             case ConnectionTypes.OAuth2:
-                var authorization = _credsProviders.Get("Authorization").Value;
-                this.AddDefaultHeader("Authorization", authorization);
+                _cachedToken = _credsProviders.Get("Authorization").Value;
                 break;
             case ConnectionTypes.Credentials:
                 string userName = _credsProviders.Get(CredsNames.Username).Value;
                 string password = _credsProviders.Get(CredsNames.Password).Value;
-                string token = await GetTokenFromCredentials(userName, password, enableRetries);
-                this.AddDefaultHeader("Authorization", token);
+                _cachedToken = await GetTokenFromCredentials(userName, password, enableRetries);
+                break;
+            case ConnectionTypes.ApiToken:
+                string baseUrl = _credsProviders.Get(CredsNames.Url).Value;
+                string apiToken = _credsProviders.Get(CredsNames.ApiToken).Value;
+                _cachedToken = await GetTokenFromApiToken(baseUrl, apiToken);
                 break;
         }
+
         _isAuthenticated = true;
     }
 
@@ -379,6 +425,21 @@ public class PhraseTmsClient : RestClient
                 var loginResponse = JsonConvert.DeserializeObject<LoginResponse>(response.Content);
                 var token = $"ApiToken {loginResponse.Token}";
                 this.AddDefaultHeader("Authorization", token);
+                _isAuthenticated = true;
+                return (true, null);
+            
+            case ConnectionTypes.ApiToken:
+                string baseUrl = _credsProviders.Get(CredsNames.Url).Value;
+                string apiToken = _credsProviders.Get(CredsNames.ApiToken).Value;
+
+                var apiTokenResponse = await ExecuteGetJwtFromApiToken(baseUrl, apiToken);
+                if (!apiTokenResponse.IsSuccessful)
+                    return (false, apiTokenResponse);
+                
+                var loginTokenResponse = JsonConvert.DeserializeObject<AccessTokenResponse>(apiTokenResponse.Content);
+                
+                string jwtFromApiToken = $"Bearer {loginTokenResponse.AccessToken}";
+                this.AddDefaultHeader("Authorization", jwtFromApiToken);
                 _isAuthenticated = true;
                 return (true, null);
                 

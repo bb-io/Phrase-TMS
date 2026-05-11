@@ -8,4 +8,5 @@ public static class CredsNames
     public const string Username = "username";
     public const string Password = "password";
     public const string AccessToken = "access_token";
+    public const string ApiToken = "api_token";
 }

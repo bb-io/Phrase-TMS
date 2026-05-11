@@ -21,9 +21,25 @@ In order to connect using the _OAuth2_ connection type, ensure that:
 - Fill in any name and description. For Redirect URI fill in: `https://bridge.blackbird.io/api/AuthorizationCode` and click _Save_.
 - Copy the _Client ID_ of the newly created OAuth app.
 
+In order to connect using the _API Token_ connection type:
+
+- Go to Settings > Profile > Access tokens and click _Generate token_.
+- Under Service, select _Phrase TMS_. Name your token for future reference.
+- Copy the value of the newly created token. You won't be able to access it again.
+
 ## Connecting
 
 Navigate to apps and search for Phrase. Click _Add Connection_ and name your connection for future reference e.g. 'My Phrase connection'.
+
+### API Token
+
+1. Select the _API Token_ connection type from the dropdown.
+2. Fill in the _API Token_ that you copied from Phrase.
+3. Select the data center your Phrase instance is hosted on. You can select between the US and EU data centers.
+4. Click _Connect_.
+5. Wait for the process to complete, confirm that the connection has appeared and the status is _Connected_.
+
+![API Token connection](image/README/apitoken_conn.png)
 
 ### OAuth2
 
@@ -74,6 +90,7 @@ Navigate to apps and search for Phrase. Click _Add Connection_ and name your con
 - **Delete conversation** Delete a plain conversation.
 - **Edit conversation** Edit a plain conversation.
 - **Create conversation** Create a plain conversation.
+- **Create multiple conversations** Create multiple plain conversations.
 - **Create LQA conversation** Create an LQA conversation.
 - **Add plain comment** Add a plain comment.
 - **Edit plain comment** Edit a plain comment.

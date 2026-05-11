@@ -10,8 +10,29 @@ public class OAuth2ConnectionDefinition : IConnectionDefinition
     {
         new()
         {
+            Name = ConnectionTypes.ApiToken,
+            DisplayName = "API Token",
+            AuthenticationType = ConnectionAuthenticationType.Undefined,
+            ConnectionProperties = new List<ConnectionProperty>
+            {
+                new(CredsNames.Url) 
+                { 
+                    DisplayName = "Base Url",
+                    Description = "Select the base URL according to your Phrase data center",
+                    DataItems = 
+                    [
+                        new(Urls.Eu, "EU data center"),
+                        new(Urls.Us,"US data center")
+                    ]
+                },
+                new(CredsNames.ApiToken) { DisplayName = "API Token", Sensitive = true }
+            }
+        },
+        new()
+        {
             Name = ConnectionTypes.OAuth2,
             AuthenticationType = ConnectionAuthenticationType.OAuth2,
+            DisplayName = "OAuth2 (deprecated - use API Token instead)",
             ConnectionProperties = new List<ConnectionProperty>
             {
                 new(CredsNames.ClientId) { DisplayName = "Client ID" },
@@ -21,9 +42,9 @@ public class OAuth2ConnectionDefinition : IConnectionDefinition
                     Description = "Select the base URL according to your Phrase data center",
                     DataItems = 
                     [
-                        new("https://cloud.memsource.com/", "EU data center"),
-                        new("https://us.cloud.memsource.com/","US data center"),
-                        new("https://cloud9.memsource.com/", "Cloud 9")
+                        new(Urls.Eu, "EU data center"),
+                        new(Urls.Us,"US data center"),
+                        new(Urls.Cloud9, "Cloud 9")
                     ]
                 }
             }
@@ -42,9 +63,9 @@ public class OAuth2ConnectionDefinition : IConnectionDefinition
                     Description = "Select the base URL according to your Phrase data center",
                     DataItems =
                     [
-                        new("https://cloud.memsource.com/", "EU data center"),
-                        new("https://us.cloud.memsource.com/","US data center"),
-                        new("https://cloud9.memsource.com/", "Cloud 9")
+                        new(Urls.Eu, "EU data center"),
+                        new(Urls.Us,"US data center"),
+                        new(Urls.Cloud9, "Cloud 9")
                     ]
                 }
             }
