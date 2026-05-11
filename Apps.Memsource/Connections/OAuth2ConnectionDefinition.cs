@@ -49,8 +49,8 @@ public class OAuth2ConnectionDefinition : IConnectionDefinition
                     ]
                 }
             }
-        }
-                new()
+        },
+        new()
         {
             Name = ConnectionTypes.ApiToken,
             DisplayName = "API Token",
