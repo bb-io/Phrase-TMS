@@ -15,7 +15,6 @@ public class OAuth2ConnectionDefinition : IConnectionDefinition
             AuthenticationType = ConnectionAuthenticationType.Undefined,
             ConnectionProperties = new List<ConnectionProperty>
             {
-                new(CredsNames.ApiToken) { DisplayName = "API Token", Sensitive = true },
                 new(CredsNames.Url) 
                 { 
                     DisplayName = "Base Url",
@@ -25,7 +24,8 @@ public class OAuth2ConnectionDefinition : IConnectionDefinition
                         new(Urls.Eu, "EU data center"),
                         new(Urls.Us,"US data center")
                     ]
-                }
+                },
+                new(CredsNames.ApiToken) { DisplayName = "API Token", Sensitive = true }
             }
         },
         new()
