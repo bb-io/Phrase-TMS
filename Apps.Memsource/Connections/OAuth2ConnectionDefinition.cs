@@ -32,6 +32,7 @@ public class OAuth2ConnectionDefinition : IConnectionDefinition
         {
             Name = ConnectionTypes.OAuth2,
             AuthenticationType = ConnectionAuthenticationType.OAuth2,
+            DisplayName = "OAuth2 (deprecated - use API Token instead)",
             ConnectionProperties = new List<ConnectionProperty>
             {
                 new(CredsNames.ClientId) { DisplayName = "Client ID" },
