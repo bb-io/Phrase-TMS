@@ -341,8 +341,8 @@ public class PhraseTmsClient : RestClient
     {
         string oauthBaseUrl = baseUrl switch
         {
-            not null when baseUrl.StartsWith(Urls.Eu) => "https://eu.phrase.com/idm/oauth/token",
-            not null when baseUrl.StartsWith(Urls.Us) => "https://us.phrase.com/idm/oauth/token",
+            not null when baseUrl.StartsWith(Urls.Eu.TrimEnd('/')) => "https://eu.phrase.com/idm/oauth/token",
+            not null when baseUrl.StartsWith(Urls.Us.TrimEnd('/')) => "https://us.phrase.com/idm/oauth/token",
             _ => string.Empty
         };
 
