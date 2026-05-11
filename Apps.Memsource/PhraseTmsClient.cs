@@ -71,7 +71,9 @@ public class PhraseTmsClient : RestClient
     
     public async Task<RestResponse> ExecuteWithoutHandlingAsync(RestRequest request, CancellationToken cancellationToken = default)
     {
-        var isLoginRequest = request.Resource.Contains("/auth/login");
+        var isLoginRequest = request.Resource.Contains("/auth/login")|| 
+                             request.Resource.Contains("/oauth/token");
+        
         if (!isLoginRequest)
         {
             var (success, authResponse) = await TryEnsureAuthenticatedWithoutThrowing();
@@ -92,7 +94,8 @@ public class PhraseTmsClient : RestClient
 
     public async Task<RestResponse> ExecuteWithHandling(RestRequest request, bool enableRetries = true)
     {
-        bool isLoginRequest = request.Resource.Contains("/auth/login");
+        var isLoginRequest = request.Resource.Contains("/auth/login")|| 
+                             request.Resource.Contains("/oauth/token");
         if (!isLoginRequest)
         {
             await EnsureAuthenticated(enableRetries);
@@ -333,7 +336,35 @@ public class PhraseTmsClient : RestClient
         var response = await ExecuteWithHandling<LoginResponse>(request, enableRetries);
         return $"ApiToken {response.Token}";
     }
+    
+    private async Task<string> GetTokenFromApiToken(string baseUrl, string apiToken, bool enableRetries)
+    {
+        string oauthBaseUrl = baseUrl switch
+        {
+            Urls.Eu => "https://eu.phrase.com/idm/oauth/token",
+            Urls.Us => "https://us.phrase.com/idm/oauth/token",
+            _ => string.Empty
+        };
 
+        if (string.IsNullOrEmpty(oauthBaseUrl))
+            throw new Exception($"Unsupported base URL for API token exchange: {baseUrl}");
+
+        using var tokenClient = new RestClient();
+        
+        var request = new RestRequest(oauthBaseUrl, Method.Post);
+        request.AddParameter("grant_type", "urn:ietf:params:oauth:grant-type:token-exchange", ParameterType.GetOrPost);
+        request.AddParameter("subject_token", apiToken, ParameterType.GetOrPost);
+        request.AddParameter("subject_token_type", "urn:phrase:params:oauth:token-type:api_token", ParameterType.GetOrPost);
+        request.AddParameter("requested_token_type", "urn:ietf:params:oauth:token-type:access_token", ParameterType.GetOrPost);
+        
+        var response = await ExecuteAsync(request);
+        if (!response.IsSuccessful)
+            throw new Exception($"Failed to exchange API token: {response.ErrorMessage ?? response.Content}");
+
+        var tokenResponse = JsonConvert.DeserializeObject<AccessTokenResponse>(response.Content);
+        return $"Bearer {tokenResponse.AccessToken}";
+    }
+    
     private async Task EnsureAuthenticated(bool enableRetries = true)
     {
         if (_isAuthenticated) 
@@ -343,13 +374,17 @@ public class PhraseTmsClient : RestClient
         switch (connectionType)
         {
             case ConnectionTypes.OAuth2:
-            case ConnectionTypes.ApiToken:
                 _cachedToken = _credsProviders.Get("Authorization").Value;
                 break;
             case ConnectionTypes.Credentials:
                 string userName = _credsProviders.Get(CredsNames.Username).Value;
                 string password = _credsProviders.Get(CredsNames.Password).Value;
                 _cachedToken = await GetTokenFromCredentials(userName, password, enableRetries);
+                break;
+            case ConnectionTypes.ApiToken:
+                string baseUrl = _credsProviders.Get(CredsNames.Url).Value;
+                string apiToken = _credsProviders.Get(CredsNames.ApiToken).Value;
+                _cachedToken = await GetTokenFromApiToken(baseUrl, apiToken, enableRetries);
                 break;
         }
 
@@ -385,6 +420,27 @@ public class PhraseTmsClient : RestClient
                 var loginResponse = JsonConvert.DeserializeObject<LoginResponse>(response.Content);
                 var token = $"ApiToken {loginResponse.Token}";
                 this.AddDefaultHeader("Authorization", token);
+                _isAuthenticated = true;
+                return (true, null);
+            
+            case ConnectionTypes.ApiToken:
+                string baseUrl = _credsProviders.Get(CredsNames.Url).Value;
+                string apiToken = _credsProviders.Get(CredsNames.ApiToken).Value;
+                
+                var apiTokenRequest = new RestRequest($"{baseUrl}/idm/oauth/token", Method.Post);
+                apiTokenRequest.AddParameter("grant_type", "urn:ietf:params:oauth:grant-type:token-exchange", ParameterType.GetOrPost);
+                apiTokenRequest.AddParameter("subject_token", apiToken, ParameterType.GetOrPost);
+                apiTokenRequest.AddParameter("subject_token_type", "urn:phrase:params:oauth:token-type:api_token", ParameterType.GetOrPost);
+                apiTokenRequest.AddParameter("requested_token_type", "urn:ietf:params:oauth:token-type:access_token", ParameterType.GetOrPost);
+        
+                var apiTokenResponse = await ExecuteAsync(apiTokenRequest);
+                if (!apiTokenResponse.IsSuccessful)
+                    return (false, apiTokenResponse);
+                
+                var loginTokenResponse = JsonConvert.DeserializeObject<AccessTokenResponse>(apiTokenResponse.Content);
+                
+                string jwtFromApiToken = $"Bearer {loginTokenResponse.AccessToken}";
+                this.AddDefaultHeader("Authorization", jwtFromApiToken);
                 _isAuthenticated = true;
                 return (true, null);
                 

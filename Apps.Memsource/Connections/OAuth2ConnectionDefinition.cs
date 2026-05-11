@@ -11,7 +11,8 @@ public class OAuth2ConnectionDefinition : IConnectionDefinition
         new()
         {
             Name = ConnectionTypes.ApiToken,
-            AuthenticationType = ConnectionAuthenticationType.OAuth2,
+            DisplayName = "API Token",
+            AuthenticationType = ConnectionAuthenticationType.Undefined,
             ConnectionProperties = new List<ConnectionProperty>
             {
                 new(CredsNames.ApiToken) { DisplayName = "API Token" },

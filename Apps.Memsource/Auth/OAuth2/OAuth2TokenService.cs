@@ -1,9 +1,7 @@
 ﻿using System.Text.Json;
-using Apps.PhraseTMS.Constants;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication.OAuth2;
 using Blackbird.Applications.Sdk.Common.Invocation;
-using Blackbird.Applications.Sdk.Utils.Extensions.Sdk;
 
 namespace Apps.PhraseTMS.Auth.OAuth2;
 
@@ -26,37 +24,16 @@ public class OAuth2TokenService(InvocationContext invocationContext)
         Dictionary<string, string> values, 
         CancellationToken cancellationToken)
     {
-        var resultDict = new Dictionary<string, string?>();
-        
-        switch (invocationContext.AuthenticationCredentialsProviders.Get(CredsNames.ConnectionType).Value)
+        var codeBodyParameters = new Dictionary<string, string>
         {
-            case ConnectionTypes.OAuth2:
-                var codeBodyParameters = new Dictionary<string, string>
-                {
-                    { "grant_type", "authorization_code" },
-                    { "client_id", values["client_id"] },
-                    { "redirect_uri", $"{InvocationContext.UriInfo.BridgeServiceUrl.ToString().TrimEnd('/')}/AuthorizationCode" },
-                    { "code", code }
-                };
-                
-                var oauthUrl = values["url"].TrimEnd('/') + "/web/oauth/token";
-                resultDict = await RequestToken(codeBodyParameters, oauthUrl, cancellationToken);
-                break;
-            case ConnectionTypes.ApiToken:
-                var tokenBodyParameters = new Dictionary<string, string>
-                {
-                    { "grant_type", "urn:ietf:params:oauth:grant-type:token-exchange" },
-                    { "subject_token", invocationContext.AuthenticationCredentialsProviders.Get(CredsNames.ApiToken).Value },
-                    { "subject_token_type", "urn:phrase:params:oauth:token-type:api_token" },
-                    { "requested_token_type", "urn:ietf:params:oauth:token-type:access_token" }
-                };
-                
-                var tokenUrl = values["url"].TrimEnd('/') + "/idm/oauth/token";
-                resultDict = await RequestToken(tokenBodyParameters, tokenUrl, cancellationToken);
-                break;
-        }
-
-        return resultDict;
+            { "grant_type", "authorization_code" },
+            { "client_id", values["client_id"] },
+            { "redirect_uri", $"{InvocationContext.UriInfo.BridgeServiceUrl.ToString().TrimEnd('/')}/AuthorizationCode" },
+            { "code", code }
+        };
+        
+        var oauthUrl = values["url"].TrimEnd('/') + "/web/oauth/token";
+        return await RequestToken(codeBodyParameters, oauthUrl, cancellationToken);
     }
 
     public Task RevokeToken(Dictionary<string, string> values)

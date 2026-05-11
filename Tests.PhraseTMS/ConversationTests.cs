@@ -87,9 +87,9 @@ public class ConversationTests : TestBaseMultipleConnections
     {
         // Arrange
         var actions = new ConversationActions(context);
-        var projectRequest = new ProjectRequest { ProjectUId = "YWxQLsQXtwbN2FnxwoSFx0" };
-        var jobRequest = new JobRequest { JobUId = "S1Lng7SgldQMeiwPm2srx3" };
-        var references = new ConversationReferencesRequest { SegmentId = "MXArLeioKmu7Bvcq_dc2:0" };
+        var projectRequest = new ProjectRequest { ProjectUId = "xc5XRBM51xQG9aaFBzUKp6" };
+        var jobRequest = new JobRequest { JobUId = "PBpFKurDk1g1t4DF27BfUc" };
+        var references = new ConversationReferencesRequest { SegmentId = "BwMRqexZaWkjRSvq_dc10:0" };
         var comment = new AddEditPlainCommentRequest { Text = "oi mate :)" };
 
         // Act
