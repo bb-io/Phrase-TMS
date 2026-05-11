@@ -11,6 +11,11 @@
       "username": "",
       "password": "",
       "url": "https://us.cloud.memsource.com"
+    },
+    {
+      "connection_type": "ApiToken",
+      "api_token": "",
+      "url": "https://us.cloud.memsource.com"
     }
   ],
   "TestFolder": "TestFiles"

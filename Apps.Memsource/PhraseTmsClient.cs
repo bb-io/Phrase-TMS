@@ -336,13 +336,13 @@ public class PhraseTmsClient : RestClient
         var response = await ExecuteWithHandling<LoginResponse>(request, enableRetries);
         return $"ApiToken {response.Token}";
     }
-    
-    private async Task<string> GetTokenFromApiToken(string baseUrl, string apiToken, bool enableRetries)
+
+    private async Task<RestResponse> ExecuteGetJwtFromApiToken(string baseUrl, string apiToken)
     {
         string oauthBaseUrl = baseUrl switch
         {
-            Urls.Eu => "https://eu.phrase.com/idm/oauth/token",
-            Urls.Us => "https://us.phrase.com/idm/oauth/token",
+            not null when baseUrl.StartsWith(Urls.Eu) => "https://eu.phrase.com/idm/oauth/token",
+            not null when baseUrl.StartsWith(Urls.Us) => "https://us.phrase.com/idm/oauth/token",
             _ => string.Empty
         };
 
@@ -357,7 +357,12 @@ public class PhraseTmsClient : RestClient
         request.AddParameter("subject_token_type", "urn:phrase:params:oauth:token-type:api_token", ParameterType.GetOrPost);
         request.AddParameter("requested_token_type", "urn:ietf:params:oauth:token-type:access_token", ParameterType.GetOrPost);
         
-        var response = await ExecuteAsync(request);
+        return await ExecuteAsync(request);
+    }
+    
+    private async Task<string> GetTokenFromApiToken(string baseUrl, string apiToken)
+    {
+        var response = await ExecuteGetJwtFromApiToken(baseUrl, apiToken);
         if (!response.IsSuccessful)
             throw new Exception($"Failed to exchange API token: {response.ErrorMessage ?? response.Content}");
 
@@ -384,7 +389,7 @@ public class PhraseTmsClient : RestClient
             case ConnectionTypes.ApiToken:
                 string baseUrl = _credsProviders.Get(CredsNames.Url).Value;
                 string apiToken = _credsProviders.Get(CredsNames.ApiToken).Value;
-                _cachedToken = await GetTokenFromApiToken(baseUrl, apiToken, enableRetries);
+                _cachedToken = await GetTokenFromApiToken(baseUrl, apiToken);
                 break;
         }
 
@@ -426,14 +431,8 @@ public class PhraseTmsClient : RestClient
             case ConnectionTypes.ApiToken:
                 string baseUrl = _credsProviders.Get(CredsNames.Url).Value;
                 string apiToken = _credsProviders.Get(CredsNames.ApiToken).Value;
-                
-                var apiTokenRequest = new RestRequest($"{baseUrl}/idm/oauth/token", Method.Post);
-                apiTokenRequest.AddParameter("grant_type", "urn:ietf:params:oauth:grant-type:token-exchange", ParameterType.GetOrPost);
-                apiTokenRequest.AddParameter("subject_token", apiToken, ParameterType.GetOrPost);
-                apiTokenRequest.AddParameter("subject_token_type", "urn:phrase:params:oauth:token-type:api_token", ParameterType.GetOrPost);
-                apiTokenRequest.AddParameter("requested_token_type", "urn:ietf:params:oauth:token-type:access_token", ParameterType.GetOrPost);
-        
-                var apiTokenResponse = await ExecuteAsync(apiTokenRequest);
+
+                var apiTokenResponse = await ExecuteGetJwtFromApiToken(baseUrl, apiToken);
                 if (!apiTokenResponse.IsSuccessful)
                     return (false, apiTokenResponse);
                 
