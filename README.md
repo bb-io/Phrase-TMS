@@ -64,6 +64,10 @@ Navigate to apps and search for Phrase. Click _Add Connection_ and name your con
 
 ## Actions
 
+### Automation
+
+- **Update automated project settings** Update specific automated project settings.
+
 ### Analysis
 
 - **Search job analyses** Search analyses for a specific job.
