@@ -188,4 +188,8 @@ public class DataSources : TestBaseMultipleConnections
     [TestMethod, ContextDataSource]
     public async Task CustomFieldUrlDataHandler_ReturnsFields(InvocationContext context)
         => await Test(new CustomFieldUrlDataHandler(context));
+    
+    [TestMethod, ContextDataSource]
+    public async Task AutomatedProjectSettingsDataHandler_ReturnsSettings(InvocationContext context)
+        => await Test(new AutomatedProjectSettingsDataHandler(context));
 }
