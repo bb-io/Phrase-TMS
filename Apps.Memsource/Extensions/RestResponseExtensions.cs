@@ -1,5 +1,8 @@
-﻿using RestSharp;
+﻿using System.Net;
+using RestSharp;
 using System.Net.Http.Headers;
+using Apps.PhraseTMS.Dtos.Auth;
+using Newtonsoft.Json;
 
 namespace Apps.PhraseTMS.Extensions;
 
@@ -21,5 +24,24 @@ public static class RestResponseExtensions
         }
 
         return fallbackName;
+    }
+    
+    public static bool IsInvalidGrant(this RestResponse response)
+    {
+        if (response.StatusCode != HttpStatusCode.BadRequest && response.StatusCode != HttpStatusCode.Unauthorized)
+            return false;
+
+        if (string.IsNullOrWhiteSpace(response.Content))
+            return false;
+
+        try
+        {
+            var error = JsonConvert.DeserializeObject<AuthErrorDto>(response.Content);
+            return error?.Error == "invalid_grant";
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
     }
 }
