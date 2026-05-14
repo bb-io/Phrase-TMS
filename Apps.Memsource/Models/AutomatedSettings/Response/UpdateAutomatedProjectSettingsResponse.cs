@@ -3,7 +3,7 @@ using Blackbird.Applications.Sdk.Common;
 
 namespace Apps.PhraseTMS.Models.AutomatedSettings.Response;
 
-public record UpdateAutomatedProjectSettingsResponse(AutomatedProjectSettingDto dto)
+public class UpdateAutomatedProjectSettingsResponse(AutomatedProjectSettingDto dto)
 {
     [Display("Setting ID")] 
     public string Id { get; set; } = dto.Id;
