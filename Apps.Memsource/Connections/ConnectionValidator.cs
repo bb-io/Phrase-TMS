@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Apps.PhraseTMS.Extensions;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Connections;
@@ -18,7 +19,7 @@ public class ConnectionValidator(InvocationContext invocationContext) : BaseInvo
             var request = new RestRequest("/api2/v1/auth/whoAmI");
 
             var response = await client.ExecuteWithoutHandlingAsync(request, cancellationToken);
-            if(response.StatusCode == HttpStatusCode.Unauthorized)
+            if (response.StatusCode == HttpStatusCode.Unauthorized || response.IsInvalidGrant())
             {
                 return new()
                 {
