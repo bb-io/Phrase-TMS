@@ -10,7 +10,7 @@ using RestSharp;
 
 namespace Apps.PhraseTMS.Actions;
 
-[ActionList]
+[ActionList("Automations")]
 public class AutomationActions(InvocationContext invocationContext) : PhraseInvocable(invocationContext)
 {
     //https://developers.phrase.com/en/api/tms/latest/automations/update-automated-project-settings
