@@ -28,7 +28,7 @@ public class AutomationActions(InvocationContext invocationContext) : PhraseInvo
             { "name", existingSettingsResponse.Name },
             { "monitoredFolders", existingSettingsResponse.MonitoredFolders },
             { "translationExports", existingSettingsResponse.TranslationExports },
-            { "selectedTargetLangs", input.SelectedTargetLanguages },
+            { "selectedTargetLangs", input.SelectedTargetLanguages ?? existingSettingsResponse.SelectedTargetLanguages },
             { "active", input.IsActive ?? existingSettingsResponse.IsActive }
         };
         
