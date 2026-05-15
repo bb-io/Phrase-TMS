@@ -7,9 +7,7 @@ using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
 using RestSharp;
-using Apps.PhraseTMS.Constants;
 using Blackbird.Applications.Sdk.Common.Invocation;
-using Blackbird.Applications.Sdk.Common.Exceptions;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -130,7 +128,7 @@ public class CustomFieldsActions(InvocationContext invocationContext) : PhraseIn
                 NullValueHandling = NullValueHandling.Ignore
             }); ;
             
-            var response = await Client.ExecuteAsync(request);
+            await Client.ExecuteWithHandling(request);
         }
         else 
         {
@@ -138,7 +136,7 @@ public class CustomFieldsActions(InvocationContext invocationContext) : PhraseIn
             var body = "{\"customFieldInstances\": [{\"customField\":{\"uid\":\"" + input.FieldUId + "\"}, \"value\": \"" + Value + "\"}]}";
             var request = new RestRequest(endpoint, Method.Post);
             request.AddStringBody(body, DataFormat.Json);
-            var response = await Client.ExecuteAsync(request);
+            await Client.ExecuteWithHandling(request);
         }
     }
 
@@ -164,7 +162,7 @@ public class CustomFieldsActions(InvocationContext invocationContext) : PhraseIn
                     NullValueHandling = NullValueHandling.Ignore
                 }); 
 
-            var response = await Client.ExecuteAsync(request);
+            await Client.ExecuteWithHandling(request);
         }
         else
         {
@@ -172,7 +170,7 @@ public class CustomFieldsActions(InvocationContext invocationContext) : PhraseIn
             var body = "{\"customFieldInstances\": [{\"customField\":{\"uid\":\"" + input.FieldUId + "\"}, \"value\": " + Value + "}]}";
             var request = new RestRequest(endpoint, Method.Post);
             request.AddStringBody(body, DataFormat.Json);
-            var response = await Client.ExecuteAsync(request);
+            await Client.ExecuteWithHandling(request);
         }
 
     }
@@ -201,7 +199,7 @@ public class CustomFieldsActions(InvocationContext invocationContext) : PhraseIn
                     NullValueHandling = NullValueHandling.Ignore
                 });
 
-            var response = await Client.ExecuteAsync(request);
+            await Client.ExecuteWithHandling(request);
         }
         else
         {
@@ -211,7 +209,7 @@ public class CustomFieldsActions(InvocationContext invocationContext) : PhraseIn
             var request = new RestRequest(endpoint, Method.Post);
             request.AddStringBody(body, DataFormat.Json);
 
-            var response = await Client.ExecuteAsync(request);
+            await Client.ExecuteWithHandling(request);
         }
     }
 
@@ -232,7 +230,7 @@ public class CustomFieldsActions(InvocationContext invocationContext) : PhraseIn
             var putBody = new { value = dateString };
             var putRequest = new RestRequest(putEndpoint, Method.Put)
                 .WithJsonBody(putBody);
-            var putResponse = await Client.ExecuteWithHandling(putRequest);
+            await Client.ExecuteWithHandling(putRequest);
         }
         else
         {
@@ -250,11 +248,10 @@ public class CustomFieldsActions(InvocationContext invocationContext) : PhraseIn
             };
             var postRequest = new RestRequest(postEndpoint, Method.Post)
                 .WithJsonBody(postBody);
-            var postResponse = await Client.ExecuteWithHandling(postRequest);
+            await Client.ExecuteWithHandling(postRequest);
         }
     }
-
-
+    
     [Action("Set project single select custom field value", Description = "Sets the single select value of a project custom field")]
     public async Task SetSingleSelectCustomField([ActionParameter] ProjectRequest projectRequest, [ActionParameter] SingleSelectCustomFieldRequest input, [ActionParameter] SelectedOptionRequest Value)
     {
@@ -269,7 +266,7 @@ public class CustomFieldsActions(InvocationContext invocationContext) : PhraseIn
             var request = new RestRequest(endpoint, Method.Put);
             var body = "{\"selectedOptions\": [{\"uid\": \""+Value.OptionUId+"\"}]}";
             request.AddStringBody(body, DataFormat.Json); 
-            var response = await Client.ExecuteAsync(request);
+            await Client.ExecuteWithHandling(request);
         }
         else
         {
@@ -277,12 +274,7 @@ public class CustomFieldsActions(InvocationContext invocationContext) : PhraseIn
             var body = "{\"customFieldInstances\": [{\"customField\":{\"uid\":\"" + input.FieldUId + "\"}, \"selectedOptions\": [{\"uid\": \""+Value.OptionUId+"\"}]}]}";
             var request = new RestRequest(endpoint, Method.Post);
             request.AddStringBody(body, DataFormat.Json);
-            var response = await Client.ExecuteAsync(request);
+            await Client.ExecuteWithHandling(request);
         }
-
     }
-
 }
-
-
-
