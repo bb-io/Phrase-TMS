@@ -30,8 +30,8 @@ public class CustomFieldTests : TestBaseMultipleConnections
     {
         // Arrange
         var action = new CustomFieldsActions(context);
-        var project = new ProjectRequest { ProjectUId = "B1hg3UPb3dQoqaIheND4D5" };
-        var customField = new UrlCustomFieldRequest { FieldUId = "qUTQ7vF7YpoP9Rhewu2lg0" };
+        var project = new ProjectRequest { ProjectUId = "xc5XRBM51xQG9aaFBzUKp6" };
+        var customField = new UrlCustomFieldRequest { FieldUId = "W8RnxMfxGtoz9t6P34zxE0" };
 
         // Act
         await action.SetUrlCustomField(project, customField, "https://www.larksuite.com/hc/en-US/articles/test");
