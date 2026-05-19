@@ -10,6 +10,19 @@ namespace Tests.PhraseTMS;
 public class CustomFieldTests : TestBaseMultipleConnections
 {
     [TestMethod, ContextDataSource]
+    public async Task SetDateCustomField_works(InvocationContext context)
+    {
+        // Arrange
+        var actions = new CustomFieldsActions(context);
+        var date = DateTime.UtcNow.AddDays(15);
+        var project = new ProjectRequest { ProjectUId = "0SBo723Ge0wHfk0A1k1XWn0" };
+        var dateCustomField = new DateCustomFieldRequest { FieldUId = "gtCnCd6aZ0SkaGXu8wETa1" };
+
+        // Act
+        await actions.SetDateCustomField(project, dateCustomField, date);
+    }
+    
+    [TestMethod, ContextDataSource]
     public async Task GetCustomUrlField_IsSuccess(InvocationContext context)
     {
         // Arrange
