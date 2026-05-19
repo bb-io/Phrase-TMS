@@ -288,7 +288,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         var workflowLevel = await Client.GetWorkflowstepLevel(projectRequest.ProjectUId, workflowStepRequest.WorkflowStepId);
         request.AddQueryParameter("workflowLevel", workflowLevel);
 
-        var response = await Client.ExecuteAsync(request);
+        var response = await Client.ExecuteWithHandling(request);
         using var doc = JsonDocument.Parse(response?.Content);
         string jobUid = doc.RootElement.GetProperty("job").GetProperty("uid").GetString();
 
