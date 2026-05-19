@@ -29,11 +29,11 @@ public static class AnalysisHelper
             string originalLocale = langObj["targetLang"]?.ToString() ?? "unknown";
             string normalizedLocale = originalLocale.Replace('_', '-');
 
-            if (normalizedLocale.Split('-').Length > 1)
+            var localeParts = normalizedLocale.Split('-'); 
+            if (localeParts.Length > 1) 
             {
-                string[] splitLocale = normalizedLocale.Split('-'); 
-                string localeCode = splitLocale.Last().ToUpper();
-                normalizedLocale = splitLocale[0] + '-' + localeCode;
+                localeParts[^1] = localeParts[^1].ToUpperInvariant();
+                normalizedLocale = string.Join('-', localeParts);
             }
             
             if (langObj["data"] is JObject dataNode)
