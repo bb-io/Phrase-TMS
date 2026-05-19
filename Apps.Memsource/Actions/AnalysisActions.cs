@@ -1,8 +1,10 @@
-﻿using Apps.PhraseTMS.Constants;
+﻿using System.Text;
+using Apps.PhraseTMS.Constants;
 using Apps.PhraseTMS.DataSourceHandlers;
 using Apps.PhraseTMS.DataSourceHandlers.StaticHandlers;
 using Apps.PhraseTMS.Dtos.Analysis;
 using Apps.PhraseTMS.Dtos.Jobs;
+using Apps.PhraseTMS.Helpers;
 using Apps.PhraseTMS.Models.Analysis.Requests;
 using Apps.PhraseTMS.Models.Analysis.Responses;
 using Apps.PhraseTMS.Models.Jobs.Requests;
@@ -11,10 +13,14 @@ using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Dictionaries;
 using Blackbird.Applications.Sdk.Common.Dynamic;
+using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
+using Blackbird.Filters.Analysis.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 
 namespace Apps.PhraseTMS.Actions;
@@ -22,7 +28,6 @@ namespace Apps.PhraseTMS.Actions;
 [ActionList("Analysis")]
 public class AnalysisActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : PhraseInvocable(invocationContext)
 {
-
     [Action("Search job analyses", Description = "Search analyses for a specific job")]
     public async Task<ListAnalysesResponse> ListAnalyses(
         [ActionParameter] ProjectRequest projectRequest,
@@ -96,8 +101,6 @@ public class AnalysisActions(InvocationContext invocationContext, IFileManagemen
 
         return selected;
     }
-
-
 
     [Action("Search project analyses", Description = "Search analyses for a specific project")]
     public async Task<ListAnalysesResponse> ListProjectAnalyses(
@@ -188,6 +191,60 @@ public class AnalysisActions(InvocationContext invocationContext, IFileManagemen
         var fileReference = await fileManagementClient.UploadAsync(memoryStream, MimeTypes.GetMimeType(fileName), fileName);
 
         return new AnalysisFileResponse { AnalysisFile = fileReference };
+    }
+    
+    [Action("Export project analysis", Description = 
+        "Get raw and normalized project analysis JSON output. " +
+        "The output of this action can be used by another app that supports importing analysis data")]
+    public async Task<ExportProjectAnalysisResponse> ExportProjectAnalysis(
+        [ActionParameter] ProjectRequest projectRequest)
+    {
+        var jobsRequest = new RestRequest($"/api2/v2/projects/{projectRequest.ProjectUId}/jobs");
+        var jobsResponse = await Client.Paginate<ListJobDto>(jobsRequest);
+        
+        var allJobUids = jobsResponse.Select(x => x.Uid).ToList();
+        if (allJobUids.Count == 0)
+            throw new PluginMisconfigurationException("The project has no jobs to analyze.");
+
+        var createRequest = new RestRequest("/api2/v2/analyses", Method.Post);
+        var payload = new 
+        {
+            jobs = allJobUids.Select(uid => new { uid }).ToList(),
+            analyzeByProvider = false
+        };
+        createRequest.WithJsonBody(payload, JsonConfig.Settings);
+
+        var asyncResponse = await Client.PerformMultipleAsyncRequest<CreateAnalysisDto>(createRequest);
+        if (!asyncResponse.Any())
+             throw new PluginMisconfigurationException("Analysis creation failed or returned empty.");
+
+        List<Analysis> masterAnalysisList = [];
+        foreach (var createdAnalysis in asyncResponse)
+        {
+            string analysisId = createdAnalysis.Analyse.Id;
+
+            var downloadRequest = new RestRequest($"/api2/v1/analyses/{analysisId}/download?format=JSON")
+                .AddHeader("Accept", "application/octet-stream");
+
+            var downloadResponse = await Client.ExecuteWithHandling(downloadRequest);
+            var bytes = downloadResponse.RawBytes;
+            if (bytes == null)
+                continue;
+
+            string jsonString = Encoding.UTF8.GetString(bytes);
+            JObject root = JObject.Parse(jsonString);
+            JArray languageParts = (JArray)root["analyseLanguageParts"]!;
+            
+            List<Analysis> parsedAnalyses = AnalysisHelper.GenerateAnalysis(languageParts);
+            masterAnalysisList.AddRange(parsedAnalyses);
+        }
+        
+        string outputJsonString = JsonConvert.SerializeObject(masterAnalysisList, Formatting.Indented);
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(outputJsonString));
+    
+        var fileName = $"analysis_{projectRequest.ProjectUId}.json";
+        var fileReference = await fileManagementClient.UploadAsync(stream, "application/json", fileName);
+        return new(fileReference);
     }
 
     [Action("Update analysis", Description = "Update provider and net rate scheme for an analysis")]

@@ -76,6 +76,8 @@ Navigate to apps and search for Phrase. Click _Add Connection_ and name your con
 - **Get analysis data** Get full details for a specific analysis.
 - **Create analyses** Create one or more analyses for jobs in a project.
 - **Download analysis file** Download an analysis file.
+- **Export project analysis** Get raw and normalized project analysis JSON output. 
+The output of this action can be used by another app that supports importing analysis data.
 - **Update analysis** Update provider and net rate scheme for an analysis.
 - **Delete analyses** Delete one or more analyses.
 

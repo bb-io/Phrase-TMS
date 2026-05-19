@@ -1,10 +1,11 @@
 ﻿using Apps.PhraseTMS.Constants;
 using Apps.PhraseTMS.Helpers.Models;
 using Blackbird.Filters.Transformations;
-using Blackbird.Filters.Xliff.Xliff2;
 using System.Xml.Linq;
+using Blackbird.Filters.Extensions;
 
 namespace Apps.PhraseTMS.Helpers;
+
 public class MXLIFFHelper(string baseUrl)
 {
     public static readonly XNamespace MNs = "http://www.memsource.com/mxlf/2.0";
