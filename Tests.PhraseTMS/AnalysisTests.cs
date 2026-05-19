@@ -1,34 +1,48 @@
-﻿using Apps.PhraseTMS.Actions;
-using Apps.PhraseTMS.Models.Clients.Requests;
+﻿using PhraseTMSTests.Base;
+using Apps.PhraseTMS.Actions;
+using Apps.PhraseTMS.Constants;
+using Apps.PhraseTMS.Models.Analysis.Requests;
+using Apps.PhraseTMS.Models.Jobs.Requests;
+using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.Sdk.Common.Invocation;
-using PhraseTMSTests.Base;
 
 namespace Tests.PhraseTMS;
 
 [TestClass]
-public class ClientTests : TestBaseMultipleConnections
+public class AnalysisTests : TestBaseMultipleConnections
 {
-    public const string CLIENT_ID = "qdEcGUaxnLrs4d6z4B89c0";
+    public const string PROJECT_ID = "INLIOpS573UU4BbFBzs9v0";
+    public const string JOB_ID = "UkZvUPhvw1QItyADWZIPp3";
 
-    [TestMethod, ContextDataSource]
-    public async Task Search_clients_works(InvocationContext context)
+    [TestMethod, ContextDataSource(ConnectionTypes.Credentials)]
+    public async Task Create_analysis_works(InvocationContext context)
     {
-        var actions = new ClientActions(context);
+        // Arrange
+        var actions = new AnalysisActions(context, FileManager);
+        var projectRequest = new ProjectRequest { ProjectUId = PROJECT_ID };
+        var analysis = new CreateAnalysisInput { JobsUIds = new List<string> { JOB_ID } };
+        var workflowStep = new WorkflowStepOptionalRequest { };
+        var jobsQuery = new ListAllJobsQuery { };
 
-        var result = await actions.ListClients(new ListClientsQuery { });
+        // Act
+        var result = await actions.CreateAnalysis(projectRequest, analysis, workflowStep, jobsQuery);
 
+        // Assert
         PrintResult(result);
-        Assert.IsTrue(result.Clients.Any() && result.Clients.All(x => x.UId != null));
+        Assert.IsTrue(result.Analyses.Any() && result.Analyses.All(x => x.Uid != null));
     }
 
-    [TestMethod, ContextDataSource]
-    public async Task Get_client_works(InvocationContext context)
+    [TestMethod, ContextDataSource(ConnectionTypes.ApiToken)]
+    public async Task ExportProjectAnalysis_IsSuccess(InvocationContext context)
     {
-        var actions = new ClientActions(context);
+        // Arrange
+        var actions = new AnalysisActions(context, FileManager);
+        var projectRequest = new ProjectRequest { ProjectUId = "kdr3NNw8RLX50ynOl9a9b4" };
 
-        var result = await actions.GetClient(new ClientRequest { ClientUid = CLIENT_ID });
+        // Act
+        var result = await actions.ExportProjectAnalysis(projectRequest);
 
-        PrintResult(result);
-        Assert.IsNotNull(result);
+        // Assert
+        TestContext.WriteLine(result.ExportedAnalysis.Name);
     }
 }
