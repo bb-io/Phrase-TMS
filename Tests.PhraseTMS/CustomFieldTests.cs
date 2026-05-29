@@ -19,6 +19,7 @@ public class CustomFieldTests : TestBaseMultipleConnections
     private const string JOB_SINGLE_SELECT_FIELD_ID = "";
     private const string JOB_SINGLE_SELECT_OPTION_ID = "";
     private const string JOB_MULTI_SELECT_FIELD_ID = "";
+    private static readonly IEnumerable<string> JOB_MULTI_SELECT_OPTION_IDS = Array.Empty<string>();
 
     [TestMethod, ContextDataSource]
     public async Task SetDateCustomField_works(InvocationContext context)
@@ -142,11 +143,38 @@ public class CustomFieldTests : TestBaseMultipleConnections
         Assert.IsNotNull(response);
     }
 
+    [TestMethod, ContextDataSource]
+    public async Task SetAndGetJobMultiSelectCustomField_IsSuccess(InvocationContext context)
+    {
+        var action = new CustomFieldsActions(context);
+        var project = new ProjectRequest { ProjectUId = GetRequiredValue(JOB_CUSTOM_FIELD_PROJECT_ID, nameof(JOB_CUSTOM_FIELD_PROJECT_ID)) };
+        var job = new JobRequest { JobUId = GetRequiredValue(JOB_CUSTOM_FIELD_JOB_ID, nameof(JOB_CUSTOM_FIELD_JOB_ID)) };
+        var customField = new JobMultiSelectCustomFieldRequest { FieldUId = GetRequiredValue(JOB_MULTI_SELECT_FIELD_ID, nameof(JOB_MULTI_SELECT_FIELD_ID)) };
+        var selectedOptions = new JobSelectedOptionsRequest
+        {
+            OptionUIds = GetRequiredValues(JOB_MULTI_SELECT_OPTION_IDS, nameof(JOB_MULTI_SELECT_OPTION_IDS))
+        };
+
+        await action.SetJobMultiSelectCustomField(project, job, customField, selectedOptions);
+        var response = await action.GetJobMultiSelectCustomField(project, job, customField);
+
+        Assert.IsTrue(response.Results.Any());
+    }
+
     private static string GetRequiredValue(string value, string name)
     {
         if (string.IsNullOrWhiteSpace(value))
             Assert.Inconclusive($"Fill in {name} in {nameof(CustomFieldTests)} before running this test");
 
         return value;
+    }
+
+    private static IEnumerable<string> GetRequiredValues(IEnumerable<string> values, string name)
+    {
+        var result = values.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+        if (!result.Any())
+            Assert.Inconclusive($"Fill in {name} in {nameof(CustomFieldTests)} before running this test");
+
+        return result;
     }
 }

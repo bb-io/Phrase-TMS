@@ -391,6 +391,15 @@ public class CustomFieldsActions(InvocationContext invocationContext) : PhraseIn
         await UpsertJobCustomFieldSelectedOptions(projectRequest, jobRequest, input.FieldUId, [value.OptionUId]);
     }
 
+    [Action("Set job multi select custom field value", Description = "Sets the multi select value of a job custom field")]
+    public async Task SetJobMultiSelectCustomField([ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] JobRequest jobRequest,
+        [ActionParameter] JobMultiSelectCustomFieldRequest input,
+        [ActionParameter] JobSelectedOptionsRequest value)
+    {
+        await UpsertJobCustomFieldSelectedOptions(projectRequest, jobRequest, input.FieldUId, value.OptionUIds);
+    }
+
     private async Task<ProjectCustomFieldDto?> GetJobCustomFieldInstance(ProjectRequest projectRequest,
         JobRequest jobRequest, string fieldUid)
     {
