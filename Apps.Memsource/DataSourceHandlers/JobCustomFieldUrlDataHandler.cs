@@ -1,0 +1,24 @@
+using Apps.PhraseTMS.Dtos;
+using Blackbird.Applications.Sdk.Common.Dynamic;
+using Blackbird.Applications.Sdk.Common.Invocation;
+using RestSharp;
+
+namespace Apps.PhraseTMS.DataSourceHandlers;
+
+public class JobCustomFieldUrlDataHandler(InvocationContext invocationContext)
+    : PhraseInvocable(invocationContext), IAsyncDataSourceItemHandler
+{
+    public async Task<IEnumerable<DataSourceItem>> GetDataAsync(DataSourceContext context,
+        CancellationToken cancellationToken)
+    {
+        var request = new RestRequest("api2/v1/customFields", Method.Get)
+            .AddQueryParameter("allowedEntities", "JOB")
+            .AddQueryParameter("types", "URL");
+
+        if (!string.IsNullOrWhiteSpace(context.SearchString))
+            request.AddQueryParameter("name", context.SearchString);
+
+        var response = await Client.PaginateOnce<CustomFieldDto>(request);
+        return response.Select(x => new DataSourceItem(x.UId, x.Name));
+    }
+}
