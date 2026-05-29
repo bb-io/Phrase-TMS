@@ -1,13 +1,16 @@
 ﻿using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Models.CustomFields;
+using Apps.PhraseTMS.Models.Jobs.Requests;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
-using Blackbird.Applications.Sdk.Utils.Extensions.Http;
-using Newtonsoft.Json.Serialization;
-using Newtonsoft.Json;
-using RestSharp;
+using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Common.Invocation;
+using Blackbird.Applications.Sdk.Utils.Extensions.Http;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using RestSharp;
+using System.Globalization;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -276,5 +279,235 @@ public class CustomFieldsActions(InvocationContext invocationContext) : PhraseIn
             request.AddStringBody(body, DataFormat.Json);
             await Client.ExecuteWithHandling(request);
         }
+    }
+
+    [Action("Get job text custom field value", Description = "Gets the text value of a job custom field")]
+    public async Task<string?> GetJobTextCustomField([ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] JobRequest jobRequest,
+        [ActionParameter] JobTextCustomFieldRequest input)
+    {
+        var field = await GetJobCustomFieldInstance(projectRequest, jobRequest, input.FieldUId);
+        return string.IsNullOrWhiteSpace(field?.Value) ? null : field.Value;
+    }
+
+    [Action("Get job numeric custom field value", Description = "Gets the value of a job custom field of type number")]
+    public async Task<double?> GetJobNumberCustomField([ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] JobRequest jobRequest,
+        [ActionParameter] JobNumberCustomFieldRequest input)
+    {
+        var field = await GetJobCustomFieldInstance(projectRequest, jobRequest, input.FieldUId);
+        if (string.IsNullOrWhiteSpace(field?.Value))
+            return null;
+
+        return double.TryParse(field.Value, out var result) ? result : null;
+    }
+
+    [Action("Get job date custom field value", Description = "Gets the value of a job custom field of type date")]
+    public async Task<DateTime?> GetJobDateCustomField([ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] JobRequest jobRequest,
+        [ActionParameter] JobDateCustomFieldRequest input)
+    {
+        var field = await GetJobCustomFieldInstance(projectRequest, jobRequest, input.FieldUId);
+        if (string.IsNullOrWhiteSpace(field?.Value))
+            return null;
+
+        return DateTime.TryParse(field.Value, out var result) ? result : null;
+    }
+
+    [Action("Get job single select custom field value", Description = "Gets the value of a job custom field of type single select")]
+    public async Task<string?> GetJobSingleSelectCustomField([ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] JobRequest jobRequest,
+        [ActionParameter] JobSingleSelectCustomFieldRequest input)
+    {
+        var field = await GetJobCustomFieldInstance(projectRequest, jobRequest, input.FieldUId);
+        var selectedValue = field?.selectedOptions?.FirstOrDefault()?.value;
+        return string.IsNullOrWhiteSpace(selectedValue) ? null : selectedValue;
+    }
+
+    [Action("Get job URL custom field value", Description = "Gets the URL value of a job custom field")]
+    public async Task<string?> GetJobUrlCustomField([ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] JobRequest jobRequest,
+        [ActionParameter] JobUrlCustomFieldRequest input)
+    {
+        var field = await GetJobCustomFieldInstance(projectRequest, jobRequest, input.FieldUId);
+        return string.IsNullOrWhiteSpace(field?.Value) ? null : field.Value;
+    }
+
+    [Action("Get job multi select custom field value", Description = "Gets the value of a job custom field of type multi select")]
+    public async Task<GetMultiSelectResponse> GetJobMultiSelectCustomField([ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] JobRequest jobRequest,
+        [ActionParameter] JobMultiSelectCustomFieldRequest input)
+    {
+        var field = await GetJobCustomFieldInstance(projectRequest, jobRequest, input.FieldUId);
+        return new GetMultiSelectResponse
+        {
+            Results = field?.selectedOptions?.Select(x => x.value) ?? Enumerable.Empty<string>()
+        };
+    }
+
+    [Action("Set job text custom field value", Description = "Sets the text value of a job custom field")]
+    public async Task SetJobTextCustomField([ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] JobRequest jobRequest,
+        [ActionParameter] JobTextCustomFieldRequest input,
+        [ActionParameter] string Value)
+    {
+        await UpsertJobCustomFieldValue(projectRequest, jobRequest, input.FieldUId, Value);
+    }
+
+    [Action("Set job numeric custom field value", Description = "Sets the number type value of a job custom field")]
+    public async Task SetJobNumberCustomField([ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] JobRequest jobRequest,
+        [ActionParameter] JobNumberCustomFieldRequest input,
+        [ActionParameter] double Value)
+    {
+        await UpsertJobCustomFieldValue(projectRequest, jobRequest, input.FieldUId, Value);
+    }
+
+    [Action("Set job URL custom field value", Description = "Sets the URL value of a job custom field")]
+    public async Task SetJobUrlCustomField([ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] JobRequest jobRequest,
+        [ActionParameter] JobUrlCustomFieldRequest input,
+        [ActionParameter] string Value)
+    {
+        await UpsertJobCustomFieldValue(projectRequest, jobRequest, input.FieldUId, Value);
+    }
+
+    [Action("Set job date custom field value", Description = "Sets the date type value of a job custom field")]
+    public async Task SetJobDateCustomField([ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] JobRequest jobRequest,
+        [ActionParameter] JobDateCustomFieldRequest input,
+        [ActionParameter] DateTime Value)
+    {
+        var dateString = Value.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+        await UpsertJobCustomFieldValue(projectRequest, jobRequest, input.FieldUId, dateString);
+    }
+
+    [Action("Set job single select custom field value", Description = "Sets the single select value of a job custom field")]
+    public async Task SetJobSingleSelectCustomField([ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] JobRequest jobRequest,
+        [ActionParameter] JobSingleSelectCustomFieldRequest input,
+        [ActionParameter] JobSelectedOptionRequest value)
+    {
+        await UpsertJobCustomFieldSelectedOptions(projectRequest, jobRequest, input.FieldUId, [value.OptionUId]);
+    }
+
+    [Action("Set job multi select custom field value", Description = "Sets the multi select value of a job custom field")]
+    public async Task SetJobMultiSelectCustomField([ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] JobRequest jobRequest,
+        [ActionParameter] JobMultiSelectCustomFieldRequest input,
+        [ActionParameter] JobSelectedOptionsRequest value)
+    {
+        await UpsertJobCustomFieldSelectedOptions(projectRequest, jobRequest, input.FieldUId, value.OptionUIds);
+    }
+
+    private async Task<ProjectCustomFieldDto?> GetJobCustomFieldInstance(ProjectRequest projectRequest,
+        JobRequest jobRequest, string fieldUid)
+    {
+        ValidateJobCustomFieldRequest(projectRequest, jobRequest);
+
+        if (string.IsNullOrWhiteSpace(fieldUid))
+            throw new PluginMisconfigurationException("Field ID cannot be null or empty. Please check your input and try again");
+
+        var customFields = await GetJobCustomFields(projectRequest.ProjectUId!, jobRequest.JobUId!);
+        return customFields.FirstOrDefault(x => x.customField?.uid == fieldUid);
+    }
+
+    private async Task<List<ProjectCustomFieldDto>> GetJobCustomFields(string projectUid, string jobUid)
+    {
+        var request = new RestRequest($"/api2/v1/projects/{projectUid}/jobs/{jobUid}/customFields", Method.Get);
+        return await Client.Paginate<ProjectCustomFieldDto>(request);
+    }
+
+    private async Task UpsertJobCustomFieldValue(ProjectRequest projectRequest, JobRequest jobRequest, string fieldUid,
+        object value)
+    {
+        ValidateJobCustomFieldRequest(projectRequest, jobRequest);
+
+        if (string.IsNullOrWhiteSpace(fieldUid))
+            throw new PluginMisconfigurationException("Field ID cannot be null or empty. Please check your input and try again");
+
+        var existing = await GetJobCustomFieldInstance(projectRequest, jobRequest, fieldUid);
+        if (existing != null)
+        {
+            var request = new RestRequest(
+                    $"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/{jobRequest.JobUId}/customFields/{existing.UId}",
+                    Method.Put)
+                .WithJsonBody(new { value });
+
+            await Client.ExecuteWithHandling(request);
+            return;
+        }
+
+        var createRequest = new RestRequest(
+                $"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/{jobRequest.JobUId}/customFields",
+                Method.Post)
+            .WithJsonBody(new
+            {
+                customFieldInstances = new[]
+                {
+                    new
+                    {
+                        customField = new { uid = fieldUid },
+                        value
+                    }
+                }
+            });
+
+        await Client.ExecuteWithHandling(createRequest);
+    }
+
+    private async Task UpsertJobCustomFieldSelectedOptions(ProjectRequest projectRequest, JobRequest jobRequest,
+        string fieldUid, IEnumerable<string> optionUids)
+    {
+        ValidateJobCustomFieldRequest(projectRequest, jobRequest);
+
+        if (string.IsNullOrWhiteSpace(fieldUid))
+            throw new PluginMisconfigurationException("Field ID cannot be null or empty. Please check your input and try again");
+
+        var selectedOptions = optionUids
+            .Where(x => !string.IsNullOrWhiteSpace(x))
+            .Select(x => new { uid = x })
+            .ToArray();
+
+        if (selectedOptions.Length == 0)
+            throw new PluginMisconfigurationException("Selected option ID cannot be null or empty. Please check your input and try again");
+
+        var existing = await GetJobCustomFieldInstance(projectRequest, jobRequest, fieldUid);
+        if (existing != null)
+        {
+            var request = new RestRequest(
+                    $"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/{jobRequest.JobUId}/customFields/{existing.UId}",
+                    Method.Put)
+                .WithJsonBody(new { selectedOptions });
+
+            await Client.ExecuteWithHandling(request);
+            return;
+        }
+
+        var createRequest = new RestRequest(
+                $"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/{jobRequest.JobUId}/customFields",
+                Method.Post)
+            .WithJsonBody(new
+            {
+                customFieldInstances = new[]
+                {
+                    new
+                    {
+                        customField = new { uid = fieldUid },
+                        selectedOptions
+                    }
+                }
+            });
+
+        await Client.ExecuteWithHandling(createRequest);
+    }
+
+    private static void ValidateJobCustomFieldRequest(ProjectRequest projectRequest, JobRequest jobRequest)
+    {
+        if (string.IsNullOrWhiteSpace(projectRequest?.ProjectUId))
+            throw new PluginMisconfigurationException("Project ID cannot be null or empty. Please check your input and try again");
+
+        if (string.IsNullOrWhiteSpace(jobRequest?.JobUId))
+            throw new PluginMisconfigurationException("Job ID cannot be null or empty. Please check your input and try again");
     }
 }
