@@ -10,11 +10,11 @@ public class JobCustomFieldsUpdatedResponse
     [Display("Event timestamp")]
     public string EventTimestamp { get; set; } = string.Empty;
 
-    [Display("Jobs")]
-    public IEnumerable<JobCustomFieldsUpdatedJobResponse> Jobs { get; set; } = [];
+    [Display("Updated custom fields")]
+    public IEnumerable<JobCustomFieldWebhookResponse> UpdatedCustomFields { get; set; } = [];
 }
 
-public class JobCustomFieldsUpdatedJobResponse
+public class JobCustomFieldWebhookResponse
 {
     [Display("Job ID")]
     public string JobUId { get; set; } = string.Empty;
@@ -34,12 +34,6 @@ public class JobCustomFieldsUpdatedJobResponse
     [Display("Workflow level")]
     public int WorkflowLevel { get; set; }
 
-    [Display("Updated custom fields")]
-    public IEnumerable<JobCustomFieldWebhookResponse> UpdatedCustomFields { get; set; } = [];
-}
-
-public class JobCustomFieldWebhookResponse
-{
     [Display("Instance ID")]
     public string UId { get; set; } = string.Empty;
 

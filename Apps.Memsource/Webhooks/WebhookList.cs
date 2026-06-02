@@ -378,32 +378,23 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
 
             var eventTimestamp = DateTimeOffset.FromUnixTimeSeconds(data.Timestamp).ToUniversalTime();
 
-            var updatedJobs = data.JobParts
+            var updatedCustomFields = data.JobParts
                 .Where(x => string.IsNullOrWhiteSpace(projectRequest.ProjectUId) || x.Project?.Uid == projectRequest.ProjectUId)
                 .Where(x => string.IsNullOrWhiteSpace(jobRequest.JobUId) || x.UId == jobRequest.JobUId)
-                .Select(x => new
-                {
-                    Job = x,
-                    UpdatedCustomFields = GetUpdatedCustomFields(x.CustomFields, eventTimestamp)
-                        .Where(f => string.IsNullOrWhiteSpace(customFieldRequest.CustomFieldUId)
-                            || f.CustomField?.UId == customFieldRequest.CustomFieldUId)
-                        .Select(MapUpdatedCustomField)
-                        .ToList()
-                })
-                .Where(x => x.UpdatedCustomFields.Count != 0)
-                .Select(x => new JobCustomFieldsUpdatedJobResponse
-                {
-                    JobUId = x.Job.UId,
-                    ProjectUId = x.Job.Project?.Uid ?? data.Metadata?.project?.Uid,
-                    ProjectName = data.Metadata?.project?.Name,
-                    FileName = x.Job.FileName,
-                    TargetLang = x.Job.TargetLang,
-                    WorkflowLevel = x.Job.WorkflowLevel,
-                    UpdatedCustomFields = x.UpdatedCustomFields
-                })
+                .SelectMany(x => GetUpdatedCustomFields(x.CustomFields, eventTimestamp)
+                    .Where(f => string.IsNullOrWhiteSpace(customFieldRequest.CustomFieldUId)
+                        || f.CustomField?.UId == customFieldRequest.CustomFieldUId)
+                    .Select(f => MapUpdatedCustomField(
+                        f,
+                        x.UId,
+                        x.Project?.Uid ?? data.Metadata?.project?.Uid,
+                        data.Metadata?.project?.Name,
+                        x.FileName,
+                        x.TargetLang,
+                        x.WorkflowLevel)))
                 .ToList();
 
-            if (updatedJobs.Count == 0)
+            if (updatedCustomFields.Count == 0)
             {
                 return Preflight<JobCustomFieldsUpdatedResponse>();
             }
@@ -412,7 +403,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             {
                 EventUId = data.EventUId,
                 EventTimestamp = FormatDateTimeOffset(eventTimestamp),
-                Jobs = updatedJobs
+                UpdatedCustomFields = updatedCustomFields
             });
         });
 
@@ -796,9 +787,17 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         });
     }
 
-    private static JobCustomFieldWebhookResponse MapUpdatedCustomField(JobCustomFieldPayload field)
+    private static JobCustomFieldWebhookResponse MapUpdatedCustomField(JobCustomFieldPayload field,
+        string jobUId, string? projectUId, string? projectName, string? fileName, string? targetLang,
+        int workflowLevel)
         => new()
         {
+            JobUId = jobUId,
+            ProjectUId = projectUId,
+            ProjectName = projectName,
+            FileName = fileName,
+            TargetLang = targetLang,
+            WorkflowLevel = workflowLevel,
             UId = field.UId,
             CustomFieldUId = field.CustomField?.UId,
             Name = field.CustomField?.Name,
