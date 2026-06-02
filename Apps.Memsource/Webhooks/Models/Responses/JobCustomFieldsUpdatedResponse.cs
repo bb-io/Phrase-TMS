@@ -8,7 +8,7 @@ public class JobCustomFieldsUpdatedResponse
     public string? EventUId { get; set; }
 
     [Display("Event timestamp")]
-    public DateTimeOffset EventTimestamp { get; set; }
+    public string EventTimestamp { get; set; } = string.Empty;
 
     [Display("Jobs")]
     public IEnumerable<JobCustomFieldsUpdatedJobResponse> Jobs { get; set; } = [];
@@ -59,10 +59,10 @@ public class JobCustomFieldWebhookResponse
     public IEnumerable<JobCustomFieldOptionWebhookResponse> SelectedOptions { get; set; } = [];
 
     [Display("Created at")]
-    public DateTimeOffset? CreatedAt { get; set; }
+    public string? CreatedAt { get; set; }
 
     [Display("Updated at")]
-    public DateTimeOffset? UpdatedAt { get; set; }
+    public string? UpdatedAt { get; set; }
 }
 
 public class JobCustomFieldOptionWebhookResponse

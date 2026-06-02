@@ -21,6 +21,7 @@ using Newtonsoft.Json;
 using RestSharp;
 using System.Net;
 using System.Text;
+using System.Globalization;
 
 namespace Apps.PhraseTMS.Webhooks;
 
@@ -410,7 +411,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             return Success(new JobCustomFieldsUpdatedResponse
             {
                 EventUId = data.EventUId,
-                EventTimestamp = eventTimestamp,
+                EventTimestamp = FormatDateTimeOffset(eventTimestamp),
                 Jobs = updatedJobs
             });
         });
@@ -803,8 +804,8 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             Name = field.CustomField?.Name,
             Type = field.CustomField?.Type,
             Value = field.Value,
-            CreatedAt = field.CreatedAt,
-            UpdatedAt = field.UpdatedAt,
+            CreatedAt = FormatNullableDateTimeOffset(field.CreatedAt),
+            UpdatedAt = FormatNullableDateTimeOffset(field.UpdatedAt),
             SelectedOptions = field.SelectedOptions.Select(x => new JobCustomFieldOptionWebhookResponse
             {
                 UId = x.UId,
@@ -814,6 +815,12 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
 
     private static DateTimeOffset TruncateToSeconds(DateTimeOffset value)
         => value.ToUniversalTime().AddTicks(-(value.Ticks % TimeSpan.TicksPerSecond));
+
+    private static string FormatDateTimeOffset(DateTimeOffset value)
+        => value.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture);
+
+    private static string? FormatNullableDateTimeOffset(DateTimeOffset? value)
+        => value.HasValue ? FormatDateTimeOffset(value.Value) : null;
 
     private static WebhookRequestType MatchByJobUid(IEnumerable<JobPart> jobParts, string? jobUid)
         => jobUid != null && jobParts.All(x => x.Uid != jobUid)
