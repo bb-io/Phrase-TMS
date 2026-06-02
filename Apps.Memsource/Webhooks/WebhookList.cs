@@ -8,7 +8,9 @@ using Apps.PhraseTMS.Models.Projects.Requests;
 using Apps.PhraseTMS.Webhooks.Handlers.JobHandlers;
 using Apps.PhraseTMS.Webhooks.Handlers.OtherHandlers;
 using Apps.PhraseTMS.Webhooks.Handlers.ProjectHandlers;
+using Apps.PhraseTMS.Webhooks.Models;
 using Apps.PhraseTMS.Webhooks.Models.Requests;
+using Apps.PhraseTMS.Webhooks.Models.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common.Exceptions;
@@ -352,6 +354,65 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             }
 
             return Success(await FetchJobs(data.JobParts), MatchByJobUid(data.JobParts, request.JobUId));
+        });
+
+    [Webhook("On job custom field updated", typeof(JobCustomFieldsUpdatedHandler),
+        Description = "Triggered when job custom fields are updated")]
+    public Task<WebhookResponse<JobCustomFieldsUpdatedResponse>> JobCustomFieldsUpdated(WebhookRequest webhookRequest,
+        [WebhookParameter] ProjectOptionalRequest projectRequest,
+        [WebhookParameter] OptionalJobRequest jobRequest,
+        [WebhookParameter] OptionalJobCustomFieldRequest customFieldRequest)
+        => ExecuteWebhookSafelyAsync("PhraseTMSJobCustomFieldsUpdated", webhookRequest, () =>
+        {
+            if (!TryDeserializeWebhookPayload<JobCustomFieldsUpdatedPayload, JobCustomFieldsUpdatedResponse>(
+                    webhookRequest, "PhraseTMSJobCustomFieldsUpdated", out _, out var data, out var errorResponse))
+            {
+                return errorResponse!;
+            }
+
+            if (data.JobParts == null || data.JobParts.Count == 0)
+            {
+                return Preflight<JobCustomFieldsUpdatedResponse>();
+            }
+
+            var eventTimestamp = DateTimeOffset.FromUnixTimeSeconds(data.Timestamp).ToUniversalTime();
+
+            var updatedJobs = data.JobParts
+                .Where(x => string.IsNullOrWhiteSpace(projectRequest.ProjectUId) || x.Project?.Uid == projectRequest.ProjectUId)
+                .Where(x => string.IsNullOrWhiteSpace(jobRequest.JobUId) || x.UId == jobRequest.JobUId)
+                .Select(x => new
+                {
+                    Job = x,
+                    UpdatedCustomFields = GetUpdatedCustomFields(x.CustomFields, eventTimestamp)
+                        .Where(f => string.IsNullOrWhiteSpace(customFieldRequest.CustomFieldUId)
+                            || f.CustomField?.UId == customFieldRequest.CustomFieldUId)
+                        .Select(MapUpdatedCustomField)
+                        .ToList()
+                })
+                .Where(x => x.UpdatedCustomFields.Count != 0)
+                .Select(x => new JobCustomFieldsUpdatedJobResponse
+                {
+                    JobUId = x.Job.UId,
+                    ProjectUId = x.Job.Project?.Uid ?? data.Metadata?.project?.Uid,
+                    ProjectName = data.Metadata?.project?.Name,
+                    FileName = x.Job.FileName,
+                    TargetLang = x.Job.TargetLang,
+                    WorkflowLevel = x.Job.WorkflowLevel,
+                    UpdatedCustomFields = x.UpdatedCustomFields
+                })
+                .ToList();
+
+            if (updatedJobs.Count == 0)
+            {
+                return Preflight<JobCustomFieldsUpdatedResponse>();
+            }
+
+            return Success(new JobCustomFieldsUpdatedResponse
+            {
+                EventUId = data.EventUId,
+                EventTimestamp = eventTimestamp,
+                Jobs = updatedJobs
+            });
         });
 
     [Webhook("On job status changed", typeof(JobStatusChangedHandler), Description = "Triggered when a job status changes")]
@@ -716,6 +777,43 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
 
     private static WebhookResponse<T> Preflight<T>() where T : class
         => Success<T>(null, WebhookRequestType.Preflight);
+
+    private static IEnumerable<JobCustomFieldPayload> GetUpdatedCustomFields(
+        IEnumerable<JobCustomFieldPayload>? customFields, DateTimeOffset eventTimestamp)
+    {
+        if (customFields == null)
+        {
+            return [];
+        }
+
+        var eventTimestampTruncated = TruncateToSeconds(eventTimestamp);
+
+        return customFields.Where(x =>
+        {
+            var effectiveTime = x.UpdatedAt ?? x.CreatedAt;
+            return effectiveTime.HasValue && TruncateToSeconds(effectiveTime.Value) == eventTimestampTruncated;
+        });
+    }
+
+    private static JobCustomFieldWebhookResponse MapUpdatedCustomField(JobCustomFieldPayload field)
+        => new()
+        {
+            UId = field.UId,
+            CustomFieldUId = field.CustomField?.UId,
+            Name = field.CustomField?.Name,
+            Type = field.CustomField?.Type,
+            Value = field.Value,
+            CreatedAt = field.CreatedAt,
+            UpdatedAt = field.UpdatedAt,
+            SelectedOptions = field.SelectedOptions.Select(x => new JobCustomFieldOptionWebhookResponse
+            {
+                UId = x.UId,
+                Value = x.Value
+            })
+        };
+
+    private static DateTimeOffset TruncateToSeconds(DateTimeOffset value)
+        => value.ToUniversalTime().AddTicks(-(value.Ticks % TimeSpan.TicksPerSecond));
 
     private static WebhookRequestType MatchByJobUid(IEnumerable<JobPart> jobParts, string? jobUid)
         => jobUid != null && jobParts.All(x => x.Uid != jobUid)
