@@ -6,6 +6,7 @@ using Apps.PhraseTMS.Models.Users.Response;
 using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Models.Users.Requests;
 using Blackbird.Applications.Sdk.Common.Actions;
+using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using Blackbird.Applications.Sdk.Common.Invocation;
@@ -86,7 +87,12 @@ public class UserActions(InvocationContext invocationContext) : PhraseInvocable(
                 request.AddQueryParameter("order", o);
 
         var users = await Client.Paginate<UserDto>(request);
-        return users.First();
+        var user = users.FirstOrDefault();
+
+        if (user is null)
+            throw new PluginApplicationException("No user matching the provided filters was found.");
+
+        return user;
     }
 
     [Action("Get user", Description = "Get user information by ID")]

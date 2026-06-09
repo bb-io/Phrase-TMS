@@ -70,8 +70,8 @@ namespace Apps.PhraseTMS.Polling
                 .Where(u => u.DateCreated.HasValue)
                 .Where(u =>
                 {
-                    var dc = u.DateCreated!.Value.ToUniversalTime();
-                    return dc >= fromUtc && dc < nowUtc;
+                    var dateCreated = DateTime.SpecifyKind(u.DateCreated!.Value, DateTimeKind.Utc);
+                    return dateCreated >= fromUtc && dateCreated < nowUtc;
                 })
                 .OrderBy(u => u.DateCreated)
                 .ToList();
