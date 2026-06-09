@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8'?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:m="http://www.memsource.com/mxlf/2.0" version="1.2" m:version="2.16" m:level="1">
+<file original="Home page with character limits_en-US.xlf" source-language="en-us" target-language="de" datatype="x-undefined" m:file-format="XLF2" m:task-id="vQl02fa2sN2aX16G1_dc10" m:begin-group-id="0" m:end-group-id="5" m:transmem-ignore-tag-metadata="yes" m:project-uid="0dmkbDfIkgTMrOgCf3l5c0" m:job-uid="a4n2zcUF4gaFb5MpTTXTl2">
+<body>
+
+<group id="0" m:para-id="0">
+<context-group>
+<context context-type="x-file-part">f1</context>
+<context context-type="x-key">u1</context>
+<context context-type="x-max-len">35</context>
+</context-group>
+<trans-unit id="vQl02fa2sN2aX16G1_dc10:0" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="false" m:para-id="0" m:created-at="0" m:created-by="" m:modified-at="0" m:modified-by="" m:level-edited="false">
+<source>The Content Transformation Platform</source>
+<target/>
+<alt-trans origin="machine-trans"><target/></alt-trans>
+<alt-trans origin="memsource-tm"><target/></alt-trans>
+</trans-unit>
+</group>
+<group id="1" m:para-id="1">
+<context-group>
+<context context-type="x-file-part">f1</context>
+<context context-type="x-key">u2</context>
+<context context-type="x-max-len">150</context>
+</context-group>
+<trans-unit id="vQl02fa2sN2aX16G1_dc10:1" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="false" m:para-id="1" m:created-at="0" m:created-by="" m:modified-at="0" m:modified-by="" m:level-edited="false">
+<source>Multilingual Content Operations transforms language into an engine for global growth. Blackbird enables content to move, reach, and connect.</source>
+<target/>
+<alt-trans origin="machine-trans"><target/></alt-trans>
+<alt-trans origin="memsource-tm"><target/></alt-trans>
+</trans-unit>
+</group>
+<group id="2" m:para-id="2">
+<context-group>
+<context context-type="x-file-part">f1::g1</context>
+<context context-type="x-key">u3</context>
+</context-group>
+<trans-unit id="vQl02fa2sN2aX16G1_dc10:2" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="false" m:para-id="2" m:created-at="0" m:created-by="" m:modified-at="0" m:modified-by="" m:level-edited="false">
+<source>#1 Multilingual Content Operations</source>
+<target/>
+<alt-trans origin="machine-trans"><target/></alt-trans>
+<alt-trans origin="memsource-tm"><target/></alt-trans>
+</trans-unit>
+</group>
+<group id="3" m:para-id="3">
+<context-group>
+<context context-type="x-file-part">f1::g1</context>
+<context context-type="x-key">u4</context>
+</context-group>
+<trans-unit id="vQl02fa2sN2aX16G1_dc10:3" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="false" m:para-id="3" m:created-at="0" m:created-by="" m:modified-at="0" m:modified-by="" m:level-edited="false">
+<source>Blackbird revolutionizes the way stakeholders manage multilingual content, offering unparalleled flexibility and automation. Our innovative workflows streamline every phase of language and content operations.</source>
+<target/>
+<alt-trans origin="machine-trans"><target/></alt-trans>
+<alt-trans origin="memsource-tm"><target/></alt-trans>
+</trans-unit>
+</group>
+<group id="4" m:para-id="4">
+<context-group>
+<context context-type="x-file-part">f1::g1</context>
+<context context-type="x-key">u5</context>
+</context-group>
+<trans-unit id="vQl02fa2sN2aX16G1_dc10:4" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="false" m:para-id="4" m:created-at="0" m:created-by="" m:modified-at="0" m:modified-by="" m:level-edited="false">
+<source>#2 Context, Governance and Observability</source>
+<target/>
+<alt-trans origin="machine-trans"><target/></alt-trans>
+<alt-trans origin="memsource-tm"><target/></alt-trans>
+</trans-unit>
+</group>
+<group id="5" m:para-id="5">
+<context-group>
+<context context-type="x-file-part">f1::g1</context>
+<context context-type="x-key">u6</context>
+</context-group>
+<trans-unit id="vQl02fa2sN2aX16G1_dc10:5" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="false" m:para-id="5" m:created-at="0" m:created-by="" m:modified-at="0" m:modified-by="" m:level-edited="false">
+<source>Blackbird and {1}Blacklake{2} together provide enterprises with a powerful layer of content and context orchestration that brings structure, intelligence, and control to how information flows across systems.</source>
+<target/>
+<alt-trans origin="machine-trans"><target/></alt-trans>
+<alt-trans origin="memsource-tm"><target/></alt-trans>
+<m:tunit-metadata>
+<m:mark id="1">
+<m:type>sc</m:type>
+<m:content>&lt;sc xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" id="1" dataRef="d1" fs:fs="a" fs:subFs="href,https://www.blackbird.io/blacklake" /&gt;</m:content>
+</m:mark>
+<m:mark id="2">
+<m:type>ec</m:type>
+<m:content>&lt;ec dataRef="d2" startRef="1" /&gt;</m:content>
+</m:mark>
+</m:tunit-metadata>
+</trans-unit>
+</group>
+</body>
+</file>
+<m:extra>
+<m:users>
+</m:users>
+</m:extra>
+</xliff>
