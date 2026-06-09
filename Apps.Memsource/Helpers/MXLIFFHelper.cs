@@ -132,6 +132,63 @@ public class MXLIFFHelper(string baseUrl)
         return null;
     }
 
+    public static string? GetQeScore(Unit unitInTransformation)
+    {
+        if (unitInTransformation.Other.FirstOrDefault(x => x is XAttribute attribute && attribute.Name.LocalName == "score") is not XAttribute scoreAttribute)
+            return null;
+
+        if (scoreAttribute.Value == "0" || scoreAttribute.Value == "0.0")
+            return null;
+
+        return scoreAttribute.Value;
+    }
+
+    public static string? GetOrigin(Unit unitInTransformation)
+    {
+        if (unitInTransformation.Other.FirstOrDefault(x => x is XAttribute attribute && attribute.Name.LocalName == "trans-origin") is not XAttribute originAttribute)
+            return null;
+
+        if (originAttribute.Value is null || originAttribute.Value == "null")
+            return null;
+
+        return originAttribute.Value;
+    }
+
+    public static int? GetMaxLen(Unit unitInTransformation, Transformation mXliffTransformation)
+    {
+        // 1. Extract the para-id attribute from the current unit
+        var targetParaAttr = unitInTransformation.Other
+            .FirstOrDefault(x => x is XAttribute attr && attr.Name.LocalName == "para-id") as XAttribute;
+
+        var targetParaId = targetParaAttr?.Value;
+
+        if (string.IsNullOrEmpty(targetParaId))
+            return null;
+
+        // 2. Filter the groups to only look at the one(s) matching the target para-id
+        var matchingGroup = mXliffTransformation.Children.OfType<Group>()
+            .Where(g => (g.Other.FirstOrDefault(x => x is XAttribute attr && attr.Name.LocalName == "para-id") as XAttribute)?.Value == targetParaId)
+            .FirstOrDefault();
+
+        if (matchingGroup is null)
+            return null;
+
+        var contextGroup = matchingGroup.Other
+            .FirstOrDefault(x => x is XElement element) as XElement;
+
+        var maxLenContext = contextGroup?
+            .Descendants()
+            .FirstOrDefault(c => c.Attribute("context-type")?.Value == "x-max-len");
+
+        if (string.IsNullOrWhiteSpace(maxLenContext?.Value))
+            return null;
+
+        if (int.TryParse(maxLenContext.Value, out var maxLen) && maxLen <= 0)
+            return null;
+
+        return maxLen;
+    }
+
     private static bool IsTruthy(string? value)
     {
         return string.Equals(value, "true", StringComparison.OrdinalIgnoreCase) || value == "1";
