@@ -29,10 +29,10 @@ public class UserLegacyIdDto
 
     [JsonProperty("dateDeleted")]
     [Display("Date deleted")]
-    public DateTimeOffset? DateDeleted { get; set; }
+    public DateTime? DateDeleted { get; set; }
 
     [JsonProperty("dateCreated")]
     [Display("Date created")]
-    public DateTimeOffset? DateCreated { get; set; }
+    public DateTime? DateCreated { get; set; }
 
 }
