@@ -14,7 +14,7 @@ public class AutomationTests : TestBaseMultipleConnections
         // Arrange
         var actions = new AutomationActions(invocationContext);
         var settingsRequest = new AutomatedProjectSettingRequest { SettingId = "ZRNAcLs7aaoJ6Bfb0J4rz0" };
-        string newTargetLang = "uk";
+        string newTargetLang = "de";
         var input = new UpdateAutomatedProjectSettingsRequest
         {
             SelectedTargetLanguages = [newTargetLang],
