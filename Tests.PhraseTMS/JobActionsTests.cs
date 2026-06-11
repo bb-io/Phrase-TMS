@@ -314,4 +314,14 @@ public class JobActionsTests : TestBaseMultipleConnections
 
         await actions.UploadBilingualFile(input, updateState);
     }
+
+    [TestMethod, ContextDataSource]
+    public async Task UploadBilingualFile_FromInteroperable_IsSuccess(InvocationContext context)
+    {
+        var actions = new JobActions(context, FileManager);
+        var input = new UploadBilingualFileRequest { File = new FileReference { Name = "interoperable-xliff\\Home page with character limits_en-US-en_us-de-T.xliff" } };
+        var updateState = new UpdateSegmentStatesRequest {};
+
+        await actions.UploadBilingualFile(input, updateState);
+    }
 }
