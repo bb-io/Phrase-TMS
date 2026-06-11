@@ -1,0 +1,209 @@
+ <xliff srcLang="en-us" trgLang="de" version="2.2" xmlns:m="http://www.memsource.com/mxlf/2.0" m:version="2.16" m:level="1" xmlns:its="http://www.w3.org/2005/11/its" xmlns:slr="urn:oasis:names:tc:xliff:sizerestriction:2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" xmlns="urn:oasis:names:tc:xliff:document:2.2">
+  <m:extra>
+    <m:users>
+      <m:user id="1732186" uid="xdhlcxmlTcop89QQF4AGN0" username="alex.terekhov@blackbird.io" fullname="Alex Terekhov" />
+    </m:users>
+  </m:extra>
+  <file id="f1" original="Home page with character limits_en-US.xlf" datatype="x-undefined" m:file-format="XLF2" m:task-id="vQl02fa2sN2aX16G1_dc10" m:begin-group-id="0" m:end-group-id="5" m:transmem-ignore-tag-metadata="yes" m:project-uid="0dmkbDfIkgTMrOgCf3l5c0" m:job-uid="a4n2zcUF4gaFb5MpTTXTl2">
+    <slr:profiles generalProfile="xliff:codepoints" storageProfile="" />
+    <group id="0" m:para-id="0">
+      <context-group xmlns="urn:oasis:names:tc:xliff:document:1.2">
+        <context context-type="x-file-part">f1</context>
+        <context context-type="x-key">u1</context>
+        <context context-type="x-max-len">35</context>
+      </context-group>
+      <unit id="vQl02fa2sN2aX16G1_dc10:0" xml:space="preserve" m:score="0.76" m:gross-score="0.76" m:trans-origin="mt" m:confirmed="0" m:locked="false" m:para-id="0" m:created-at="1781000758253" m:created-by="1732186" m:modified-at="1781000777207" m:modified-by="1732186" m:level-edited="false" its:locQualityRatingScore="0.76" its:locQualityRatingProfileRef="QE by Phrase TMS" its:tool="Phrase TMS (mt)" slr:sizeRestriction="35">
+        <alt-trans origin="machine-trans" match-quality="0.76" m:mt-id="5106000" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+          <target>Die Plattform zur Content-Transformation</target>
+        </alt-trans>
+        <alt-trans origin="memsource-tm" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+          <target />
+        </alt-trans>
+        <m:latest-trans-props>
+          <m:trans-prop name="score">0.76</m:trans-prop>
+          <m:trans-prop name="gross-score">0.76</m:trans-prop>
+          <m:trans-prop name="origin">mt</m:trans-prop>
+        </m:latest-trans-props>
+        <m:editing-stats>
+          <m:editing-time>15299</m:editing-time>
+          <m:thinking-time>1473</m:thinking-time>
+        </m:editing-stats>
+        <segment id="vQl02fa2sN2aX16G1_dc10:0" state="initial">
+          <source>The Content Transformation Platform</source>
+        </segment>
+      </unit>
+    </group>
+    <group id="1" m:para-id="1">
+      <context-group xmlns="urn:oasis:names:tc:xliff:document:1.2">
+        <context context-type="x-file-part">f1</context>
+        <context context-type="x-key">u2</context>
+        <context context-type="x-max-len">150</context>
+      </context-group>
+      <unit id="vQl02fa2sN2aX16G1_dc10:1" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="0" m:locked="false" m:para-id="1" m:created-at="1781000660245" m:created-by="1732186" m:modified-at="1781000694818" m:modified-by="1732186" m:level-edited="false" its:locQualityRatingScore="0.8976500034332275" its:locQualityRatingScoreThreshold="0.949999988079071" its:locQualityRatingProfileRef="https://api.taus.net/2.0/estimate" slr:sizeRestriction="150">
+        <mda:metadata>
+          <mda:metaGroup category="blackbird">
+            <mda:metaGroup category="usage">
+              <mda:metaGroup category="TAUS QE">
+                <mda:meta type="value">0</mda:meta>
+                <mda:meta type="unit">characters</mda:meta>
+              </mda:metaGroup>
+            </mda:metaGroup>
+          </mda:metaGroup>
+        </mda:metadata>
+        <alt-trans origin="machine-trans" match-quality="0.83" m:mt-id="5106000" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+          <target>Multilingual Content Operations macht Sprache zu einem Motor für globales Wachstum. Blackbird sorgt dafür, dass Inhalte verbreitet werden, ihr Ziel erreichen und Verbindungen schaffen.</target>
+        </alt-trans>
+        <alt-trans origin="memsource-tm" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+          <target />
+        </alt-trans>
+        <m:editing-stats>
+          <m:editing-time>32928</m:editing-time>
+          <m:thinking-time>29649</m:thinking-time>
+        </m:editing-stats>
+        <segment id="vQl02fa2sN2aX16G1_dc10:1" state="translated">
+          <source>Multilingual Content Operations transforms language into an engine for global growth. Blackbird enables content to move, reach, and connect.</source>
+          <target>Multilingual Content Operations macht Sprache zu einem Motor für globales Wachstum. Blackbird sorgt dafür, dass Inhalte verbreitet werden, ihr Ziel erreichen und Verbindungen schaffen.</target>
+        </segment>
+      </unit>
+    </group>
+    <group id="2" m:para-id="2">
+      <context-group xmlns="urn:oasis:names:tc:xliff:document:1.2">
+        <context context-type="x-file-part">f1::g1</context>
+        <context context-type="x-key">u3</context>
+      </context-group>
+      <unit id="vQl02fa2sN2aX16G1_dc10:2" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:confirmed="1" m:locked="false" m:para-id="2" m:created-at="1781000710463" m:created-by="1732186" m:modified-at="1781000710701" m:modified-by="1732186" m:level-edited="false" its:locQualityRatingScore="0.7649000287055969" its:locQualityRatingScoreThreshold="0.949999988079071" its:locQualityRatingProfileRef="https://api.taus.net/2.0/estimate">
+        <mda:metadata>
+          <mda:metaGroup category="blackbird">
+            <mda:metaGroup category="usage">
+              <mda:metaGroup category="TAUS QE">
+                <mda:meta type="value">0</mda:meta>
+                <mda:meta type="unit">characters</mda:meta>
+              </mda:metaGroup>
+            </mda:metaGroup>
+          </mda:metaGroup>
+        </mda:metadata>
+        <alt-trans origin="machine-trans" match-quality="0.75" m:mt-id="5106000" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+          <target>Nr. 1: Verwaltung mehrsprachiger Inhalte</target>
+        </alt-trans>
+        <alt-trans origin="memsource-tm" match-quality="0.0" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+          <target />
+        </alt-trans>
+        <m:editing-stats>
+          <m:editing-time>15928</m:editing-time>
+          <m:thinking-time>12892</m:thinking-time>
+        </m:editing-stats>
+        <segment id="vQl02fa2sN2aX16G1_dc10:2" state="reviewed">
+          <source>#1 Multilingual Content Operations</source>
+          <target>Nr. 1: Verwaltung mehrsprachiger Inhalte</target>
+        </segment>
+      </unit>
+    </group>
+    <group id="3" m:para-id="3">
+      <context-group xmlns="urn:oasis:names:tc:xliff:document:1.2">
+        <context context-type="x-file-part">f1::g1</context>
+        <context context-type="x-key">u4</context>
+      </context-group>
+      <unit id="vQl02fa2sN2aX16G1_dc10:3" xml:space="preserve" m:score="0.91" m:gross-score="0.91" m:trans-origin="mt" m:confirmed="0" m:locked="false" m:para-id="3" m:created-at="1781000716066" m:created-by="1732186" m:modified-at="1781000716066" m:modified-by="1732186" m:level-edited="false" its:locQualityRatingScore="0.9036300182342529" its:locQualityRatingScoreThreshold="0.949999988079071" its:locQualityRatingProfileRef="https://api.taus.net/2.0/estimate" its:tool="Phrase TMS (mt)">
+        <mda:metadata>
+          <mda:metaGroup category="blackbird">
+            <mda:metaGroup category="usage">
+              <mda:metaGroup category="TAUS QE">
+                <mda:meta type="value">0</mda:meta>
+                <mda:meta type="unit">characters</mda:meta>
+              </mda:metaGroup>
+            </mda:metaGroup>
+          </mda:metaGroup>
+        </mda:metadata>
+        <alt-trans origin="machine-trans" match-quality="0.91" m:mt-id="5106000" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+          <target>Blackbird revolutioniert die Art und Weise, wie Unternehmen mehrsprachige Inhalte verwalten, und bietet dabei beispiellose Flexibilität und Automatisierung. Unsere innovativen Arbeitsabläufe optimieren jede Phase der Sprach- und Content-Verwaltung.</target>
+        </alt-trans>
+        <alt-trans origin="memsource-tm" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+          <target />
+        </alt-trans>
+        <m:latest-trans-props>
+          <m:trans-prop name="score">0.91</m:trans-prop>
+          <m:trans-prop name="gross-score">0.91</m:trans-prop>
+          <m:trans-prop name="origin">mt</m:trans-prop>
+        </m:latest-trans-props>
+        <m:editing-stats>
+          <m:editing-time>5598</m:editing-time>
+          <m:thinking-time>5598</m:thinking-time>
+        </m:editing-stats>
+        <segment id="vQl02fa2sN2aX16G1_dc10:3" state="translated">
+          <source>Blackbird revolutionizes the way stakeholders manage multilingual content, offering unparalleled flexibility and automation. Our innovative workflows streamline every phase of language and content operations.</source>
+          <target>Blackbird revolutioniert die Art und Weise, wie Unternehmen mehrsprachige Inhalte verwalten, und bietet dabei beispiellose Flexibilität und Automatisierung. Unsere innovativen Arbeitsabläufe optimieren jede Phase der Sprach- und Content-Verwaltung.</target>
+        </segment>
+      </unit>
+    </group>
+    <group id="4" m:para-id="4">
+      <context-group xmlns="urn:oasis:names:tc:xliff:document:1.2">
+        <context context-type="x-file-part">f1::g1</context>
+        <context context-type="x-key">u5</context>
+      </context-group>
+      <unit id="vQl02fa2sN2aX16G1_dc10:4" translate="no" xml:space="preserve" m:score="0.0" m:gross-score="0.0" m:trans-origin="null" m:locked-by="ex" m:locked-by-detail="cateditor" m:confirmed="0" m:locked="true" m:para-id="4" m:created-at="1781000740012" m:created-by="1732186" m:modified-at="1781000740012" m:modified-by="1732186" m:level-edited="false">
+        <alt-trans origin="machine-trans" match-quality="0.86" m:mt-id="5106000" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+          <target>#2 Kontext, Governance und Beobachtbarkeit</target>
+        </alt-trans>
+        <alt-trans origin="memsource-tm" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+          <target />
+        </alt-trans>
+        <m:editing-stats>
+          <m:editing-time>23682</m:editing-time>
+          <m:thinking-time>10764</m:thinking-time>
+        </m:editing-stats>
+        <segment id="vQl02fa2sN2aX16G1_dc10:4" state="final">
+          <source>#2 Context, Governance and Observability</source>
+          <target>#2 Kontext, Governance und Beobachtbarkeit</target>
+        </segment>
+      </unit>
+    </group>
+    <group id="5" m:para-id="5">
+      <context-group xmlns="urn:oasis:names:tc:xliff:document:1.2">
+        <context context-type="x-file-part">f1::g1</context>
+        <context context-type="x-key">u6</context>
+      </context-group>
+      <unit id="vQl02fa2sN2aX16G1_dc10:5" translate="no" xml:space="preserve" m:score="0.94" m:gross-score="0.94" m:trans-origin="mt" m:trans-origin-detail="Phrase Language AI (DeepL)" m:locked-by="ex" m:locked-by-detail="cateditor" m:confirmed="1" m:locked="true" m:para-id="5" m:created-at="1781000755139" m:created-by="1732186" m:modified-at="1781000760633" m:modified-by="1732186" m:level-edited="false" its:locQualityRatingScore="0.94" its:locQualityRatingProfileRef="QE by Phrase TMS" its:tool="Phrase TMS (mt)">
+        <alt-trans origin="machine-trans" match-quality="0.94" m:mt-id="5106000" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+          <target>Blackbird und {1}Blacklake{2} bieten Unternehmen gemeinsam eine leistungsstarke Ebene zur Koordination von Inhalten und Kontexten, die Struktur, Intelligenz und Kontrolle in den Informationsfluss zwischen den Systemen bringt.</target>
+        </alt-trans>
+        <alt-trans origin="memsource-tm" match-quality="0.0" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+          <target />
+        </alt-trans>
+        <m:latest-trans-props>
+          <m:trans-prop name="score">0.94</m:trans-prop>
+          <m:trans-prop name="gross-score">0.94</m:trans-prop>
+          <m:trans-prop name="origin">mt</m:trans-prop>
+          <m:trans-prop name="origin-detail">Phrase Language AI (DeepL)</m:trans-prop>
+        </m:latest-trans-props>
+        <m:tunit-metadata>
+          <m:mark id="1">
+            <m:type>sc</m:type>
+            <m:content>&lt;sc xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" id="1" dataRef="d1" fs:fs="a" fs:subFs="href,https://www.blackbird.io/blacklake" /&gt;</m:content>
+          </m:mark>
+          <m:mark id="2">
+            <m:type>ec</m:type>
+            <m:content>&lt;ec dataRef="d2" startRef="1" /&gt;</m:content>
+          </m:mark>
+        </m:tunit-metadata>
+        <m:tunit-target-metadata>
+          <m:mark id="1">
+            <m:type>sc</m:type>
+            <m:content>&lt;sc xmlns:fs="urn:oasis:names:tc:xliff:fs:2.0" id="1" dataRef="d1" fs:fs="a" fs:subFs="href,https://www.blackbird.io/blacklake" /&gt;</m:content>
+          </m:mark>
+          <m:mark id="2">
+            <m:type>ec</m:type>
+            <m:content>&lt;ec dataRef="d2" startRef="1" /&gt;</m:content>
+          </m:mark>
+        </m:tunit-target-metadata>
+        <m:editing-stats>
+          <m:editing-time>15536</m:editing-time>
+          <m:thinking-time>15232</m:thinking-time>
+        </m:editing-stats>
+        <segment id="vQl02fa2sN2aX16G1_dc10:5" state="final">
+          <source>Blackbird and {1}Blacklake{2} together provide enterprises with a powerful layer of content and context orchestration that brings structure, intelligence, and control to how information flows across systems.</source>
+          <target>Blackbird und {1}Blacklake{2} bieten Unternehmen gemeinsam eine leistungsstarke Ebene zur Koordination von Inhalten und Kontexten, die Struktur, Intelligenz und Kontrolle in den Informationsfluss zwischen den Systemen bringt.</target>
+        </segment>
+      </unit>
+    </group>
+  </file>
+</xliff>

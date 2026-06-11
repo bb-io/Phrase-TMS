@@ -804,6 +804,11 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         {
             var transformation = Transformation.Parse(content, fileName);
             fileBytes = Encoding.UTF8.GetBytes(Xliff1Serializer.Serialize(transformation));
+            if (Xliff1Serializer.TryGetXliffVersion(content, out var version) && version == "2.2")
+            {
+                fileName = fileName.Replace(".xliff", ".mxliff");
+            }
+            
         }
 
         request.AddFile("file", fileBytes, fileName);
