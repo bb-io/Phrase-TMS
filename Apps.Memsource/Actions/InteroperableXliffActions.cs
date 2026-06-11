@@ -7,15 +7,11 @@ using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Common.Invocation;
-using Blackbird.Applications.Sdk.Utils.Extensions.Files;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Blackbird.Filters.Enums;
 using Blackbird.Filters.Extensions;
 using Blackbird.Filters.Transformations;
-using Blackbird.Filters.Xliff.Xliff1;
-using Blackbird.Filters.Xliff.Xliff2;
-using Newtonsoft.Json;
 using RestSharp;
 using System.Text;
 
@@ -26,8 +22,8 @@ public class InteroperableXliffActions(InvocationContext invocationContext, IFil
 {
     [Action("Download interoperable XLIFF (experimental)", Description = "Export XLIFF file with normalized metadata and content, so it could be reused in all other actions.")]
     public async Task<DownloadInteroperableXliffResponse> DownloadInteroperableXliff(
-        ProjectRequest projectInput,
-        JobRequest jobInput)
+        [ActionParameter] ProjectRequest projectInput,
+        [ActionParameter] JobRequest jobInput)
     {
         var requestFile = new RestRequest($"/api2/v1/projects/{projectInput.ProjectUId}/jobs/bilingualFile", Method.Post)
             .WithJsonBody(new
