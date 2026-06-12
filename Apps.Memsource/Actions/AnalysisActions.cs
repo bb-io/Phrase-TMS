@@ -2,6 +2,7 @@
 using Apps.PhraseTMS.Constants;
 using Apps.PhraseTMS.DataSourceHandlers;
 using Apps.PhraseTMS.DataSourceHandlers.StaticHandlers;
+using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Dtos.Analysis;
 using Apps.PhraseTMS.Dtos.Jobs;
 using Apps.PhraseTMS.Helpers;
@@ -9,6 +10,7 @@ using Apps.PhraseTMS.Models.Analysis.Requests;
 using Apps.PhraseTMS.Models.Analysis.Responses;
 using Apps.PhraseTMS.Models.Jobs.Requests;
 using Apps.PhraseTMS.Models.Projects.Requests;
+using Apps.PhraseTMS.Webhooks.Models.Requests;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Dictionaries;
@@ -197,51 +199,80 @@ public class AnalysisActions(InvocationContext invocationContext, IFileManagemen
         "Get raw and normalized project analysis JSON output. " +
         "The output of this action can be used by another app that supports importing analysis data")]
     public async Task<ExportProjectAnalysisResponse> ExportProjectAnalysis(
-        [ActionParameter] ProjectRequest projectRequest)
+        [ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] OptionalAnalysisRequest analysisRequest,
+        [ActionParameter] ExportProjectAnalysisRequest exportProjectAnalysisRequest)
     {
-        var jobsRequest = new RestRequest($"/api2/v2/projects/{projectRequest.ProjectUId}/jobs");
-        var jobsResponse = await Client.Paginate<ListJobDto>(jobsRequest);
-        
-        var allJobUids = jobsResponse.Select(x => x.Uid).ToList();
-        if (allJobUids.Count == 0)
-            throw new PluginMisconfigurationException("The project has no jobs to analyze.");
+        List<string> analysisIdsToDownload = [];
 
-        var createRequest = new RestRequest("/api2/v2/analyses", Method.Post);
-        var payload = new 
+        if (!string.IsNullOrWhiteSpace(analysisRequest.AnalysisUId))
+            analysisIdsToDownload.Add(analysisRequest.AnalysisUId);
+        else
         {
-            jobs = allJobUids.Select(uid => new { uid }).ToList(),
-            analyzeByProvider = false
-        };
-        createRequest.WithJsonBody(payload, JsonConfig.Settings);
+            var jobsRequest = new RestRequest($"/api2/v2/projects/{projectRequest.ProjectUId}/jobs");
+            var jobsResponse = await Client.Paginate<ListJobDto>(jobsRequest);
+            
+            var allJobUids = jobsResponse.Select(x => x.Uid).ToList();
+            if (allJobUids.Count == 0)
+                throw new PluginMisconfigurationException("The project has no jobs to analyze.");
 
-        var asyncResponse = await Client.PerformMultipleAsyncRequest<CreateAnalysisDto>(createRequest);
-        if (!asyncResponse.Any())
-             throw new PluginMisconfigurationException("Analysis creation failed or returned empty.");
+            var payload = new 
+            {
+                jobs = allJobUids.Select(uid => new { uid }).ToList(),
+                analyzeByProvider = false
+            };
+            var createRequest = new RestRequest("/api2/v2/analyses", Method.Post)
+                .WithJsonBody(payload, JsonConfig.Settings);
 
-        List<Analysis> masterAnalysisList = [];
-        foreach (var createdAnalysis in asyncResponse)
+            var asyncResponse = await Client.PerformMultipleAsyncRequest<CreateAnalysisDto>(createRequest);
+            var asyncResponseList = asyncResponse.ToList();
+            
+            if (asyncResponseList.Count == 0)
+                 throw new PluginMisconfigurationException("Analysis creation failed or returned empty.");
+
+            analysisIdsToDownload = asyncResponseList.Select(x => x.Analyse.Id).ToList();
+        }
+
+        if (analysisIdsToDownload.Count == 0)
+            throw new PluginMisconfigurationException("No analyses could be found or created for this project.");
+
+        List<string> mtEnabledLanguages = [];
+        double? tmThreshold = null;
+
+        if (exportProjectAnalysisRequest.CalculateSyntheticMtBucket is true)
         {
-            string analysisId = createdAnalysis.Analyse.Id;
+            mtEnabledLanguages = await FetchEnabledMtLanguages(projectRequest.ProjectUId);
+            tmThreshold = await FetchTmThreshold(projectRequest.ProjectUId);
+        }
 
+        var downloadTasks = analysisIdsToDownload.Select(async analysisId =>
+        {
             var downloadRequest = new RestRequest($"/api2/v1/analyses/{analysisId}/download?format=JSON")
                 .AddHeader("Accept", "application/octet-stream");
 
             var downloadResponse = await Client.ExecuteWithHandling(downloadRequest);
             var bytes = downloadResponse.RawBytes;
             if (bytes == null)
-                continue;
+                return [];
 
             string jsonString = Encoding.UTF8.GetString(bytes);
             JObject root = JObject.Parse(jsonString);
-            JArray languageParts = (JArray)root["analyseLanguageParts"]!;
-            
-            List<Analysis> parsedAnalyses = AnalysisHelper.GenerateAnalysis(languageParts);
-            masterAnalysisList.AddRange(parsedAnalyses);
-        }
+
+            if (root["analyseLanguageParts"] is not JArray languageParts) 
+                return [];
+                
+            if (exportProjectAnalysisRequest.CalculateSyntheticMtBucket is true)
+                ApplySyntheticMtHack(languageParts, mtEnabledLanguages, tmThreshold);
+
+            return AnalysisHelper.GenerateAnalysis(languageParts);
+        });
+
+        List<Analysis>[] nestedResults = await Task.WhenAll(downloadTasks);
+        List<Analysis> masterAnalysisList = nestedResults.SelectMany(list => list).ToList();
         
         string outputJsonString = JsonConvert.SerializeObject(masterAnalysisList, Formatting.Indented);
         using var stream = new MemoryStream(Encoding.UTF8.GetBytes(outputJsonString));
-    
+
         var fileName = $"analysis_{projectRequest.ProjectUId}.json";
         var fileReference = await fileManagementClient.UploadAsync(stream, "application/json", fileName);
         return new(fileReference);
@@ -338,5 +369,66 @@ public class AnalysisActions(InvocationContext invocationContext, IFileManagemen
             DeletedAnalysesIds = deleted,
             Errors = errors
         };
+    }
+
+
+    private async Task<double> FetchTmThreshold(string projectUid)
+    {
+        var preTranslateReq = new RestRequest($"/api2/v4/projects/{projectUid}/preTranslateSettings");
+        var preTranslateInfo = await Client.ExecuteWithHandling<PretranslateSettingsDto>(preTranslateReq);
+        return preTranslateInfo.TmSettings.TranslationMemoryThreshold;
+    }
+    
+    private async Task<List<string>> FetchEnabledMtLanguages(string projectUid)
+    {
+        var projectInfoReq = new RestRequest($"/api2/v1/projects/{projectUid}");
+        var projectInfo = await Client.ExecuteWithHandling<ProjectDetailsDto>(projectInfoReq);
+
+        if (projectInfo.MtSettings.Count == 0)
+            return [];
+        
+        return projectInfo.MtSettings
+            .Select(x => x.TargetLang)
+            .Where(x => !string.IsNullOrEmpty(x))
+            .ToList();
+    }
+    
+    private static void ApplySyntheticMtHack(JArray languageParts, List<string> mtEnabledLanguages, double? tmThreshold)
+    {
+        if (tmThreshold == null || mtEnabledLanguages.Count == 0) return;
+
+        var targetBuckets = new List<string> { "match0" };
+        if (tmThreshold >= 0.50) 
+            targetBuckets.Add("match50");
+        if (tmThreshold >= 0.75)
+            targetBuckets.Add("match75");
+        if (tmThreshold >= 0.85) 
+            targetBuckets.Add("match85");
+        if (tmThreshold >= 0.95) 
+            targetBuckets.Add("match95");
+
+        foreach (var langPart in languageParts)
+        {
+            var targetLang = langPart["targetLang"]?.ToString();
+            if (string.IsNullOrEmpty(targetLang)) 
+                continue;
+
+            bool hasMt = mtEnabledLanguages.Any(x => x.Equals(targetLang, StringComparison.OrdinalIgnoreCase));
+            if (!hasMt) 
+                continue;
+
+            if (langPart["data"] is not JObject dataNode) 
+                continue;
+
+            foreach (var bucket in targetBuckets)
+            {
+                if (dataNode[bucket]?["words"] is not JObject wordsObject) 
+                    continue;
+                
+                decimal tmValue = wordsObject["tm"]?.Value<decimal>() ?? 0m;
+                wordsObject["tm"] = 0.0m;
+                wordsObject["machine_translated"] = tmValue;
+            }
+        }
     }
 }
