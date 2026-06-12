@@ -398,13 +398,13 @@ public class AnalysisActions(InvocationContext invocationContext, IFileManagemen
         if (tmThreshold == null || mtEnabledLanguages.Count == 0) return;
 
         var targetBuckets = new List<string> { "match0" };
-        if (tmThreshold >= 0.50) 
+        if (tmThreshold > 0.50) 
             targetBuckets.Add("match50");
-        if (tmThreshold >= 0.75)
+        if (tmThreshold > 0.75)
             targetBuckets.Add("match75");
-        if (tmThreshold >= 0.85) 
+        if (tmThreshold > 0.85) 
             targetBuckets.Add("match85");
-        if (tmThreshold >= 0.95) 
+        if (tmThreshold > 0.95) 
             targetBuckets.Add("match95");
 
         foreach (var langPart in languageParts)
