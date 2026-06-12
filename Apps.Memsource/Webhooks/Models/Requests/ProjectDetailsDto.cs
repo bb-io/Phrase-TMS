@@ -21,6 +21,15 @@ namespace Apps.PhraseTMS.Webhooks.Models.Requests
 
         [JsonProperty("client")]
         public ClientRef? Client { get; set; }
+
+        [JsonProperty("mtSettingsPerLanguageList")]
+        public List<MtSettingsPerLanguageList> MtSettings { get; set; } = [];
+    }
+
+    public class MtSettingsPerLanguageList
+    {
+        [JsonProperty("targetLang")]
+        public string TargetLang { get; set; } = string.Empty;
     }
 
     public class UserRef

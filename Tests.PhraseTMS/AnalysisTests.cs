@@ -38,11 +38,36 @@ public class AnalysisTests : TestBaseMultipleConnections
         // Arrange
         var actions = new AnalysisActions(context, FileManager);
         var projectRequest = new ProjectRequest { ProjectUId = "kdr3NNw8RLX50ynOl9a9b4" };
+        var analysisRequest = new OptionalAnalysisRequest
+        {
+            //AnalysisUId = "0CkRD2bWpLljbWD1TXzwgc"
+        };
+        var exportRequest = new ExportProjectAnalysisRequest
+        {
+            CalculateSyntheticMtBucket = true
+        };
 
         // Act
-        var result = await actions.ExportProjectAnalysis(projectRequest);
+        var result = await actions.ExportProjectAnalysis(projectRequest, analysisRequest, exportRequest);
 
         // Assert
         TestContext.WriteLine(result.ExportedAnalysis.Name);
+    }
+
+    [TestMethod, ContextDataSource(ConnectionTypes.ApiToken)]
+    public async Task ListAnalyses_ReturnsAnalyses(InvocationContext context)
+    {
+        // Arrange
+        var actions = new AnalysisActions(context, FileManager);
+        var projectRequest = new ProjectRequest { ProjectUId = "kdr3NNw8RLX50ynOl9a9b4" };
+        var jobRequest = new JobRequest { JobUId = "zHsH8kjQK884fdoUBPAUm3" };
+        var query = new ListAnalysesQueryRequest { };
+
+        // Act
+        var result = await actions.ListAnalyses(projectRequest, jobRequest, query);
+
+        // Assert
+        PrintResult(result);
+        Assert.IsNotNull(result);
     }
 }
