@@ -14,6 +14,7 @@ using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Blackbird.Filters.Enums;
 using Blackbird.Filters.Transformations;
 using RestSharp;
+using System.IO;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -100,7 +101,8 @@ public class TranslationMemoryActions(InvocationContext invocationContext, IFile
     public async Task UpdateTmInsertSegmentsFromFile([ActionParameter] UpdateTmRequest updateTmRequest)
     {
         var fileStream = await fileManagementClient.DownloadAsync(updateTmRequest.File);
-        var transformation = await Transformation.Parse(fileStream, updateTmRequest.File.Name);
+        var fileBytes = await fileStream.GetByteData();
+        var transformation = Transformation.Load(new MemoryStream(fileBytes), updateTmRequest.File.Name).Value!;
 
         var targetLanguage = updateTmRequest.TargetLanguage ?? transformation.TargetLanguage;
         if (string.IsNullOrWhiteSpace(targetLanguage))
