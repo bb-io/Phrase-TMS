@@ -21,8 +21,6 @@ using Blackbird.Filters.Constants;
 using Blackbird.Filters.Enums;
 using Blackbird.Filters.Extensions;
 using Blackbird.Filters.Transformations;
-using Blackbird.Filters.Xliff.Xliff1;
-using Blackbird.Filters.Xliff.Xliff2;
 using Newtonsoft.Json;
 using RestSharp;
 using System.Net.Mime;
@@ -30,6 +28,8 @@ using System.Text;
 using System.Xml.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using Blackbird.Filters.Bilingual.Xliff1;
+using Blackbird.Filters.Bilingual.Xliff2;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -439,13 +439,11 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         {
             try
             {
-                var fileContent = Encoding.UTF8.GetString(fileBytes);
-
-                if (Xliff2Serializer.IsXliff2(fileContent) && Xliff2Serializer.TryGetXliffVersion(fileContent, out var version))
+                if (Xliff2Serializer.IsXliff2(new MemoryStream(fileBytes), out var xliffNode))
                 {
-                    if (version != "2.0")
+                    if (xliffNode.Get("version") != "2.0")
                     {
-                        var transformation = Transformation.Parse(fileContent, input.File.Name);
+                        var transformation = Transformation.Load(new MemoryStream(fileBytes), input.File.Name).Value!;
                         var xliffV20 = Xliff2Serializer.Serialize(transformation, Xliff2Version.Xliff20);
                         fileBytes = Encoding.UTF8.GetBytes(xliffV20);
                     }
@@ -571,8 +569,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         var fileData = responseDownload.RawBytes;
         string filename = responseDownload.GetFilenameFromHeader("default_target_file");
 
-        var fileString = Encoding.UTF8.GetString(fileData ?? []);
-        if (!Xliff2Serializer.IsXliff2(fileString))
+        if (!Xliff2Serializer.IsXliff2(new MemoryStream(fileData ?? []), out _))
         {
             if (!MimeTypes.TryGetMimeType(filename, out var mimeType))
                 mimeType = MediaTypeNames.Application.Octet;
@@ -582,11 +579,10 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
             return new() { File = file };
         }
 
-        var transformation = Transformation.Parse(fileString, filename);
+        var transformation = Transformation.Load(new MemoryStream(fileData ?? []), filename).Value!;
         var (mxliffFileData, mxFileName, _) = await GetBilingualFile(projectRequest, input, new BilingualRequest { });
-        var mxFileString = Encoding.UTF8.GetString(mxliffFileData ?? []);
 
-        var mxTransformation = Transformation.Parse(mxFileString, mxFileName ?? filename + ".mxliff");
+        var mxTransformation = Transformation.Load(new MemoryStream(mxliffFileData ?? []), mxFileName ?? filename + ".mxliff").Value!;
 
         foreach(var unit in transformation.GetUnits())
         {
@@ -614,7 +610,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
 
         return new ()
         {
-            File = await fileManagementClient.UploadAsync(transformation.Serialize().ToStream(), MediaTypes.Xliff, transformation.XliffFileName)
+            File = await fileManagementClient.UploadAsync(transformation.Serialize().ToStream(), MediaTypes.Xliff2, transformation.BilingualFileName)
         };
     }
 
@@ -702,8 +698,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
             throw new PluginMisconfigurationException("The provided file is empty. Please check your file input and try again");
         }
 
-        var sourceContent = Encoding.UTF8.GetString(sourceFileBytes);
-        var sourceTransformation = Transformation.Parse(sourceContent, input.File.Name);
+        var sourceTransformation = Transformation.Load(new MemoryStream(sourceFileBytes), input.File.Name).Value!;
         var lockedUnitIds = MXLIFFHelper.GetLockedUnitIds(sourceTransformation);
 
         if (lockedUnitIds.Count == 0)
@@ -712,8 +707,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         }
 
         var (destinationFileData, destinationFileName, _) = await GetBilingualFile(projectRequest, jobRequest, new BilingualRequest());
-        var destinationContent = Encoding.UTF8.GetString(destinationFileData ?? []);
-        var destinationTransformation = Transformation.Parse(destinationContent, destinationFileName ?? "job.mxliff");
+        var destinationTransformation = Transformation.Load(new MemoryStream(destinationFileData ?? []), destinationFileName ?? "job.mxliff").Value!;
 
         var appliedLockedSegmentsCount = MXLIFFHelper.LockUnits(destinationTransformation, lockedUnitIds);
         var updatedFileBytes = Encoding.UTF8.GetBytes(destinationTransformation.Serialize());
@@ -802,20 +796,23 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
 
         request.AlwaysMultipartFormData = true;
 
-        var content = Encoding.UTF8.GetString(fileBytes);
-        if (Xliff2Serializer.IsXliff2(content))
+        if (Xliff2Serializer.IsXliff2(new MemoryStream(fileBytes), out var xliffNode))
         {
-            var transformation = Transformation.Parse(content, fileName);
+            var transformation = Transformation.Load(new MemoryStream(fileBytes), fileName).Value!;
             fileBytes = Encoding.UTF8.GetBytes(Xliff1Serializer.Serialize(transformation));
-            if (Xliff1Serializer.TryGetXliffVersion(content, out var version) && version == "2.2")
+            if (xliffNode.Get("version") == "2.2")
             {
                 fileName = fileName.Replace(".xliff", ".mxliff");
             }
         }
-        else if (fileName.EndsWith(".xliff", StringComparison.OrdinalIgnoreCase)
-                 && content.Contains("http://www.memsource.com/mxlf/2.0", StringComparison.Ordinal))
+        else
         {
-            fileName = Path.ChangeExtension(fileName, ".mxliff");
+            var content = Encoding.UTF8.GetString(fileBytes);
+            if (fileName.EndsWith(".xliff", StringComparison.OrdinalIgnoreCase)
+                && content.Contains("http://www.memsource.com/mxlf/2.0", StringComparison.Ordinal))
+            {
+                fileName = Path.ChangeExtension(fileName, ".mxliff");
+            }
         }
 
         request.AddFile("file", fileBytes, fileName);
@@ -828,8 +825,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         string fileName,
         UpdateSegmentStatesRequest updateSegmentStatesRequest)
     {
-        var content = Encoding.UTF8.GetString(fileBytes);
-        var transformation = Transformation.Parse(content, fileName);
+        var transformation = Transformation.Load(new MemoryStream(fileBytes), fileName).Value!;
 
         foreach (var unit in transformation.GetUnits())
         {
@@ -1218,8 +1214,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
     {
         try
         {
-            var fileContent = Encoding.UTF8.GetString(fileBytes);
-            var transformation = Transformation.Parse(fileContent, fileName);
+            var transformation = Transformation.Load(new MemoryStream(fileBytes), fileName).Value!;
             var xliffV20 = Xliff2Serializer.Serialize(transformation, Xliff2Version.Xliff20);
             var convertedBytes = Encoding.UTF8.GetBytes(xliffV20);
             var convertedFileName = Path.ChangeExtension(fileName, ".xlf");

@@ -186,12 +186,12 @@ public class JobActionsTests : TestBaseMultipleConnections
         PrintResult(result);
     }
 
-    [TestMethod, ContextDataSource]
-    public async Task Download_job_target_file_works(InvocationContext context)
+    [TestMethod]
+    public async Task Download_job_target_file_works()
     {
-        var actions = new JobActions(context, FileManager);
-        var projectRequest = new ProjectRequest { ProjectUId = PROJECT_ID };
-        var jobRequest = new JobRequest { JobUId = JOB_ID };
+        var actions = new JobActions(InvocationContexts.First(), FileManager);
+        var projectRequest = new ProjectRequest { ProjectUId = "xugsL2InmBa1g2LMmC0Z0l" };
+        var jobRequest = new JobRequest { JobUId = "F7ixW8y8Eybh9l8cywpc16" };
 
         var result = await actions.DownloadTargetFile(projectRequest, jobRequest);
 
@@ -209,7 +209,7 @@ public class JobActionsTests : TestBaseMultipleConnections
         Assert.IsTrue(result.File.Name.EndsWith(".xlf"));
         var contentString = FileManager.ReadOutputAsString(result.File);
 
-        var transformation = Transformation.Parse(contentString, result.File.Name);
+        var transformation = Transformation.Load(new MemoryStream(System.Text.Encoding.UTF8.GetBytes(contentString)), result.File.Name).Value!;
 
         Assert.IsTrue(transformation.GetUnits().Any(x => x.Provenance.Translation.Tool == "Phrase TMS"));
         Assert.IsTrue(transformation.GetUnits().Any(x => x.Provenance.Translation.Person == "Mathijs Sonnemans"));

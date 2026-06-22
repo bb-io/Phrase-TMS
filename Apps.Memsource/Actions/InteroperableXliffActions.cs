@@ -13,6 +13,7 @@ using Blackbird.Filters.Enums;
 using Blackbird.Filters.Extensions;
 using Blackbird.Filters.Transformations;
 using RestSharp;
+using System.IO;
 using System.Text;
 
 namespace Apps.PhraseTMS.Actions;
@@ -42,8 +43,7 @@ public class InteroperableXliffActions(InvocationContext invocationContext, IFil
         if ((fileData?.LongLength ?? 0) == 0)
             throw new PluginApplicationException("Empty file received from Phrase TMS.");
 
-        var fileString = Encoding.UTF8.GetString(fileData ?? []);
-        var transformation = Transformation.Parse(fileString, fileName);
+        var transformation = Transformation.Load(new MemoryStream(fileData ?? []), fileName).Value!;
 
         var response = new DownloadInteroperableXliffResponse()
         {
