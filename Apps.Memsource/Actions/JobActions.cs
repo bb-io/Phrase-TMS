@@ -27,6 +27,7 @@ using Newtonsoft.Json;
 using RestSharp;
 using System.Net.Mime;
 using System.Text;
+using System.Xml.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
@@ -777,6 +778,8 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
             fileBytes = UpdateSegmentStates(fileBytes, input.File.Name, updateSegmentStatesRequest);
         }
 
+        fileBytes = StripBlackbirdMetadata(fileBytes);
+
         await UploadBilingualFile(fileBytes, input.File.Name, input.saveToTransMemory, input.setCompleted);
     }
 
@@ -808,7 +811,11 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
             {
                 fileName = fileName.Replace(".xliff", ".mxliff");
             }
-            
+        }
+        else if (fileName.EndsWith(".xliff", StringComparison.OrdinalIgnoreCase)
+                 && content.Contains("http://www.memsource.com/mxlf/2.0", StringComparison.Ordinal))
+        {
+            fileName = Path.ChangeExtension(fileName, ".mxliff");
         }
 
         request.AddFile("file", fileBytes, fileName);
@@ -846,6 +853,21 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         }
 
         return Encoding.UTF8.GetBytes(transformation.Serialize());
+    }
+
+    private static byte[] StripBlackbirdMetadata(byte[] fileBytes)
+    {
+        const string blackbirdNsUri = "http://blackbird.io/";
+        var content = Encoding.UTF8.GetString(fileBytes);
+        if (!content.Contains(blackbirdNsUri))
+            return fileBytes;
+
+        XNamespace bbNs = blackbirdNsUri;
+        var doc = XDocument.Parse(content);
+        foreach (var el in doc.Descendants(bbNs + "metadata").ToList())
+            el.Remove();
+
+        return Encoding.UTF8.GetBytes(doc.ToString());
     }
 
     [Action("Pre-translate job", Description = "Pre-translate a job in the project")]
