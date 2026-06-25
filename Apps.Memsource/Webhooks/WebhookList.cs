@@ -43,8 +43,12 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
                 return errorResponse!;
             }
 
-            if (!string.IsNullOrEmpty(projectCreatedRequest.ProjectNameContains) &&
-                !data.Project.Name!.Contains(projectCreatedRequest.ProjectNameContains))
+            var projectNameContains = projectCreatedRequest.ProjectNameContains?
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .ToArray();
+
+            if (projectNameContains is { Length: > 0 } &&
+                !projectNameContains.Any(x => data.Project.Name!.Contains(x)))
             {
                 return Preflight<ProjectDto>();
             }
