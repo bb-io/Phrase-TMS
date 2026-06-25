@@ -7,7 +7,7 @@ namespace Apps.PhraseTMS.Webhooks.Models.Requests;
 public class ProjectCreatedRequest
 {
     [Display("Project name contains")]
-    public string? ProjectNameContains { get; set; }
+    public IEnumerable<string>? ProjectNameContains { get; set; }
 
     [Display("Created by name contains")]
     [DataSource(typeof(UserNameDataHandler))]
