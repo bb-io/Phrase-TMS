@@ -10,6 +10,9 @@ public class EditProjectRequest
 {
     [Display("Project name")] public string? ProjectName { get; set; }
 
+    [Display("Note")]
+    public string? Note { get; set; }
+
     [StaticDataSource(typeof(ProjectStatusDataHandler))]
     public string? Status { get; set; }
     
