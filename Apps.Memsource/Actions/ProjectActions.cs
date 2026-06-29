@@ -171,6 +171,11 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
             bodyDictionary.Add("name", input.ProjectName);
         }
 
+        if (!String.IsNullOrEmpty(input.Note))
+        {
+            bodyDictionary.Add("note", input.Note);
+        }
+
         if (!String.IsNullOrEmpty(input.Status))
         {
             bodyDictionary.Add("status", input.Status);
