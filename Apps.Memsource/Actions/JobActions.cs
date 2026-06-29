@@ -798,11 +798,18 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
 
         if (Xliff2Serializer.IsXliff2(new MemoryStream(fileBytes), out var xliffNode))
         {
-            var transformation = Transformation.Load(new MemoryStream(fileBytes), fileName).Value!;
-            fileBytes = Encoding.UTF8.GetBytes(Xliff1Serializer.Serialize(transformation));
-            if (xliffNode.Get("version") == "2.2")
+            var isNativeMxliff = Encoding.UTF8.GetString(fileBytes).Contains("http://www.memsource.com/mxlf/2.0", StringComparison.Ordinal);
+            if (isNativeMxliff)
             {
-                fileName = fileName.Replace(".xliff", ".mxliff");
+                if (fileName.EndsWith(".xliff", StringComparison.OrdinalIgnoreCase))
+                    fileName = Path.ChangeExtension(fileName, ".mxliff");
+            }
+            else
+            {
+                var transformation = Transformation.Load(new MemoryStream(fileBytes), fileName).Value!;
+                fileBytes = Encoding.UTF8.GetBytes(Xliff1Serializer.Serialize(transformation));
+                if (xliffNode.Get("version") == "2.2")
+                    fileName = fileName.Replace(".xliff", ".mxliff");
             }
         }
         else
