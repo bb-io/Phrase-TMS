@@ -799,6 +799,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         if (Xliff2Serializer.IsXliff2(new MemoryStream(fileBytes), out var xliffNode))
         {
             var transformation = Transformation.Load(new MemoryStream(fileBytes), fileName).Value!;
+            StripTausMetadata(transformation);
             fileBytes = Encoding.UTF8.GetBytes(Xliff1Serializer.Serialize(transformation));
             if (xliffNode.Get("version") == "2.2")
                 fileName = fileName.Replace(".xliff", ".mxliff");
@@ -847,6 +848,13 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         }
 
         return Encoding.UTF8.GetBytes(transformation.Serialize());
+    }
+
+    private static void StripTausMetadata(Transformation transformation)
+    {
+        transformation.MetaData.RemoveAll(m => m.Type.StartsWith("Taus", StringComparison.OrdinalIgnoreCase));
+        foreach (var child in transformation.Children.OfType<Transformation>())
+            StripTausMetadata(child);
     }
 
     private static byte[] StripBlackbirdMetadata(byte[] fileBytes)
