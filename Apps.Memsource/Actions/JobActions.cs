@@ -798,7 +798,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
 
         if (Xliff2Serializer.IsXliff2(new MemoryStream(fileBytes), out var xliffNode))
         {
-            var isNativeMxliff = Encoding.UTF8.GetString(fileBytes).Contains("http://www.memsource.com/mxlf/2.0", StringComparison.Ordinal);
+            var isNativeMxliff = xliffNode.Attributes().Any(a => a.Value == "http://www.memsource.com/mxlf/2.0");
             if (isNativeMxliff)
             {
                 if (fileName.EndsWith(".xliff", StringComparison.OrdinalIgnoreCase))
