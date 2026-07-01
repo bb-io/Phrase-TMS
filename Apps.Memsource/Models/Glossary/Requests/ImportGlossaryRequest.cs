@@ -11,7 +11,7 @@ public class ImportGlossaryRequest
     [DataSource(typeof(TermBaseDataHandler))]
     public string GlossaryUId { get; set; }
 
-    [Display("Glossary file", Description = "Glossary file exported from other Blackbird apps")]
+    [Display("Glossary file", Description = "TBX v2 or TBX v3 glossary file")]
     public FileReference File { get; set; }
 
     [Display("Update existing terms",

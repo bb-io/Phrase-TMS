@@ -3,6 +3,7 @@ using Apps.PhraseTMS.Models.Glossary.Requests;
 using Apps.PhraseTMS.Models.Glossary.Responses;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
+using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.Sdk.Glossaries.Utils.Converters;
 using Blackbird.Applications.Sdk.Utils.Extensions.Files;
@@ -67,13 +68,13 @@ public class GlossaryActions(InvocationContext invocationContext, IFileManagemen
     public async Task ImportGlossary([ActionParameter] ImportGlossaryRequest input)
     {
         var fileStream = await fileManagementClient.DownloadAsync(input.File);
-        await using var fileTbxv2Stream = await CoreTbxVersionsConverter
-            .ConvertFromTbxV3ToV2(fileStream, convertAll: true);
+        var bytes = await fileStream.GetByteData();
+        await using var fileTbxv2Stream = await PrepareGlossaryImportStream(bytes);
 
         var updateTerms = input.UpdateExistingTerms ?? false;
         var endpoint = $"/api2/v1/termBases/{input.GlossaryUId}/upload"
             .WithQuery(new { updateTerms });
-        var bytes = await fileTbxv2Stream.GetByteData();
+        bytes = await fileTbxv2Stream.GetByteData();
 
         var request = new RestRequest(endpoint, Method.Post);
         request.AddHeader("Content-Disposition", $"filename*=UTF-8''{input.File.Name}");
@@ -87,6 +88,28 @@ public class GlossaryActions(InvocationContext invocationContext, IFileManagemen
     {
         var request = new RestRequest($"/api2/v1/termBases/{input.GlossaryUId}/terms", Method.Delete);
         await Client.ExecuteWithHandling(request);
+    }
+
+    private static async Task<Stream> PrepareGlossaryImportStream(byte[] fileBytes)
+    {
+        using var inputStream = new MemoryStream(fileBytes);
+        var xml = XDocument.Load(inputStream);
+        var root = xml.Root;
+
+        if (root is null)
+            throw new PluginApplicationException("The glossary file is empty or invalid XML.");
+
+        if (root.Name.LocalName.Equals("martif", StringComparison.OrdinalIgnoreCase))
+            return new MemoryStream(fileBytes);
+
+        if (root.Name.LocalName.Equals("tbx", StringComparison.OrdinalIgnoreCase) &&
+            root.Name.NamespaceName == "urn:iso:std:iso:30042:ed-2")
+        {
+            var tbx3Stream = new MemoryStream(fileBytes);
+            return await CoreTbxVersionsConverter.ConvertFromTbxV3ToV2(tbx3Stream, convertAll: true);
+        }
+
+        throw new PluginApplicationException("Only TBX v2 (martif) and TBX v3 glossary files are supported.");
     }
 
     private static Stream MergeFromTbx2IntoTbx3(byte[] tbx2Bytes, Stream tbx3Stream)
