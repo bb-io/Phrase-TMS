@@ -12,7 +12,9 @@ using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using RestSharp;
 using System.Net.Mime;
+using System.Text;
 using System.Xml.Linq;
+using System.Xml;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -105,7 +107,17 @@ public class GlossaryActions(InvocationContext invocationContext, IFileManagemen
         if (root.Name.LocalName.Equals("tbx", StringComparison.OrdinalIgnoreCase) &&
             root.Name.NamespaceName == "urn:iso:std:iso:30042:ed-2")
         {
-            var tbx3Stream = new MemoryStream(fileBytes);
+            var tbx3Stream = new MemoryStream();
+            using (var writer = XmlWriter.Create(tbx3Stream, new XmlWriterSettings
+                   {
+                       Encoding = new UTF8Encoding(false),
+                       OmitXmlDeclaration = false
+                   }))
+            {
+                xml.Save(writer);
+            }
+
+            tbx3Stream.Position = 0;
             return await CoreTbxVersionsConverter.ConvertFromTbxV3ToV2(tbx3Stream, convertAll: true);
         }
 
