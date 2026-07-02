@@ -13,7 +13,7 @@ public class GlossaryActionsTests : TestBaseMultipleConnections
     {
         // Arrange
         var action = new GlossaryActions(context, FileManager);
-        var request = new ExportGlossaryRequest { GlossaryUId = "EaZpWNsRTmbP9NEDxHlMl1" };
+        var request = new ExportGlossaryRequest { GlossaryUId = "kNn0npbVYeiy3WeN1X34o7" };
 
         // Act
         var result = await action.ExportGlossary(request);
@@ -31,7 +31,7 @@ public class GlossaryActionsTests : TestBaseMultipleConnections
         var request = new ImportGlossaryRequest
         {
             GlossaryUId = "kNn0npbVYeiy3WeN1X34o7",
-            File = new Blackbird.Applications.Sdk.Common.Files.FileReference { Name = "test_BB-Phrase-native-export.tbx" },
+            File = new Blackbird.Applications.Sdk.Common.Files.FileReference { Name = "Client test.tbx" },
             UpdateExistingTerms = true
         };
 
