@@ -85,9 +85,7 @@ public class TestBase
     {
         var safeMessage = message ?? string.Empty;
         var safeArgs = args ?? Array.Empty<object>();
-        var logMessage = safeArgs.Length == 0
-            ? $"[{level}] {safeMessage}"
-            : $"[{level}] {string.Format(safeMessage, safeArgs)}";
+        var logMessage = $"[{level}] {string.Format(safeMessage, safeArgs)}";
 
         if (testContext != null)
         {

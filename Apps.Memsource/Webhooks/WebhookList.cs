@@ -29,6 +29,8 @@ namespace Apps.PhraseTMS.Webhooks;
 [WebhookList("Miscellaneous")]
 public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(invocationContext)
 {
+    private const int WebhookLogArgumentMaxLength = 4000;
+
     #region ProjectWebhooks
 
     [Webhook("On project created", typeof(ProjectCreationHandler), Description = "Triggered when a project is created")]
@@ -694,7 +696,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
                 .ToList();
 
             LogWebhook("PhraseTMS Webhook", LogLevel.Information,
-                "RelevantJobs.Count={0}, JobId;",
+                "RelevantJobs.Count={0}",
                 relevantJobs.Count);
 
             if (allJobs.Count != relevantJobs.Count)
@@ -993,7 +995,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         LogWebhook(webhookName, LogLevel.Error,
             "Webhook processing failed. Request method: {0}; Request body: {1}; Exception type: {2}; Exception message: {3}; Stack trace: {4}",
             webhookRequest.HttpMethod?.Method,
-            Utils.StringExtensions.Truncate(requestBody, 4000),
+            requestBody,
             exception.GetType().FullName,
             exception.Message,
             exception.StackTrace);
@@ -1014,11 +1016,16 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
     private void LogWebhook(string webhookName, LogLevel logLevel, string messageTemplate, params object?[] args)
     {
         var formattedArgs = args
-            .Select(x => x switch
+            .Select(x =>
             {
-                null => string.Empty,
-                IFormattable formattable => formattable.ToString(null, CultureInfo.InvariantCulture) ?? string.Empty,
-                _ => x.ToString() ?? string.Empty
+                var formattedValue = x switch
+                {
+                    null => string.Empty,
+                    IFormattable formattable => formattable.ToString(null, CultureInfo.InvariantCulture) ?? string.Empty,
+                    _ => x.ToString() ?? string.Empty
+                };
+
+                return Utils.StringExtensions.Truncate(formattedValue, WebhookLogArgumentMaxLength) ?? string.Empty;
             })
             .Cast<object>()
             .ToArray();
