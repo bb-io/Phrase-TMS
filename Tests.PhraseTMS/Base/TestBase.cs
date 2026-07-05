@@ -66,9 +66,34 @@ public class TestBase
         {
             InvocationContexts.Add(new InvocationContext
             {
-                AuthenticationCredentialsProviders = credentialGroup
+                AuthenticationCredentialsProviders = credentialGroup,
+                Logger = CreateTestLogger(() => TestContext)
             });
         }
+    }
+
+    public static Logger CreateTestLogger(Func<TestContext?> getTestContext)
+    {
+        return new Logger("Debug")
+        {
+            LogError = (message, args) => WriteLog(getTestContext(), "Error", message, args),
+            LogInformation = (message, args) => WriteLog(getTestContext(), "Information", message, args)
+        };
+    }
+
+    private static void WriteLog(TestContext? testContext, string level, string? message, object[]? args)
+    {
+        var safeMessage = message ?? string.Empty;
+        var safeArgs = args ?? Array.Empty<object>();
+        var logMessage = $"[{level}] {string.Format(safeMessage, safeArgs)}";
+
+        if (testContext != null)
+        {
+            testContext.WriteLine(logMessage);
+            return;
+        }
+
+        Console.WriteLine(logMessage);
     }
 
     public InvocationContext GetInvocationContext(string connectionType)
