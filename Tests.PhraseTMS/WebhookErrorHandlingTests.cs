@@ -6,6 +6,7 @@ using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.Sdk.Common.Webhooks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using PhraseTMSTests.Base;
 using System.Net;
 
 namespace Tests.PhraseTMS;
@@ -13,10 +14,12 @@ namespace Tests.PhraseTMS;
 [TestClass]
 public class WebhookErrorHandlingTests
 {
+    public TestContext TestContext { get; set; } = null!;
+
     [TestMethod]
     public async Task Project_creation_returns_bad_request_for_invalid_json()
     {
-        var webhookList = CreateWebhookList();
+        var webhookList = CreateWebhookList(TestContext);
 
         var response = await webhookList.ProjectCreation(
             new WebhookRequest { Body = "{ invalid json" },
@@ -37,7 +40,7 @@ public class WebhookErrorHandlingTests
     [TestMethod]
     public async Task Job_status_changed_returns_bad_request_for_misconfiguration_exception()
     {
-        var webhookList = CreateWebhookList();
+        var webhookList = CreateWebhookList(TestContext);
 
         var response = await webhookList.JobStatusChanged(
             new WebhookRequest { Body = "{}" },
@@ -64,14 +67,15 @@ public class WebhookErrorHandlingTests
         StringAssert.Contains(responseBody, "\"webhook\": \"PhraseTMSJobStatusChanged\"");
     }
 
-    private static WebhookList CreateWebhookList()
+    private static WebhookList CreateWebhookList(TestContext testContext)
     {
         var context = new InvocationContext
         {
             AuthenticationCredentialsProviders =
             [
                 new AuthenticationCredentialsProvider("url", "https://example.com")
-            ]
+            ],
+            Logger = TestBase.CreateTestLogger(() => testContext)
         };
 
         return new WebhookList(context);

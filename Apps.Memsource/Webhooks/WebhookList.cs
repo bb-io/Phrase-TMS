@@ -17,6 +17,7 @@ using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.Sdk.Common.Webhooks;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using RestSharp;
 using System.Net;
@@ -233,8 +234,9 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
 
             if (data.JobParts == null || data.JobParts.Count == 0)
             {
-                InvocationContext.Logger?.LogError(
-                    $"[PhraseTMSJobCreation] No job parts found in webhook body. Body: {requestBody}", []);
+                LogWebhook("PhraseTMSJobCreation", LogLevel.Error,
+                    "No job parts found in webhook body. Body: {0}",
+                    requestBody);
                 return Preflight<MultipleJobResponse>();
             }
 
@@ -624,11 +626,12 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             "Triggered when all jobs in a specific workflow step reach any of the specified statuses. Outputs only jobs in that workflow step")]
     public Task<WebhookResponse<ListAllJobsResponse>> HandleAllJobsReachedStatusAsync(WebhookRequest webhookRequest,
         [WebhookParameter] WorkflowStepStatusRequest workflowStepStatusRequest, [WebhookParameter] [Display("Target language")]
-    [DataSource(typeof(LanguageDataHandler))] string? TargetLang)
+        [DataSource(typeof(LanguageDataHandler))] string? TargetLang)
         => ExecuteWebhookSafelyAsync("PhraseTMSAllJobsReachedStatus", webhookRequest, async () =>
         {
-            InvocationContext.Logger?.LogInformation(
-                $"[PhraseTMS Webhook] Raw body: {JsonConvert.SerializeObject(webhookRequest)}", null);
+            LogWebhook("PhraseTMS Webhook", LogLevel.Information,
+                "Raw body: {0}",
+                JsonConvert.SerializeObject(webhookRequest));
 
             if (!TryDeserializeWebhookPayload<JobsWrapper, ListAllJobsResponse>(webhookRequest, "PhraseTMS Webhook",
                     out _, out var jobData, out var errorResponse))
@@ -639,15 +642,19 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             var primaryJob = jobData.JobParts?.FirstOrDefault();
             if (primaryJob == null)
             {
-                InvocationContext.Logger?.LogError(
-                    $"[PhraseTMS Webhook] No jobs found in webhook body. JobParts count: {jobData.JobParts?.Count ?? 0}",
-                    null);
+                LogWebhook("PhraseTMS Webhook", LogLevel.Error,
+                    "No jobs found in webhook body. JobParts count: {0}",
+                    jobData.JobParts?.Count ?? 0);
                 return Preflight<ListAllJobsResponse>();
             }
 
-            InvocationContext.Logger?.LogInformation(
-                $"[PhraseTMS Webhook] Primary job: uid={primaryJob.Uid}, status={primaryJob.Status}, target={primaryJob.TargetLang}, workflowLevel={primaryJob.workflowLevel}, project={primaryJob.Project?.Uid}",
-                null);
+            LogWebhook("PhraseTMS Webhook", LogLevel.Information,
+                "Primary job: uid={0}, status={1}, target={2}, workflowLevel={3}, project={4}",
+                primaryJob.Uid,
+                primaryJob.Status,
+                primaryJob.TargetLang,
+                primaryJob.workflowLevel,
+                primaryJob.Project?.Uid);
 
             if (!workflowStepStatusRequest.JobStatuses.Contains(primaryJob.Status))
             {
@@ -686,8 +693,9 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
                 .Where(job => workflowStepStatusRequest.JobStatuses.Contains(job.Status))
                 .ToList();
 
-            InvocationContext.Logger?.LogInformation(
-                $"[PhraseTMS Webhook] RelevantJobs.Count={relevantJobs.Count}, JobId;", null);
+            LogWebhook("PhraseTMS Webhook", LogLevel.Information,
+                "RelevantJobs.Count={0}, JobId;",
+                relevantJobs.Count);
 
             if (allJobs.Count != relevantJobs.Count)
             {
@@ -695,8 +703,10 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             }
 
             var returnedIds = string.Join(", ", relevantJobs.Select(j => $"{j.Uid}:{j.Status}"));
-            InvocationContext.Logger?.LogInformation(
-                $"[PhraseTMS Webhook] Returning {relevantJobs.Count} jobs → [{returnedIds}]", []);
+            LogWebhook("PhraseTMS Webhook", LogLevel.Information,
+                "Returning {0} jobs → [{1}]",
+                relevantJobs.Count,
+                returnedIds);
 
             return Success(new ListAllJobsResponse { Jobs = relevantJobs });
         });
@@ -941,7 +951,8 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
 
         if (string.IsNullOrWhiteSpace(requestBody))
         {
-            InvocationContext.Logger?.LogError($"[{webhookName}] Webhook body is null or empty", []);
+            LogWebhook(webhookName, LogLevel.Error,
+                "Webhook body is null or empty");
             errorResponse = Preflight<TResponse>();
             return false;
         }
@@ -952,8 +963,9 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             return true;
         }
 
-        InvocationContext.Logger?.LogError($"[{webhookName}] Failed to deserialize webhook body. Body: {requestBody}",
-            []);
+        LogWebhook(webhookName, LogLevel.Error,
+            "Failed to deserialize webhook body. Body: {0}",
+            requestBody);
         errorResponse = Preflight<TResponse>();
         return false;
     }
@@ -978,10 +990,13 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         };
 
         var diagnosticJson = JsonConvert.SerializeObject(diagnosticPayload, Formatting.Indented);
-        InvocationContext.Logger?.LogError(
-            $"[{webhookName}] Webhook processing failed. Request method: {webhookRequest.HttpMethod?.Method}; " +
-            $"Request body: {Utils.StringExtensions.Truncate(requestBody, 4000)}; Exception type: {exception.GetType().FullName}; " +
-            $"Exception message: {exception.Message}; Stack trace: {exception.StackTrace}", [exception.Message]);
+        LogWebhook(webhookName, LogLevel.Error,
+            "Webhook processing failed. Request method: {0}; Request body: {1}; Exception type: {2}; Exception message: {3}; Stack trace: {4}",
+            webhookRequest.HttpMethod?.Method,
+            Utils.StringExtensions.Truncate(requestBody, 4000),
+            exception.GetType().FullName,
+            exception.Message,
+            exception.StackTrace);
 
         var httpResponse = new HttpResponseMessage(HttpStatusCode.BadRequest)
         {
@@ -994,6 +1009,46 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             Result = null,
             ReceivedWebhookRequestType = WebhookRequestType.Preflight
         };
+    }
+
+    private void LogWebhook(string webhookName, LogLevel logLevel, string messageTemplate, params object?[] args)
+    {
+        var formattedArgs = args
+            .Select(x => x switch
+            {
+                null => string.Empty,
+                IFormattable formattable => formattable.ToString(null, CultureInfo.InvariantCulture) ?? string.Empty,
+                _ => x.ToString() ?? string.Empty
+            })
+            .Cast<object>()
+            .ToArray();
+
+        string message;
+        try
+        {
+            message = formattedArgs.Length == 0
+                ? messageTemplate
+                : string.Format(CultureInfo.InvariantCulture, messageTemplate, formattedArgs);
+        }
+        catch (FormatException)
+        {
+            var fallbackArgs = string.Join("; ", formattedArgs.Select((x, i) => $"arg{i}: {x}"));
+            message = $"{messageTemplate}; {fallbackArgs}";
+        }
+
+        message = $"[{webhookName}] {message}".Replace("{", "{{").Replace("}", "}}");
+
+        var logAction = logLevel switch
+        {
+            LogLevel.Critical => InvocationContext.Logger?.LogCritical,
+            LogLevel.Error => InvocationContext.Logger?.LogError,
+            LogLevel.Warning => InvocationContext.Logger?.LogWarning,
+            LogLevel.Debug or LogLevel.Trace => InvocationContext.Logger?.LogDebug,
+            LogLevel.None => null,
+            _ => InvocationContext.Logger?.LogInformation
+        };
+
+        logAction?.Invoke(message, []);
     }
 
     private async Task<string?> GetProjectNote(string projectUid)
