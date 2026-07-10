@@ -244,7 +244,16 @@ Custom fields are associated with a specific type, for example date, number, or 
 - **On project deleted** Triggered when a project is deleted.
 - **On project due date changed** Triggered when a project due date changes.
 - **On project metadata updated** Triggered when project metadata is updated.
-- **On shared project assigned** Triggered when a shared project is assigned.
+- **On shared project assigned** Triggered when a project is shared with a vendor.
+
+  To trigger this event:
+  1. In the vendor Phrase account, copy the vendor token.
+  2. In the main Phrase account, go to **Settings > Vendors** and add the vendor using this token.
+  3. Open a project, select **Edit > Access and security**, enable **Use vendors**, and save the project.
+  4. Return to the project, select **Share project**, and assign it to the vendor.
+
+  > The webhook is created and delivered in the vendor account, not in the account that shares the project. To use this event in Blackbird, connect the vendor account separately using its own credentials or API token, and configure the event with the vendor connection.
+
 - **On project status changed** Triggered when a project status changes.
 - **On jobs created** Triggered when new jobs are created.
 - **On jobs deleted** Triggered when jobs are deleted.
