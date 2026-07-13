@@ -415,6 +415,39 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             });
         });
 
+    [Webhook("On pre-translation finished", typeof(PreTranslationFinishedHandler),
+        Description = "Triggered when pre-translation finishes for a job")]
+    public Task<WebhookResponse<JobResponse>> PreTranslationFinished(WebhookRequest webhookRequest,
+        [WebhookParameter] ProjectOptionalRequest projectOptionalRequest,
+        [WebhookParameter] PreTranslationFinishedRequest request)
+        => ExecuteWebhookSafelyAsync("PhraseTMSPreTranslationFinished", webhookRequest, async () =>
+        {
+            if (!TryDeserializeWebhookPayload<JobsWrapper, JobResponse>(webhookRequest,
+                    "PhraseTMSPreTranslationFinished", out _, out var data, out var errorResponse))
+            {
+                return errorResponse!;
+            }
+
+            var matchingJob = data.JobParts?.FirstOrDefault(x => x.Uid == request.JobUId);
+            if (matchingJob == null || string.IsNullOrWhiteSpace(matchingJob.Project?.Uid))
+            {
+                return Preflight<JobResponse>();
+            }
+
+            if (!string.IsNullOrWhiteSpace(projectOptionalRequest.ProjectUId) &&
+                !string.Equals(projectOptionalRequest.ProjectUId, matchingJob.Project.Uid,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                return Preflight<JobResponse>();
+            }
+
+            var jobRequest = new RestRequest($"/api2/v1/projects/{matchingJob.Project.Uid}/jobs/{matchingJob.Uid}",
+                Method.Get);
+            var job = await Client.ExecuteWithHandling<JobDto>(jobRequest);
+
+            return Success(MapJobResponse(job));
+        });
+
     [Webhook("On job status changed", typeof(JobStatusChangedHandler), Description = "Triggered when a job status changes")]
     public Task<WebhookResponse<JobResponse>> JobStatusChanged(WebhookRequest webhookRequest,
         [WebhookParameter] JobStatusChangedRequest request,
@@ -841,6 +874,19 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         => jobUid != null && jobParts.All(x => x.Uid != jobUid)
             ? WebhookRequestType.Preflight
             : WebhookRequestType.Default;
+
+    private static JobResponse MapJobResponse(JobDto job)
+        => new()
+        {
+            Uid = job.Uid,
+            ProjectUid = job.Project?.UId ?? string.Empty,
+            ProjectName = job.Project?.Name ?? string.Empty,
+            Filename = job.Filename,
+            Status = job.Status,
+            TargetLanguage = job.TargetLang,
+            SourceLanguage = job.SourceLang,
+            WordCount = job.WordsCount
+        };
 
     private static bool Eq(string? a, string b)
         => !string.IsNullOrWhiteSpace(a) && a.Equals(b, StringComparison.OrdinalIgnoreCase);
