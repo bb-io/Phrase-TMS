@@ -30,8 +30,6 @@ namespace Apps.PhraseTMS.Webhooks;
 public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(invocationContext)
 {
     private const int WebhookLogArgumentMaxLength = 4000;
-    private const string PreTranslationDebugWebhookSiteUrl =
-        "https://webhook.site/46cbbabd-fdbf-4fda-99d7-82f45dddaef6";
 
     #region ProjectWebhooks
 
@@ -424,8 +422,6 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         [WebhookParameter] PreTranslationFinishedRequest request)
         => ExecuteWebhookSafelyAsync("PhraseTMSPreTranslationFinished", webhookRequest, async () =>
         {
-            await ForwardWebhookDebugAsync("PhraseTMSPreTranslationFinished", webhookRequest);
-
             if (!TryDeserializeWebhookPayload<JobsWrapper, JobResponse>(webhookRequest,
                     "PhraseTMSPreTranslationFinished", out _, out var data, out var errorResponse))
             {
@@ -964,34 +960,6 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         }
 
         return dict;
-    }
-
-    private async Task ForwardWebhookDebugAsync(string webhookName, WebhookRequest webhookRequest)
-    {
-        try
-        {
-            var body = webhookRequest.Body?.ToString() ?? string.Empty;
-            using var httpClient = new HttpClient();
-            using var debugRequest = new HttpRequestMessage(HttpMethod.Post, PreTranslationDebugWebhookSiteUrl)
-            {
-                Content = new StringContent(body, Encoding.UTF8, "application/json")
-            };
-
-            debugRequest.Headers.TryAddWithoutValidation("X-Blackbird-Debug-Webhook", webhookName);
-            debugRequest.Headers.TryAddWithoutValidation("X-Blackbird-Debug-Method",
-                webhookRequest.HttpMethod?.Method ?? "UNKNOWN");
-
-            var response = await httpClient.SendAsync(debugRequest);
-            LogWebhook(webhookName, response.IsSuccessStatusCode ? LogLevel.Information : LogLevel.Warning,
-                "Forwarded raw webhook payload to debug endpoint. Status code: {0}",
-                (int)response.StatusCode);
-        }
-        catch (Exception ex)
-        {
-            LogWebhook(webhookName, LogLevel.Warning,
-                "Failed to forward raw webhook payload to debug endpoint: {0}",
-                ex.Message);
-        }
     }
 
     private Task<WebhookResponse<T>> ExecuteWebhookSafelyAsync<T>(string webhookName, WebhookRequest webhookRequest,
