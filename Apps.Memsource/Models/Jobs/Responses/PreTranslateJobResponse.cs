@@ -6,6 +6,21 @@ namespace Apps.PhraseTMS.Models.Jobs.Responses
 {
     public class PreTranslateJobResponse
     {
+        [Display("Async request ID")]
+        public string? AsyncRequestId { get; set; }
+
+        [Display("Action")]
+        public string? Action { get; set; }
+
+        [Display("Creation date")]
+        public DateTime? DateCreated { get; set; }
+
+        [Display("Project name")]
+        public string? ProjectName { get; set; }
+
+        [Display("Project ID")]
+        public string? ProjectUId { get; set; }
+
         [Display("Request info")]
         [JsonProperty("asyncRequest")]
         public AsyncRequestDto? AsyncRequest { get; set; }      

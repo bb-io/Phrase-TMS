@@ -873,7 +873,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
     }
 
     [Action("Pre-translate job", Description = "Pre-translate a job in the project")]
-    public async Task PreTranslateJob(
+    public async Task<PreTranslateJobResponse> PreTranslateJob(
         [ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] PreTranslateJobInput input,
         [ActionParameter] PreTranslateSettings settings)
@@ -951,7 +951,17 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         };
 
         request.WithJsonBody(body, JsonConfig.Settings);
-        await Client.PerformAsyncRequest(request);
+        var asyncRequest = await Client.ExecuteWithHandling<PreTranslateJobResponse>(request);
+
+        return new PreTranslateJobResponse
+        {
+            AsyncRequest = asyncRequest.AsyncRequest,
+            AsyncRequestId = asyncRequest.AsyncRequest?.Id,
+            Action = asyncRequest.AsyncRequest?.Action,
+            DateCreated = asyncRequest.AsyncRequest?.DateCreated,
+            ProjectName = asyncRequest.AsyncRequest?.Project?.Name,
+            ProjectUId = asyncRequest.AsyncRequest?.Project?.Uid
+        };
     }
 
     [Action("Upload job source file", Description = "Upload and update the job source file in the project")]
