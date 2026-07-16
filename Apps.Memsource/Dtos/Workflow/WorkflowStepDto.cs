@@ -20,8 +20,4 @@ public class WorkflowStepDto
     [Display("Order")]
     [JsonProperty("order")]
     public int Order { get; set; }
-
-    [Display("Workflow level")]
-    [JsonProperty("workflowLevel")]
-    public int WorkflowLevel { get; set; }
 }

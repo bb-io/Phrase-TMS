@@ -27,7 +27,7 @@ public class ListJobDto
 
     [Display("Workflow step")]
     [JsonProperty("workflowStep")]
-    public WorkflowStepDto WorkflowStep { get; set; }
+    public WorkflowStepWithLevelDto WorkflowStep { get; set; }
 
     [Display("File name")]
     [JsonProperty("filename")]
