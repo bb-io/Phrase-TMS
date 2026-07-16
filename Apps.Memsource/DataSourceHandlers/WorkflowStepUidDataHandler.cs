@@ -1,4 +1,4 @@
-using Apps.PhraseTMS.Dtos.Jobs;
+using Apps.PhraseTMS.Dtos.Workflow;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using RestSharp;

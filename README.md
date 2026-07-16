@@ -236,6 +236,10 @@ Custom fields are associated with a specific type, for example date, number, or 
 - **Update user** Update a specific user.
 - **Delete user** Delete a specific user.
 
+### Workflows
+
+- **Get workflow step**. Get details of a specific workflow step.
+
 ## Events
 
 ### Miscellaneous

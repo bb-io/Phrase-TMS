@@ -1,4 +1,5 @@
-﻿using Blackbird.Applications.Sdk.Common;
+﻿using Apps.PhraseTMS.Dtos.Workflow;
+using Blackbird.Applications.Sdk.Common;
 using Newtonsoft.Json;
 
 namespace Apps.PhraseTMS.Dtos.Jobs;
