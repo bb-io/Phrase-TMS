@@ -6,6 +6,6 @@ namespace Apps.PhraseTMS.Models.WorkflowStep.Request;
 
 public class WorkflowStepRequest
 {
-    [Display("Workflow ID"), DataSource(typeof(WorkflowStepDataHandler))]
+    [Display("Workflow step ID"), DataSource(typeof(WorkflowStepDataHandler))]
     public string WorkflowStepId { get; set; } = string.Empty;
 }
