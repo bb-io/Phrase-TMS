@@ -1,11 +1,6 @@
-﻿using Apps.PhraseTMS.Dtos.Analysis;
-using Blackbird.Applications.Sdk.Common;
+﻿using Blackbird.Applications.Sdk.Common;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Apps.PhraseTMS.Dtos.Workflow;
 
 namespace Apps.PhraseTMS.Dtos.Jobs;
 public class ListJobDto
@@ -32,7 +27,7 @@ public class ListJobDto
 
     [Display("Workflow step")]
     [JsonProperty("workflowStep")]
-    public WorkflowStepDto WorkflowStep { get; set; }
+    public WorkflowStepWithLevelDto WorkflowStep { get; set; }
 
     [Display("File name")]
     [JsonProperty("filename")]

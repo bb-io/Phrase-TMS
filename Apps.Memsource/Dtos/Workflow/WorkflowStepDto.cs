@@ -1,7 +1,7 @@
 ﻿using Blackbird.Applications.Sdk.Common;
 using Newtonsoft.Json;
 
-namespace Apps.PhraseTMS.Dtos.Jobs;
+namespace Apps.PhraseTMS.Dtos.Workflow;
 
 public class WorkflowStepDto
 {
@@ -20,8 +20,4 @@ public class WorkflowStepDto
     [Display("Order")]
     [JsonProperty("order")]
     public int Order { get; set; }
-
-    [Display("Workflow level")]
-    [JsonProperty("workflowLevel")]
-    public int WorkflowLevel { get; set; }
 }
