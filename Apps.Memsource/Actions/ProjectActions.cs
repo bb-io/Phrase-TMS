@@ -7,18 +7,12 @@ using Apps.PhraseTMS.Models.TranslationMemories.Responses;
 using Apps.PhraseTMS.Utils;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
-using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Common.Files;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
-using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
-using DocumentFormat.OpenXml.Drawing.Diagrams;
-using Newtonsoft.Json;
 using RestSharp;
-using System.Globalization;
-using System.Text.Json.Nodes;
 
 namespace Apps.PhraseTMS.Actions;
 
@@ -29,13 +23,13 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
     public async Task<ListAllProjectsResponse> ListAllProjects([ActionParameter] ListAllProjectsQuery query)
     {
         var apiQuery = new ListAllProjectsApiQuery(query);
-        var request = new RestRequest(QueryHelper.WithQuery("/api2/v1/projects", apiQuery), Method.Get);
+        var request = new RestRequest("/api2/v1/projects".WithQuery(apiQuery));
         var response = await Client.Paginate<ProjectDto>(request);
 
-        return new()
-        {
-            Projects = response ?? new List<ProjectDto>()
-        };
+        if (query.BuyerId.HasValue)
+            response = response.Where(x => x.Buyer?.Id == query.BuyerId.ToString()).ToList();
+        
+        return new() { Projects = response };
     }
 
     [Action("Find project", Description = "Find the first project matching the same filters as Search projects")]

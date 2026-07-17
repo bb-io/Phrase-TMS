@@ -21,10 +21,9 @@ namespace Apps.PhraseTMS.Models.Projects.Requests
         [JsonProperty("dueInHours")] public int? DueInHours { get; set; }
         [JsonProperty("createdInLastHours")] public int? CreatedInLastHours { get; set; }
         [JsonProperty("sourceLangs")] public IEnumerable<string>? SourceLangs { get; set; }
-        [JsonProperty("ownedId")] public long? OwnerId { get; set; }
+        [JsonProperty("ownerId")] public long? OwnerId { get; set; }
         [JsonProperty("jobStatuses")] public IEnumerable<string>? JobStatuses { get; set; }
         [JsonProperty("jobStatusGroup")] public string? JobStatusGroup { get; set; }
-        [JsonProperty("buyerId")] public long? BuyerId { get; set; }
         [JsonProperty("nameOrInternalId")] public string? NameOrInternalId { get; set; }
         [JsonProperty("includeArchived")] public bool? IncludeArchived { get; set; }
         [JsonProperty("archivedOnly")] public bool? ArchivedOnly { get; set; }
@@ -52,7 +51,6 @@ namespace Apps.PhraseTMS.Models.Projects.Requests
             OwnerId = q.OwnerId;
             JobStatuses = q.JobStatuses;
             JobStatusGroup = q.JobStatusGroup;
-            BuyerId = q.BuyerId;
             NameOrInternalId = q.NameOrInternalId;
             IncludeArchived = q.IncludeArchived;
             ArchivedOnly = q.ArchivedOnly;
