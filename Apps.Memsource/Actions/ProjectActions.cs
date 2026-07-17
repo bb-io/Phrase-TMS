@@ -34,12 +34,15 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
     }
 
     [Action("Find project", Description = "Find the first project matching the same filters as Search projects")]
-    public async Task<ProjectDto> FindProject([ActionParameter] ListAllProjectsQuery query)
+    public async Task<ProjectDto?> FindProject([ActionParameter] ListAllProjectsQuery query)
     {
-        var endpoint = "/api2/v1/projects";
-        var request = new RestRequest(QueryHelper.WithQuery(endpoint, query), Method.Get);
-
+        var apiQuery = new ListAllProjectsApiQuery(query);
+        var request = new RestRequest("/api2/v1/projects".WithQuery(apiQuery));
         var response = await Client.Paginate<ProjectDto>(request);
+
+        // Although this param supports server-side filtering, it did not work for some clients (the endpoint returned nothing)
+        if (query.BuyerId.HasValue)
+            response = response.Where(x => x.Buyer?.Id == query.BuyerId.ToString()).ToList();
 
         return response.FirstOrDefault();
     }

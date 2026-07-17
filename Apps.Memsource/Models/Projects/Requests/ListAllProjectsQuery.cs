@@ -28,7 +28,7 @@ public class ListAllProjectsQuery
     [JsonProperty("createdInLastHours")]
     public double? CreatedInLastHours { get; set; }
     [Display("Source languages"), DataSource(typeof(LanguageDataHandler)), JsonProperty("sourceLangs")] public IEnumerable<string>? SourceLangs { get; set; }
-    [Display("Owner ID"), JsonProperty("ownedId")] public long? OwnerId { get; set; }
+    [Display("Owner ID"), JsonProperty("ownerId")] public long? OwnerId { get; set; }
     [Display("Job statuses"), StaticDataSource(typeof(JobStatusDataHandler)), JsonProperty("jobStatuses")] public IEnumerable<string>? JobStatuses { get; set; }
 
     [Display("Job status group"), StaticDataSource(typeof(JobStatusGroupDataHandler)), JsonProperty("jobStatusGroup")]
