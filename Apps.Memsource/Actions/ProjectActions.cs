@@ -26,6 +26,7 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
         var request = new RestRequest("/api2/v1/projects".WithQuery(apiQuery));
         var response = await Client.Paginate<ProjectDto>(request);
 
+        // Although this param supports server-side filtering, it did not work for some clients (the endpoint returned nothing)
         if (query.BuyerId.HasValue)
             response = response.Where(x => x.Buyer?.Id == query.BuyerId.ToString()).ToList();
         
