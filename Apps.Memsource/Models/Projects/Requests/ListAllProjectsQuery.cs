@@ -3,11 +3,7 @@ using Apps.PhraseTMS.DataSourceHandlers.StaticHandlers;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Dictionaries;
 using Blackbird.Applications.Sdk.Common.Dynamic;
-using Blackbird.Applications.Sdk.Common.Exceptions;
 using Newtonsoft.Json;
-using System.Globalization;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace Apps.PhraseTMS.Models.Projects.Requests;
 
@@ -32,13 +28,13 @@ public class ListAllProjectsQuery
     [JsonProperty("createdInLastHours")]
     public double? CreatedInLastHours { get; set; }
     [Display("Source languages"), DataSource(typeof(LanguageDataHandler)), JsonProperty("sourceLangs")] public IEnumerable<string>? SourceLangs { get; set; }
-    [Display("Owner ID"), JsonProperty("ownedId")] public long? OwnerId { get; set; }
+    [Display("Owner ID"), JsonProperty("ownerId")] public long? OwnerId { get; set; }
     [Display("Job statuses"), StaticDataSource(typeof(JobStatusDataHandler)), JsonProperty("jobStatuses")] public IEnumerable<string>? JobStatuses { get; set; }
 
     [Display("Job status group"), StaticDataSource(typeof(JobStatusGroupDataHandler)), JsonProperty("jobStatusGroup")]
     public string? JobStatusGroup { get; set; }
 
-    [Display("Buyer ID"), JsonProperty("buyerId")] public long? BuyerId { get; set; }
+    [Display("Buyer ID")] public long? BuyerId { get; set; }
     [Display("Name or internal ID"), JsonProperty("nameOrInternalId")] public string? NameOrInternalId { get; set; }
     [Display("Include archived"), JsonProperty("includeArchived")] public bool? IncludeArchived { get; set; }
     [Display("Archived only"), JsonProperty("archivedOnly")] public bool? ArchivedOnly { get; set; }
