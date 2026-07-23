@@ -225,7 +225,8 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
 
     [Webhook("On jobs created", typeof(JobCreationHandler), Description = "Triggered when new jobs are created")]
     public Task<WebhookResponse<MultipleJobResponse>> JobCreation(WebhookRequest webhookRequest,
-        [WebhookParameter] JobCreatedFilters filters)
+        [WebhookParameter] JobCreatedFilters filters,
+        [WebhookParameter] MultipleWorkflowStepsOptionalRequest workflowStepRequest)
         => ExecuteWebhookSafelyAsync("PhraseTMSJobCreation", webhookRequest, async () =>
         {
             if (!TryDeserializeWebhookPayload<JobsWrapper, MultipleJobResponse>(webhookRequest, "PhraseTMSJobCreation",
@@ -249,6 +250,30 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
                 .ToList();
 
             var projectMeta = await LoadProjectsMeta(uniqueProjectUids);
+            var workflowLevelsByProject = new Dictionary<string, HashSet<int>>(StringComparer.OrdinalIgnoreCase);
+
+            if (workflowStepRequest.WorkflowStepIds?.Any() == true)
+            {
+                foreach (var projectUid in uniqueProjectUids)
+                {
+                    var workflowLevels = new HashSet<int>();
+
+                    foreach (var workflowStepId in workflowStepRequest.WorkflowStepIds
+                                 .Where(x => !string.IsNullOrWhiteSpace(x)))
+                    {
+                        var workflowLevel = await Client.GetWorkflowstepLevel(projectUid, workflowStepId, false);
+                        if (workflowLevel > 0)
+                        {
+                            workflowLevels.Add(workflowLevel);
+                        }
+                    }
+
+                    if (workflowLevels.Count > 0)
+                    {
+                        workflowLevelsByProject[projectUid] = workflowLevels;
+                    }
+                }
+            }
 
             var shouldTrigger = data.JobParts.Any(p =>
             {
@@ -258,7 +283,18 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
                 }
 
                 projectMeta.TryGetValue(p.Project.Uid, out var meta);
-                return MatchFilters(meta, p, filters);
+                if (!MatchFilters(meta, p, filters))
+                {
+                    return false;
+                }
+
+                if (workflowStepRequest.WorkflowStepIds?.Any() != true)
+                {
+                    return true;
+                }
+
+                return workflowLevelsByProject.TryGetValue(p.Project.Uid, out var workflowLevels)
+                    && workflowLevels.Contains(p.workflowLevel);
             });
 
             if (!shouldTrigger)
