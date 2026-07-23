@@ -226,7 +226,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
     [Webhook("On jobs created", typeof(JobCreationHandler), Description = "Triggered when new jobs are created")]
     public Task<WebhookResponse<MultipleJobResponse>> JobCreation(WebhookRequest webhookRequest,
         [WebhookParameter] JobCreatedFilters filters,
-        [WebhookParameter] WorkflowStepOptionalRequest workflowStepRequest)
+        [WebhookParameter] MultipleWorkflowStepsOptionalRequest workflowStepRequest)
         => ExecuteWebhookSafelyAsync("PhraseTMSJobCreation", webhookRequest, async () =>
         {
             if (!TryDeserializeWebhookPayload<JobsWrapper, MultipleJobResponse>(webhookRequest, "PhraseTMSJobCreation",
@@ -250,17 +250,27 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
                 .ToList();
 
             var projectMeta = await LoadProjectsMeta(uniqueProjectUids);
-            var workflowLevelsByProject = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+            var workflowLevelsByProject = new Dictionary<string, HashSet<int>>(StringComparer.OrdinalIgnoreCase);
 
-            if (!string.IsNullOrWhiteSpace(workflowStepRequest.WorkflowStepId))
+            if (workflowStepRequest.WorkflowStepIds?.Any() == true)
             {
                 foreach (var projectUid in uniqueProjectUids)
                 {
-                    var workflowLevel =
-                        await Client.GetWorkflowstepLevel(projectUid, workflowStepRequest.WorkflowStepId, false);
-                    if (workflowLevel > 0)
+                    var workflowLevels = new HashSet<int>();
+
+                    foreach (var workflowStepId in workflowStepRequest.WorkflowStepIds
+                                 .Where(x => !string.IsNullOrWhiteSpace(x)))
                     {
-                        workflowLevelsByProject[projectUid] = workflowLevel;
+                        var workflowLevel = await Client.GetWorkflowstepLevel(projectUid, workflowStepId, false);
+                        if (workflowLevel > 0)
+                        {
+                            workflowLevels.Add(workflowLevel);
+                        }
+                    }
+
+                    if (workflowLevels.Count > 0)
+                    {
+                        workflowLevelsByProject[projectUid] = workflowLevels;
                     }
                 }
             }
@@ -278,13 +288,13 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
                     return false;
                 }
 
-                if (string.IsNullOrWhiteSpace(workflowStepRequest.WorkflowStepId))
+                if (workflowStepRequest.WorkflowStepIds?.Any() != true)
                 {
                     return true;
                 }
 
-                return workflowLevelsByProject.TryGetValue(p.Project.Uid, out var workflowLevel)
-                    && workflowLevel == p.workflowLevel;
+                return workflowLevelsByProject.TryGetValue(p.Project.Uid, out var workflowLevels)
+                    && workflowLevels.Contains(p.workflowLevel);
             });
 
             if (!shouldTrigger)
