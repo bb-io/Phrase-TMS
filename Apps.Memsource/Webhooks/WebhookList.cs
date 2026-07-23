@@ -225,7 +225,8 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
 
     [Webhook("On jobs created", typeof(JobCreationHandler), Description = "Triggered when new jobs are created")]
     public Task<WebhookResponse<MultipleJobResponse>> JobCreation(WebhookRequest webhookRequest,
-        [WebhookParameter] JobCreatedFilters filters)
+        [WebhookParameter] JobCreatedFilters filters,
+        [WebhookParameter] WorkflowStepOptionalRequest workflowStepRequest)
         => ExecuteWebhookSafelyAsync("PhraseTMSJobCreation", webhookRequest, async () =>
         {
             if (!TryDeserializeWebhookPayload<JobsWrapper, MultipleJobResponse>(webhookRequest, "PhraseTMSJobCreation",
@@ -249,6 +250,20 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
                 .ToList();
 
             var projectMeta = await LoadProjectsMeta(uniqueProjectUids);
+            var workflowLevelsByProject = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
+            if (!string.IsNullOrWhiteSpace(workflowStepRequest.WorkflowStepId))
+            {
+                foreach (var projectUid in uniqueProjectUids)
+                {
+                    var workflowLevel =
+                        await Client.GetWorkflowstepLevel(projectUid, workflowStepRequest.WorkflowStepId, false);
+                    if (workflowLevel > 0)
+                    {
+                        workflowLevelsByProject[projectUid] = workflowLevel;
+                    }
+                }
+            }
 
             var shouldTrigger = data.JobParts.Any(p =>
             {
@@ -258,7 +273,18 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
                 }
 
                 projectMeta.TryGetValue(p.Project.Uid, out var meta);
-                return MatchFilters(meta, p, filters);
+                if (!MatchFilters(meta, p, filters))
+                {
+                    return false;
+                }
+
+                if (string.IsNullOrWhiteSpace(workflowStepRequest.WorkflowStepId))
+                {
+                    return true;
+                }
+
+                return workflowLevelsByProject.TryGetValue(p.Project.Uid, out var workflowLevel)
+                    && workflowLevel == p.workflowLevel;
             });
 
             if (!shouldTrigger)
