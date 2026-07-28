@@ -1,6 +1,5 @@
 ﻿using Apps.PhraseTMS.Dtos;
 using Blackbird.Applications.Sdk.Common;
-using Blackbird.Applications.Sdk.Common.Authentication;
 using RestSharp;
 using Apps.PhraseTMS.Models.ProjectReferenceFiles.Requests;
 using Apps.PhraseTMS.Models.ProjectReferenceFiles.Responses;
@@ -8,6 +7,7 @@ using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using System.Net.Mime;
+using Apps.PhraseTMS.Extensions;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Blackbird.Applications.Sdk.Utils.Extensions.Files;
@@ -18,7 +18,8 @@ using Blackbird.Applications.Sdk.Common.Exceptions;
 namespace Apps.PhraseTMS.Actions;
 
 [ActionList("Reference files")]
-public class ProjectRefrenceFileActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : PhraseInvocable(invocationContext)
+public class ProjectRefrenceFileActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) 
+    : PhraseInvocable(invocationContext)
 {
     [Action("Search project reference files", Description = "Searches through all project reference files")]
     public async Task<ListReferenceFilesResponse> ListReferenceFiles( [ActionParameter] ProjectRequest input, [ActionParameter] ListReferenceFilesQuery query)
@@ -71,18 +72,15 @@ public class ProjectRefrenceFileActions(InvocationContext invocationContext, IFi
     [Action("Download project reference file", Description = "Download project reference file")]
     public async Task<DownloadReferenceFilesResponse> DownloadReferenceFiles([ActionParameter] ReferenceFileRequest input)
     {
-        var request = new RestRequest($"/api2/v1/projects/{input.ProjectUId}/references/{input.ReferenceFileUId}", Method.Get);
+        var request = new RestRequest($"/api2/v1/projects/{input.ProjectUId}/references/{input.ReferenceFileUId}");
         var response = await Client.ExecuteWithHandling(request);
 
-        byte[] fileData = response.RawBytes;
-        var filenameHeader = response.ContentHeaders.First(h => h.Name == "Content-Disposition");
-        var filename = filenameHeader.Value.ToString().Split(';')[1].Split("\'\'")[1];
-        string mimeType = "";
-        if (MimeTypes.TryGetMimeType(filename, out mimeType))
+        string fileName = response.GetFilenameFromHeader();
+        if (!MimeTypes.TryGetMimeType(fileName, out var mimeType))
             mimeType = MediaTypeNames.Application.Octet;
 
-        using var stream = new MemoryStream(response.RawBytes);
-        var file = await fileManagementClient.UploadAsync(stream, mimeType, filename);
+        using var stream = new MemoryStream(response.RawBytes ?? []);
+        var file = await fileManagementClient.UploadAsync(stream, mimeType, fileName);
         return new() { File = file };
     }
 
