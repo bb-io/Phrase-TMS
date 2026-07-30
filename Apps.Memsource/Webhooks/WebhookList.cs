@@ -237,7 +237,9 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
 
             if (data.JobParts == null || data.JobParts.Count == 0)
             {
-                LogWebhook("PhraseTMSJobCreation", LogLevel.Error,
+                LogWebhook(
+                    "PhraseTMSJobCreation", 
+                    LogLevel.Error,
                     "No job parts found in webhook body. Body: {0}",
                     requestBody);
                 return Preflight<MultipleJobResponse>();
@@ -250,59 +252,43 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
                 .ToList();
 
             var projectMeta = await LoadProjectsMeta(uniqueProjectUids);
-            var workflowLevelsByProject = new Dictionary<string, HashSet<int>>(StringComparer.OrdinalIgnoreCase);
-
-            if (workflowStepRequest.WorkflowStepIds?.Any() == true)
+            var levelsByProject = new Dictionary<string, HashSet<int>>(StringComparer.OrdinalIgnoreCase);
+            
+            var stepIds = new HashSet<string>(
+                workflowStepRequest.WorkflowStepIds?.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.Trim()) ?? [],
+                StringComparer.OrdinalIgnoreCase);
+            
+            if (stepIds.Count > 0)
             {
                 foreach (var projectUid in uniqueProjectUids)
                 {
-                    var workflowLevels = new HashSet<int>();
+                    var stepIdToLevel = await Client.GetWorkflowLevelsByStepId(projectUid);
 
-                    foreach (var workflowStepId in workflowStepRequest.WorkflowStepIds
-                                 .Where(x => !string.IsNullOrWhiteSpace(x)))
-                    {
-                        var workflowLevel = await Client.GetWorkflowstepLevel(projectUid, workflowStepId, false);
-                        if (workflowLevel > 0)
-                        {
-                            workflowLevels.Add(workflowLevel);
-                        }
-                    }
-
-                    if (workflowLevels.Count > 0)
-                    {
-                        workflowLevelsByProject[projectUid] = workflowLevels;
-                    }
+                    levelsByProject[projectUid] = stepIds
+                        .Where(stepIdToLevel.ContainsKey)
+                        .Select(id => stepIdToLevel[id])
+                        .ToHashSet();
                 }
             }
 
-            var shouldTrigger = data.JobParts.Any(p =>
-            {
-                if (p?.Project?.Uid == null)
+            var selectedJobs = data.JobParts
+                .Where(p => p?.Project.Uid != null)
+                .Where(p =>
                 {
-                    return false;
-                }
+                    projectMeta.TryGetValue(p.Project.Uid, out var meta);
+                    if (!MatchFilters(meta, p, filters))
+                        return false;
 
-                projectMeta.TryGetValue(p.Project.Uid, out var meta);
-                if (!MatchFilters(meta, p, filters))
-                {
-                    return false;
-                }
+                    if (stepIds.Count == 0)
+                        return true;
 
-                if (workflowStepRequest.WorkflowStepIds?.Any() != true)
-                {
-                    return true;
-                }
+                    return levelsByProject.TryGetValue(p.Project.Uid, out var levels) && levels.Contains(p.workflowLevel);
+                })
+                .ToList();
 
-                return workflowLevelsByProject.TryGetValue(p.Project.Uid, out var workflowLevels)
-                    && workflowLevels.Contains(p.workflowLevel);
-            });
-
-            if (!shouldTrigger)
-            {
-                return Preflight<MultipleJobResponse>();
-            }
-
-            return Success(await FetchJobs(data.JobParts));
+            return selectedJobs.Count == 0 
+                ? Preflight<MultipleJobResponse>() 
+                : Success(await FetchJobs(selectedJobs));
         });
 
     [Webhook("On jobs deleted", typeof(JobDeletionHandler), Description = "Triggered when any jobs are deleted")]
