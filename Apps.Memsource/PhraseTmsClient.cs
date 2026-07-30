@@ -13,6 +13,7 @@ using HtmlAgilityPack;
 using Newtonsoft.Json;
 using RestSharp;
 using System.Net;
+using Apps.PhraseTMS.Dtos.Workflow;
 
 namespace Apps.PhraseTMS;
 
@@ -248,6 +249,18 @@ public class PhraseTmsClient : RestClient
         var workflow = response.WorkflowSteps.FirstOrDefault(x => x.InnerWorkflowStep.Id == workflowStepId);
         if (workflow == null && throwOnFailure) throw new PluginMisconfigurationException("The workflow step selected does not exist on the current project. Please select an existing workflow step or leave this input empty.");
         return workflow?.WorkflowLevel ?? 0;
+    }
+    
+    public async Task<Dictionary<string, int>> GetWorkflowLevelsByStepId(string projectUid)
+    {
+        var request = new RestRequest($"/api2/v2/projects/{projectUid}/workflowSteps");
+        var response = await ExecuteWithHandling<ProjectWorkflowStepsDto>(request);
+
+        var map = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        foreach (var step in response.ProjectWorkflowSteps.Where(step => !string.IsNullOrWhiteSpace(step.WorkflowStep?.Id)))
+            map[step.WorkflowStep?.Id!] = step.WorkflowLevel;
+
+        return map;
     }
 
     public async Task<int> GetLastWorkflowstepLevel(string projectId)
