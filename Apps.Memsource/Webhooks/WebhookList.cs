@@ -272,7 +272,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             }
 
             var selectedJobs = data.JobParts
-                .Where(p => p?.Project.Uid != null)
+                .Where(p => p?.Project?.Uid != null)
                 .Where(p =>
                 {
                     projectMeta.TryGetValue(p.Project.Uid, out var meta);
