@@ -665,7 +665,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
 
             var projectRequest = new RestRequest($"/api2/v1/projects/{selectedJob.Project.Uid}?with=owners", Method.Get);
             var projectResponse = await Client.ExecuteWithHandling<ProjectDto>(projectRequest);
-
+            
             return Success(new JobResponse
             {
                 Uid = selectedJob.Uid,
@@ -674,6 +674,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
                 Filename = selectedJob.FileName,
                 SourceLanguage = projectResponse.SourceLang,
                 TargetLanguage = selectedJob.TargetLang,
+                WorkflowStepLevel = selectedJob.workflowLevel,
                 ProjectName = data.metadata.project.Name
             });
         });
