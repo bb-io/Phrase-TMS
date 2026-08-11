@@ -34,6 +34,7 @@ public class JobStatusChangedHandler(
                 ProjectUid = response.Project.UId,
                 WordCount = response.WordsCount,
                 SourceLanguage = response.SourceLang,
+                WorkflowStepLevel = response.WorkflowStep.WorkflowLevel
             };
 
             if (statusRequest.Status.Contains(result.Status))

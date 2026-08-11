@@ -1,5 +1,4 @@
-﻿using Apps.PhraseTMS.Dtos;
-using Blackbird.Applications.Sdk.Common;
+﻿using Blackbird.Applications.Sdk.Common;
 
 namespace Apps.PhraseTMS.Models.Jobs.Responses;
 
@@ -27,4 +26,7 @@ public class JobResponse
 
     [Display("Word count")] 
     public int WordCount { get; set; }
+    
+    [Display("Workflow step level")]
+    public int WorkflowStepLevel { get; set; }
 }
