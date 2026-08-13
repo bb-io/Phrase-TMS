@@ -31,11 +31,11 @@ public class RemoteFileDataHandler(
         var response = await Client.ExecuteWithHandling<ConnectorFilesResponse>(request);
 
         return response.Files
-            .Where(x => !x.IsDirectory && !string.IsNullOrWhiteSpace(x.EncodedName))
+            .Where(x => !x.IsDirectory && !string.IsNullOrWhiteSpace(x.Name))
             .Where(x => string.IsNullOrWhiteSpace(context.SearchString)
                 || x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
             .OrderBy(x => x.Name)
-            .Select(x => new DataSourceItem(x.EncodedName, x.Name));
+            .Select(x => new DataSourceItem(x.Name, x.Name));
     }
 
     private async Task<ConnectorDto> GetConnector(string connectorToken)

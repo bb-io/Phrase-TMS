@@ -541,10 +541,13 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         var folderRequest = new RestRequest(folderEndpoint, Method.Get)
             .AddQueryParameter("fileType", "FILES_ONLY");
         var folderResponse = await Client.ExecuteWithHandling<ConnectorFilesResponse>(folderRequest);
-        var remoteFile = folderResponse.Files.FirstOrDefault(x =>
-            !x.IsDirectory && x.EncodedName == input.RemoteFileName)
-            ?? throw new PluginMisconfigurationException(
+        var remoteFileExists = folderResponse.Files.Any(x =>
+            !x.IsDirectory && x.Name == input.RemoteFileName);
+        if (!remoteFileExists)
+        {
+            throw new PluginMisconfigurationException(
                 "The selected remote file is no longer available in the selected folder. Please select the folder and file again.");
+        }
 
         var memsourceHeader = JsonConvert.SerializeObject(
             new
