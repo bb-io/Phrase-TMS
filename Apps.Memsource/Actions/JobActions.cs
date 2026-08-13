@@ -2,6 +2,7 @@
 using Apps.PhraseTMS.DataSourceHandlers;
 using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Dtos.Async;
+using Apps.PhraseTMS.Dtos.Connectors;
 using Apps.PhraseTMS.Dtos.Jobs;
 using Apps.PhraseTMS.Extensions;
 using Apps.PhraseTMS.Models;
@@ -493,6 +494,86 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
                 $"attachment; filename=\"{quotedAscii}\"; filename*=UTF-8''{encodedName}");
 
         request.AddParameter("application/octet-stream", fileBytes, ParameterType.RequestBody);
+
+        return await Client.ExecuteWithHandling<JobResponseWrapper>(request);
+    }
+
+    [Action("Create jobs from remote file", Description = "Create jobs from a file available through a Phrase connector")]
+    public async Task<JobResponseWrapper> CreateJobsFromRemoteFile(
+        [ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] CreateJobsFromRemoteFileRequest input)
+    {
+        if (string.IsNullOrWhiteSpace(projectRequest.ProjectUId))
+        {
+            throw new PluginMisconfigurationException("Project ID is not provided. Please specify a valid Project ID.");
+        }
+
+        if (string.IsNullOrWhiteSpace(input.ConnectorToken))
+        {
+            throw new PluginMisconfigurationException("Connector token is not provided. Please select a connector.");
+        }
+
+        if (string.IsNullOrWhiteSpace(input.RemoteFolder))
+        {
+            throw new PluginMisconfigurationException("Remote folder is not provided. Please select a remote folder.");
+        }
+
+        if (string.IsNullOrWhiteSpace(input.RemoteFileName))
+        {
+            throw new PluginMisconfigurationException("Remote file name is not provided. Please select a remote file.");
+        }
+
+        if (input.TargetLanguages?.Any() != true)
+        {
+            var projectRequestApi = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}", Method.Get);
+            var project = await Client.ExecuteWithHandling<ProjectDto>(projectRequestApi);
+            input.TargetLanguages = project.TargetLangs;
+        }
+
+        var connectorsRequest = new RestRequest("/api2/v1/connectors", Method.Get);
+        var connectorsResponse = await Client.ExecuteWithHandling<ConnectorsResponse>(connectorsRequest);
+        var connector = connectorsResponse.Connectors.FirstOrDefault(x => x.LocalToken == input.ConnectorToken)
+            ?? throw new PluginMisconfigurationException("The selected connector could not be found. Please select it again.");
+
+        var folderEndpoint = input.RemoteFolder == "/"
+            ? $"/api2/v1/connectors/{connector.Id}/folders"
+            : $"/api2/v1/connectors/{connector.Id}/folders/{input.RemoteFolder}";
+        var folderRequest = new RestRequest(folderEndpoint, Method.Get)
+            .AddQueryParameter("fileType", "FILES_ONLY");
+        var folderResponse = await Client.ExecuteWithHandling<ConnectorFilesResponse>(folderRequest);
+        var remoteFileExists = folderResponse.Files.Any(x =>
+            !x.IsDirectory && x.Name == input.RemoteFileName);
+        if (!remoteFileExists)
+        {
+            throw new PluginMisconfigurationException(
+                "The selected remote file is no longer available in the selected folder. Please select the folder and file again.");
+        }
+
+        var memsourceHeader = JsonConvert.SerializeObject(
+            new
+            {
+                remoteFile = new
+                {
+                    connectorToken = input.ConnectorToken,
+                    remoteFolder = input.RemoteFolder,
+                    remoteFileName = input.RemoteFileName,
+                    continuous = input.Continuous ?? false
+                },
+                targetLangs = input.TargetLanguages,
+                preTranslate = input.PreTranslate ?? false,
+                useProjectFileImportSettings = input.UseProjectFileImportSettings ?? true,
+                due = input.DueDate?.ToUniversalTime().ToString("yyyy-MM-dd'T'HH:mm:ssK")
+            },
+            new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                StringEscapeHandling = StringEscapeHandling.EscapeNonAscii
+            });
+
+        var request = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs", Method.Post)
+            .AddHeader("Memsource", memsourceHeader)
+            .AddHeader("Content-Type", "application/octet-stream")
+            .AddParameter("application/octet-stream", Encoding.UTF8.GetBytes("{}"), ParameterType.RequestBody);
 
         return await Client.ExecuteWithHandling<JobResponseWrapper>(request);
     }

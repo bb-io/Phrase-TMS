@@ -136,6 +136,7 @@ Custom fields are associated with a specific type, for example date, number, or 
 - **Find job from source file ID** Find a job using a source file ID, workflow step ID, and language.
 - **Find job from server task ID** Find a job using a server task ID, workflow step ID, and project ID.
 - **Upload source file (create jobs)** Upload a new source file and create jobs for the configured target languages and workflow steps.
+- **Create jobs from remote file** Create jobs from a source file available through a configured Phrase connector.
 - **Delete jobs** Delete jobs from a project.
 - **Update job** Update a job's global data.
 - **Download job target file** Download the target file of a job.
