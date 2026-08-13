@@ -34,6 +34,8 @@ public class RemoteFileDataHandler(
             .Where(x => !x.IsDirectory && !string.IsNullOrWhiteSpace(x.Name))
             .Where(x => string.IsNullOrWhiteSpace(context.SearchString)
                 || x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
+            .GroupBy(x => x.Name, StringComparer.Ordinal)
+            .Select(x => x.First())
             .OrderBy(x => x.Name)
             .Select(x => new DataSourceItem(x.Name, x.Name));
     }
