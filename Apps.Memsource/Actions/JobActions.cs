@@ -497,6 +497,70 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         return await Client.ExecuteWithHandling<JobResponseWrapper>(request);
     }
 
+    [Action("Create jobs from remote file", Description = "Create jobs from a file available through a Phrase connector")]
+    public async Task<JobResponseWrapper> CreateJobsFromRemoteFile(
+        [ActionParameter] ProjectRequest projectRequest,
+        [ActionParameter] CreateJobsFromRemoteFileRequest input)
+    {
+        if (string.IsNullOrWhiteSpace(projectRequest.ProjectUId))
+        {
+            throw new PluginMisconfigurationException("Project ID is not provided. Please specify a valid Project ID.");
+        }
+
+        if (string.IsNullOrWhiteSpace(input.ConnectorToken))
+        {
+            throw new PluginMisconfigurationException("Connector token is not provided. Please select a connector.");
+        }
+
+        if (string.IsNullOrWhiteSpace(input.RemoteFolder))
+        {
+            throw new PluginMisconfigurationException("Remote folder is not provided. Please select a remote folder.");
+        }
+
+        if (string.IsNullOrWhiteSpace(input.RemoteFileName))
+        {
+            throw new PluginMisconfigurationException("Remote file name is not provided. Please select a remote file.");
+        }
+
+        if (input.TargetLanguages?.Any() != true)
+        {
+            var projectRequestApi = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}", Method.Get);
+            var project = await Client.ExecuteWithHandling<ProjectDto>(projectRequestApi);
+            input.TargetLanguages = project.TargetLangs;
+        }
+
+        var memsourceHeader = JsonConvert.SerializeObject(
+            new
+            {
+                targetLangs = input.TargetLanguages,
+                preTranslate = input.PreTranslate ?? false,
+                useProjectFileImportSettings = input.UseProjectFileImportSettings ?? true,
+                due = input.DueDate?.ToUniversalTime().ToString("yyyy-MM-dd'T'HH:mm:ssK"),
+                remoteFile = new
+                {
+                    connectorToken = input.ConnectorToken,
+                    remoteFolder = input.RemoteFolder,
+                    remoteFileName = input.RemoteFileName,
+                    continuous = input.Continuous ?? false
+                },
+                sourceData = new
+                {
+                    clientType = "BLACKBIRD"
+                }
+            },
+            new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                StringEscapeHandling = StringEscapeHandling.EscapeNonAscii
+            });
+
+        var request = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs", Method.Post)
+            .AddHeader("Memsource", memsourceHeader)
+            .AddHeader("Content-Type", "application/octet-stream");
+
+        return await Client.ExecuteWithHandling<JobResponseWrapper>(request);
+    }
+
     [Action("Delete jobs", Description = "Delete jobs from a project")]
     public Task DeleteJob([ActionParameter] ProjectRequest projectRequest, [ActionParameter] DeleteJobRequest input)
     {
