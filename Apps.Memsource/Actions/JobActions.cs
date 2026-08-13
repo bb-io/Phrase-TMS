@@ -2,6 +2,7 @@
 using Apps.PhraseTMS.DataSourceHandlers;
 using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Dtos.Async;
+using Apps.PhraseTMS.Dtos.Connectors;
 using Apps.PhraseTMS.Dtos.Jobs;
 using Apps.PhraseTMS.Extensions;
 using Apps.PhraseTMS.Models;
@@ -529,6 +530,28 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
             input.TargetLanguages = project.TargetLangs;
         }
 
+        var connectorsRequest = new RestRequest("/api2/v1/connectors", Method.Get);
+        var connectorsResponse = await Client.ExecuteWithHandling<ConnectorsResponse>(connectorsRequest);
+        var connector = connectorsResponse.Connectors.FirstOrDefault(x => x.LocalToken == input.ConnectorToken)
+            ?? throw new PluginMisconfigurationException("The selected connector could not be found. Please select it again.");
+
+        var folderEndpoint = input.RemoteFolder == "/"
+            ? $"/api2/v1/connectors/{connector.Id}/folders"
+            : $"/api2/v1/connectors/{connector.Id}/folders/{input.RemoteFolder}";
+        var folderRequest = new RestRequest(folderEndpoint, Method.Get)
+            .AddQueryParameter("fileType", "FILES_ONLY");
+        var folderResponse = await Client.ExecuteWithHandling<ConnectorFilesResponse>(folderRequest);
+        var remoteFile = folderResponse.Files.FirstOrDefault(x =>
+            !x.IsDirectory && x.EncodedName == input.RemoteFileName)
+            ?? throw new PluginMisconfigurationException(
+                "The selected remote file is no longer available in the selected folder. Please select the folder and file again.");
+
+        // The value returned for a folder in its parent's listing can differ from the
+        // canonical value returned after opening that folder (notably for newer connectors).
+        var remoteFolder = string.IsNullOrWhiteSpace(folderResponse.EncodedCurrentFolder)
+            ? input.RemoteFolder
+            : folderResponse.EncodedCurrentFolder;
+
         var memsourceHeader = JsonConvert.SerializeObject(
             new
             {
@@ -539,8 +562,8 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
                 remoteFile = new
                 {
                     connectorToken = input.ConnectorToken,
-                    remoteFolder = input.RemoteFolder,
-                    remoteFileName = input.RemoteFileName,
+                    remoteFolder,
+                    remoteFileName = remoteFile.EncodedName,
                     continuous = input.Continuous ?? false
                 },
                 sourceData = new

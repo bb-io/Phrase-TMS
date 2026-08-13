@@ -1,6 +1,7 @@
 using Apps.PhraseTMS.DataSourceHandlers;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Dynamic;
+using Blackbird.Applications.SDK.Extensions.FileManagement.Models.FileDataSourceItems;
 
 namespace Apps.PhraseTMS.Models.Jobs.Requests;
 
@@ -11,7 +12,7 @@ public class CreateJobsFromRemoteFileRequest
     public string ConnectorToken { get; set; } = string.Empty;
 
     [Display("Remote folder")]
-    [DataSource(typeof(RemoteFolderDataHandler))]
+    [FileDataSource(typeof(RemoteFolderDataHandler))]
     public string RemoteFolder { get; set; } = string.Empty;
 
     [Display("Remote file name")]

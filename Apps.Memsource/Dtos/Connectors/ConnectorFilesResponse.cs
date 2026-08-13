@@ -9,6 +9,9 @@ public class ConnectorFilesResponse
 
     [JsonProperty("encodedCurrentFolder")]
     public string? EncodedCurrentFolder { get; set; }
+
+    [JsonProperty("currentFolder")]
+    public string? CurrentFolder { get; set; }
 }
 
 public class ConnectorFileDto

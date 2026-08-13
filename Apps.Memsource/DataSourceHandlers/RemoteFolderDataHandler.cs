@@ -1,9 +1,10 @@
 using Apps.PhraseTMS.Dtos.Connectors;
 using Apps.PhraseTMS.Models.Jobs.Requests;
 using Blackbird.Applications.Sdk.Common;
-using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Common.Invocation;
+using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
+using Blackbird.Applications.SDK.Extensions.FileManagement.Models.FileDataSourceItems;
 using RestSharp;
 
 namespace Apps.PhraseTMS.DataSourceHandlers;
@@ -11,25 +12,65 @@ namespace Apps.PhraseTMS.DataSourceHandlers;
 public class RemoteFolderDataHandler(
     InvocationContext invocationContext,
     [ActionParameter] CreateJobsFromRemoteFileRequest input)
-    : PhraseInvocable(invocationContext), IAsyncDataSourceItemHandler
+    : PhraseInvocable(invocationContext), IAsyncFileDataSourceItemHandler
 {
-    public async Task<IEnumerable<DataSourceItem>> GetDataAsync(
-        DataSourceContext context,
+    private const string RootFolderId = "/";
+
+    public async Task<IEnumerable<FileDataItem>> GetFolderContentAsync(
+        FolderContentDataSourceContext context,
         CancellationToken cancellationToken)
     {
         var connector = await GetConnector(input.ConnectorToken);
-        var request = new RestRequest($"/api2/v1/connectors/{connector.Id}/folders", Method.Get)
+        var folderId = string.IsNullOrWhiteSpace(context?.FolderId) ? RootFolderId : context.FolderId;
+        var endpoint = folderId == RootFolderId
+            ? $"/api2/v1/connectors/{connector.Id}/folders"
+            : $"/api2/v1/connectors/{connector.Id}/folders/{folderId}";
+        var request = new RestRequest(endpoint, Method.Get)
             .AddQueryParameter("fileType", "FOLDERS_ONLY");
         var response = await Client.ExecuteWithHandling<ConnectorFilesResponse>(request);
 
-        var folders = response.Files
+        return response.Files
             .Where(x => x.IsDirectory && !string.IsNullOrWhiteSpace(x.EncodedName))
-            .Where(x => string.IsNullOrWhiteSpace(context.SearchString)
-                || x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
             .OrderBy(x => x.Name)
-            .Select(x => new DataSourceItem(x.EncodedName, x.Name));
+            .Select(x => (FileDataItem)new Folder
+            {
+                Id = x.EncodedName,
+                DisplayName = x.Name,
+                IsSelectable = true
+            });
+    }
 
-        return [new DataSourceItem("/", "/"), .. folders];
+    public async Task<IEnumerable<FolderPathItem>> GetFolderPathAsync(
+        FolderPathDataSourceContext context,
+        CancellationToken cancellationToken)
+    {
+        var path = new List<FolderPathItem>
+        {
+            new() { Id = RootFolderId, DisplayName = "/" }
+        };
+
+        if (string.IsNullOrWhiteSpace(context?.FileDataItemId)
+            || context.FileDataItemId == RootFolderId)
+        {
+            return path;
+        }
+
+        var connector = await GetConnector(input.ConnectorToken);
+        var request = new RestRequest(
+            $"/api2/v1/connectors/{connector.Id}/folders/{context.FileDataItemId}",
+            Method.Get)
+            .AddQueryParameter("fileType", "FOLDERS_ONLY");
+        var response = await Client.ExecuteWithHandling<ConnectorFilesResponse>(request);
+
+        path.Add(new FolderPathItem
+        {
+            Id = response.EncodedCurrentFolder ?? context.FileDataItemId,
+            DisplayName = string.IsNullOrWhiteSpace(response.CurrentFolder)
+                ? "Selected folder"
+                : response.CurrentFolder
+        });
+
+        return path;
     }
 
     private async Task<ConnectorDto> GetConnector(string connectorToken)
