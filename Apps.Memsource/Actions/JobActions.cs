@@ -546,30 +546,20 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
             ?? throw new PluginMisconfigurationException(
                 "The selected remote file is no longer available in the selected folder. Please select the folder and file again.");
 
-        // The value returned for a folder in its parent's listing can differ from the
-        // canonical value returned after opening that folder (notably for newer connectors).
-        var remoteFolder = string.IsNullOrWhiteSpace(folderResponse.EncodedCurrentFolder)
-            ? input.RemoteFolder
-            : folderResponse.EncodedCurrentFolder;
-
         var memsourceHeader = JsonConvert.SerializeObject(
             new
             {
-                targetLangs = input.TargetLanguages,
-                preTranslate = input.PreTranslate ?? false,
-                useProjectFileImportSettings = input.UseProjectFileImportSettings ?? true,
-                due = input.DueDate?.ToUniversalTime().ToString("yyyy-MM-dd'T'HH:mm:ssK"),
                 remoteFile = new
                 {
                     connectorToken = input.ConnectorToken,
-                    remoteFolder,
-                    remoteFileName = remoteFile.EncodedName,
+                    remoteFolder = input.RemoteFolder,
+                    remoteFileName = input.RemoteFileName,
                     continuous = input.Continuous ?? false
                 },
-                sourceData = new
-                {
-                    clientType = "BLACKBIRD"
-                }
+                targetLangs = input.TargetLanguages,
+                preTranslate = input.PreTranslate ?? false,
+                useProjectFileImportSettings = input.UseProjectFileImportSettings ?? true,
+                due = input.DueDate?.ToUniversalTime().ToString("yyyy-MM-dd'T'HH:mm:ssK")
             },
             new JsonSerializerSettings
             {
@@ -579,7 +569,8 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
 
         var request = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs", Method.Post)
             .AddHeader("Memsource", memsourceHeader)
-            .AddHeader("Content-Type", "application/octet-stream");
+            .AddHeader("Content-Type", "application/octet-stream")
+            .AddParameter("application/octet-stream", Encoding.UTF8.GetBytes("{}"), ParameterType.RequestBody);
 
         return await Client.ExecuteWithHandling<JobResponseWrapper>(request);
     }
