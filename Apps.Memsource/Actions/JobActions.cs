@@ -24,6 +24,7 @@ using Blackbird.Filters.Extensions;
 using Blackbird.Filters.Transformations;
 using Newtonsoft.Json;
 using RestSharp;
+using System.Globalization;
 using System.Net.Mime;
 using System.Text;
 using System.Xml.Linq;
@@ -80,10 +81,20 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
                 workflowLevel = await Client.GetWorkflowstepLevel(input.ProjectUId, workflowStepRequest.WorkflowStepId);
 
             }
-            catch 
+            catch (PluginMisconfigurationException)
+            {
+                if (!int.TryParse(
+                        workflowStepRequest.WorkflowStepId,
+                        NumberStyles.None,
+                        CultureInfo.InvariantCulture,
+                        out var parsedWorkflowLevel) ||
+                    parsedWorkflowLevel is < 1 or > 15)
                 {
-                    workflowLevel = Int32.Parse(workflowStepRequest.WorkflowStepId);
+                    throw;
                 }
+
+                workflowLevel = parsedWorkflowLevel;
+            }
             }
         else 
         {
@@ -575,7 +586,16 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
             .AddHeader("Content-Type", "application/octet-stream")
             .AddParameter("application/octet-stream", Encoding.UTF8.GetBytes("{}"), ParameterType.RequestBody);
 
-        return await Client.ExecuteWithHandling<JobResponseWrapper>(request);
+        var response = await Client.ExecuteWithHandling<JobResponseWrapper>(request);
+        if (response.Jobs?.Any() != true)
+        {
+            throw new PluginApplicationException(
+                "Phrase TMS did not create any jobs from the selected remote file. " +
+                "The file may be unsupported or the connector may be unable to download it. " +
+                "Please verify the file in Phrase TMS and try again.");
+        }
+
+        return response;
     }
 
     [Action("Delete jobs", Description = "Delete jobs from a project")]

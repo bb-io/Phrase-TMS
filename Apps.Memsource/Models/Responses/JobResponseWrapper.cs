@@ -13,5 +13,5 @@ public class JobResponseWrapper
     [Display("Source file ID")]
     public string? SourceFileUid => Jobs.FirstOrDefault()?.SourceFileUid;
 
-    public IEnumerable<CreatedJobDto> Jobs { get; set; }
+    public IEnumerable<CreatedJobDto> Jobs { get; set; } = [];
 }

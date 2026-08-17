@@ -20,6 +20,7 @@ using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using RestSharp;
+using System.Diagnostics;
 using System.Net;
 using System.Text;
 using System.Globalization;
@@ -229,6 +230,8 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         [WebhookParameter] MultipleWorkflowStepsOptionalRequest workflowStepRequest)
         => ExecuteWebhookSafelyAsync("PhraseTMSJobCreation", webhookRequest, async () =>
         {
+            var processingTimer = Stopwatch.StartNew();
+
             if (!TryDeserializeWebhookPayload<JobsWrapper, MultipleJobResponse>(webhookRequest, "PhraseTMSJobCreation",
                     out var requestBody, out var data, out var errorResponse))
             {
@@ -245,19 +248,27 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
                 return Preflight<MultipleJobResponse>();
             }
 
+            var stepIds = new HashSet<string>(
+                workflowStepRequest.WorkflowStepIds?.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.Trim()) ?? [],
+                StringComparer.OrdinalIgnoreCase);
+
             var uniqueProjectUids = data.JobParts
                 .Where(p => p?.Project?.Uid != null)
                 .Select(p => p.Project.Uid)
                 .Distinct()
                 .ToList();
 
+            LogWebhook("PhraseTMSJobCreation", LogLevel.Information,
+                "Received callback: jobParts={0}; jobUids=[{1}]; projects=[{2}]; workflowLevels=[{3}]; configuredWorkflowStepIds=[{4}]",
+                data.JobParts.Count,
+                string.Join(",", data.JobParts.Where(p => p != null).Select(p => p.Uid)),
+                string.Join(",", uniqueProjectUids),
+                string.Join(",", data.JobParts.Where(p => p != null).Select(p => p.workflowLevel).Distinct()),
+                string.Join(",", stepIds));
+
             var projectMeta = await LoadProjectsMeta(uniqueProjectUids);
             var levelsByProject = new Dictionary<string, HashSet<int>>(StringComparer.OrdinalIgnoreCase);
-            
-            var stepIds = new HashSet<string>(
-                workflowStepRequest.WorkflowStepIds?.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.Trim()) ?? [],
-                StringComparer.OrdinalIgnoreCase);
-            
+
             if (stepIds.Count > 0)
             {
                 foreach (var projectUid in uniqueProjectUids)
@@ -268,27 +279,59 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
                         .Where(stepIdToLevel.ContainsKey)
                         .Select(id => stepIdToLevel[id])
                         .ToHashSet();
+
+                    var unresolvedStepIds = stepIds.Where(id => !stepIdToLevel.ContainsKey(id));
+                    LogWebhook("PhraseTMSJobCreation", LogLevel.Information,
+                        "Workflow steps resolved: project={0}; resolvedLevels=[{1}]; unresolvedStepIds=[{2}]",
+                        projectUid,
+                        string.Join(",", levelsByProject[projectUid]),
+                        string.Join(",", unresolvedStepIds));
                 }
             }
 
-            var selectedJobs = data.JobParts
+            var jobsMatchingProjectFilters = data.JobParts
                 .Where(p => p?.Project?.Uid != null)
                 .Where(p =>
                 {
                     projectMeta.TryGetValue(p.Project.Uid, out var meta);
-                    if (!MatchFilters(meta, p, filters))
-                        return false;
-
-                    if (stepIds.Count == 0)
-                        return true;
-
-                    return levelsByProject.TryGetValue(p.Project.Uid, out var levels) && levels.Contains(p.workflowLevel);
+                    return MatchFilters(meta, p, filters);
                 })
                 .ToList();
 
-            return selectedJobs.Count == 0 
-                ? Preflight<MultipleJobResponse>() 
-                : Success(await FetchJobs(selectedJobs));
+            var selectedJobs = jobsMatchingProjectFilters
+                .Where(p => stepIds.Count == 0 ||
+                            levelsByProject.TryGetValue(p.Project.Uid, out var levels) && levels.Contains(p.workflowLevel))
+                .ToList();
+
+            LogWebhook("PhraseTMSJobCreation", LogLevel.Information,
+                "Filters evaluated: inputJobs={0}; loadedProjects={1}; projectFilterMatches={2}; selectedJobs={3}; selectedJobUids=[{4}]",
+                data.JobParts.Count,
+                projectMeta.Count,
+                jobsMatchingProjectFilters.Count,
+                selectedJobs.Count,
+                string.Join(",", selectedJobs.Select(p => p.Uid)));
+
+            if (selectedJobs.Count == 0)
+            {
+                var preflightReason = jobsMatchingProjectFilters.Count == 0
+                    ? "ProjectFiltersNotMatched"
+                    : "WorkflowStepsNotMatched";
+
+                LogWebhook("PhraseTMSJobCreation", LogLevel.Information,
+                    "Returning Preflight: reason={0}; elapsedMs={1}",
+                    preflightReason,
+                    processingTimer.ElapsedMilliseconds);
+                return Preflight<MultipleJobResponse>();
+            }
+
+            var response = await FetchJobs(selectedJobs);
+            LogWebhook("PhraseTMSJobCreation", LogLevel.Information,
+                "Completed callback: selectedJobs={0}; returnedJobs={1}; elapsedMs={2}",
+                selectedJobs.Count,
+                response.Jobs?.Count() ?? 0,
+                processingTimer.ElapsedMilliseconds);
+
+            return Success(response);
         });
 
     [Webhook("On jobs deleted", typeof(JobDeletionHandler), Description = "Triggered when any jobs are deleted")]
