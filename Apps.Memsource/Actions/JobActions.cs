@@ -575,7 +575,16 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
             .AddHeader("Content-Type", "application/octet-stream")
             .AddParameter("application/octet-stream", Encoding.UTF8.GetBytes("{}"), ParameterType.RequestBody);
 
-        return await Client.ExecuteWithHandling<JobResponseWrapper>(request);
+        var response = await Client.ExecuteWithHandling<JobResponseWrapper>(request);
+        if (response.Jobs?.Any() != true)
+        {
+            throw new PluginApplicationException(
+                "Phrase TMS did not create any jobs from the selected remote file. " +
+                "The file may be unsupported or the connector may be unable to download it. " +
+                "Please verify the file in Phrase TMS and try again.");
+        }
+
+        return response;
     }
 
     [Action("Delete jobs", Description = "Delete jobs from a project")]
