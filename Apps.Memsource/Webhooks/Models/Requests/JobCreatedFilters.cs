@@ -10,7 +10,7 @@ namespace Apps.PhraseTMS.Webhooks.Models.Requests
         [DataSource(typeof(ProjectDataHandler))]
         public IEnumerable<string>? Projects { get; set; }
 
-        [Display("Project owner", Description = "Owner id, username or email")]
+        [Display("Project owner", Description = "Owner ID, username or email")]
         [DataSource(typeof(UserDataHandler))]
         public string? ProjectOwner { get; set; }
 
