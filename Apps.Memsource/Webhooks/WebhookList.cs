@@ -773,7 +773,22 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
                 return Preflight<ListAllJobsResponse>();
             }
 
-            var jobsEndpoint = $"/api2/v2/projects/{workflowStepStatusRequest.ProjectUId ?? primaryJob.Project?.Uid}/jobs";
+            var projectUid = workflowStepStatusRequest.ProjectUId ?? primaryJob.Project?.Uid;
+            var projectRequest = new RestRequest($"/api2/v1/projects/{projectUid}?with=owners");
+            var project = await Client.ExecuteWithHandling<ProjectDto>(projectRequest);
+
+            if (!string.IsNullOrWhiteSpace(workflowStepStatusRequest.ProjectOwner))
+            {
+                var needle = workflowStepStatusRequest.ProjectOwner.Trim();
+                var owner = project?.Owner;
+                var ownerHit = owner != null && (Eq(owner.Uid, needle) || Eq(owner.UserName, needle) || Eq(owner.Email, needle));
+                if (!ownerHit)
+                {
+                    return Preflight<ListAllJobsResponse>();
+                }
+            }
+
+            var jobsEndpoint = $"/api2/v2/projects/{projectUid}/jobs";
             var apiRequest = new RestRequest(jobsEndpoint, Method.Get);
             apiRequest.AddQueryParameter("workflowLevel", primaryJob.workflowLevel);
             if (!string.IsNullOrEmpty(TargetLang))
@@ -809,7 +824,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
                 relevantJobs.Count,
                 returnedIds);
 
-            return Success(new ListAllJobsResponse { Jobs = relevantJobs });
+            return Success(new ListAllJobsResponse { Jobs = relevantJobs, Project = project });
         });
 
     [Webhook("On job target updated", typeof(JobTargetUpdatedHandler), Description = "Triggered when a job's target has been updated")]

@@ -1,9 +1,13 @@
 ﻿using Apps.PhraseTMS.Dtos;
 using Apps.PhraseTMS.Dtos.Jobs;
+using Blackbird.Applications.Sdk.Common;
 
 namespace Apps.PhraseTMS.Models.Jobs.Responses;
 
 public class ListAllJobsResponse
 {
     public IEnumerable<ListJobDto> Jobs { get; set; }
+
+    [Display("Project")]
+    public ProjectDto? Project { get; set; }
 }

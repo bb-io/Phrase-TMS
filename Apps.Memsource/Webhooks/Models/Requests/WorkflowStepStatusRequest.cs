@@ -19,4 +19,8 @@ public class WorkflowStepStatusRequest : ProjectWebhookRequest
     [Display("Job statuses", Description = "Start an event if all jobs are in any of the selected statuses.")]
     [StaticDataSource(typeof(JobWebhookStatusDataHandler))]
     public IEnumerable<string> JobStatuses { get; set; } = [];
+
+    [Display("Project owner", Description = "Owner ID, username or email")]
+    [DataSource(typeof(UserDataHandler))]
+    public string? ProjectOwner { get; set; }
 }
