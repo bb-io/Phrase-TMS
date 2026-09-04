@@ -5,16 +5,16 @@ namespace Apps.PhraseTMS.Models.Jobs.Responses;
 
 public class JobStatusChangeResponse(ChangedJobStatusDto dto)
 {
-    [Display("Changed by user UID")]
+    [Display("Changed by UID")]
     public string ChangedByUid { get; set; } = dto.ChangedBy.UId;
 
-    [Display("Changed by user full name")]
+    [Display("Changed by full name")]
     public string ChangedByUserName { get; set; } = $"{dto.ChangedBy.FirstName} {dto.ChangedBy.LastName}";
 
-    [Display("Changed by user email")]
+    [Display("Changed by email")]
     public string ChangedByUserEmail { get; set; } = dto.ChangedBy.Email;
 
-    [Display("Changed by user role")]
+    [Display("Changed by role")]
     public string ChangedByUserRole { get; set; } = dto.ChangedBy.Role;
 
     [Display("Changed date")]
