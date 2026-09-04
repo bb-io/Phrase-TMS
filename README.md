@@ -133,6 +133,7 @@ Custom fields are associated with a specific type, for example date, number, or 
 - **Search jobs** Search jobs in a project using specified filters.
 - **Export jobs to online repository** Export jobs to an online repository.
 - **Get job** Get all information for a specific job.
+- **Get job status changes** Get status changes for a specific job.
 - **Find job from source file ID** Find a job using a source file ID, workflow step ID, and language.
 - **Find job from server task ID** Find a job using a server task ID, workflow step ID, and project ID.
 - **Upload source file (create jobs)** Upload a new source file and create jobs for the configured target languages and workflow steps.
