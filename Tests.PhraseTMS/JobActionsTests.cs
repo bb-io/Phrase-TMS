@@ -31,6 +31,22 @@ public class JobActionsTests : TestBaseMultipleConnections
     }
 
     [TestMethod, ContextDataSource]
+    public async Task GetJobStatusChanges_ReturnsChanges(InvocationContext context)
+    {
+        // Arrange
+        var actions = new JobActions(context, FileManager);
+        var projectRequest = new ProjectRequest { ProjectUId = "sp3MTWovSFqV7dW1fGxh1a" };
+        var jobRequest = new JobRequest { JobUId = "uH6rhGSyabFqfZKEpGMUP2" };
+
+        // Act
+        var result = await actions.GetJobStatusChanges(projectRequest, jobRequest);
+
+        // Assert
+        PrintResult(result.Changes);
+        Assert.IsNotNull(result.Changes);
+    }
+
+    [TestMethod, ContextDataSource]
     public async Task Search_jobs_works(InvocationContext context)
     {
         // Arrange

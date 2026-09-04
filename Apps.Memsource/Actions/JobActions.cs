@@ -255,6 +255,18 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         return await Client.ExecuteWithHandling<JobDto>(request);
     }
 
+    [Action("Get job status changes", Description = "Get status changes for a specific job")]
+    public async Task<GetJobStatusChangesResponse> GetJobStatusChanges(
+        [ActionParameter] ProjectRequest projectInput,
+        [ActionParameter] JobRequest jobInput)
+    {
+        var request = new RestRequest($"/api2/v1/projects/{projectInput.ProjectUId}/jobs/{jobInput.JobUId}/statusChanges");
+        var response = await Client.ExecuteWithHandling<JobStatusChangesDto>(request);
+
+        var changes = response.StatusChanges.Select(x => new JobStatusChangeResponse(x)).ToArray();
+        return new(changes);
+    }
+
     [Action("Find job from source file ID", Description = "Find a job using a source file ID, workflow step ID, and language")]
     public async Task<JobDto> FindJob(
         [ActionParameter] ProjectRequest projectRequest,
@@ -308,65 +320,6 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         var jobrequest = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs/{jobUid}", Method.Get);
         return await Client.ExecuteWithHandling<JobDto>(jobrequest);
     }
-
-    // Should be removed in a couple of updates when people adjust.
-    //[Action("Create job (use this instead: Upload source file)", Description = "Will be removed in a future version. Use 'Upload source file (create jobs)' instead.")]
-    //public async Task<CreatedJobDto> CreateJob(
-    //    [ActionParameter] ProjectRequest projectRequest,
-    //    [ActionParameter] CreateJobRequest input)
-    //{
-    //    var fileName = input.File.Name;
-    //    string fileNameForHeader = fileName;
-    //    if (!IsOnlyAscii(fileName))
-    //    {
-    //        fileNameForHeader = Uri.EscapeDataString(fileName);
-    //    }
-
-
-    //    if (string.IsNullOrWhiteSpace(projectRequest.ProjectUId))
-    //    {
-    //        throw new PluginMisconfigurationException("Project ID is not provided. Please specify a valid Project ID.");
-    //    }
-
-    //    if (input.File == null)
-    //    {
-    //        throw new PluginMisconfigurationException("File is not provided. Please upload a file.");
-    //    }
-
-    //    var request = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs", Method.Post);
-
-    //    var bodyJson = JsonConvert.SerializeObject(new
-    //    {
-    //        targetLangs = new List<string> { input.TargetLanguage },
-    //        preTranslate = input.preTranslate ?? false,
-    //        useProjectFileImportSettings = input.useProjectFileImportSettings ?? true,
-    //        due = input.DueDate
-    //    });
-
-    //    request
-    //     .AddHeader("Memsource", bodyJson)
-    //     .AddHeader("Content-Disposition", $"filename*=UTF-8''{fileNameForHeader}")
-    //     .AddHeader("Content-Type", "application/octet-stream");
-
-    //    var fileStream = await fileManagementClient.DownloadAsync(input.File);
-    //    using (var memoryStream = new MemoryStream())
-    //    {
-    //        await fileStream.CopyToAsync(memoryStream);
-    //        memoryStream.Position = 0;
-
-    //        if (memoryStream.ReadByte() == -1)
-    //        {
-    //            throw new PluginMisconfigurationException("The provided file is empty. Please check your file input and try again");
-    //        }
-
-    //        memoryStream.Position = 0;
-    //        var fileBytes = memoryStream.ToArray();
-    //        request.AddParameter("application/octet-stream", fileBytes, ParameterType.RequestBody);
-    //    }
-
-    //    var jobs = await Client.ExecuteWithHandling<JobResponseWrapper>(request);
-    //    return jobs.Jobs.FirstOrDefault();
-    //}
 
     private const string BlackbirdImportSettingsName = "Blackbird XLIFF 2.x";
 
