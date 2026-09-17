@@ -155,7 +155,7 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
     }
 
     [Action("Update project", Description = "Update project with specified details")]
-    public async Task EditProject([ActionParameter] ProjectRequest projectRequest, [ActionParameter] EditProjectRequest input)
+    public async Task<GetProjectResponse> EditProject([ActionParameter] ProjectRequest projectRequest, [ActionParameter] EditProjectRequest input)
     {
         if (input == null || input.GetType().GetProperties().All(p => p.GetValue(input) == null))
         {
@@ -250,6 +250,8 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
 
             await Client.ExecuteWithHandling(mtRequest);
         }
+
+        return await GetProject(projectRequest);
     }
 
     [Action("Delete project", Description = "Delete specific project")]
