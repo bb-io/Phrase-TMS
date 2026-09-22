@@ -21,14 +21,12 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using RestSharp;
 using System.Diagnostics;
-using System.Net;
-using System.Text;
 using System.Globalization;
 
 namespace Apps.PhraseTMS.Webhooks;
 
 [WebhookList("Miscellaneous")]
-public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(invocationContext)
+public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(invocationContext), IAsyncWebhookHandler
 {
     private const int WebhookLogArgumentMaxLength = 4000;
 
@@ -224,15 +222,16 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
 
     #region JobWebhooks
 
-    [Webhook("On jobs created", typeof(JobCreationHandler), Description = "Triggered when new jobs are created")]
-    public Task<WebhookResponse<MultipleJobResponse>> JobCreation(WebhookRequest webhookRequest,
+    [Webhook("On job created", typeof(JobCreationHandler), Description = "Triggered when a new job is created"),
+     MultipleEvents]
+    public Task<WebhookResponse<List<JobDto>>> JobCreation(WebhookRequest webhookRequest,
         [WebhookParameter] JobCreatedFilters filters,
         [WebhookParameter] MultipleWorkflowStepsOptionalRequest workflowStepRequest)
         => ExecuteWebhookSafelyAsync("PhraseTMSJobCreation", webhookRequest, async () =>
         {
             var processingTimer = Stopwatch.StartNew();
 
-            if (!TryDeserializeWebhookPayload<JobsWrapper, MultipleJobResponse>(webhookRequest, "PhraseTMSJobCreation",
+            if (!TryDeserializeWebhookPayload<JobsWrapper, List<JobDto>>(webhookRequest, "PhraseTMSJobCreation",
                     out var requestBody, out var data, out var errorResponse))
             {
                 return errorResponse!;
@@ -245,7 +244,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
                     LogLevel.Error,
                     "No job parts found in webhook body. Body: {0}",
                     requestBody);
-                return Preflight<MultipleJobResponse>();
+                return Preflight<List<JobDto>>();
             }
 
             var stepIds = new HashSet<string>(
@@ -321,114 +320,82 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
                     "Returning Preflight: reason={0}; elapsedMs={1}",
                     preflightReason,
                     processingTimer.ElapsedMilliseconds);
-                return Preflight<MultipleJobResponse>();
+                return Preflight<List<JobDto>>();
             }
 
-            var response = await FetchJobs(selectedJobs);
+            var jobs = await FetchJobs(selectedJobs);
             LogWebhook("PhraseTMSJobCreation", LogLevel.Information,
                 "Completed callback: selectedJobs={0}; returnedJobs={1}; elapsedMs={2}",
                 selectedJobs.Count,
-                response.Jobs?.Count() ?? 0,
+                jobs.Count,
                 processingTimer.ElapsedMilliseconds);
 
-            return Success(response);
+            return Success(jobs);
         });
 
-    [Webhook("On jobs deleted", typeof(JobDeletionHandler), Description = "Triggered when any jobs are deleted")]
-    public Task<WebhookResponse<JobsWrapper>> JobDeletion(WebhookRequest webhookRequest)
+    [Webhook("On job deleted", typeof(JobDeletionHandler), Description = "Triggered when a job is deleted"),
+     MultipleEvents]
+    public Task<WebhookResponse<List<JobPart>>> JobDeletion(WebhookRequest webhookRequest)
         => ExecuteWebhookSafelyAsync("PhraseTMSJobDeletion", webhookRequest, () =>
         {
-            if (!TryDeserializeWebhookPayload<JobsWrapper, JobsWrapper>(webhookRequest, "PhraseTMSJobDeletion",
+            if (!TryDeserializeWebhookPayload<JobsWrapper, List<JobPart>>(webhookRequest, "PhraseTMSJobDeletion",
                     out _, out var data, out var errorResponse))
             {
                 return errorResponse!;
             }
 
-            return Success(data);
+            return Success(data.JobParts ?? []);
         });
 
-    [Webhook("On continuous jobs updated", typeof(JobContinuousUpdatedHandler), Description = "Triggered when continuous jobs are updated")]
-    public Task<WebhookResponse<MultipleJobResponse>> JobContinuousUpdated(WebhookRequest webhookRequest,
+    [Webhook("On continuous job updated", typeof(JobContinuousUpdatedHandler),
+         Description = "Triggered when a continuous job is updated"), MultipleEvents]
+    public Task<WebhookResponse<List<JobDto>>> JobContinuousUpdated(WebhookRequest webhookRequest,
         [WebhookParameter] JobOptionalRequest request)
-        => ExecuteWebhookSafelyAsync("PhraseTMSJobContinuousUpdated", webhookRequest, async () =>
-        {
-            if (!TryDeserializeWebhookPayload<JobsWrapper, MultipleJobResponse>(webhookRequest,
-                    "PhraseTMSJobContinuousUpdated", out _, out var data, out var errorResponse))
-            {
-                return errorResponse!;
-            }
+        => ExecuteWebhookSafelyAsync("PhraseTMSJobContinuousUpdated", webhookRequest,
+            () => FetchMatchingJobs(webhookRequest, "PhraseTMSJobContinuousUpdated", request.JobUId));
 
-            return Success(await FetchJobs(data.JobParts), MatchByJobUid(data.JobParts, request.JobUId));
-        });
-
-    [Webhook("On jobs assigned", typeof(JobAssignedHandler), Description = "Triggered when any jobs are assigned")]
-    public Task<WebhookResponse<MultipleJobResponse>> JobAssigned(WebhookRequest webhookRequest,
+    [Webhook("On job assigned", typeof(JobAssignedHandler), Description = "Triggered when a job is assigned"),
+     MultipleEvents]
+    public Task<WebhookResponse<List<JobDto>>> JobAssigned(WebhookRequest webhookRequest,
         [WebhookParameter] JobAssignedRequest request,
         [WebhookParameter] OptionalJobRequest job)
         => ExecuteWebhookSafelyAsync("PhraseTMSJobAssigned", webhookRequest, async () =>
         {
-            if (!TryDeserializeWebhookPayload<JobsWrapper, MultipleJobResponse>(webhookRequest, "PhraseTMSJobAssigned",
+            if (!TryDeserializeWebhookPayload<JobsWrapper, List<JobDto>>(webhookRequest, "PhraseTMSJobAssigned",
                     out _, out var data, out var errorResponse))
             {
                 return errorResponse!;
             }
 
-            var firstJob = data.JobParts.FirstOrDefault();
+            var matchingJobs = MatchByJobUid(data.JobParts, job.JobUId)
+                .Where(x => request.UserId is null || x.assignedTo?.Any(y => y.Uid == request.UserId) == true)
+                .ToList();
 
-            if (request.UserId is not null && firstJob?.assignedTo.All(x => x.Uid != request.UserId) == true)
-            {
-                return Preflight<MultipleJobResponse>();
-            }
-
-            if (job.JobUId != null && firstJob?.Uid != job.JobUId)
-            {
-                return Preflight<MultipleJobResponse>();
-            }
-
-            return Success(await FetchJobs(data.JobParts));
+            return matchingJobs.Count == 0
+                ? Preflight<List<JobDto>>()
+                : Success(await FetchJobs(matchingJobs));
         });
 
-    [Webhook("On jobs due date changed", typeof(JobDueDateChangedHandler), Description = "Triggered when job due dates change")]
-    public Task<WebhookResponse<MultipleJobResponse>> JobDueDateChanged(WebhookRequest webhookRequest,
+    [Webhook("On job due date changed", typeof(JobDueDateChangedHandler),
+         Description = "Triggered when a job due date changes"), MultipleEvents]
+    public Task<WebhookResponse<List<JobDto>>> JobDueDateChanged(WebhookRequest webhookRequest,
         [WebhookParameter] JobOptionalRequest request)
-        => ExecuteWebhookSafelyAsync("PhraseTMSJobDueDateChanged", webhookRequest, async () =>
-        {
-            if (!TryDeserializeWebhookPayload<JobsWrapper, MultipleJobResponse>(webhookRequest,
-                    "PhraseTMSJobDueDateChanged", out _, out var data, out var errorResponse))
-            {
-                return errorResponse!;
-            }
+        => ExecuteWebhookSafelyAsync("PhraseTMSJobDueDateChanged", webhookRequest,
+            () => FetchMatchingJobs(webhookRequest, "PhraseTMSJobDueDateChanged", request.JobUId));
 
-            return Success(await FetchJobs(data.JobParts), MatchByJobUid(data.JobParts, request.JobUId));
-        });
-
-    [Webhook("On jobs exported", typeof(JobExportedHandler), Description = "Triggered when any jobs are exported")]
-    public Task<WebhookResponse<MultipleJobResponse>> JobExported(WebhookRequest webhookRequest,
+    [Webhook("On job exported", typeof(JobExportedHandler), Description = "Triggered when a job is exported"),
+     MultipleEvents]
+    public Task<WebhookResponse<List<JobDto>>> JobExported(WebhookRequest webhookRequest,
         [WebhookParameter] JobOptionalRequest request)
-        => ExecuteWebhookSafelyAsync("PhraseTMSJobExported", webhookRequest, async () =>
-        {
-            if (!TryDeserializeWebhookPayload<JobsWrapper, MultipleJobResponse>(webhookRequest,
-                    "PhraseTMSJobExported", out _, out var data, out var errorResponse))
-            {
-                return errorResponse!;
-            }
+        => ExecuteWebhookSafelyAsync("PhraseTMSJobExported", webhookRequest,
+            () => FetchMatchingJobs(webhookRequest, "PhraseTMSJobExported", request.JobUId));
 
-            return Success(await FetchJobs(data.JobParts), MatchByJobUid(data.JobParts, request.JobUId));
-        });
-
-    [Webhook("On jobs source updated", typeof(JobSourceUpdatedHandler), Description = "Triggered when job source files are updated")]
-    public Task<WebhookResponse<MultipleJobResponse>> JobSourceUpdated(WebhookRequest webhookRequest,
+    [Webhook("On job source updated", typeof(JobSourceUpdatedHandler),
+         Description = "Triggered when a job source file is updated"), MultipleEvents]
+    public Task<WebhookResponse<List<JobDto>>> JobSourceUpdated(WebhookRequest webhookRequest,
         [WebhookParameter] JobOptionalRequest request)
-        => ExecuteWebhookSafelyAsync("PhraseTMSJobSourceUpdated", webhookRequest, async () =>
-        {
-            if (!TryDeserializeWebhookPayload<JobsWrapper, MultipleJobResponse>(webhookRequest,
-                    "PhraseTMSJobSourceUpdated", out _, out var data, out var errorResponse))
-            {
-                return errorResponse!;
-            }
-
-            return Success(await FetchJobs(data.JobParts), MatchByJobUid(data.JobParts, request.JobUId));
-        });
+        => ExecuteWebhookSafelyAsync("PhraseTMSJobSourceUpdated", webhookRequest,
+            () => FetchMatchingJobs(webhookRequest, "PhraseTMSJobSourceUpdated", request.JobUId));
 
     [Webhook("On job custom field updated", typeof(JobCustomFieldsUpdatedHandler),
         Description = "Triggered when job custom fields are updated")]
@@ -846,19 +813,12 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
                 : WebhookRequestType.Default);
         });
 
-    [Webhook("On jobs unexported", typeof(JobUnexportedHandler), Description = "Triggered when jobs are unexported")]
-    public Task<WebhookResponse<MultipleJobResponse>> JobUnexported(WebhookRequest webhookRequest,
+    [Webhook("On job unexported", typeof(JobUnexportedHandler), Description = "Triggered when a job is unexported"),
+     MultipleEvents]
+    public Task<WebhookResponse<List<JobDto>>> JobUnexported(WebhookRequest webhookRequest,
         [WebhookParameter] JobOptionalRequest request)
-        => ExecuteWebhookSafelyAsync("PhraseTMSJobUnexported", webhookRequest, async () =>
-        {
-            if (!TryDeserializeWebhookPayload<JobsWrapper, MultipleJobResponse>(webhookRequest,
-                    "PhraseTMSJobUnexported", out _, out var data, out var errorResponse))
-            {
-                return errorResponse!;
-            }
-
-            return Success(await FetchJobs(data.JobParts), MatchByJobUid(data.JobParts, request.JobUId));
-        });
+        => ExecuteWebhookSafelyAsync("PhraseTMSJobUnexported", webhookRequest,
+            () => FetchMatchingJobs(webhookRequest, "PhraseTMSJobUnexported", request.JobUId));
     
     #endregion
 
@@ -951,10 +911,10 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
     private static string? FormatNullableDateTimeOffset(DateTimeOffset? value)
         => value.HasValue ? FormatDateTimeOffset(value.Value) : null;
 
-    private static WebhookRequestType MatchByJobUid(IEnumerable<JobPart> jobParts, string? jobUid)
-        => jobUid != null && jobParts.All(x => x.Uid != jobUid)
-            ? WebhookRequestType.Preflight
-            : WebhookRequestType.Default;
+    private static List<JobPart> MatchByJobUid(IEnumerable<JobPart>? jobParts, string? jobUid)
+        => (jobParts ?? [])
+            .Where(x => x is not null && (jobUid is null || x.Uid == jobUid))
+            .ToList();
 
     private static JobResponse MapJobResponse(JobDto job)
         => new()
@@ -1011,21 +971,33 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         return true;
     }
 
-    private async Task<MultipleJobResponse> FetchJobs(IEnumerable<JobPart> parts)
+    private async Task<List<JobDto>> FetchJobs(IEnumerable<JobPart> parts)
     {
         var jobs = new List<JobDto>();
 
         foreach (var part in parts)
         {
             var request = new RestRequest($"/api2/v1/projects/{part.Project.Uid}/jobs/{part.Uid}", Method.Get);
-            var job = await Client.ExecuteWithHandling<JobDto>(request);
-            jobs.Add(job);
+            jobs.Add(await Client.ExecuteWithHandling<JobDto>(request));
         }
 
-        return new MultipleJobResponse
+        return jobs;
+    }
+
+    private async Task<WebhookResponse<List<JobDto>>> FetchMatchingJobs(WebhookRequest webhookRequest,
+        string webhookName, string? jobUid)
+    {
+        if (!TryDeserializeWebhookPayload<JobsWrapper, List<JobDto>>(webhookRequest, webhookName,
+                out _, out var data, out var errorResponse))
         {
-            Jobs = jobs,
-        };
+            return errorResponse!;
+        }
+
+        var matchingJobs = MatchByJobUid(data.JobParts, jobUid);
+
+        return matchingJobs.Count == 0
+            ? Preflight<List<JobDto>>()
+            : Success(await FetchJobs(matchingJobs));
     }
 
     private async Task<Dictionary<string, ProjectDetailsDto>> LoadProjectsMeta(IEnumerable<string> projectUids)
@@ -1052,7 +1024,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         }
         catch (Exception ex)
         {
-            return Task.FromResult(CreateBadRequestResponse<T>(webhookName, webhookRequest, ex));
+            return Task.FromResult(CreateFailureResponse<T>(webhookName, webhookRequest, ex));
         }
     }
 
@@ -1065,7 +1037,7 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         }
         catch (Exception ex)
         {
-            return CreateBadRequestResponse<T>(webhookName, webhookRequest, ex);
+            return CreateFailureResponse<T>(webhookName, webhookRequest, ex);
         }
     }
 
@@ -1099,45 +1071,19 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
         return false;
     }
 
-    private WebhookResponse<T> CreateBadRequestResponse<T>(string webhookName, WebhookRequest webhookRequest,
+    private WebhookResponse<T> CreateFailureResponse<T>(string webhookName, WebhookRequest webhookRequest,
         Exception exception) where T : class
     {
-        var requestBody = webhookRequest.Body?.ToString();
-        var diagnosticPayload = new
-        {
-            webhook = webhookName,
-            error = "Phrase TMS webhook processing failed.",
-            exceptionType = exception.GetType().FullName,
-            message = exception.Message,
-            stackTrace = exception.StackTrace,
-            innerExceptionMessage = exception.InnerException?.Message,
-            request = new
-            {
-                method = webhookRequest.HttpMethod?.Method,
-                body = Utils.StringExtensions.Truncate(requestBody, 8000)
-            }
-        };
-
-        var diagnosticJson = JsonConvert.SerializeObject(diagnosticPayload, Formatting.Indented);
         LogWebhook(webhookName, LogLevel.Error,
-            "Webhook processing failed. Request method: {0}; Request body: {1}; Exception type: {2}; Exception message: {3}; Stack trace: {4}",
+            "Webhook processing failed. Request method: {0}; Request body: {1}; Exception type: {2}; Exception message: {3}; Inner exception message: {4}; Stack trace: {5}",
             webhookRequest.HttpMethod?.Method,
-            requestBody,
+            webhookRequest.Body?.ToString(),
             exception.GetType().FullName,
             exception.Message,
+            exception.InnerException?.Message,
             exception.StackTrace);
 
-        var httpResponse = new HttpResponseMessage(HttpStatusCode.BadRequest)
-        {
-            Content = new StringContent(diagnosticJson, Encoding.UTF8, "application/json")
-        };
-
-        return new WebhookResponse<T>
-        {
-            HttpResponseMessage = httpResponse,
-            Result = null,
-            ReceivedWebhookRequestType = WebhookRequestType.Preflight
-        };
+        return Preflight<T>();
     }
 
     private void LogWebhook(string webhookName, LogLevel logLevel, string messageTemplate, params object?[] args)
@@ -1203,11 +1149,6 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
     }
 
     #endregion
-}
-
-public class MultipleJobResponse
-{
-    public IEnumerable<JobDto> Jobs { get; set; }
 }
 
 public class ProjectWrapper

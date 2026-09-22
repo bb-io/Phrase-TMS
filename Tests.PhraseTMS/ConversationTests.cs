@@ -14,10 +14,10 @@ public class ConversationTests : TestBaseMultipleConnections
     public async Task Get_conversation_works(InvocationContext context)
     {
         // Arrange
-        var actions = new ConversationActions(context);
-        var conv = new ConversationRequest { ConversationUId = "8eb9ddb1_d052_4b76_b6c3_32d600a8e919" };
-        var job = new JobRequest { JobUId = "ftRN9yMaryr4fRUYYbdX42" };
-        var project = new ProjectRequest { ProjectUId = "0SBo723Ge0wHfk0A1k1XWn0" };
+        var actions = new ConversationActions(context, FileManager);
+        var conv = new ConversationRequest { ConversationUId = "5b95d581_7d71_4596_935c_b14d686482e6" };
+        var job = new JobRequest { JobUId = "D8kPXa1a9Bn0Skllbh2aD1" };
+        var project = new ProjectRequest { ProjectUId = "7kr8oNtrn59BdNjbYrN1J6" };
 
         // Act
         var result = await actions.GetConversation(project, job, conv);
@@ -25,19 +25,20 @@ public class ConversationTests : TestBaseMultipleConnections
         // Assert
         PrintResult(result);
         Assert.IsNotNull(result);
+        Assert.IsNotNull(result.JsonFile);
     }
 
     [TestMethod, ContextDataSource]
     public async Task Search_conversations_works(InvocationContext context)
     {
         // Arrange
-        var actions = new ConversationActions(context);
-        var conv = new JobRequest { JobUId = "S1Lng7SgldQMeiwPm2srx3" };
-        var project = new ProjectRequest { ProjectUId = "YWxQLsQXtwbN2FnxwoSFx0" };
+        var actions = new ConversationActions(context, FileManager);
+        var conv = new JobRequest { JobUId = "D8kPXa1a9Bn0Skllbh2aD1" };
+        var project = new ProjectRequest { ProjectUId = "7kr8oNtrn59BdNjbYrN1J6" };
         var search = new SearchConversationRequest
         {
             //IncludeDeleted = false,
-            Since = DateTime.UtcNow.AddDays(-5)
+            //Since = DateTime.UtcNow.AddDays(-5)
         };
 
         // Act
@@ -46,13 +47,14 @@ public class ConversationTests : TestBaseMultipleConnections
         // Assert
         PrintResult(result);
         Assert.IsNotNull(result);
+        Assert.IsNotNull(result.JsonFile);
     }
 
     [TestMethod, ContextDataSource]
     public async Task Delete_conversation_works(InvocationContext context)
     {
         // Arrange
-        var actions = new ConversationActions(context);
+        var actions = new ConversationActions(context, FileManager);
         var conv = new ConversationRequest
         {
             ConversationUId = "8eb9ddb1_d052_4b76_b6c3_32d600a8e919"
@@ -68,7 +70,7 @@ public class ConversationTests : TestBaseMultipleConnections
     public async Task Edit_conversation_works(InvocationContext context)
     {
         // Arrange
-        var actions = new ConversationActions(context);
+        var actions = new ConversationActions(context, FileManager);
         var conv = new ConversationRequest { ConversationUId = "8eb9ddb1_d052_4b76_b6c3_32d600a8e919" };
         var job = new JobRequest { JobUId = "ftRN9yMaryr4fRUYYbdX42" };
         var input = new EditConversationRequest { Status = "resolved" };
@@ -86,7 +88,7 @@ public class ConversationTests : TestBaseMultipleConnections
     public async Task CreateConversation_IsSuccess(InvocationContext context)
     {
         // Arrange
-        var actions = new ConversationActions(context);
+        var actions = new ConversationActions(context, FileManager);
         var projectRequest = new ProjectRequest { ProjectUId = "xc5XRBM51xQG9aaFBzUKp6" };
         var jobRequest = new JobRequest { JobUId = "PBpFKurDk1g1t4DF27BfUc" };
         var references = new ConversationReferencesRequest { SegmentId = "BwMRqexZaWkjRSvq_dc10:0" };
@@ -104,7 +106,7 @@ public class ConversationTests : TestBaseMultipleConnections
     public async Task AddPlainComment_IsSuccess(InvocationContext context)
     {
         // Arrange
-        var actions = new ConversationActions(context);
+        var actions = new ConversationActions(context, FileManager);
         var projectRequest = new ProjectRequest { ProjectUId = "YWxQLsQXtwbN2FnxwoSFx0" };
         var jobRequest = new JobRequest { JobUId = "S1Lng7SgldQMeiwPm2srx3" };
         var conversationRequest = new ConversationRequest { ConversationUId = "9ae3cc29_cfd8_47d9_b17e_c3a71781e1b8" };
@@ -122,7 +124,7 @@ public class ConversationTests : TestBaseMultipleConnections
     public async Task EditPlainComment_IsSuccess(InvocationContext context)
     {
         // Arrange
-        var actions = new ConversationActions(context);
+        var actions = new ConversationActions(context, FileManager);
         var projectRequest = new ProjectRequest { ProjectUId = "YWxQLsQXtwbN2FnxwoSFx0" };
         var jobRequest = new JobRequest { JobUId = "S1Lng7SgldQMeiwPm2srx3" };
         var conversationRequest = new ConversationRequest { ConversationUId = "9ae3cc29_cfd8_47d9_b17e_c3a71781e1b8" };
@@ -141,7 +143,7 @@ public class ConversationTests : TestBaseMultipleConnections
     public async Task DeletePlainComment_IsSuccess(InvocationContext context)
     {
         // Arrange
-        var actions = new ConversationActions(context);
+        var actions = new ConversationActions(context, FileManager);
         var projectRequest = new ProjectRequest { ProjectUId = "YWxQLsQXtwbN2FnxwoSFx0" };
         var jobRequest = new JobRequest { JobUId = "S1Lng7SgldQMeiwPm2srx3" };
         var conversationRequest = new ConversationRequest { ConversationUId = "9ae3cc29_cfd8_47d9_b17e_c3a71781e1b8" };
@@ -155,7 +157,7 @@ public class ConversationTests : TestBaseMultipleConnections
     public async Task CreateMultipleConversations_ReturnsMultipleConversations(InvocationContext context)
     {
         // Arrange
-        var actions = new ConversationActions(context);
+        var actions = new ConversationActions(context, FileManager);
         var project = new ProjectRequest { ProjectUId = "xc5XRBM51xQG9aaFBzUKp6" };
         var job = new JobRequest { JobUId = "PBpFKurDk1g1t4DF27BfUc" };
         var input = new CreateMultipleConversationsRequest

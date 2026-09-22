@@ -53,7 +53,7 @@ public class QualityAssuranceTests : TestBaseMultipleConnections
     public async Task Create_LQA_conversation_works(InvocationContext context)
     {
         // Arrange
-        var actions = new ConversationActions(context);
+        var actions = new ConversationActions(context, FileManager);
         var projectRequest = new ProjectRequest { ProjectUId = "ayB1FFffK7hD0AXUAX9cPa" };
         var jobRequest = new JobRequest { JobUId = "1d9PrdgW6wjEsq1v18hlVu" };
         var input = new CreateLqaConversationRequest
