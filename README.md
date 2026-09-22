@@ -1,4 +1,4 @@
-# Blackbird.io Phrase
+﻿# Blackbird.io Phrase
 
 Blackbird is the new automation backbone for the language technology industry. Blackbird provides enterprise-scale automation and orchestration with a simple no-code/low-code platform. Blackbird enables ambitious organizations to identify, vet and automate as many processes as possible. Not just localization workflows, but any business and IT process. This repository represents an application that is deployable on Blackbird and usable inside the workflow editor.
 
@@ -261,13 +261,13 @@ Custom fields are associated with a specific type, for example date, number, or 
   > The webhook is created and delivered in the vendor account, not in the account that shares the project. To use this event in Blackbird, connect the vendor account separately using its own credentials or API token, and configure the event with the vendor connection.
 
 - **On project status changed** Triggered when a project status changes.
-- **On jobs created** Triggered when new jobs are created.
-- **On jobs deleted** Triggered when jobs are deleted.
-- **On continuous jobs updated** Triggered when continuous jobs are updated.
-- **On jobs assigned** Triggered when jobs are assigned.
-- **On jobs due date changed** Triggered when job due dates change.
-- **On jobs exported** Triggered when jobs are exported.
-- **On jobs source updated** Triggered when job source files are updated.
+- **On job created** Triggered when a new job is created. Each created job starts its own flight.
+- **On job deleted** Triggered when a job is deleted. Each deleted job starts its own flight.
+- **On continuous job updated** Triggered when a continuous job is updated. Each updated job starts its own flight.
+- **On job assigned** Triggered when a job is assigned. Each assigned job starts its own flight.
+- **On job due date changed** Triggered when a job due date changes. Each affected job starts its own flight.
+- **On job exported** Triggered when a job is exported. Each exported job starts its own flight.
+- **On job source updated** Triggered when a job source file is updated. Each updated job starts its own flight.
 - **On job status changed** Triggered when a job status changes. For reliable checkpoint behavior, set optional filters such as Project ID, and use either Job ID or Source file ID with workflow step filters.
   Advanced settings:
   - **Project name contains**: Trigger only when the project name contains a specific text.
@@ -278,7 +278,7 @@ Custom fields are associated with a specific type, for example date, number, or 
   Advanced settings:
   - **Target language**: Restrict the trigger to a specific target language.
 - **On job target updated** Triggered when a job target is updated.
-- **On jobs unexported** Triggered when jobs are unexported.
+- **On job unexported** Triggered when a job is unexported. Each unexported job starts its own flight.
 - **On analysis created** Triggered when a new analysis is created.
 
 ### Users

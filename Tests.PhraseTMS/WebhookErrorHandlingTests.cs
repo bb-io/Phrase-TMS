@@ -7,7 +7,6 @@ using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.Sdk.Common.Webhooks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PhraseTMSTests.Base;
-using System.Net;
 
 namespace Tests.PhraseTMS;
 
@@ -17,7 +16,7 @@ public class WebhookErrorHandlingTests
     public TestContext TestContext { get; set; } = null!;
 
     [TestMethod]
-    public async Task Project_creation_returns_bad_request_for_invalid_json()
+    public async Task Project_creation_acknowledges_invalid_json_without_firing()
     {
         var webhookList = CreateWebhookList(TestContext);
 
@@ -27,18 +26,11 @@ public class WebhookErrorHandlingTests
             new MultipleSubdomains(),
             new MultipleDomains());
 
-        Assert.AreEqual(WebhookRequestType.Preflight, response.ReceivedWebhookRequestType);
-        Assert.IsNotNull(response.HttpResponseMessage);
-        Assert.AreEqual(HttpStatusCode.BadRequest, response.HttpResponseMessage.StatusCode);
-
-        var responseBody = await response.HttpResponseMessage.Content.ReadAsStringAsync();
-        StringAssert.Contains(responseBody, "\"webhook\": \"PhraseTMSProjectCreation\"");
-        StringAssert.Contains(responseBody, "\"message\":");
-        StringAssert.Contains(responseBody, "\"stackTrace\":");
+        AssertAcknowledgedWithoutFiring(response);
     }
 
     [TestMethod]
-    public async Task Job_status_changed_returns_bad_request_for_misconfiguration_exception()
+    public async Task Job_status_changed_acknowledges_misconfiguration_exception_without_firing()
     {
         var webhookList = CreateWebhookList(TestContext);
 
@@ -58,13 +50,14 @@ public class WebhookErrorHandlingTests
             null,
             new MultipleSubdomains());
 
-        Assert.AreEqual(WebhookRequestType.Preflight, response.ReceivedWebhookRequestType);
-        Assert.IsNotNull(response.HttpResponseMessage);
-        Assert.AreEqual(HttpStatusCode.BadRequest, response.HttpResponseMessage.StatusCode);
+        AssertAcknowledgedWithoutFiring(response);
+    }
 
-        var responseBody = await response.HttpResponseMessage.Content.ReadAsStringAsync();
-        StringAssert.Contains(responseBody, "If Job ID is specified in the inputs you must also specify the Project ID");
-        StringAssert.Contains(responseBody, "\"webhook\": \"PhraseTMSJobStatusChanged\"");
+    private static void AssertAcknowledgedWithoutFiring<T>(WebhookResponse<T> response) where T : class
+    {
+        Assert.AreEqual(WebhookRequestType.Preflight, response.ReceivedWebhookRequestType);
+        Assert.IsNull(response.Result);
+        Assert.IsNull(response.HttpResponseMessage);
     }
 
     private static WebhookList CreateWebhookList(TestContext testContext)
