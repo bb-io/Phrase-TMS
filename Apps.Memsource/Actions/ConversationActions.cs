@@ -7,23 +7,28 @@ using Apps.PhraseTMS.Models.Projects.Requests;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Exceptions;
+using Blackbird.Applications.Sdk.Common.Files;
 using Blackbird.Applications.Sdk.Common.Invocation;
+using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
+using Newtonsoft.Json;
 using RestSharp;
 using System.Globalization;
+using System.Text;
 
 namespace Apps.PhraseTMS.Actions;
 
 [ActionList("Conversations")]
-public class ConversationActions(InvocationContext invocationContext) : PhraseInvocable(invocationContext)
+public class ConversationActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) : PhraseInvocable(invocationContext)
 {
     [Action("Get conversation", Description = "Gets plain conversation")]
-    public async Task<Conversation> GetConversation([ActionParameter] ProjectRequest projectRequest,
+    public async Task<ConversationResponse> GetConversation([ActionParameter] ProjectRequest projectRequest,
         [ActionParameter] JobRequest jobRequest,
         [ActionParameter] ConversationRequest conv)
     {
         var endpoint = $"/api2/v1/jobs/{jobRequest.JobUId}/conversations/plains/{conv.ConversationUId}";
         var request = new RestRequest(endpoint, Method.Get);
-        var response = await Client.ExecuteWithHandling<Conversation>(request);
+        var response = await Client.ExecuteWithHandling<ConversationResponse>(request);
+        response.JsonFile = await UploadJsonAsync(response, $"conversation_{conv.ConversationUId}.json");
 
         return response;
     }
@@ -46,6 +51,7 @@ public class ConversationActions(InvocationContext invocationContext) : PhraseIn
         }
 
         var response = await Client.ExecuteWithHandling<ConversationsResponse>(request);
+        response.JsonFile = await UploadJsonAsync(response, $"conversations_{jobRequest.JobUId}.json");
 
         return response;
     }
@@ -232,5 +238,15 @@ public class ConversationActions(InvocationContext invocationContext) : PhraseIn
         var request = new RestRequest(endpoint, Method.Delete);
 
         var response = await Client.ExecuteWithHandling(request);
+    }
+
+    private async Task<FileReference> UploadJsonAsync(object value, string fileName)
+    {
+        var json = JsonConvert.SerializeObject(value, Formatting.Indented, new JsonSerializerSettings
+        {
+            NullValueHandling = NullValueHandling.Ignore
+        });
+        await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
+        return await fileManagementClient.UploadAsync(stream, "application/json", fileName);
     }
 }

@@ -1,15 +1,11 @@
-﻿using Newtonsoft.Json;
 using Apps.PhraseTMS.Models.Conversations.Requests;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Files;
 
 namespace Apps.PhraseTMS.Models.Conversations.Responses;
 
-public class ConversationsResponse
+public class ConversationResponse : Conversation
 {
-    [JsonProperty("conversations")]
-    public List<Conversation> Conversations { get; set; }
-
     [Display("JSON file")]
     public FileReference JsonFile { get; set; } = null!;
 }
