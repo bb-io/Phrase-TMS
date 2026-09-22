@@ -283,11 +283,11 @@ Custom fields are associated with a specific type, for example date, number, or 
 
 ### Users
 
-- **On users created** Triggered when new users are added.
+- **On user created** Triggered when a new user is added. Each created user starts its own flight.
 
 ### Quality assurance
 
-- **On LQA reports created** Triggered when new LQA reports are available in a specific project.
+- **On LQA report created** Triggered when a new LQA report is available in a specific project. Each report starts its own flight.
 
 ## Examples 
 

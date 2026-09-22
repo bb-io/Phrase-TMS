@@ -1,4 +1,4 @@
-﻿using Apps.PhraseTMS.Actions;
+using Apps.PhraseTMS.Actions;
 using Apps.PhraseTMS.Models.Jobs.Requests;
 using Apps.PhraseTMS.Models.Projects.Requests;
 using Apps.PhraseTMS.Models.QualityAssurance.Responses;
@@ -14,22 +14,16 @@ namespace Apps.PhraseTMS.Polling;
 [PollingEventList("Quality assurance")]
 public class LqaPollingList(InvocationContext invocationContext) : PhraseInvocable(invocationContext)
 {
-    [PollingEvent("On LQA reports created", "Triggered when new LQA reports are available in a specific project")]
-    public async Task<PollingEventResponse<PollingMemory, SearchLqaResponse>> OnLqaReportsCreated(
+    [PollingEvent("On LQA report created", "Triggered when a new LQA report is available in a specific project"),
+     MultipleEvents]
+    public async Task<PollingEventResponse<PollingMemory, List<LqaResponse>>> OnLqaReportsCreated(
         PollingEventRequest<PollingMemory> request,
         [PollingEventParameter] ProjectRequest projectRequest,
         [PollingEventParameter] WorkflowStepOptionalRequest wfStep)
     {
         if (request.Memory is null)
         {
-            return new()
-            {
-                FlyBird = false,
-                Memory = new()
-                {
-                    LastPollingTime = DateTime.UtcNow
-                }
-            };
+            return NoReports();
         }
 
         var jobActions = new JobActions(InvocationContext, null!);
@@ -40,22 +34,31 @@ public class LqaPollingList(InvocationContext invocationContext) : PhraseInvocab
             {
                 jobParts = projectJobs.Jobs.Select(x => new { uid = x.Uid }).ToList()
             });
-        
+
         var dto = await Client.ExecuteWithHandling<GetLqasDto>(getBatchRequest);
+        var nowUtc = DateTime.UtcNow;
+
         var createdWithTimePeriod = dto.AssessmentDetails
-            .Where(x => x.FinishedDate.HasValue 
-                        && x.FinishedDate.Value.ToUniversalTime() >= request.Memory.LastPollingTime 
-                        && x.FinishedDate.Value.ToUniversalTime() < DateTime.UtcNow)
+            .Where(x => x.FinishedDate.HasValue
+                        && x.FinishedDate.Value.ToUniversalTime() >= request.Memory.LastPollingTime
+                        && x.FinishedDate.Value.ToUniversalTime() < nowUtc)
             .ToList();
-        
-        return new()
-        {
-            FlyBird = createdWithTimePeriod.Count > 0,
-            Result = new() { LanguageQualityAssessments = createdWithTimePeriod },
-            Memory = new()
+
+        return createdWithTimePeriod.Count == 0
+            ? NoReports()
+            : new()
             {
-                LastPollingTime = DateTime.UtcNow
-            }
-        };
+                FlyBird = true,
+                Result = createdWithTimePeriod,
+                Memory = new() { LastPollingTime = nowUtc }
+            };
     }
+
+    private static PollingEventResponse<PollingMemory, List<LqaResponse>> NoReports()
+        => new()
+        {
+            FlyBird = false,
+            Result = null,
+            Memory = new() { LastPollingTime = DateTime.UtcNow }
+        };
 }

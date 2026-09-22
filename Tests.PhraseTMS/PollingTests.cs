@@ -1,4 +1,4 @@
-﻿using Apps.PhraseTMS.Models.Users.Requests;
+using Apps.PhraseTMS.Models.Users.Requests;
 using Apps.PhraseTMS.Polling;
 using Apps.PhraseTMS.Polling.Models;
 using Blackbird.Applications.Sdk.Common.Invocation;
@@ -34,5 +34,22 @@ public class PollingTests : TestBaseMultipleConnections
         // Assert
         PrintResult(result);
         Assert.IsNotNull(result);
+        Assert.AreEqual(result.FlyBird, result.Result?.Count > 0);
+    }
+
+    [TestMethod, ContextDataSource]
+    public async Task OnUsersCreated_WithoutMemory_DoesNotFly(InvocationContext context)
+    {
+        // Arrange
+        var polling = new UserPollingList(context);
+        var request = new PollingEventRequest<PollingMemory>();
+
+        // Act
+        var result = await polling.OnUsersCreated(request, new ListAllUsersQuery());
+
+        // Assert
+        Assert.IsFalse(result.FlyBird);
+        Assert.IsNull(result.Result);
+        Assert.IsNotNull(result.Memory);
     }
 }
