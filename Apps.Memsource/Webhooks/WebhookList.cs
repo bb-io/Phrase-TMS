@@ -140,7 +140,10 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
     public Task<WebhookResponse<ProjectDto>> ProjectSharedAssigned(WebhookRequest webhookRequest,
         [WebhookParameter] ProjectOptionalRequest request,
         [WebhookParameter] [Display("Domain name")] string? Domain,
-        [WebhookParameter] MultipleDomains domains)
+        [WebhookParameter] MultipleDomains domains,
+        [WebhookParameter] [Display("Project name contains")] string? projectNameContains,
+        [WebhookParameter] [Display("Project owner", Description = "Owner ID, username or email")]
+        [DataSource(typeof(UserDataHandler))] string? ProjectOwner)
         => ExecuteWebhookSafelyAsync("PhraseTMSProjectSharedAssigned", webhookRequest, () =>
         {
             if (!TryDeserializeWebhookPayload<ProjectWrapper, ProjectDto>(webhookRequest,
@@ -150,6 +153,18 @@ public class WebhookList(InvocationContext invocationContext) : PhraseInvocable(
             }
 
             if (request.ProjectUId != null && data.Project.UId != request.ProjectUId)
+            {
+                return Preflight<ProjectDto>();
+            }
+
+            if (!string.IsNullOrEmpty(projectNameContains) && !data.Project.Name.ToLower().Contains(projectNameContains.ToLower()))
+            {
+                return Preflight<ProjectDto>();
+            }
+
+            if (!string.IsNullOrEmpty(ProjectOwner) && (data.Project.Owner.UserName != ProjectOwner &&
+            data.Project.Owner.Email != ProjectOwner &&
+            data.Project.Owner.Uid != ProjectOwner))
             {
                 return Preflight<ProjectDto>();
             }
