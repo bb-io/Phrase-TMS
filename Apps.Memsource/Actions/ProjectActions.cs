@@ -224,7 +224,9 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
             });
         }
 
-        if (input.Archived.HasValue)
+        var shouldArchive = input.Archived == true;
+
+        if (input.Archived.HasValue && !shouldArchive)
         {
             bodyDictionary.Add("archived", input.Archived);
         }
@@ -251,7 +253,19 @@ public class ProjectActions(InvocationContext invocationContext, IFileManagement
             await Client.ExecuteWithHandling(mtRequest);
         }
 
-        return await GetProject(projectRequest);
+        var updatedProject = await GetProject(projectRequest);
+
+        // An archived project is no longer returned by the Get project endpoint. Archive it only
+        // after collecting the action output and completing all other project updates.
+        if (shouldArchive)
+        {
+            var archiveRequest = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}", Method.Patch)
+                .WithJsonBody(new { archived = true });
+
+            await Client.ExecuteWithHandling(archiveRequest);
+        }
+
+        return updatedProject;
     }
 
     [Action("Delete project", Description = "Delete specific project")]
