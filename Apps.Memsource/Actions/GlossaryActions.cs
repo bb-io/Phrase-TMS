@@ -1,4 +1,5 @@
 ﻿using Apps.PhraseTMS.Dtos;
+using Apps.PhraseTMS.Constants;
 using Apps.PhraseTMS.Models.Glossary.Requests;
 using Apps.PhraseTMS.Models.Glossary.Responses;
 using Blackbird.Applications.Sdk.Common;
@@ -10,6 +11,7 @@ using Blackbird.Applications.Sdk.Utils.Extensions.Files;
 using Blackbird.Applications.Sdk.Utils.Extensions.Http;
 using Blackbird.Applications.Sdk.Utils.Extensions.String;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 using System.Net.Mime;
 using System.Text;
@@ -36,6 +38,107 @@ public class GlossaryActions(InvocationContext invocationContext, IFileManagemen
         {
             GlossaryId = glossaryDto.UId
         };
+    }
+
+    [Action("Search terms in term base", Description = "Search for individual terms in a term base")]
+    public async Task<SearchTermsResponse> SearchTerms([ActionParameter] SearchTermsRequest input)
+    {
+        ValidateRequired(input.TermBaseUId, "Term base ID");
+        ValidateRequired(input.Query, "Search query");
+        ValidateRequired(input.SourceLanguage, "Source language");
+
+        var targetLanguages = (input.TargetLanguages ?? Array.Empty<string>())
+            .Where(x => !string.IsNullOrWhiteSpace(x))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        if (targetLanguages.Length == 0)
+            throw new PluginMisconfigurationException("At least one target language is required.");
+
+        var request = new RestRequest($"/api2/v1/termBases/{input.TermBaseUId}/search", Method.Post)
+            .WithJsonBody(new
+            {
+                query = input.Query,
+                sourceLang = input.SourceLanguage,
+                targetLangs = targetLanguages,
+                status = input.Status
+            }, JsonConfig.IgnoreNullSettings);
+
+        var response = await Client.ExecuteWithHandling<SearchTermsResponse>(request);
+        response.SearchResults ??= Array.Empty<TermSearchResultDto>();
+
+        var matchedTerm = response.SearchResults
+            .Select(x => x.SourceTerm)
+            .FirstOrDefault(term => IsExactMatch(term, input.Query, input.SourceLanguage));
+
+        response.ExactMatchFound = matchedTerm is not null;
+        response.MatchedTerm = matchedTerm;
+        response.MatchedTermId = matchedTerm?.Id;
+
+        return response;
+    }
+
+    [Action("Create term", Description = "Create an individual term in a term base")]
+    public async Task<TermDto> CreateTerm([ActionParameter] CreateTermRequest input)
+    {
+        ValidateRequired(input.TermBaseUId, "Term base ID");
+        ValidateRequired(input.Language, "Language");
+        ValidateRequired(input.Text, "Text");
+
+        var request = new RestRequest($"/api2/v1/termBases/{input.TermBaseUId}/terms", Method.Post)
+            .WithJsonBody(new
+            {
+                lang = input.Language,
+                input.Text,
+                input.AllowDuplicate,
+                input.CaseSensitive,
+                input.ConceptId,
+                customFields = ParseCustomFields(input.CustomFieldsJson),
+                input.ExactMatch,
+                input.Forbidden,
+                input.Gender,
+                input.Note,
+                input.Number,
+                input.PartOfSpeech,
+                input.Preferred,
+                input.ShortTranslation,
+                input.Status,
+                input.TermType,
+                input.Usage
+            }, JsonConfig.IgnoreNullSettings);
+
+        return await Client.ExecuteWithHandling<TermDto>(request);
+    }
+
+    [Action("Update term", Description = "Update an individual term in a term base")]
+    public async Task<TermDto> UpdateTerm([ActionParameter] UpdateTermRequest input)
+    {
+        ValidateRequired(input.TermBaseUId, "Term base ID");
+        ValidateRequired(input.TermId, "Term ID");
+        ValidateRequired(input.Text, "Text");
+
+        var request = new RestRequest($"/api2/v1/termBases/{input.TermBaseUId}/terms/{input.TermId}", Method.Put)
+            .WithJsonBody(new
+            {
+                input.Text,
+                input.AllowDuplicate,
+                input.CaseSensitive,
+                customFields = ParseCustomFields(input.CustomFieldsJson),
+                input.ExactMatch,
+                input.Forbidden,
+                input.Gender,
+                lang = input.Language,
+                input.Note,
+                input.Number,
+                input.PartOfSpeech,
+                input.Preferred,
+                input.ShortTranslation,
+                input.Status,
+                input.TermType,
+                input.Usage
+            }, JsonConfig.IgnoreNullSettings);
+
+        return await Client.ExecuteWithHandling<TermDto>(request);
     }
 
     [Action("Export glossary", Description = "Export glossary")]
@@ -122,6 +225,47 @@ public class GlossaryActions(InvocationContext invocationContext, IFileManagemen
         }
 
         throw new PluginApplicationException("Only TBX v2 (martif) and TBX v3 glossary files are supported.");
+    }
+
+    private static void ValidateRequired(string? value, string fieldName)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            throw new PluginMisconfigurationException($"{fieldName} cannot be empty.");
+    }
+
+    private static bool IsExactMatch(TermDto? term, string query, string sourceLanguage)
+    {
+        if (term is null || !string.Equals(term.Lang, sourceLanguage, StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        var comparison = term.CaseSensitive == true
+            ? StringComparison.Ordinal
+            : StringComparison.OrdinalIgnoreCase;
+
+        return string.Equals(term.Text, query, comparison);
+    }
+
+    private static JArray? ParseCustomFields(string? customFieldsJson)
+    {
+        if (string.IsNullOrWhiteSpace(customFieldsJson))
+            return null;
+
+        try
+        {
+            var token = JToken.Parse(customFieldsJson);
+            if (token is not JArray array)
+                throw new PluginMisconfigurationException("Custom fields JSON must be an array.");
+
+            return array;
+        }
+        catch (PluginMisconfigurationException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            throw new PluginMisconfigurationException($"Custom fields JSON is invalid: {ex.Message}");
+        }
     }
 
     private static Stream MergeFromTbx2IntoTbx3(byte[] tbx2Bytes, Stream tbx3Stream)

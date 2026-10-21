@@ -124,6 +124,9 @@ Custom fields are associated with a specific type, for example date, number, or 
 ### Glossaries
 
 - **Create glossary** Create a new glossary.
+- **Search terms in term base** Search for individual terms in a term base.
+- **Create term** Create an individual term in a term base.
+- **Update term** Update an individual term in a term base.
 - **Export glossary** Export a glossary.
 - **Import glossary** Import a glossary.
 - **Remove all terms from glossary** Delete all terms in a glossary.
