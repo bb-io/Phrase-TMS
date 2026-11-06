@@ -34,21 +34,18 @@ public class PhraseTmsClient : RestClient
         this.AddDefaultHeader("accept", "*/*");
     }
 
+    public TimeSpan AsyncRequestTimeout { get; init; } = TimeSpan.FromMinutes(15);
+
+    public TimeSpan AsyncRequestPollInterval { get; init; } = TimeSpan.FromSeconds(5);
+
     public async Task<AsyncRequest?> PerformAsyncRequest(RestRequest request)
     {
         var asyncRequestResponse = await ExecuteWithHandling<AsyncRequestResponse>(request);
         if (asyncRequestResponse is null) return default;
         var asyncRequest = asyncRequestResponse.AsyncRequest;
 
-        while (asyncRequest.AsyncResponse is null)
-        {
-            await Task.Delay(2000);
-            var asyncStatusRequest = new RestRequest($"/api2/v1/async/{asyncRequest.Id}", Method.Get);
-            asyncRequest = await ExecuteWithHandling<AsyncRequest>(asyncStatusRequest);
-            if (asyncRequest is null) return default;
-        }
-
-        return asyncRequest;
+        var deadline = DateTime.UtcNow + AsyncRequestTimeout;
+        return await WaitForAsyncRequestToFinish(asyncRequest.Id, asyncRequest.Action, asyncRequest, deadline);
     }
 
     public async Task<IEnumerable<T>> PerformMultipleAsyncRequest<T>(RestRequest request) where T : AsyncRequestArrayItem
@@ -56,18 +53,30 @@ public class PhraseTmsClient : RestClient
         var asyncRequestResponse = await ExecuteWithHandling<AsyncRequestMultipleResponse<T>>(request);
         var asyncRequests = asyncRequestResponse.AsyncRequests;
 
+        var deadline = DateTime.UtcNow + AsyncRequestTimeout;
         foreach (var asyncRequest in asyncRequests)
-        {
-            AsyncRequest asyncRequestSeparate = null;
-            while (asyncRequestSeparate?.AsyncResponse is null)
-            {
-                await Task.Delay(2000);
-                var asyncStatusRequest = new RestRequest($"/api2/v1/async/{asyncRequest.AsyncRequest.Id}", Method.Get);
-                asyncRequestSeparate = await ExecuteWithHandling<AsyncRequest>(asyncStatusRequest);
-            }
-        }
+            await WaitForAsyncRequestToFinish(asyncRequest.AsyncRequest.Id, asyncRequest.AsyncRequest.Action, null, deadline);
 
         return asyncRequests;
+    }
+
+    private async Task<AsyncRequest?> WaitForAsyncRequestToFinish(string asyncRequestId, string action,
+        AsyncRequest? lastKnownState, DateTime deadline)
+    {
+        while (lastKnownState?.AsyncResponse is null)
+        {
+            if (DateTime.UtcNow >= deadline)
+                throw new PluginApplicationException(
+                    $"Phrase TMS did not finish the asynchronous request {asyncRequestId} ({action}) within " +
+                    $"{AsyncRequestTimeout.TotalMinutes:0.##} minutes. Phrase may be queuing requests under heavy load, please try again later.");
+
+            await Task.Delay(AsyncRequestPollInterval);
+            var asyncStatusRequest = new RestRequest($"/api2/v1/async/{asyncRequestId}", Method.Get);
+            lastKnownState = await ExecuteWithHandling<AsyncRequest>(asyncStatusRequest);
+            if (lastKnownState is null) return default;
+        }
+
+        return lastKnownState;
     }
     
     public async Task<RestResponse> ExecuteWithoutHandlingAsync(RestRequest request, CancellationToken cancellationToken = default)
