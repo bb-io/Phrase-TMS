@@ -1,4 +1,6 @@
-﻿using Blackbird.Applications.Sdk.Common;
+﻿using Apps.PhraseTMS.DataSourceHandlers;
+using Blackbird.Applications.Sdk.Common;
+using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.PhraseTMS.Models.Projects.Requests
 {
@@ -9,6 +11,7 @@ namespace Apps.PhraseTMS.Models.Projects.Requests
 
         [Display("Target language",
           Description = "Only return analyses containing exclusively this target language")]
+        [DataSource(typeof(LanguageDataHandler))]
         public string? TargetLanguage { get; set; }
 
         [Display("Most recent")]
