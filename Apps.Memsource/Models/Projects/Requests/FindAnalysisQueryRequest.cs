@@ -7,8 +7,9 @@ namespace Apps.PhraseTMS.Models.Projects.Requests
         [Display("Name contains")]
         public string? NameContains { get; set; }
 
-        //[Display("Type")]
-        //public string? Type { get; set; }
+        [Display("Target language",
+          Description = "Only return analyses containing exclusively this target language")]
+        public string? TargetLanguage { get; set; }
 
         [Display("Most recent")]
         public bool? OnlyMostRecent { get; set; }
