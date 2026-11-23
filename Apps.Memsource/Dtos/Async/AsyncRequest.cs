@@ -18,6 +18,21 @@ public class AsyncResponse
 
     [Display("Error description"), JsonProperty("errorDesc")]
     public string? ErrorDescription { get; set; }
+
+    [Display("Warnings"), JsonProperty("warnings")]
+    public IEnumerable<AsyncRequestWarning> Warnings { get; set; } = [];
+
+    [Display("Accepted segments count"), JsonProperty("acceptedSegmentsCount")]
+    public int? AcceptedSegmentsCount { get; set; }
+}
+
+public class AsyncRequestWarning
+{
+    [Display("Code")]
+    public string? Code { get; set; }
+
+    [Display("Message")]
+    public string? Message { get; set; }
 }
 
 public class AsyncRequest
