@@ -16,6 +16,9 @@ public class ConnectorFilesResponse
 
 public class ConnectorFileDto
 {
+    [JsonProperty("id")]
+    public string Id { get; set; } = string.Empty;
+
     [JsonProperty("name")]
     public string Name { get; set; } = string.Empty;
 
@@ -24,4 +27,16 @@ public class ConnectorFileDto
 
     [JsonProperty("directory")]
     public bool IsDirectory { get; set; }
+}
+
+public class ConnectorDownloadTaskDto
+{
+    [JsonProperty("id")]
+    public string Id { get; set; } = string.Empty;
+
+    [JsonProperty("fileName")]
+    public string FileName { get; set; } = string.Empty;
+
+    [JsonProperty("action")]
+    public string Action { get; set; } = string.Empty;
 }

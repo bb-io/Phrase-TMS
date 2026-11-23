@@ -48,6 +48,12 @@ public class PhraseTmsClient : RestClient
         return await WaitForAsyncRequestToFinish(asyncRequest.Id, asyncRequest.Action, asyncRequest, deadline);
     }
 
+    public Task<AsyncRequest?> WaitForAsyncRequestToFinish(AsyncRequest asyncRequest)
+    {
+        var deadline = DateTime.UtcNow + AsyncRequestTimeout;
+        return WaitForAsyncRequestToFinish(asyncRequest.Id, asyncRequest.Action, asyncRequest, deadline);
+    }
+
     public async Task<IEnumerable<T>> PerformMultipleAsyncRequest<T>(RestRequest request) where T : AsyncRequestArrayItem
     {
         var asyncRequestResponse = await ExecuteWithHandling<AsyncRequestMultipleResponse<T>>(request);
@@ -91,6 +97,11 @@ public class PhraseTmsClient : RestClient
             {
                 return authResponse;
             }
+
+            if (!string.IsNullOrEmpty(_cachedToken))
+            {
+                request.AddOrUpdateHeader("Authorization", _cachedToken);
+            }
         }
         
         return await ExecuteAsync(request, cancellationToken);
@@ -100,6 +111,17 @@ public class PhraseTmsClient : RestClient
     {
         var response = await ExecuteWithHandling(request, enableRetries);
         return JsonConvert.DeserializeObject<T>(response.Content);
+    }
+
+    public T DeserializeWithHandling<T>(RestResponse response)
+    {
+        if (!response.IsSuccessful)
+        {
+            throw ConfigureErrorException(response);
+        }
+
+        var result = JsonConvert.DeserializeObject<T>(response.Content ?? string.Empty);
+        return result ?? throw new PluginApplicationException("Phrase TMS returned an empty or invalid response.");
     }
 
     public async Task<RestResponse> ExecuteWithHandling(RestRequest request, bool enableRetries = true)

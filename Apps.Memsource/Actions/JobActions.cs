@@ -487,11 +487,18 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
             throw new PluginMisconfigurationException("Remote file name is not provided. Please select a remote file.");
         }
 
-        if (input.TargetLanguages?.Any() != true)
+        var projectRequestApi = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}", Method.Get);
+        var project = await Client.ExecuteWithHandling<ProjectDto>(projectRequestApi);
+        var targetLanguages = input.TargetLanguages?.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+        if (targetLanguages?.Any() != true)
         {
-            var projectRequestApi = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}", Method.Get);
-            var project = await Client.ExecuteWithHandling<ProjectDto>(projectRequestApi);
-            input.TargetLanguages = project.TargetLangs;
+            targetLanguages = project.TargetLangs.ToArray();
+        }
+
+        if (targetLanguages.Length == 0)
+        {
+            throw new PluginMisconfigurationException(
+                "No target languages are available. Please select at least one target language.");
         }
 
         var connectorsRequest = new RestRequest("/api2/v1/connectors", Method.Get);
@@ -505,50 +512,152 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
         var folderRequest = new RestRequest(folderEndpoint, Method.Get)
             .AddQueryParameter("fileType", "FILES_ONLY");
         var folderResponse = await Client.ExecuteWithHandling<ConnectorFilesResponse>(folderRequest);
-        var remoteFileExists = folderResponse.Files.Any(x =>
-            !x.IsDirectory && x.Name == input.RemoteFileName);
-        if (!remoteFileExists)
+
+        var files = folderResponse.Files.Where(x => !x.IsDirectory).ToArray();
+        var remoteFile = files.FirstOrDefault(x => x.EncodedName == input.RemoteFileName);
+        if (remoteFile is null)
+        {
+            var legacyMatches = files
+                .Where(x => x.Name == input.RemoteFileName)
+                .ToArray();
+            if (legacyMatches.Length > 1)
+            {
+                throw new PluginMisconfigurationException(
+                    "Multiple remote files have this name. Please reselect the remote file to identify the exact file.");
+            }
+
+            remoteFile = legacyMatches.SingleOrDefault();
+        }
+
+        if (remoteFile is null || string.IsNullOrWhiteSpace(remoteFile.EncodedName))
         {
             throw new PluginMisconfigurationException(
                 "The selected remote file is no longer available in the selected folder. Please select the folder and file again.");
         }
 
-        var memsourceHeader = JsonConvert.SerializeObject(
-            new
+        var encodedFolder = GetEncodedFolderForDownload(input.RemoteFolder, folderResponse);
+        var downloadRequest = new RestRequest(
+                $"/api2/v2/connectors/{connector.Id}/folders/{encodedFolder}/files/{remoteFile.EncodedName.TrimStart('/')}",
+                Method.Post)
+            .AddJsonBody(new
             {
-                remoteFile = new
-                {
-                    connectorToken = input.ConnectorToken,
-                    remoteFolder = input.RemoteFolder,
-                    remoteFileName = input.RemoteFileName,
-                    continuous = input.Continuous ?? false
-                },
-                targetLangs = input.TargetLanguages,
-                preTranslate = input.PreTranslate ?? false,
-                useProjectFileImportSettings = input.UseProjectFileImportSettings ?? true,
-                due = input.DueDate?.ToUniversalTime().ToString("yyyy-MM-dd'T'HH:mm:ssK")
-            },
-            new JsonSerializerSettings
-            {
-                NullValueHandling = NullValueHandling.Ignore,
-                StringEscapeHandling = StringEscapeHandling.EscapeNonAscii
+                sourceLang = project.SourceLang,
+                targetLang = targetLanguages[0]
             });
-
-        var request = new RestRequest($"/api2/v1/projects/{projectRequest.ProjectUId}/jobs", Method.Post)
-            .AddHeader("Memsource", memsourceHeader)
-            .AddHeader("Content-Type", "application/octet-stream")
-            .AddParameter("application/octet-stream", Encoding.UTF8.GetBytes("{}"), ParameterType.RequestBody);
-
-        var response = await Client.ExecuteWithHandling<JobResponseWrapper>(request);
-        if (response.Jobs?.Any() != true)
+        var downloadTask = await Client.ExecuteWithHandling<ConnectorDownloadTaskDto>(downloadRequest, false);
+        if (string.IsNullOrWhiteSpace(downloadTask.Id))
         {
             throw new PluginApplicationException(
+                "Phrase TMS did not return an ID for the connector download task.");
+        }
+
+        var response = await CreateJobsFromConnectorTask(
+            projectRequest.ProjectUId,
+            downloadTask.Id,
+            targetLanguages,
+            input);
+        if (response.Jobs?.Any() != true)
+        {
+            var unsupportedFiles = response.UnsupportedFiles.Any()
+                ? $"Unsupported files: {string.Join(", ", response.UnsupportedFiles)}. "
+                : string.Empty;
+            throw new PluginApplicationException(
                 "Phrase TMS did not create any jobs from the selected remote file. " +
-                "The file may be unsupported or the connector may be unable to download it. " +
+                unsupportedFiles +
                 "Please verify the file in Phrase TMS and try again.");
         }
 
+        if (response.AsyncRequest is not null)
+        {
+            var completedRequest = await Client.WaitForAsyncRequestToFinish(response.AsyncRequest);
+            response.AsyncRequest = completedRequest;
+            var asyncError = completedRequest?.AsyncResponse;
+            if (!string.IsNullOrWhiteSpace(asyncError?.ErrorCode)
+                || !string.IsNullOrWhiteSpace(asyncError?.ErrorDescription))
+            {
+                throw new PluginApplicationException(
+                    $"Phrase TMS failed to import the remote file ({asyncError?.ErrorCode ?? "UnknownError"}): " +
+                    $"{asyncError?.ErrorDescription ?? "No error description was returned."}");
+            }
+        }
+
         return response;
+    }
+
+    private async Task<JobResponseWrapper> CreateJobsFromConnectorTask(
+        string projectUid,
+        string downloadTaskId,
+        IReadOnlyCollection<string> targetLanguages,
+        CreateJobsFromRemoteFileRequest input)
+    {
+        var deadline = DateTime.UtcNow + Client.AsyncRequestTimeout;
+        while (true)
+        {
+            var body = new Dictionary<string, object?>
+            {
+                ["targetLangs"] = targetLanguages,
+                ["preTranslate"] = input.PreTranslate ?? false,
+                ["useProjectFileImportSettings"] = input.UseProjectFileImportSettings ?? true
+            };
+            if (input.DueDate is not null)
+            {
+                body["due"] = input.DueDate.Value.ToUniversalTime().ToString("yyyy-MM-dd'T'HH:mm:ssK");
+            }
+
+            var request = new RestRequest($"/api2/v1/projects/{projectUid}/jobs/connectorTask", Method.Post)
+                .AddQueryParameter("downloadTaskId", downloadTaskId)
+                .AddQueryParameter("continuous", (input.Continuous ?? false).ToString().ToLowerInvariant())
+                .AddJsonBody(body);
+            var response = await Client.ExecuteWithoutHandlingAsync(request);
+            if (response.IsSuccessful)
+            {
+                return Client.DeserializeWithHandling<JobResponseWrapper>(response);
+            }
+
+            if (!IsConnectorTaskPending(response))
+            {
+                return Client.DeserializeWithHandling<JobResponseWrapper>(response);
+            }
+
+            if (DateTime.UtcNow >= deadline)
+            {
+                throw new PluginApplicationException(
+                    $"Phrase TMS did not finish the connector download task within " +
+                    $"{Client.AsyncRequestTimeout.TotalMinutes:0.##} minutes.");
+            }
+
+            await Task.Delay(Client.AsyncRequestPollInterval);
+        }
+    }
+
+    private static bool IsConnectorTaskPending(RestResponse response)
+    {
+        var content = response.Content ?? string.Empty;
+        return content.Contains("NOT_FINISHED", StringComparison.OrdinalIgnoreCase)
+               || content.Contains("NOT_READY", StringComparison.OrdinalIgnoreCase)
+               || content.Contains("IN_PROGRESS", StringComparison.OrdinalIgnoreCase)
+               || content.Contains("not finished", StringComparison.OrdinalIgnoreCase)
+               || content.Contains("not ready", StringComparison.OrdinalIgnoreCase)
+               || (content.Contains("TASK", StringComparison.OrdinalIgnoreCase)
+                   && content.Contains("NOT_FOUND", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static string GetEncodedFolderForDownload(
+        string selectedFolder,
+        ConnectorFilesResponse folderResponse)
+    {
+        if (selectedFolder != "/")
+        {
+            return selectedFolder.TrimStart('/');
+        }
+
+        if (!string.IsNullOrWhiteSpace(folderResponse.EncodedCurrentFolder)
+            && folderResponse.EncodedCurrentFolder != "/")
+        {
+            return folderResponse.EncodedCurrentFolder.TrimStart('/');
+        }
+
+        return Convert.ToHexString(Encoding.UTF8.GetBytes("/")).ToLowerInvariant();
     }
 
     [Action("Delete jobs", Description = "Delete jobs from a project")]
