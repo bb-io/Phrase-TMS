@@ -23,6 +23,7 @@ using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Blackbird.Filters.Analysis.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using RestSharp;
 
 namespace Apps.PhraseTMS.Actions;
@@ -150,11 +151,20 @@ public class AnalysisActions(InvocationContext invocationContext, IFileManagemen
     }
 
     [Action("Get analysis data", Description = "Get full details for a specific analysis")]
-    public async Task<FullAnalysisDto> GetJobAnalysis(
+    public async Task<GetAnalysisDataResponse> GetJobAnalysis(
         [ActionParameter] GetAnalysisRequest input)
     {
         var request = new RestRequest($"/api2/v3/analyses/{input.AnalysisUId}", Method.Get);
-        return await Client.ExecuteWithHandling<FullAnalysisDto>(request);
+        var analysis = await Client.ExecuteWithHandling<FullAnalysisDto>(request);
+        var json = JsonConvert.SerializeObject(analysis, Formatting.Indented, new JsonSerializerSettings
+        {
+            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            NullValueHandling = NullValueHandling.Include
+        });
+
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
+        var file = await fileManagementClient.UploadAsync(stream, "application/json", $"analysis_{input.AnalysisUId}.json");
+        return new GetAnalysisDataResponse(analysis, file);
     }
 
     [Action("Create analyses", Description = "Create one or more analyses for jobs in a project")]
