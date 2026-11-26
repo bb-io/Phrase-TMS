@@ -1,5 +1,4 @@
 ﻿using Blackbird.Applications.Sdk.Common;
-using DocumentFormat.OpenXml.Spreadsheet;
 using Newtonsoft.Json;
 
 namespace Apps.PhraseTMS.Dtos.Analysis;
@@ -61,16 +60,21 @@ public class AnalyseLanguagePart
     public string TargetLang { get; set; }
 
     [Display("Data")]
-    [JsonProperty("data")]
-    public Data Data { get; set; }
+    [JsonProperty("data", NullValueHandling = NullValueHandling.Ignore)]
+    public Data Data { get; set; } = new();
+
+    private Data? _discountedData;
 
     [Display("Discounted data")]
-    [JsonProperty("discountedData")]
-    public Data? DiscountedData { get; set; }
+    [JsonProperty("discountedData", ObjectCreationHandling = ObjectCreationHandling.Replace)]
+    public Data DiscountedData
+    {
+        get => _discountedData ?? new Data();
+        set => _discountedData = value;
+    }
 
     [Display("Has discounted data?")]
-    public bool HasDiscountedData => DiscountedData != null;
-
+    public bool HasDiscountedData => _discountedData != null;
 }
 
 public class Data
@@ -84,28 +88,28 @@ public class Data
     public bool Estimate { get; set; }
 
     [Display("All")]
-    [JsonProperty("all")]
-    public Match All { get; set; }
+    [JsonProperty("all", NullValueHandling = NullValueHandling.Ignore)]
+    public Match All { get; set; } = new();
 
     [Display("Repetitions")]
-    [JsonProperty("repetitions")]
-    public Match Repetitions { get; set; }
+    [JsonProperty("repetitions", NullValueHandling = NullValueHandling.Ignore)]
+    public Match Repetitions { get; set; } = new();
 
     [Display("Internal fuzzy matches")]
-    [JsonProperty("internalFuzzyMatches")]
-    public Matches InternalFuzzyMatches { get; set; }
+    [JsonProperty("internalFuzzyMatches", NullValueHandling = NullValueHandling.Ignore)]
+    public Matches InternalFuzzyMatches { get; set; } = new();
 
     [Display("Machine translation matches")]
-    [JsonProperty("machineTranslationMatches")]
-    public Matches MachineTranslationMatches { get; set; }
+    [JsonProperty("machineTranslationMatches", NullValueHandling = NullValueHandling.Ignore)]
+    public Matches MachineTranslationMatches { get; set; } = new();
 
     [Display("Translation memory matches")]
-    [JsonProperty("transMemoryMatches")]
-    public Matches TransMemoryMatches { get; set; }
+    [JsonProperty("transMemoryMatches", NullValueHandling = NullValueHandling.Ignore)]
+    public Matches TransMemoryMatches { get; set; } = new();
 
     [Display("Non translatable matches")]
-    [JsonProperty("nonTranslatablesMatches")]
-    public Matches NonTranslatablesMatches { get; set; }
+    [JsonProperty("nonTranslatablesMatches", NullValueHandling = NullValueHandling.Ignore)]
+    public Matches NonTranslatablesMatches { get; set; } = new();
 }
 
 public class ImportStatus
@@ -118,28 +122,28 @@ public class ImportStatus
 public class Matches
 {
     [Display("Match 0")]
-    [JsonProperty("match0")]
-    public Match Match0 { get; set; }
+    [JsonProperty("match0", NullValueHandling = NullValueHandling.Ignore)]
+    public Match Match0 { get; set; } = new();
 
     [Display("Match 50")]
-    [JsonProperty("match50")]
-    public Match Match50 { get; set; }
+    [JsonProperty("match50", NullValueHandling = NullValueHandling.Ignore)]
+    public Match Match50 { get; set; } = new();
 
     [Display("Match 75")]
-    [JsonProperty("match75")]
-    public Match Match75 { get; set; }
+    [JsonProperty("match75", NullValueHandling = NullValueHandling.Ignore)]
+    public Match Match75 { get; set; } = new();
 
     [Display("Match 85")]
-    [JsonProperty("match85")]
-    public Match Match85 { get; set; }
+    [JsonProperty("match85", NullValueHandling = NullValueHandling.Ignore)]
+    public Match Match85 { get; set; } = new();
 
     [Display("Match 95")]
-    [JsonProperty("match95")]
-    public Match Match95 { get; set; }
+    [JsonProperty("match95", NullValueHandling = NullValueHandling.Ignore)]
+    public Match Match95 { get; set; } = new();
 
     [Display("Match 100")]
-    [JsonProperty("match100")]
-    public Match Match100 { get; set; }
+    [JsonProperty("match100", NullValueHandling = NullValueHandling.Ignore)]
+    public Match Match100 { get; set; } = new();
 }
 
 public class Job
