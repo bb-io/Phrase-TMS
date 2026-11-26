@@ -687,12 +687,7 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
                 "jobs", new[] { new { uid = input.JobUId } }
             }
         };
-
-        if (body.Status != null)
-        {
-            bodyDictionary.Add("status", body.Status);
-        }
-
+        
         if (body.DateDue.HasValue)
         {
             bodyDictionary.Add("dateDue", body.DateDue);
@@ -708,13 +703,28 @@ public class JobActions(InvocationContext invocationContext, IFileManagementClie
             bodyDictionary.Add("providers", new[] { new { type = "USER", id = userId } });
         }
 
-        var request = new RestRequest($"/api2/v3/jobs", Method.Patch)
+        var request = new RestRequest("/api2/v3/jobs", Method.Patch)
             .WithJsonBody(bodyDictionary, JsonConfig.DateSettings);
         var response = await Client.ExecuteWithHandling<ApiResponse>(request);
         if (response.Errors != null && response.Errors.Count() > 0)
         {
             throw new PluginApplicationException(string.Join("; ", response.Errors.Select(e => $"{e.Message} (Code: {e.Code})")));
         }
+        
+        if (!string.IsNullOrWhiteSpace(body.Status))
+        {
+            string endpoint = $"api2/v1/projects/{projectRequest.ProjectUId}/jobs/{input.JobUId}/setStatus";
+            var statusRequest = new RestRequest(endpoint, Method.Post)
+                .WithJsonBody(new
+                {
+                    requestedStatus = body.Status,
+                    notifyOwner = body.NotifyOwnerAboutStatus ?? false,
+                    propagateStatus = body.PropagateStatus ?? false
+                });
+
+            await Client.ExecuteWithHandling(statusRequest);
+        }
+        
         var job = await GetJob(projectRequest, input);
         return job;
     }
