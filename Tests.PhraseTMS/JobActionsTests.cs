@@ -340,4 +340,27 @@ public class JobActionsTests : TestBaseMultipleConnections
 
         await actions.UploadBilingualFile(input, updateState);
     }
+
+    [TestMethod, ContextDataSource]
+    public async Task EditJob_ReturnsUpdatedJob(InvocationContext context)
+    {
+        // Arrange
+        var actions = new JobActions(context, FileManager);
+        var projectRequest = new ProjectRequest { ProjectUId = "ili82ynA0PSr0kAJHz6AE3" };
+        var jobRequest = new JobRequest { JobUId = "1FB7f4Hw0tC4zASnoeVZK0" };
+        var input = new EditJobBody
+        {
+            Status = "DELIVERED",
+            NotifyOwnerAboutStatus = true
+        };
+        string? vendorId = null;
+        string? userId = null;
+
+        // Act
+        var result = await actions.EditJob(projectRequest, jobRequest, input, vendorId, userId);
+        
+        // Assert
+        PrintResult(result);
+        Assert.IsNotNull(result);
+    }
 }

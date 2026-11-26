@@ -54,8 +54,8 @@ public class DataSources : TestBaseMultipleConnections
         => await Test(new DomainDataHandler(context), "test");
 
     [TestMethod, ContextDataSource]
-    public async Task Job_query_returns_values(InvocationContext context) 
-        => await Test(new JobDataHandler(context, new ProjectRequest { ProjectUId = "OHocQVUqGBFacBtS7HYhq2" }));
+    public async Task JobDataHandler_ReturnsJobs(InvocationContext context) 
+        => await Test(new JobDataHandler(context, new ProjectRequest { ProjectUId = "ili82ynA0PSr0kAJHz6AE3" }));
 
     [TestMethod, ContextDataSource]
     public async Task Language_returns_values(InvocationContext context) 
@@ -90,8 +90,8 @@ public class DataSources : TestBaseMultipleConnections
         => await Test(new ProjectDataHandler(context));
 
     [TestMethod, ContextDataSource]
-    public async Task Project_with_query_returns_values(InvocationContext context) 
-        => await Test(new ProjectDataHandler(context), "test");
+    public async Task ProjectDataHandler_ReturnsProjects(InvocationContext context) 
+        => await Test(new ProjectDataHandler(context));
 
     [TestMethod, ContextDataSource]
     public async Task Project_template_returns_values(InvocationContext context) 
